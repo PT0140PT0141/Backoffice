@@ -5,7 +5,7 @@
  * @see     [xxxx-1:2016], Clause 5.2.1  Namimg conventions
  * @version $id$
  */
-module Toll_Service_Provider {
+module TSP_Testcases {
     /**
      * @desc    [12855:2015]: 
      * @see     Annex A (normative)  data type specifications
