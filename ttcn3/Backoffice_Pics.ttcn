@@ -3,7 +3,7 @@
  * @desc      This module describes the common functionalities for TCs execution (Charging and ContextData)
  * @version   $id$
  */
-module Common_Pics {
+module Backoffice_Pics {
     
     /**
      * @desc    Does the IUT support secured mode?

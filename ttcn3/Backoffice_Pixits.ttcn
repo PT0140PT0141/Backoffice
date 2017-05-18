@@ -3,7 +3,7 @@
  * @desc     This module describes the common parameters for TCs execution (Charging and ContextData)
  * @version    $id$
  */
-module Common_Pixits {
+module Backoffice_Pixits {
 
     /**
      * @desc    [17575-1:2016]: Charging

@@ -3,7 +3,7 @@
  * @desc 	This module describes common types and values for both FE and BE TTCN-3 components
  * @version	$id$
  */
-module Common_TypesAndValues {
+module Backoffice_TypesAndValues {
     
     /**
      * @desc    [17575-1:2016]: Charging
