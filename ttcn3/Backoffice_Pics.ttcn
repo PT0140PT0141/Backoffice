@@ -1,5 +1,5 @@
 /**
- * @author    PT28/PT0141 
+ * @author    PT0140  
  * @desc      This module describes the common functionalities for TCs execution (Charging and ContextData)
  * @version   $id$
  */
@@ -8,6 +8,7 @@ module Backoffice_Pics {
     /**
      * @desc    Does the IUT support secured mode?
      */
-    modulepar boolean PICS_SECURED_MODE := false; 
+    modulepar boolean PICS_A1_1_isTC := true; 
+    modulepar boolean PICS_A1_2_isTSP := true; 
     
 } // End of module Common_Pics

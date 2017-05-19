@@ -1,5 +1,5 @@
 /**
- * @author  PT28/PT0141 
+ * @author  PT0140  
  * @desc    This module provides:
  * - default behavior on received messages 
  * - timeouts support
