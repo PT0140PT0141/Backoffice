@@ -6,7 +6,7 @@
 module Backoffice_Pics {
     
     /**
-     * @desc    Does the IUT support secured mode?
+     * @desc    Replicate the PICS in TTCN3 code
      */
     modulepar boolean PICS_A1_1_isTC := true; 
     modulepar boolean PICS_A1_2_isTSP := true; 
