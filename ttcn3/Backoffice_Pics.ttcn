@@ -10,9 +10,24 @@ module Backoffice_Pics {
      */
     modulepar boolean PICS_A1_1_isTC := true; 
     modulepar boolean PICS_A1_2_isTSP := true;
+    modulepar boolean PICS_A2_1_isDSRC := true; 
+    modulepar boolean PICS_A2_2_isGNSS := true; 
     modulepar boolean PICS_A7_1_isUSERDETAILS := true; 
     modulepar boolean PICS_A7_2_isLISTOFUSERS := true; 
     modulepar boolean PICS_A7_3_isEXCEPTIONLIST := true; 
-    modulepar boolean PICS_A7_5_isPAYMENTCLAIM := true; 
-    
+    modulepar boolean PICS_A7_5_isPAYMENTCLAIM := true;
+    modulepar boolean PICS_A26_1_isDSRCCINTRACTISSUERLIST := true; 
+    modulepar boolean PICS_A26_2_isDSRCEFCCONTEXTDATA := true; 
+    modulepar boolean PICS_A26_3_isDSRCBILLINGDETAILS := true; 
+    modulepar boolean PICS_A26_4_isDSRCREPORTABNORMALOBE := true;
+    modulepar boolean PICS_A30_2_isDSRCCONTEXT := true;  
+    modulepar boolean PICS_A30_2_isDSRCCLOSEDCONTEXT := true; 
+    modulepar boolean PICS_A36_15_isSENT := true;
+    modulepar boolean PICS_A36_15_isREVOKE := true;
+    modulepar boolean PICS_A36_15_isADJUST := true;   
+    modulepar boolean PICS_A52_1_isGNSSBILLINGDETAILSTSP := true; 
+    modulepar boolean PICS_A52_2_isGNSSBILLINGDETAILSTC := true; 
+    modulepar boolean PICS_A52_3_isGNSSTOLLDECLARATION := true; 
+    modulepar boolean PICS_A52_4_isGNSSPAYMENTANNOUNCEMENT := true;
+    modulepar boolean PICS_A56_6_isINCLUDEDDISCOUNTS := true;    
 } // End of module Common_Pics
