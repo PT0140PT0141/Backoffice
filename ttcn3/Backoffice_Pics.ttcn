@@ -9,6 +9,10 @@ module Backoffice_Pics {
      * @desc    Replicate the PICS in TTCN3 code
      */
     modulepar boolean PICS_A1_1_isTC := true; 
-    modulepar boolean PICS_A1_2_isTSP := true; 
+    modulepar boolean PICS_A1_2_isTSP := true;
+    modulepar boolean PICS_A7_1_isUSERDETAILS := true; 
+    modulepar boolean PICS_A7_2_isLISTOFUSERS := true; 
+    modulepar boolean PICS_A7_3_isEXCEPTIONLIST := true; 
+    modulepar boolean PICS_A7_5_isPAYMENTCLAIM := true; 
     
 } // End of module Common_Pics
