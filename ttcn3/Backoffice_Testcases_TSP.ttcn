@@ -74,31 +74,27 @@ module Backoffice_Testcases_TSP {
              // Local variables
                 var userDetails v_userDetails;
                 
-                // Test control
-                if (PICS_SECURED_MODE) {
-                    log("*** " & testcasename() & ": not PICS_SECURED_MODE required for executing the TC ***");
-                    setverdict(inconc);
-                    stop;
-                }
+                // Repetitions
+                // insert loop statement in case multiple APDUs are sent according to TP
                 
-                // Preamble
+                // Preamble - Initial Conditions
                 f_Backoffice_Preamble();
                 // Front End shall already received Context Data
                 f_SendRequestAPDU(m_user_Details_Request);
-                // No authentication
+
                 // Preamble done
 
                 // Test body start
                 t_ac.start;
-                // Step1: Wait for UserDetails message
+                // transaction sequence #1: Wait for UserDetails message
                 alt {
                     [] pco.receive(mw_userDetails_apduIdentifier) -> value v_apduIdentifier { // No specific test was requiered
                         // Stop timer
                         t_ac.stop;
                         
-                        // Step2: Send DefaultACK
+                 // Transaction sequence #2: Send DefaultACK
                         pco.send(m_defaultAck_apduIdentifier(v_defaultAck.apduIdentifier));
-                        // Step4: Set verdict pass
+                        //  Set verdict pass
                         setverdict(pass);
                     }
                 } // End of alt statement
