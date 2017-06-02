@@ -66,11 +66,14 @@ module Backoffice_Testcases_TSP {
     group LISTOFUSERS {
     
           group Valid_Behaviour {
-             /**
+
+             testcase TP_TSP_USERDETAILS_BV_01() runs on EutComp system TestAdapter {
+             
+              /**
               * @desc    TP_TSP_USERDETAILS_BV_01: Verify that the TSP correctly receives an APDU containing valid RequestADUs and provides valid ProvideUserDetailsADUs 
               * @remark  [16986:2016], Clause 6.4 and Table A.1/2 AND Table A.7/1  
               */
-             testcase TP_TSP_USERDETAILS_BV_01() runs on EutComp system TestAdapter {
+              
              // Local variables
                 var userDetails v_userDetails;
                 
@@ -81,6 +84,46 @@ module Backoffice_Testcases_TSP {
                 f_Backoffice_Preamble();
                 // Front End shall already received Context Data
                 f_SendRequestAPDU(m_user_Details_Request);
+
+                // Preamble done
+
+                // Test body start
+                t_ac.start;
+                // transaction sequence #1: Wait for UserDetails message
+                alt {
+                    [] pco.receive(mw_userDetails_apduIdentifier) -> value v_apduIdentifier {
+                        // Stop timer
+                        t_ac.stop;
+                        
+                 // Transaction sequence #2: Send DefaultACK
+                        pco.send(m_defaultAck_apduIdentifier(v_defaultAck.apduIdentifier));
+                        //  Set verdict pass
+                        setverdict(pass);
+                    }
+                } // End of alt statement
+                // Test body done
+
+                // Postamble - Final Conditions
+                f_Backoffice_Postamble();
+             } // End of TP_TSP_USERDETAILS_BV_01
+            
+            testcase TP_TSP_USERDETAILS_BV_02() runs on EutComp system TestAdapter {
+             
+              /**
+              * @desc    TP_TSP_USERDETAILS_BV_02: Verify that the TSP correctly receives a RequestADUs of type userDetailsRequest with listOfUsersParametersRequested containing user details that cannot be provided because of data privacy issues 
+              * @remark  [16986:2016], Clause 6.4 and Table A.1/2 AND Table A.7/1  
+              */
+              
+             // Local variables
+                var userDetails v_userDetails;
+                
+                // Repetitions
+                // insert loop statement in case multiple APDUs are sent according to TP
+                
+                // Preamble - Initial Conditions
+                f_Backoffice_Preamble();
+                // Front End shall already received Context Data
+                f_SendRequestAPDU(m_user_Details_PrivacyBound_Request);
 
                 // Preamble done
 
@@ -100,9 +143,10 @@ module Backoffice_Testcases_TSP {
                 } // End of alt statement
                 // Test body done
 
-                // Postamble
+                // Postamble - Final Conditions
                 f_Backoffice_Postamble();
-             } // End of TP_TSP_USERDETAILS_BV_01            
+             } // End of TP_TSP_USERDETAILS_BV_02
+                         
  		} // End of group Valid_Behaviour
          
          group Invalid_Behaviour {		
