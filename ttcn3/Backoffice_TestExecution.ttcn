@@ -6,10 +6,11 @@
  * @remark  See clause 5.3 for TC namimg conventions
  * @version $id$
  */
-module Backoffice_TE {
+module Backoffice_TE { 
     import from Backoffice_TestCases_TSP all;
     import from Backoffice_TestCases_TC all;
     import from Backoffice_Pics all;
+    import from Backoffice_Functions all;
 
     control {
         /**
@@ -22,6 +23,13 @@ module Backoffice_TE {
              * @desc    TC_CR_FE_BV_01: Verify the usage of communication services
              * @remark  [17575-1:2016] (without any specification, let check for transactionCounter)
              */
-            f_ConditionalTestCaseRun(Testcase_TC_Base_BV_01(),PICS_A1_1_isTC);
+            
+            if (PICS_A1_1_isTC) {
+            	execute(Testcase_TP_TC_Base_BV_01())
+            } else{
+            	f_LogNotExecuted("Testcase_TP_TC_Base_BV_01");
+            }
+            
+            
     } 
 } 

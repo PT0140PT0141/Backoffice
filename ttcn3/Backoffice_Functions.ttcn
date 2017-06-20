@@ -8,7 +8,7 @@
  * @see     Electronic fee collection (EFC) — Application interface definition for autonomous systems — Part 2: Communication and connections to the lower layers
  * @version $id$
  */
-module Backoffice_Functions language "TTCN-3:2010 Advanced Parameterization" {
+module Backoffice_Functions language "TTCN-3:2010 Advanced Parameterization" { 
 
     group Common_External_Functions {
         /**
@@ -19,26 +19,18 @@ module Backoffice_Functions language "TTCN-3:2010 Advanced Parameterization" {
          */
         external function fx_templateWeMightNeedSomethingLikeThis() return CommunicationErrorCodes;
         
-        group Security {
-            
+        group Security {        
             /**
              * @desc Initialise external security module
              * @return true on success, false  otherwise
              */
             external function fx_aGroupWithinAGroup_PerhapsWeNeedThis() return boolean;
-        }
-        
-    } // End of group Common_External_Functions
+        }  
+    } 
 
-	function f_ConditionalTestCaseRun(in charstring theTestcase, in boolean theCondition){
-	  if (theCondition) {
-	    execute(theTestcase)
-	  }
-	  else{
-	    log("*** " & theTestcase.testcasename() & ": tescase not to be executed according to TP validity conditions and parameters in PICS ***");
-	  }
+
+	function f_LogNotExecuted(in charstring theTestcase){
+		log("*** " & theTestcase & ": tescase not to be executed according to TP validity conditions and parameters in PICS ***");
+	}
 	  
-	} 
-	
-
-} // End of module Common_Functions
+} 
