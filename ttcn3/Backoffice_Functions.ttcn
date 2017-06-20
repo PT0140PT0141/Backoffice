@@ -17,7 +17,7 @@ module Backoffice_Functions language "TTCN-3:2010 Advanced Parameterization" {
          * @see     Clauses 7. EFC communication services (functions)
          * @see     Clauses 8. The use of a communication stack)
          */
-        external function fx_templateWeMightNeedSomethingLiikeThis() return CommunicationErrorCodes;
+        external function fx_templateWeMightNeedSomethingLikeThis() return CommunicationErrorCodes;
         
         group Security {
             
@@ -30,8 +30,8 @@ module Backoffice_Functions language "TTCN-3:2010 Advanced Parameterization" {
         
     } // End of group Common_External_Functions
 
-	function f_ConditionalTestCaseRun(in testcase theTestcase, in boolean theCondition){
-	  if theCondition {
+	function f_ConditionalTestCaseRun(in charstring theTestcase, in boolean theCondition){
+	  if (theCondition) {
 	    execute(theTestcase)
 	  }
 	  else{

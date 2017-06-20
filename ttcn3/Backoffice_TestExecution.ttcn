@@ -1,0 +1,27 @@
+/**
+ * @author  PT0140 
+ * @desc    This module provides control par for automatic test execution
+ * @see     Electronic fee collection (EFC) — Conformity evaluation of Front End and Back End equipment to ISO 17575-1
+ * @see     Electronic fee collection (EFC) — Conformity evaluation of Front End and Back End equipment to ISO 17575-3
+ * @remark  See clause 5.3 for TC namimg conventions
+ * @version $id$
+ */
+module Backoffice_TE {
+    import from Backoffice_TestCases_TSP all;
+    import from Backoffice_TestCases_TC all;
+    import from Backoffice_Pics all;
+
+    control {
+        /**
+         * @desc    Group of the TCs based on TPs described in clause A.2.1 BV test purposes: Verify the usage of communication services
+         * Test subgroup objective:
+         * - to test the usage of communication services;
+         * - to test the behaviour of the DUT with respect to data elements contained in Charge Report.
+         */
+            /**
+             * @desc    TC_CR_FE_BV_01: Verify the usage of communication services
+             * @remark  [17575-1:2016] (without any specification, let check for transactionCounter)
+             */
+            f_ConditionalTestCaseRun(Testcase_TC_Base_BV_01(),PICS_A1_1_isTC);
+    } 
+} 
