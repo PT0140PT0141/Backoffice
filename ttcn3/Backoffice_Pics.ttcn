@@ -30,4 +30,4 @@ module Backoffice_Pics {
     modulepar boolean PICS_A52_3_isGNSSTOLLDECLARATION := true; 
     modulepar boolean PICS_A52_4_isGNSSPAYMENTANNOUNCEMENT := true;
     modulepar boolean PICS_A56_6_isINCLUDEDDISCOUNTS := true;    
-} // End of module Common_Pics
+} 

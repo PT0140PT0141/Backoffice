@@ -28,10 +28,10 @@ module Backoffice_Templates language "TTCN-3:2010 Advanced Parameterization" {
      */
     import from Common_Parameterised_Asn1_Data all;
     
-    import from Common_TypesAndValues all;
-    import from Common_Pixits all;
-    import from Common_Pics all;
-    import from Common_Functions all;
+    import from Backoffice_TypesAndValues all;
+    import from Backoffice_Pixits all;
+    import from Backoffice_Pics all;
+    import from Backoffice_Functions all;
 
     group Providers_Templates {
         /**

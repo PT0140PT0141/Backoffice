@@ -10,14 +10,14 @@
  */
 module Backoffice_Functions language "TTCN-3:2010 Advanced Parameterization" { 
 
-    group Common_External_Functions {
+    group External {
         /**
          * @desc    These function initializes the communication stack
          * @return  ERNoError on success, error code otherwise
          * @see     Clauses 7. EFC communication services (functions)
          * @see     Clauses 8. The use of a communication stack)
          */
-        external function fx_templateWeMightNeedSomethingLikeThis() return CommunicationErrorCodes;
+        //external function fx_templateWeMightNeedSomethingLikeThis() return CommunicationErrorCodes ;
         
         group Security {        
             /**

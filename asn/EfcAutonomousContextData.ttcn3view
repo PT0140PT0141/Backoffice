@@ -4,8 +4,8 @@
  *  PLEASE DO NOT EDIT! The file will be overwritten when the input file changes.
  *
  *  Source:    EfcAutonomousContextData.asn
- *  Generator: TTworkbench ASN.1 Parser 1.1.14.201608221443
- *  Date:      23/11/16 10:55
+ *  Generator: TTworkbench ASN.1 Parser 1.1.14.201606151123
+ *  Date:      6/20/17 3:38 PM
  *
  * ----------------------------------------------------------------------------
  *  The ASN.1 to TTCN-3 is a proprietary mapping based on the ES 201 873-7 ETSI standard.
@@ -27,32 +27,22 @@
  *  EXPRESSED WARRANTY OF NON-INFRINGEMENT OR THE IMPLIED WARRANTIES
  *  OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  (C) Copyright Testing Technologies, 2000-2016. All Rights Reserved.
+ *  (C) Copyright Testing Technologies, 2000-2017. All Rights Reserved.
  * ----------------------------------------------------------------------------
  */
 
 module EfcAutonomousContextData language "ASN.1:1997" {
   import from ASNAUX all; 
 
-  import from EfcDsrcApplication language "ASN.1:1997" {
-    type TrailerAxles, EquipmentOBUId, PayUnit, CopValue, VehicleWeightLaden, VehicleClass, PaymentMeans, Provider, TractorAxles, EuroValue, PaymentFee, UnitType, DateCompact; 
-  }; 
+  import from EfcDsrcApplication language "ASN.1:1997" all; 
 
-  import from AVIAEINumberingAndDataStructures language "ASN.1:1997" {
-    type CS5, IssuerIdentifier, CountryCode; 
-  }; 
+  import from AVIAEINumberingAndDataStructures language "ASN.1:1997" all; 
 
-  import from EfcDsrcGeneric language "ASN.1:1997" {
-    type AttributeIdList; 
-  }; 
+  import from EfcDsrcGeneric language "ASN.1:1997" all; 
 
-  import from EfcCcc language "ASN.1:1997" {
-    type Latitude, Longitude; 
-  }; 
+  import from EfcCcc language "ASN.1:1997" all; 
 
-  import from EfcAutonomousCharging language "ASN.1:1997" {
-    type VersionId, MessageAuthenticator, Duration, Distance; 
-  }; 
+  import from EfcAutonomousCharging language "ASN.1:1997" all; 
 
   type record AuthenticatedIso17575_3Adu {
     bitstring iso17575_3AduPer,

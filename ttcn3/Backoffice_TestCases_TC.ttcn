@@ -13,7 +13,7 @@ module Backoffice_TestCases_TC {
      */
     import from EfcAutonomousCharging language "ASN.1:1997" all;
     import from EfcDsrcApplication language "ASN.1:1997" all;
-    import from Efc12855BaseStandard language "ASN.1:1997" all;
+    import from EfcInfoExchange language "ASN.1:1997" all;
     
     // LibEfc_Common
     /**
@@ -57,7 +57,7 @@ module Backoffice_TestCases_TC {
                 {
                                     
                   
-                  // Preamble - Initial conditions
+                  // Preamble - Initial conditions 
                   // No intial conditions according to TP
                         
                   // Test body start
