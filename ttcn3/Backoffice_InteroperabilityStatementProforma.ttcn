@@ -1,9 +1,9 @@
 /**
  * @author    PT0140  
- * @desc      This module declares the Interoperability parameetrs Settings
+ * @desc      This module declares the Interoperability parameters Settings
  * @version   $id$
  */
-module Backoffice_Pics {
+module Backoffice_Interoperability_Statement {
  
     /**
      * @desc    Replicate the Interoperabili Statement Proforma in TTCN3 code
