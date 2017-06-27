@@ -49,15 +49,15 @@ module Backoffice_TestCases_TSP {
         } // End of group Invalid_Behaviour
         
     } // End of group Base
-    group USERDETAILS {
+    group LISTOFUSERS {
          group Valid_Behaviour {
  		} // End of group Valid_Behaviour
          
          group Invalid_Behaviour {		
         } // End of group Invalid_Behaviour
         
-    } // End of group USERDETAILS
-    group LISTOFUSERS {
+    } // End of group LISTOFUSERS
+    group USERDETAILS {
     
           group Valid_Behaviour {
 
