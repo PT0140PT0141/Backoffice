@@ -51,6 +51,7 @@ module Backoffice_TestCases_TC {
                 // Local variables
                 // for example:
                 // var MyAsn1Type v_myAsn1Instance;
+                timer t_tseq
                 
                 // Repetitions
                 // insert loop statement in case multiple APDUs are sent according to TP
@@ -62,11 +63,35 @@ module Backoffice_TestCases_TC {
                         
                   // Test body start
                   
-                  // Transaction sequence # 1
-
-                  // Transaction sequence # 2
                   
-                  // Transaction sequence # 3
+              
+                  alt {
+
+                      // Transaction sequence # 1
+    
+                      t_tseq.start(USERDETAILS_TIME1_MAX_TSP)
+    
+                      // Do all the operations in this step
+    
+					  f_checkMinimumTime(t_tseq, USERDETAILS_TIME1_MIN_TSP) 	                      
+    
+                      // Transaction sequence # 2
+                      
+                      t_tseq.start(USERDETAILS_TIME2_MAX_TSP)
+                     
+                      // Do all the operations in this step
+                     
+                      f_checkMinimumTime(t_tseq, USERDETAILS_TIME2_MIN_TSP) 	                      
+                      
+                      // Transaction sequence # 3
+                      
+                      t_tseq.start(USERDETAILS_TIME3_MAX_TSP) 
+                      
+                      // Do all the operations in this step
+                      
+                      f_checkMinimumTime(t_tseq, USERDETAILS_TIME3_MIN_TSP) 	                      
+                                            
+                      any timer.timeout
                   
                 }
     
