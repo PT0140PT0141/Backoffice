@@ -1,0 +1,1148 @@
+AuthenticationFramework {joint-iso-itu-t ds(5) module(1) authenticationFramework(7) 6}
+DEFINITIONS ::=
+BEGIN
+-- EXPORTS All --
+-- The types and values defined in this module are exported for use in the other ASN.1 modules contained
+-- within the Directory Specifications, and for the use of other applications which will use them to access
+-- Directory services. Other applications may use them for their own purposes, but this will not constrain
+-- extensions and modifications needed to maintain or improve the Directory service.
+IMPORTS
+id-at, id-nf, id-oc, informationFramework, selectedAttributeTypes, basicAccessControl,
+certificateExtensions
+FROM UsefulDefinitions {joint-iso-itu-t ds(5) module(1) usefulDefinitions(0) 6}
+Name, ATTRIBUTE, OBJECT-CLASS, NAME-FORM, top
+FROM InformationFramework informationFramework
+UniqueIdentifier, octetStringMatch, commonName, UnboundedDirectoryString
+FROM SelectedAttributeTypes selectedAttributeTypes
+certificateExactMatch, certificatePairExactMatch, certificateListExactMatch, KeyUsage, GeneralNames,
+CertificatePoliciesSyntax, algorithmIdentifierMatch, CertPolicyId
+FROM CertificateExtensions certificateExtensions ;
+-- parameterized types --
+ENCRYPTED { ToBeEnciphered } ::= BIT STRING ( CONSTRAINED BY {
+-- shall be the result of applying an encipherment procedure --
+-- to the BER-encoded octets of a value of -- ToBeEnciphered })
+HASH {ToBeHashed} ::= SEQUENCE {
+algorithmIdentifier AlgorithmIdentifier{{SupportedAlgorithms}},
+hashValue BIT STRING ( CONSTRAINED BY {
+-- shall be the result of applying a hashing procedure to the DER-encoded octets --
+-- of a value of --ToBeHashed } ) }
+ENCRYPTED-HASH { ToBeSigned } ::= BIT STRING ( CONSTRAINED BY {
+-- shall be the result of applying a hashing procedure to the DER-encoded (see 6.1) octets --
+-- of a value of -- ToBeSigned -- and then applying an encipherment procedure to those octets -- })
+SIGNATURE { ToBeSigned } ::= SEQUENCE {
+algorithmIdentifier AlgorithmIdentifier{{SupportedAlgorithms}},
+encrypted ENCRYPTED-HASH { ToBeSigned } }
+SIGNED { ToBeSigned } ::= SEQUENCE {
+toBeSigned ToBeSigned,
+COMPONENTS OF SIGNATURE { ToBeSigned } }
+-- public-key certificate definition --
+Certificate ::= SIGNED { CertificateContent }
+CertificateContent ::= SEQUENCE {
+version [0] Version DEFAULT v1,
+serialNumber CertificateSerialNumber,
+signature AlgorithmIdentifier{{SupportedAlgorithms}},
+issuer Name,
+validity Validity,
+subject Name,
+subjectPublicKeyInfo SubjectPublicKeyInfo,
+issuerUniqueIdentifier [1] IMPLICIT UniqueIdentifier OPTIONAL,
+-- if present, version shall be v2 or v3
+subjectUniqueIdentifier [2] IMPLICIT UniqueIdentifier OPTIONAL,
+-- if present, version shall be v2 or v3
+extensions [3] Extensions OPTIONAL
+-- If present, version shall be v3 -- }
+Version ::= INTEGER { v1(0), v2(1), v3(2) }
+CertificateSerialNumber ::= INTEGER
+AlgorithmIdentifier{ALGORITHM:SupportedAlgorithms} ::= SEQUENCE {
+algorithm ALGORITHM.&id ({SupportedAlgorithms}),
+parameters ALGORITHM.&Type ({SupportedAlgorithms}{ @algorithm}) OPTIONAL }
+-- Definition of the following information object set is deferred, perhaps to standardized
+-- profiles or to protocol implementation conformance statements. The set is required to
+-- specify a table constraint on the parameters component of AlgorithmIdentifier.
+SupportedAlgorithms ALGORITHM ::= { ... }
+Validity ::= SEQUENCE {
+notBefore Time,
+notAfter Time }
+SubjectPublicKeyInfo ::= SEQUENCE {
+algorithm AlgorithmIdentifier{{SupportedAlgorithms}},
+subjectPublicKey BIT STRING }
+Time ::= CHOICE {
+utcTime UTCTime,
+generalizedTime GeneralizedTime }
+Extensions ::= SEQUENCE OF Extension
+-- For those extensions where ordering of individual extensions within the SEQUENCE is significant, the
+-- specification of those individual extensions shall include the rules for the significance of the order therein
+Extension ::= SEQUENCE {
+extnId EXTENSION.&id ({ExtensionSet}),
+critical BOOLEAN DEFAULT FALSE,
+extnValue OCTET STRING
+(CONTAINING EXTENSION.&ExtnType({ExtensionSet}{@extnId})
+ENCODED BY der)}
+der OBJECT IDENTIFIER ::= {joint-iso-itu-t asn1(1) ber-derived(2) distinguished-encoding(1)}
+ExtensionSet EXTENSION ::= { ... }
+EXTENSION ::= CLASS {
+&id OBJECT IDENTIFIER UNIQUE,
+&ExtnType }
+WITH SYNTAX {
+SYNTAX &ExtnType
+IDENTIFIED BY &id }
+ALGORITHM ::= CLASS {
+&Type OPTIONAL,
+&id OBJECT IDENTIFIER UNIQUE }
+WITH SYNTAX {
+[&Type]
+IDENTIFIED BY &id }
+
+-- other PKI certificate constructs
+Certificates ::= SEQUENCE {
+userCertificate Certificate,
+certificationPath ForwardCertificationPath OPTIONAL}
+CertificationPath ::= SEQUENCE {
+userCertificate Certificate,
+theCACertificates SEQUENCE OF CertificatePair OPTIONAL}
+ForwardCertificationPath ::= SEQUENCE OF CrossCertificates
+CrossCertificates ::= SET OF Certificate
+PkiPath ::= SEQUENCE OF Certificate
+-- certificate revocation list (CRL)
+CertificateList ::= SIGNED { CertificateListContent }
+CertificateListContent ::= SEQUENCE {
+version Version OPTIONAL,
+-- if present, version shall be v2
+signature AlgorithmIdentifier {{SupportedAlgorithms}},
+issuer Name,
+thisUpdate Time,
+nextUpdate Time OPTIONAL,
+revokedCertificates SEQUENCE OF SEQUENCE {
+serialNumber CertificateSerialNumber,
+revocationDate Time,
+crlEntryExtensions Extensions OPTIONAL } OPTIONAL,
+crlExtensions [0] Extensions OPTIONAL }
+-- PKI object classes
+pkiUser OBJECT-CLASS ::= {
+SUBCLASS OF {top}
+KIND auxiliary
+MAY CONTAIN {userCertificate}
+ID id-oc-pkiUser }
+pkiCA OBJECT-CLASS ::= {
+SUBCLASS OF {top}
+KIND auxiliary
+MAY CONTAIN {cACertificate |
+certificateRevocationList |
+authorityRevocationList |
+crossCertificatePair }
+ID id-oc-pkiCA }
+cRLDistributionPoint OBJECT-CLASS ::= {
+SUBCLASS OF { top }
+KIND structural
+MUST CONTAIN { commonName }
+MAY CONTAIN { certificateRevocationList |
+authorityRevocationList |
+deltaRevocationList }
+ID id-oc-cRLDistributionPoint }
+cRLDistPtNameForm NAME-FORM ::= {
+NAMES cRLDistributionPoint
+WITH ATTRIBUTES { commonName }
+ID id-nf-cRLDistPtNameForm }
+deltaCRL OBJECT-CLASS ::= {
+SUBCLASS OF {top}
+KIND auxiliary
+MAY CONTAIN { deltaRevocationList }
+ID id-oc-deltaCRL }
+
+cpCps OBJECT-CLASS ::= {
+SUBCLASS OF {top}
+KIND auxiliary
+MAY CONTAIN { certificatePolicy |
+certificationPracticeStmt }
+ID id-oc-cpCps }
+pkiCertPath OBJECT-CLASS ::= {
+SUBCLASS OF {top}
+KIND auxiliary
+MAY CONTAIN { pkiPath }
+ID id-oc-pkiCertPath }
+-- PKI directory attributes --
+userCertificate ATTRIBUTE ::= {
+WITH SYNTAX Certificate
+EQUALITY MATCHING RULE certificateExactMatch
+ID id-at-userCertificate }
+cACertificate ATTRIBUTE ::= {
+WITH SYNTAX Certificate
+EQUALITY MATCHING RULE certificateExactMatch
+ID id-at-cAcertificate }
+crossCertificatePair ATTRIBUTE ::= {
+WITH SYNTAX CertificatePair
+EQUALITY MATCHING RULE certificatePairExactMatch
+ID id-at-crossCertificatePair }
+CertificatePair ::= SEQUENCE {
+forward [0] Certificate OPTIONAL,
+reverse [1] Certificate OPTIONAL
+-- at least one of the pair shall be present -- }
+(WITH COMPONENTS { ..., forward PRESENT} |
+WITH COMPONENTS { ..., reverse PRESENT})
+certificateRevocationList ATTRIBUTE ::= {
+WITH SYNTAX CertificateList
+EQUALITY MATCHING RULE certificateListExactMatch
+ID id-at-certificateRevocationList }
+authorityRevocationList ATTRIBUTE ::= {
+WITH SYNTAX CertificateList
+EQUALITY MATCHING RULE certificateListExactMatch
+ID id-at-authorityRevocationList }
+deltaRevocationList ATTRIBUTE ::= {
+WITH SYNTAX CertificateList
+EQUALITY MATCHING RULE certificateListExactMatch
+ID id-at-deltaRevocationList }
+supportedAlgorithms ATTRIBUTE ::= {
+WITH SYNTAX SupportedAlgorithm
+EQUALITY MATCHING RULE algorithmIdentifierMatch
+ID id-at-supportedAlgorithms }
+SupportedAlgorithm ::= SEQUENCE {
+algorithmIdentifier AlgorithmIdentifier{{SupportedAlgorithms}},
+intendedUsage [0] KeyUsage OPTIONAL,
+intendedCertificatePolicies [1] CertificatePoliciesSyntax OPTIONAL }
+certificationPracticeStmt ATTRIBUTE ::= {
+WITH SYNTAX InfoSyntax
+ID id-at-certificationPracticeStmt }
+
+InfoSyntax ::= CHOICE {
+content UnboundedDirectoryString,
+pointer SEQUENCE {
+name GeneralNames,
+hash HASH { HashedPolicyInfo } OPTIONAL } }
+POLICY ::= TYPE-IDENTIFIER
+HashedPolicyInfo ::= POLICY.&Type( {Policies} )
+Policies POLICY ::= {...} -- Defined by implementors --
+certificatePolicy ATTRIBUTE ::= {
+WITH SYNTAX PolicySyntax
+ID id-at-certificatePolicy }
+PolicySyntax ::= SEQUENCE {
+policyIdentifier PolicyID,
+policySyntax InfoSyntax }
+PolicyID ::= CertPolicyId
+pkiPath ATTRIBUTE ::= {
+WITH SYNTAX PkiPath
+ID id-at-pkiPath }
+userPassword ATTRIBUTE ::= {
+WITH SYNTAX OCTET STRING
+EQUALITY MATCHING RULE octetStringMatch
+ID id-at-userPassword }
+-- object identifier assignments --
+-- object classes --
+id-oc-cRLDistributionPoint OBJECT IDENTIFIER ::= {id-oc 19}
+id-oc-pkiUser OBJECT IDENTIFIER ::= {id-oc 21}
+id-oc-pkiCA OBJECT IDENTIFIER ::= {id-oc 22}
+id-oc-deltaCRL OBJECT IDENTIFIER ::= {id-oc 23}
+id-oc-cpCps OBJECT IDENTIFIER ::= {id-oc 30}
+id-oc-pkiCertPath OBJECT IDENTIFIER ::= {id-oc 31}
+-- name forms--
+id-nf-cRLDistPtNameForm OBJECT IDENTIFIER ::= {id-nf 14}
+-- directory attributes--
+id-at-userPassword OBJECT IDENTIFIER ::= {id-at 35}
+id-at-userCertificate OBJECT IDENTIFIER ::= {id-at 36}
+id-at-cAcertificate OBJECT IDENTIFIER ::= {id-at 37}
+id-at-authorityRevocationList OBJECT IDENTIFIER ::= {id-at 38}
+id-at-certificateRevocationList OBJECT IDENTIFIER ::= {id-at 39}
+id-at-crossCertificatePair OBJECT IDENTIFIER ::= {id-at 40}
+id-at-supportedAlgorithms OBJECT IDENTIFIER ::= {id-at 52}
+id-at-deltaRevocationList OBJECT IDENTIFIER ::= {id-at 53}
+id-at-certificationPracticeStmt OBJECT IDENTIFIER ::= {id-at 68}
+id-at-certificatePolicy OBJECT IDENTIFIER ::= {id-at 69}
+id-at-pkiPath OBJECT IDENTIFIER ::= {id-at 70}
+END -- AuthenticationFramework
+-- A.2 Certificate extensions module
+CertificateExtensions {joint-iso-itu-t ds(5) module(1) certificateExtensions(26) 6}
+DEFINITIONS IMPLICIT TAGS ::=
+BEGIN
+
+-- EXPORTS ALL --
+IMPORTS
+id-at, id-ce, id-mr, informationFramework, authenticationFramework,
+selectedAttributeTypes
+FROM UsefulDefinitions {joint-iso-itu-t ds(5) module(1) usefulDefinitions(0) 6}
+Name, RelativeDistinguishedName, ATTRIBUTE, Attribute{}, MATCHING-RULE, SupportedAttributes
+FROM InformationFramework informationFramework
+CertificateSerialNumber, CertificateList, AlgorithmIdentifier{}, EXTENSION, Time, PolicyID,
+SupportedAlgorithms
+FROM AuthenticationFramework authenticationFramework
+UnboundedDirectoryString
+FROM SelectedAttributeTypes selectedAttributeTypes
+ORAddress
+FROM MTSAbstractService {joint-iso-itu-t mhs(6) mts(3)
+modules(0) mts-abstract-service(1) version-1999 (1) } ;
+-- Unless explicitly noted otherwise, there is no significance to the ordering
+-- of components of a SEQUENCE OF construct in this Directory Specification.
+-- public-key certificate and CRL extensions --
+authorityKeyIdentifier EXTENSION ::= {
+SYNTAX AuthorityKeyIdentifier
+IDENTIFIED BY id-ce-authorityKeyIdentifier }
+AuthorityKeyIdentifier ::= SEQUENCE {
+keyIdentifier [0] KeyIdentifier OPTIONAL,
+authorityCertIssuer [1] GeneralNames OPTIONAL,
+authorityCertSerialNumber [2] CertificateSerialNumber OPTIONAL }
+( WITH COMPONENTS {..., authorityCertIssuer PRESENT,
+authorityCertSerialNumber PRESENT} |
+WITH COMPONENTS {..., authorityCertIssuer ABSENT,
+authorityCertSerialNumber ABSENT} )
+KeyIdentifier ::= OCTET STRING
+subjectKeyIdentifier EXTENSION ::= {
+SYNTAX SubjectKeyIdentifier
+IDENTIFIED BY id-ce-subjectKeyIdentifier }
+SubjectKeyIdentifier ::= KeyIdentifier
+keyUsage EXTENSION ::= {
+SYNTAX KeyUsage
+IDENTIFIED BY id-ce-keyUsage }
+KeyUsage ::= BIT STRING {
+digitalSignature (0),
+contentCommitment (1),
+keyEncipherment (2),
+dataEncipherment (3),
+keyAgreement (4),
+keyCertSign (5),
+cRLSign (6),
+encipherOnly (7),
+decipherOnly (8) }
+extKeyUsage EXTENSION ::= {
+SYNTAX SEQUENCE SIZE (1..MAX) OF KeyPurposeId
+IDENTIFIED BY id-ce-extKeyUsage }
+
+KeyPurposeId ::= OBJECT IDENTIFIER
+privateKeyUsagePeriod EXTENSION ::= {
+SYNTAX PrivateKeyUsagePeriod
+IDENTIFIED BY id-ce-privateKeyUsagePeriod }
+PrivateKeyUsagePeriod ::= SEQUENCE {
+notBefore [0] GeneralizedTime OPTIONAL,
+notAfter [1] GeneralizedTime OPTIONAL }
+( WITH COMPONENTS {..., notBefore PRESENT} |
+WITH COMPONENTS {..., notAfter PRESENT} )
+certificatePolicies EXTENSION ::= {
+SYNTAX CertificatePoliciesSyntax
+IDENTIFIED BY id-ce-certificatePolicies }
+CertificatePoliciesSyntax ::= SEQUENCE SIZE (1..MAX) OF PolicyInformation
+PolicyInformation ::= SEQUENCE {
+policyIdentifier CertPolicyId,
+policyQualifiers SEQUENCE SIZE (1..MAX) OF
+PolicyQualifierInfo OPTIONAL }
+CertPolicyId ::= OBJECT IDENTIFIER
+PolicyQualifierInfo ::= SEQUENCE {
+policyQualifierId CERT-POLICY-QUALIFIER.&id
+({SupportedPolicyQualifiers}),
+qualifier CERT-POLICY-QUALIFIER.&Qualifier
+({SupportedPolicyQualifiers}{@policyQualifierId}) OPTIONAL }
+SupportedPolicyQualifiers CERT-POLICY-QUALIFIER ::= { ... }
+anyPolicy OBJECT IDENTIFIER ::= { 2 5 29 32 0 }
+CERT-POLICY-QUALIFIER ::= CLASS {
+&id OBJECT IDENTIFIER UNIQUE,
+&Qualifier OPTIONAL }
+WITH SYNTAX {
+POLICY-QUALIFIER-ID &id
+[QUALIFIER-TYPE &Qualifier] }
+policyMappings EXTENSION ::= {
+SYNTAX PolicyMappingsSyntax
+IDENTIFIED BY id-ce-policyMappings }
+PolicyMappingsSyntax ::= SEQUENCE SIZE (1..MAX) OF SEQUENCE {
+issuerDomainPolicy CertPolicyId,
+subjectDomainPolicy CertPolicyId }
+subjectAltName EXTENSION ::= {
+SYNTAX GeneralNames
+IDENTIFIED BY id-ce-subjectAltName }
+GeneralNames ::= SEQUENCE SIZE (1..MAX) OF GeneralName
+GeneralName ::= CHOICE {
+otherName [0] INSTANCE OF OTHER-NAME,
+rfc822Name [1] IA5String,
+dNSName [2] IA5String,
+x400Address [3] ORAddress,
+directoryName [4] Name,
+ediPartyName [5] EDIPartyName,
+uniformResourceIdentifier [6] IA5String,
+iPAddress [7] OCTET STRING,
+registeredID [8] OBJECT IDENTIFIER }
+
+OTHER-NAME ::= TYPE-IDENTIFIER
+EDIPartyName ::= SEQUENCE {
+nameAssigner [0] UnboundedDirectoryString OPTIONAL,
+partyName [1] UnboundedDirectoryString }
+issuerAltName EXTENSION ::= {
+SYNTAX GeneralNames
+IDENTIFIED BY id-ce-issuerAltName }
+subjectDirectoryAttributes EXTENSION ::= {
+SYNTAX AttributesSyntax
+IDENTIFIED BY id-ce-subjectDirectoryAttributes }
+AttributesSyntax ::= SEQUENCE SIZE (1..MAX) OF Attribute{{SupportedAttributes}}
+basicConstraints EXTENSION ::= {
+SYNTAX BasicConstraintsSyntax
+IDENTIFIED BY id-ce-basicConstraints }
+BasicConstraintsSyntax ::= SEQUENCE {
+cA BOOLEAN DEFAULT FALSE,
+pathLenConstraint INTEGER (0..MAX) OPTIONAL }
+nameConstraints EXTENSION ::= {
+SYNTAX NameConstraintsSyntax
+IDENTIFIED BY id-ce-nameConstraints }
+NameConstraintsSyntax ::= SEQUENCE {
+permittedSubtrees [0] GeneralSubtrees OPTIONAL,
+excludedSubtrees [1] GeneralSubtrees OPTIONAL }
+(ALL EXCEPT ({ -- none; at least one component shall be present -- }))
+GeneralSubtrees ::= SEQUENCE SIZE (1..MAX) OF GeneralSubtree
+GeneralSubtree ::= SEQUENCE {
+base GeneralName,
+minimum [0] BaseDistance DEFAULT 0,
+maximum [1] BaseDistance OPTIONAL }
+BaseDistance ::= INTEGER (0..MAX)
+policyConstraints EXTENSION ::= {
+SYNTAX PolicyConstraintsSyntax
+IDENTIFIED BY id-ce-policyConstraints }
+PolicyConstraintsSyntax ::= SEQUENCE {
+requireExplicitPolicy [0] SkipCerts OPTIONAL,
+inhibitPolicyMapping [1] SkipCerts OPTIONAL }
+SkipCerts ::= INTEGER (0..MAX)
+inhibitAnyPolicy EXTENSION ::= {
+SYNTAX SkipCerts
+IDENTIFIED BY id-ce-inhibitAnyPolicy }
+cRLNumber EXTENSION ::= {
+SYNTAX CRLNumber
+IDENTIFIED BY id-ce-cRLNumber }
+CRLNumber ::= INTEGER (0..MAX)
+reasonCode EXTENSION ::= {
+SYNTAX CRLReason
+IDENTIFIED BY id-ce-reasonCode }
+
+CRLReason ::= ENUMERATED {
+unspecified (0),
+keyCompromise (1),
+cACompromise (2),
+affiliationChanged (3),
+superseded (4),
+cessationOfOperation (5),
+certificateHold (6),
+removeFromCRL (8),
+privilegeWithdrawn (9),
+aACompromise (10) }
+holdInstructionCode EXTENSION ::= {
+SYNTAX HoldInstruction
+IDENTIFIED BY id-ce-instructionCode }
+HoldInstruction ::= OBJECT IDENTIFIER
+invalidityDate EXTENSION ::= {
+SYNTAX GeneralizedTime
+IDENTIFIED BY id-ce-invalidityDate }
+crlScope EXTENSION ::= {
+SYNTAX CRLScopeSyntax
+IDENTIFIED BY id-ce-cRLScope }
+CRLScopeSyntax ::= SEQUENCE SIZE (1..MAX) OF PerAuthorityScope
+PerAuthorityScope ::= SEQUENCE {
+authorityName [0] GeneralName OPTIONAL,
+distributionPoint [1] DistributionPointName OPTIONAL,
+onlyContains [2] OnlyCertificateTypes OPTIONAL,
+onlySomeReasons [4] ReasonFlags OPTIONAL,
+serialNumberRange [5] NumberRange OPTIONAL,
+subjectKeyIdRange [6] NumberRange OPTIONAL,
+nameSubtrees [7] GeneralNames OPTIONAL,
+baseRevocationInfo [9] BaseRevocationInfo OPTIONAL }
+OnlyCertificateTypes ::= BIT STRING {
+user (0),
+authority (1),
+attribute (2) }
+NumberRange ::= SEQUENCE {
+startingNumber [0] INTEGER OPTIONAL,
+endingNumber [1] INTEGER OPTIONAL,
+modulus INTEGER OPTIONAL }
+BaseRevocationInfo ::= SEQUENCE {
+cRLStreamIdentifier [0] CRLStreamIdentifier OPTIONAL,
+cRLNumber [1] CRLNumber,
+baseThisUpdate [2] GeneralizedTime }
+statusReferrals EXTENSION ::= {
+SYNTAX StatusReferrals
+IDENTIFIED BY id-ce-statusReferrals }
+StatusReferrals ::= SEQUENCE SIZE (1..MAX) OF StatusReferral
+StatusReferral ::= CHOICE {
+cRLReferral [0] CRLReferral,
+otherReferral [1] INSTANCE OF OTHER-REFERRAL }
+CRLReferral ::= SEQUENCE {
+issuer [0] GeneralName OPTIONAL,
+location [1] GeneralName OPTIONAL,
+deltaRefInfo [2] DeltaRefInfo OPTIONAL,
+cRLScope CRLScopeSyntax,
+lastUpdate [3] GeneralizedTime OPTIONAL,
+lastChangedCRL [4] GeneralizedTime OPTIONAL}
+
+DeltaRefInfo ::= SEQUENCE {
+deltaLocation GeneralName,
+lastDelta GeneralizedTime OPTIONAL }
+OTHER-REFERRAL ::= TYPE-IDENTIFIER
+cRLStreamIdentifier EXTENSION ::= {
+SYNTAX CRLStreamIdentifier
+IDENTIFIED BY id-ce-cRLStreamIdentifier }
+CRLStreamIdentifier ::= INTEGER (0..MAX)
+orderedList EXTENSION ::= {
+SYNTAX OrderedListSyntax
+IDENTIFIED BY id-ce-orderedList }
+OrderedListSyntax ::= ENUMERATED {
+ascSerialNum (0),
+ascRevDate (1) }
+deltaInfo EXTENSION ::= {
+SYNTAX DeltaInformation
+IDENTIFIED BY id-ce-deltaInfo }
+DeltaInformation ::= SEQUENCE {
+deltaLocation GeneralName,
+nextDelta GeneralizedTime OPTIONAL }
+toBeRevoked EXTENSION ::= {
+SYNTAX ToBeRevokedSyntax
+IDENTIFIED BY id-ce-toBeRevoked }
+ToBeRevokedSyntax ::= SEQUENCE SIZE(1..MAX) OF ToBeRevokedGroup
+ToBeRevokedGroup ::= SEQUENCE {
+certificateIssuer [0] GeneralName OPTIONAL,
+reasonInfo [1] ReasonInfo OPTIONAL,
+revocationTime GeneralizedTime,
+certificateGroup CertificateGroup }
+ReasonInfo ::= SEQUENCE {
+reasonCode CRLReason,
+holdInstructionCode HoldInstruction OPTIONAL }
+CertificateGroup ::= CHOICE {
+serialNumbers [0] CertificateSerialNumbers,
+serialNumberRange [1] CertificateGroupNumberRange,
+nameSubtree [2] GeneralName }
+CertificateGroupNumberRange ::= SEQUENCE {
+startingNumber [0] INTEGER,
+endingNumber [1] INTEGER }
+CertificateSerialNumbers ::= SEQUENCE SIZE(1..MAX) OF CertificateSerialNumber
+revokedGroups EXTENSION ::= {
+SYNTAX RevokedGroupsSyntax
+IDENTIFIED BY id-ce-RevokedGroups }
+RevokedGroupsSyntax ::= SEQUENCE SIZE (1..MAX) OF RevokedGroup
+RevokedGroup ::= SEQUENCE {
+certificateIssuer [0] GeneralName OPTIONAL,
+reasonInfo [1] ReasonInfo OPTIONAL,
+invalidityDate [2] GeneralizedTime OPTIONAL,
+revokedcertificateGroup [3] RevokedCertificateGroup }
+RevokedCertificateGroup ::= CHOICE {
+serialNumberRange NumberRange,
+nameSubtree GeneralName }
+
+expiredCertsOnCRL EXTENSION ::= {
+SYNTAX ExpiredCertsOnCRL
+IDENTIFIED BY id-ce-expiredCertsOnCRL }
+ExpiredCertsOnCRL ::= GeneralizedTime
+cRLDistributionPoints EXTENSION ::= {
+SYNTAX CRLDistPointsSyntax
+IDENTIFIED BY id-ce-cRLDistributionPoints }
+CRLDistPointsSyntax ::= SEQUENCE SIZE (1..MAX) OF DistributionPoint
+DistributionPoint ::= SEQUENCE {
+distributionPoint [0] DistributionPointName OPTIONAL,
+reasons [1] ReasonFlags OPTIONAL,
+cRLIssuer [2] GeneralNames OPTIONAL }
+DistributionPointName ::= CHOICE {
+fullName [0] GeneralNames,
+nameRelativeToCRLIssuer [1] RelativeDistinguishedName }
+ReasonFlags ::= BIT STRING {
+unused (0),
+keyCompromise (1),
+cACompromise (2),
+affiliationChanged (3),
+superseded (4),
+cessationOfOperation (5),
+certificateHold (6),
+privilegeWithdrawn (7),
+aACompromise (8) }
+issuingDistributionPoint EXTENSION ::= {
+SYNTAX IssuingDistPointSyntax
+IDENTIFIED BY id-ce-issuingDistributionPoint }
+IssuingDistPointSyntax ::= SEQUENCE {
+-- If onlyContainsUserPublicKeyCerts and onlyContainsCACerts are both FALSE,
+-- the CRL covers both certificate types
+distributionPoint [0] DistributionPointName OPTIONAL,
+onlyContainsUserPublicKeyCerts [1] BOOLEAN DEFAULT FALSE,
+onlyContainsCACerts [2] BOOLEAN DEFAULT FALSE,
+onlySomeReasons [3] ReasonFlags OPTIONAL,
+indirectCRL [4] BOOLEAN DEFAULT FALSE }
+certificateIssuer EXTENSION ::= {
+SYNTAX GeneralNames
+IDENTIFIED BY id-ce-certificateIssuer }
+deltaCRLIndicator EXTENSION ::= {
+SYNTAX BaseCRLNumber
+IDENTIFIED BY id-ce-deltaCRLIndicator }
+BaseCRLNumber ::= CRLNumber
+baseUpdateTime EXTENSION ::= {
+SYNTAX GeneralizedTime
+IDENTIFIED BY id-ce-baseUpdateTime }
+freshestCRL EXTENSION ::= {
+SYNTAX CRLDistPointsSyntax
+IDENTIFIED BY id-ce-freshestCRL }
+aAissuingDistributionPoint EXTENSION ::= {
+SYNTAX AAIssuingDistPointSyntax
+IDENTIFIED BY id-ce-aAissuingDistributionPoint }
+
+AAIssuingDistPointSyntax ::= SEQUENCE {
+distributionPoint [0] DistributionPointName OPTIONAL,
+onlySomeReasons [1] ReasonFlags OPTIONAL,
+indirectCRL [2] BOOLEAN DEFAULT FALSE,
+containsUserAttributeCerts [3] BOOLEAN DEFAULT TRUE,
+containsAACerts [4] BOOLEAN DEFAULT TRUE,
+containsSOAPublicKeyCerts [5] BOOLEAN DEFAULT TRUE }
+-- PKI matching rules --
+certificateExactMatch MATCHING-RULE ::= {
+SYNTAX CertificateExactAssertion
+ID id-mr-certificateExactMatch }
+CertificateExactAssertion ::= SEQUENCE {
+serialNumber CertificateSerialNumber,
+issuer Name }
+certificateMatch MATCHING-RULE ::= {
+SYNTAX CertificateAssertion
+ID id-mr-certificateMatch }
+CertificateAssertion ::= SEQUENCE {
+serialNumber [0] CertificateSerialNumber OPTIONAL,
+issuer [1] Name OPTIONAL,
+subjectKeyIdentifier [2] SubjectKeyIdentifier OPTIONAL,
+authorityKeyIdentifier [3] AuthorityKeyIdentifier OPTIONAL,
+certificateValid [4] Time OPTIONAL,
+privateKeyValid [5] GeneralizedTime OPTIONAL,
+subjectPublicKeyAlgID [6] OBJECT IDENTIFIER OPTIONAL,
+keyUsage [7] KeyUsage OPTIONAL,
+subjectAltName [8] AltNameType OPTIONAL,
+policy [9] CertPolicySet OPTIONAL,
+pathToName [10] Name OPTIONAL,
+subject [11] Name OPTIONAL,
+nameConstraints [12] NameConstraintsSyntax OPTIONAL }
+AltNameType ::= CHOICE {
+builtinNameForm ENUMERATED {
+rfc822Name (1),
+dNSName (2),
+x400Address (3),
+directoryName (4),
+ediPartyName (5),
+uniformResourceIdentifier (6),
+iPAddress (7),
+registeredId (8) },
+otherNameForm OBJECT IDENTIFIER }
+CertPolicySet ::= SEQUENCE SIZE (1..MAX) OF CertPolicyId
+certificatePairExactMatch MATCHING-RULE ::= {
+SYNTAX CertificatePairExactAssertion
+ID id-mr-certificatePairExactMatch }
+CertificatePairExactAssertion ::= SEQUENCE {
+issuedToThisCAAssertion [0] CertificateExactAssertion OPTIONAL,
+issuedByThisCAAssertion [1] CertificateExactAssertion OPTIONAL }
+( WITH COMPONENTS {..., issuedToThisCAAssertion PRESENT} |
+WITH COMPONENTS {..., issuedByThisCAAssertion PRESENT} )
+certificatePairMatch MATCHING-RULE ::= {
+SYNTAX CertificatePairAssertion
+ID id-mr-certificatePairMatch }
+CertificatePairAssertion ::= SEQUENCE {
+issuedToThisCAAssertion [0] CertificateAssertion OPTIONAL,
+issuedByThisCAAssertion [1] CertificateAssertion OPTIONAL }
+( WITH COMPONENTS {..., issuedToThisCAAssertion PRESENT} |
+WITH COMPONENTS {..., issuedByThisCAAssertion PRESENT} )
+
+certificateListExactMatch MATCHING-RULE ::= {
+SYNTAX CertificateListExactAssertion
+ID id-mr-certificateListExactMatch }
+CertificateListExactAssertion ::= SEQUENCE {
+issuer Name,
+thisUpdate Time,
+distributionPoint DistributionPointName OPTIONAL }
+certificateListMatch MATCHING-RULE ::= {
+SYNTAX CertificateListAssertion
+ID id-mr-certificateListMatch }
+CertificateListAssertion ::= SEQUENCE {
+issuer Name OPTIONAL,
+minCRLNumber [0] CRLNumber OPTIONAL,
+maxCRLNumber [1] CRLNumber OPTIONAL,
+reasonFlags ReasonFlags OPTIONAL,
+dateAndTime Time OPTIONAL,
+distributionPoint [2] DistributionPointName OPTIONAL,
+authorityKeyIdentifier [3] AuthorityKeyIdentifier OPTIONAL }
+algorithmIdentifierMatch MATCHING-RULE ::= {
+SYNTAX AlgorithmIdentifier{{SupportedAlgorithms}}
+ID id-mr-algorithmIdentifierMatch }
+policyMatch MATCHING-RULE ::= {
+SYNTAX PolicyID
+ID id-mr-policyMatch }
+pkiPathMatch MATCHING-RULE ::= {
+SYNTAX PkiPathMatchSyntax
+ID id-mr-pkiPathMatch }
+PkiPathMatchSyntax ::= SEQUENCE {
+firstIssuer Name,
+lastSubject Name }
+enhancedCertificateMatch MATCHING-RULE ::= {
+SYNTAX EnhancedCertificateAssertion
+ID id-mr-enhancedCertificateMatch }
+EnhancedCertificateAssertion ::= SEQUENCE {
+serialNumber [0] CertificateSerialNumber OPTIONAL,
+issuer [1] Name OPTIONAL,
+subjectKeyIdentifier [2] SubjectKeyIdentifier OPTIONAL,
+authorityKeyIdentifier [3] AuthorityKeyIdentifier OPTIONAL,
+certificateValid [4] Time OPTIONAL,
+privateKeyValid [5] GeneralizedTime OPTIONAL,
+subjectPublicKeyAlgID [6] OBJECT IDENTIFIER OPTIONAL,
+keyUsage [7] KeyUsage OPTIONAL,
+subjectAltName [8] AltName OPTIONAL,
+policy [9] CertPolicySet OPTIONAL,
+pathToName [10] GeneralNames OPTIONAL,
+subject [11] Name OPTIONAL,
+nameConstraints [12] NameConstraintsSyntax OPTIONAL }
+(ALL EXCEPT ({ -- none; at least one component shall be present -- }))
+AltName ::= SEQUENCE {
+altnameType AltNameType,
+altNameValue GeneralName OPTIONAL }
+-- Object identifier assignments --
+id-ce-subjectDirectoryAttributes OBJECT IDENTIFIER ::= {id-ce 9}
+id-ce-subjectKeyIdentifier OBJECT IDENTIFIER ::= {id-ce 14}
+id-ce-keyUsage OBJECT IDENTIFIER ::= {id-ce 15}
+id-ce-privateKeyUsagePeriod OBJECT IDENTIFIER ::= {id-ce 16}
+id-ce-subjectAltName OBJECT IDENTIFIER ::= {id-ce 17}
+id-ce-issuerAltName OBJECT IDENTIFIER ::= {id-ce 18}
+
+id-ce-basicConstraints OBJECT IDENTIFIER ::= {id-ce 19}
+id-ce-cRLNumber OBJECT IDENTIFIER ::= {id-ce 20}
+id-ce-reasonCode OBJECT IDENTIFIER ::= {id-ce 21}
+id-ce-instructionCode OBJECT IDENTIFIER ::= {id-ce 23}
+id-ce-invalidityDate OBJECT IDENTIFIER ::= {id-ce 24}
+id-ce-deltaCRLIndicator OBJECT IDENTIFIER ::= {id-ce 27}
+id-ce-issuingDistributionPoint OBJECT IDENTIFIER ::= {id-ce 28}
+id-ce-certificateIssuer OBJECT IDENTIFIER ::= {id-ce 29}
+id-ce-nameConstraints OBJECT IDENTIFIER ::= {id-ce 30}
+id-ce-cRLDistributionPoints OBJECT IDENTIFIER ::= {id-ce 31}
+id-ce-certificatePolicies OBJECT IDENTIFIER ::= {id-ce 32}
+id-ce-policyMappings OBJECT IDENTIFIER ::= {id-ce 33}
+-- deprecated OBJECT IDENTIFIER ::= {id-ce 34}
+id-ce-authorityKeyIdentifier OBJECT IDENTIFIER ::= {id-ce 35}
+id-ce-policyConstraints OBJECT IDENTIFIER ::= {id-ce 36}
+id-ce-extKeyUsage OBJECT IDENTIFIER ::= {id-ce 37}
+id-ce-cRLStreamIdentifier OBJECT IDENTIFIER ::= {id-ce 40}
+id-ce-cRLScope OBJECT IDENTIFIER ::= {id-ce 44}
+id-ce-statusReferrals OBJECT IDENTIFIER ::= {id-ce 45}
+id-ce-freshestCRL OBJECT IDENTIFIER ::= {id-ce 46}
+id-ce-orderedList OBJECT IDENTIFIER ::= {id-ce 47}
+id-ce-baseUpdateTime OBJECT IDENTIFIER ::= {id-ce 51}
+id-ce-deltaInfo OBJECT IDENTIFIER ::= {id-ce 53}
+id-ce-inhibitAnyPolicy OBJECT IDENTIFIER ::= {id-ce 54}
+id-ce-toBeRevoked OBJECT IDENTIFIER ::= {id-ce 58}
+id-ce-RevokedGroups OBJECT IDENTIFIER ::= {id-ce 59}
+id-ce-expiredCertsOnCRL OBJECT IDENTIFIER ::= {id-ce 60}
+id-ce-aAissuingDistributionPoint OBJECT IDENTIFIER ::= {id-ce 63}
+-- matching rule OIDs --
+id-mr-certificateExactMatch OBJECT IDENTIFIER ::= {id-mr 34}
+id-mr-certificateMatch OBJECT IDENTIFIER ::= {id-mr 35}
+id-mr-certificatePairExactMatch OBJECT IDENTIFIER ::= {id-mr 36}
+id-mr-certificatePairMatch OBJECT IDENTIFIER ::= {id-mr 37}
+id-mr-certificateListExactMatch OBJECT IDENTIFIER ::= {id-mr 38}
+id-mr-certificateListMatch OBJECT IDENTIFIER ::= {id-mr 39}
+id-mr-algorithmIdentifierMatch OBJECT IDENTIFIER ::= {id-mr 40}
+id-mr-policyMatch OBJECT IDENTIFIER ::= {id-mr 60}
+id-mr-pkiPathMatch OBJECT IDENTIFIER ::= {id-mr 62}
+id-mr-enhancedCertificateMatch OBJECT IDENTIFIER ::= {id-mr 65}
+-- The following OBJECT IDENTIFIERS are not used by this Directory Specification:
+-- {id-ce 2}, {id-ce 3}, {id-ce 4}, {id-ce 5}, {id-ce 6}, {id-ce 7},
+-- {id-ce 8}, {id-ce 10}, {id-ce 11}, {id-ce 12}, {id-ce 13},
+-- {id-ce 22}, {id-ce 25}, {id-ce 26}
+END -- CertificateExtensions
+-- A.3 Attribute Certificate Framework module
+AttributeCertificateDefinitions {joint-iso-itu-t ds(5) module(1) attributeCertificateDefinitions(32) 6}
+DEFINITIONS IMPLICIT TAGS ::=
+BEGIN
+-- EXPORTS ALL --
+IMPORTS
+basicAccessControl, id-at, id-ce, id-mr, informationFramework, authenticationFramework,
+selectedAttributeTypes, id-oc, certificateExtensions, externalDefinitions
+FROM UsefulDefinitions {joint-iso-itu-t ds(5) module(1) usefulDefinitions(0) 6}
+ATTRIBUTE, Attribute{}, AttributeType, MATCHING-RULE, Name, OBJECT-CLASS,
+RelativeDistinguishedName, SupportedAttributes, top
+FROM InformationFramework informationFramework
+
+AttributeTypeAndValue
+FROM BasicAccessControl basicAccessControl
+AlgorithmIdentifier, Certificate, CertificateList, CertificateSerialNumber, EXTENSION,
+Extensions, InfoSyntax, PolicySyntax, SIGNED{}, SupportedAlgorithms
+FROM AuthenticationFramework authenticationFramework
+TimeSpecification, UnboundedDirectoryString, UniqueIdentifier
+FROM SelectedAttributeTypes selectedAttributeTypes
+certificateListExactMatch, GeneralName, GeneralNames, NameConstraintsSyntax
+FROM CertificateExtensions certificateExtensions
+UserNotice
+FROM PKIX1Implicit93 {iso(1) identified-organization(3) dod(6) internet(1) security(5)
+mechanisms(5)
+pkix(7) id-mod(0) id-pkix1-implicit-93(4)} ;
+-- Unless explicitly noted otherwise, there is no significance to the ordering
+-- of components of a SEQUENCE OF construct in this Directory Specification.
+-- attribute certificate constructs --
+AttributeCertificate ::= SIGNED {AttributeCertificateInfo}
+AttributeCertificateInfo ::= SEQUENCE {
+version AttCertVersion, -- version is v2
+holder Holder,
+issuer AttCertIssuer,
+signature AlgorithmIdentifier{{SupportedAlgorithms}},
+serialNumber CertificateSerialNumber,
+attrCertValidityPeriod AttCertValidityPeriod,
+attributes SEQUENCE OF Attribute{{SupportedAttributes}},
+issuerUniqueID UniqueIdentifier OPTIONAL,
+extensions Extensions OPTIONAL }
+AttCertVersion ::= INTEGER { v2(1) }
+Holder ::= SEQUENCE {
+baseCertificateID [0] IssuerSerial OPTIONAL,
+-- the issuer and serial number of the holder's Public-Key Certificate
+entityName [1] GeneralNames OPTIONAL,
+-- the name of the entity or role
+objectDigestInfo [2] ObjectDigestInfo OPTIONAL
+-- used to directly authenticate the holder, e.g., an executable
+-- at least one of baseCertificateID, entityName or objectDigestInfo shall be present --}
+ObjectDigestInfo ::= SEQUENCE {
+digestedObjectType ENUMERATED {
+publicKey (0),
+publicKeyCert (1),
+otherObjectTypes (2) },
+otherObjectTypeID OBJECT IDENTIFIER OPTIONAL,
+digestAlgorithm AlgorithmIdentifier{{SupportedAlgorithms}},
+objectDigest BIT STRING }
+AttCertIssuer ::= [0] SEQUENCE {
+issuerName GeneralNames OPTIONAL,
+baseCertificateID [0] IssuerSerial OPTIONAL,
+objectDigestInfo [1] ObjectDigestInfo OPTIONAL }
+-- At least one component shall be present
+( WITH COMPONENTS { ..., issuerName PRESENT } |
+WITH COMPONENTS { ..., baseCertificateID PRESENT } |
+WITH COMPONENTS { ..., objectDigestInfo PRESENT } )
+IssuerSerial ::= SEQUENCE {
+issuer GeneralNames,
+serial CertificateSerialNumber,
+issuerUID UniqueIdentifier OPTIONAL }
+
+AttCertValidityPeriod ::= SEQUENCE {
+notBeforeTime GeneralizedTime,
+notAfterTime GeneralizedTime }
+AttributeCertificationPath ::= SEQUENCE {
+attributeCertificate AttributeCertificate,
+acPath SEQUENCE OF ACPathData OPTIONAL }
+ACPathData ::= SEQUENCE {
+certificate [0] Certificate OPTIONAL,
+attributeCertificate [1] AttributeCertificate OPTIONAL }
+PrivilegePolicy ::= OBJECT IDENTIFIER
+-- privilege attributes
+role ATTRIBUTE ::= {
+WITH SYNTAX RoleSyntax
+ID id-at-role }
+RoleSyntax ::= SEQUENCE {
+roleAuthority [0] GeneralNames OPTIONAL,
+roleName [1] GeneralName }
+xmlPrivilegeInfo ATTRIBUTE ::= {
+WITH SYNTAX UTF8String --contains XML-encoded privilege information
+ID id-at-xMLPrivilegeInfo }
+permission ATTRIBUTE ::= {
+WITH SYNTAX DualStringSyntax
+EQUALITY MATCHING RULE dualStringMatch
+ID id-at-permission }
+DualStringSyntax ::= SEQUENCE {
+operation [0] UnboundedDirectoryString,
+object [1] UnboundedDirectoryString }
+dualStringMatch MATCHING-RULE ::= {
+SYNTAX DualStringSyntax
+ID id-mr-dualStringMatch }
+timeSpecification EXTENSION ::= {
+SYNTAX TimeSpecification
+IDENTIFIED BY id-ce-timeSpecification }
+timeSpecificationMatch MATCHING-RULE ::= {
+SYNTAX TimeSpecification
+ID id-mr-timeSpecMatch }
+targetingInformation EXTENSION ::= {
+SYNTAX SEQUENCE SIZE (1..MAX) OF Targets
+IDENTIFIED BY id-ce-targetInformation }
+Targets ::= SEQUENCE SIZE (1..MAX) OF Target
+Target ::= CHOICE {
+targetName [0] GeneralName,
+targetGroup [1] GeneralName,
+targetCert [2] TargetCert }
+TargetCert ::= SEQUENCE {
+targetCertificate IssuerSerial,
+targetName GeneralName OPTIONAL,
+certDigestInfo ObjectDigestInfo OPTIONAL }
+userNotice EXTENSION ::= {
+SYNTAX SEQUENCE SIZE (1..MAX) OF UserNotice
+IDENTIFIED BY id-ce-userNotice }
+
+acceptablePrivilegePolicies EXTENSION ::= {
+SYNTAX AcceptablePrivilegePoliciesSyntax
+IDENTIFIED BY id-ce-acceptablePrivilegePolicies }
+AcceptablePrivilegePoliciesSyntax ::= SEQUENCE SIZE (1..MAX) OF PrivilegePolicy
+singleUse EXTENSION ::= {
+SYNTAX NULL
+IDENTIFIED BY id-ce-singleUse }
+groupAC EXTENSION ::= {
+SYNTAX NULL
+IDENTIFIED BY id-ce-groupAC }
+noRevAvail EXTENSION ::= {
+SYNTAX NULL
+IDENTIFIED BY id-ce-noRevAvail }
+sOAIdentifier EXTENSION ::= {
+SYNTAX NULL
+IDENTIFIED BY id-ce-sOAIdentifier }
+sOAIdentifierMatch MATCHING-RULE ::= {
+SYNTAX NULL
+ID id-mr-sOAIdentifierMatch }
+attributeDescriptor EXTENSION ::= {
+SYNTAX AttributeDescriptorSyntax
+IDENTIFIED BY {id-ce-attributeDescriptor } }
+AttributeDescriptorSyntax ::= SEQUENCE {
+identifier AttributeIdentifier,
+attributeSyntax OCTET STRING (SIZE(1..MAX)),
+name [0] AttributeName OPTIONAL,
+description [1] AttributeDescription OPTIONAL,
+dominationRule PrivilegePolicyIdentifier}
+AttributeIdentifier ::= ATTRIBUTE.&id({AttributeIDs})
+AttributeIDs ATTRIBUTE ::= {...}
+AttributeName ::= UTF8String (SIZE(1..MAX))
+AttributeDescription ::= UTF8String(SIZE(1..MAX))
+PrivilegePolicyIdentifier ::= SEQUENCE {
+privilegePolicy PrivilegePolicy,
+privPolSyntax InfoSyntax }
+attDescriptor MATCHING-RULE ::= {
+SYNTAX AttributeDescriptorSyntax
+ID id-mr-attDescriptorMatch }
+roleSpecCertIdentifier EXTENSION ::= {
+SYNTAX RoleSpecCertIdentifierSyntax
+IDENTIFIED BY { id-ce-roleSpecCertIdentifier } }
+RoleSpecCertIdentifierSyntax ::= SEQUENCE SIZE (1..MAX) OF RoleSpecCertIdentifier
+RoleSpecCertIdentifier ::= SEQUENCE {
+roleName [0] GeneralName,
+roleCertIssuer [1] GeneralName,
+roleCertSerialNumber [2] CertificateSerialNumber OPTIONAL,
+roleCertLocator [3] GeneralNames OPTIONAL }
+roleSpecCertIdMatch MATCHING-RULE ::= {
+SYNTAX RoleSpecCertIdentifierSyntax
+ID id-mr-roleSpecCertIdMatch }
+
+basicAttConstraints EXTENSION ::= {
+SYNTAX BasicAttConstraintsSyntax
+IDENTIFIED BY { id-ce-basicAttConstraints } }
+BasicAttConstraintsSyntax ::= SEQUENCE {
+authority BOOLEAN DEFAULT FALSE,
+pathLenConstraint INTEGER (0..MAX) OPTIONAL }
+basicAttConstraintsMatch MATCHING-RULE ::= {
+SYNTAX BasicAttConstraintsSyntax
+ID id-mr-basicAttConstraintsMatch }
+delegatedNameConstraints EXTENSION ::= {
+SYNTAX NameConstraintsSyntax
+IDENTIFIED BY id-ce-delegatedNameConstraints }
+delegatedNameConstraintsMatch MATCHING-RULE ::= {
+SYNTAX NameConstraintsSyntax
+ID id-mr-delegatedNameConstraintsMatch }
+acceptableCertPolicies EXTENSION ::= {
+SYNTAX AcceptableCertPoliciesSyntax
+IDENTIFIED BY id-ce-acceptableCertPolicies }
+AcceptableCertPoliciesSyntax ::= SEQUENCE SIZE (1..MAX) OF CertPolicyId
+CertPolicyId ::= OBJECT IDENTIFIER
+acceptableCertPoliciesMatch MATCHING-RULE ::= {
+SYNTAX AcceptableCertPoliciesSyntax
+ID id-mr-acceptableCertPoliciesMatch }
+authorityAttributeIdentifier EXTENSION ::= {
+SYNTAX AuthorityAttributeIdentifierSyntax
+IDENTIFIED BY { id-ce-authorityAttributeIdentifier } }
+AuthorityAttributeIdentifierSyntax ::= SEQUENCE SIZE (1..MAX) OF AuthAttId
+AuthAttId ::= IssuerSerial
+authAttIdMatch MATCHING-RULE ::= {
+SYNTAX AuthorityAttributeIdentifierSyntax
+ID id-mr-authAttIdMatch }
+indirectIssuer EXTENSION ::= {
+SYNTAX NULL
+IDENTIFIED BY id-ce-indirectIssuer }
+issuedOnBehalfOf EXTENSION ::= {
+SYNTAX GeneralName
+IDENTIFIED BY id-ce-issuedOnBehalfOf }
+noAssertion EXTENSION ::= {
+SYNTAX NULL
+IDENTIFIED BY id-ce-noAssertion }
+allowedAttributeAssignments EXTENSION ::= {
+SYNTAX AllowedAttributeAssignments
+IDENTIFIED BY id-ce-allowedAttAss }
+AllowedAttributeAssignments ::= SET OF SEQUENCE {
+attributes [0] SET OF CHOICE {
+attributeType [0] AttributeType,
+attributeTypeandValues [1] Attribute{{SupportedAttributes}} },
+holderDomain [1] GeneralName }
+attributeMappings EXTENSION ::= {
+SYNTAX AttributeMappings
+IDENTIFIED BY id-ce-attributeMappings }
+
+AttributeMappings ::= SET OF CHOICE {
+typeMappings [0] SEQUENCE {
+local [0] AttributeType,
+remote [1] AttributeType},
+typeValueMappings [1] SEQUENCE {
+local [0] AttributeTypeAndValue,
+remote [1] AttributeTypeAndValue} }
+holderNameConstraints EXTENSION ::= {
+SYNTAX HolderNameConstraintsSyntax
+IDENTIFIED BY id-ce-holderNameConstraints }
+HolderNameConstraintsSyntax ::= SEQUENCE {
+permittedSubtrees [0] GeneralSubtrees,
+excludedSubtrees [1] GeneralSubtrees OPTIONAL }
+GeneralSubtrees ::= SEQUENCE SIZE (1..MAX) OF GeneralSubtree
+GeneralSubtree ::= SEQUENCE {
+base GeneralName,
+minimum [0] BaseDistance DEFAULT 0,
+maximum [1] BaseDistance OPTIONAL }
+BaseDistance ::= INTEGER (0..MAX)
+-- PMI object classes --
+pmiUser OBJECT-CLASS ::= {
+SUBCLASS OF {top}
+KIND auxiliary
+MAY CONTAIN {attributeCertificateAttribute}
+ID id-oc-pmiUser }
+pmiAA OBJECT-CLASS ::= { -- a PMI AA
+SUBCLASS OF {top}
+KIND auxiliary
+MAY CONTAIN {aACertificate |
+attributeCertificateRevocationList |
+attributeAuthorityRevocationList}
+ID id-oc-pmiAA }
+pmiSOA OBJECT-CLASS ::= { -- a PMI Source of Authority
+SUBCLASS OF {top}
+KIND auxiliary
+MAY CONTAIN {attributeCertificateRevocationList |
+attributeAuthorityRevocationList |
+attributeDescriptorCertificate}
+ID id-oc-pmiSOA }
+attCertCRLDistributionPt OBJECT-CLASS ::= {
+SUBCLASS OF {top}
+KIND auxiliary
+MAY CONTAIN { attributeCertificateRevocationList |
+attributeAuthorityRevocationList }
+ID id-oc-attCertCRLDistributionPts }
+pmiDelegationPath OBJECT-CLASS ::= {
+SUBCLASS OF {top}
+KIND auxiliary
+MAY CONTAIN { delegationPath }
+ID id-oc-pmiDelegationPath }
+privilegePolicy OBJECT-CLASS ::= {
+SUBCLASS OF {top}
+KIND auxiliary
+MAY CONTAIN {privPolicy }
+ID id-oc-privilegePolicy }
+
+protectedPrivilegePolicy OBJECT-CLASS ::= {
+SUBCLASS OF {top}
+KIND auxiliary
+MAY CONTAIN {protPrivPolicy }
+ID id-oc-protectedPrivilegePolicy }
+-- PMI directory attributes --
+attributeCertificateAttribute ATTRIBUTE ::= {
+WITH SYNTAX AttributeCertificate
+EQUALITY MATCHING RULE attributeCertificateExactMatch
+ID id-at-attributeCertificate }
+aACertificate ATTRIBUTE ::= {
+WITH SYNTAX AttributeCertificate
+EQUALITY MATCHING RULE attributeCertificateExactMatch
+ID id-at-aACertificate }
+attributeDescriptorCertificate ATTRIBUTE ::= {
+WITH SYNTAX AttributeCertificate
+EQUALITY MATCHING RULE attributeCertificateExactMatch
+ID id-at-attributeDescriptorCertificate }
+attributeCertificateRevocationList ATTRIBUTE ::= {
+WITH SYNTAX CertificateList
+EQUALITY MATCHING RULE certificateListExactMatch
+ID id-at-attributeCertificateRevocationList }
+attributeAuthorityRevocationList ATTRIBUTE ::= {
+WITH SYNTAX CertificateList
+EQUALITY MATCHING RULE certificateListExactMatch
+ID id-at-attributeAuthorityRevocationList }
+delegationPath ATTRIBUTE ::= {
+WITH SYNTAX AttCertPath
+ID id-at-delegationPath }
+AttCertPath ::= SEQUENCE OF AttributeCertificate
+privPolicy ATTRIBUTE ::= {
+WITH SYNTAX PolicySyntax
+ID id-at-privPolicy }
+protPrivPolicy ATTRIBUTE ::= {
+WITH SYNTAX AttributeCertificate
+EQUALITY MATCHING RULE attributeCertificateExactMatch
+ID id-at-protPrivPolicy }
+xmlPrivPolicy ATTRIBUTE ::= {
+WITH SYNTAX UTF8String --contains XML-encoded privilege policy information
+ID id-at-xmlPrivPolicy }
+-- Attribute certificate extensions and matching rules --
+attributeCertificateExactMatch MATCHING-RULE ::= {
+SYNTAX AttributeCertificateExactAssertion
+ID id-mr-attributeCertificateExactMatch }
+AttributeCertificateExactAssertion ::= SEQUENCE {
+serialNumber CertificateSerialNumber,
+issuer AttCertIssuer }
+attributeCertificateMatch MATCHING-RULE ::= {
+SYNTAX AttributeCertificateAssertion
+ID id-mr-attributeCertificateMatch }
+
+AttributeCertificateAssertion ::= SEQUENCE {
+holder [0] CHOICE {
+baseCertificateID [0] IssuerSerial,
+holderName [1] GeneralNames} OPTIONAL,
+issuer [1] GeneralNames OPTIONAL,
+attCertValidity [2] GeneralizedTime OPTIONAL,
+attType [3] SET OF AttributeType OPTIONAL }
+-- At least one component of the sequence shall be present
+holderIssuerMatch MATCHING-RULE ::= {
+SYNTAX HolderIssuerAssertion
+ID id-mr-holderIssuerMatch }
+HolderIssuerAssertion ::= SEQUENCE {
+holder [0] Holder OPTIONAL,
+issuer [1] AttCertIssuer OPTIONAL }
+delegationPathMatch MATCHING-RULE ::= {
+SYNTAX DelMatchSyntax
+ID id-mr-delegationPathMatch }
+DelMatchSyntax ::= SEQUENCE {
+firstIssuer AttCertIssuer,
+lastHolder Holder }
+extensionPresenceMatch MATCHING-RULE ::= {
+SYNTAX EXTENSION.&id
+ID id-mr-extensionPresenceMatch }
+-- object identifier assignments --
+-- object classes --
+id-oc-pmiUser OBJECT IDENTIFIER ::= {id-oc 24}
+id-oc-pmiAA OBJECT IDENTIFIER ::= {id-oc 25}
+id-oc-pmiSOA OBJECT IDENTIFIER ::= {id-oc 26}
+id-oc-attCertCRLDistributionPts OBJECT IDENTIFIER ::= {id-oc 27}
+id-oc-privilegePolicy OBJECT IDENTIFIER ::= {id-oc 32}
+id-oc-pmiDelegationPath OBJECT IDENTIFIER ::= {id-oc 33}
+id-oc-protectedPrivilegePolicy OBJECT IDENTIFIER ::= {id-oc 34}
+-- directory attributes --
+id-at-attributeCertificate OBJECT IDENTIFIER ::= {id-at 58}
+id-at-attributeCertificateRevocationList OBJECT IDENTIFIER ::= {id-at 59}
+id-at-aACertificate OBJECT IDENTIFIER ::= {id-at 61}
+id-at-attributeDescriptorCertificate OBJECT IDENTIFIER ::= {id-at 62}
+id-at-attributeAuthorityRevocationList OBJECT IDENTIFIER ::= {id-at 63}
+id-at-privPolicy OBJECT IDENTIFIER ::= {id-at 71}
+id-at-role OBJECT IDENTIFIER ::= {id-at 72}
+id-at-delegationPath OBJECT IDENTIFIER ::= {id-at 73}
+id-at-protPrivPolicy OBJECT IDENTIFIER ::= {id-at 74}
+id-at-xMLPrivilegeInfo OBJECT IDENTIFIER ::= {id-at 75}
+id-at-xmlPrivPolicy OBJECT IDENTIFIER ::= {id-at 76}
+id-at-permission OBJECT IDENTIFIER ::= {id-at 82}
+-- attribute certificate extensions --
+id-ce-authorityAttributeIdentifier OBJECT IDENTIFIER ::= {id-ce 38}
+id-ce-roleSpecCertIdentifier OBJECT IDENTIFIER ::= {id-ce 39}
+id-ce-basicAttConstraints OBJECT IDENTIFIER ::= {id-ce 41}
+id-ce-delegatedNameConstraints OBJECT IDENTIFIER ::= {id-ce 42}
+id-ce-timeSpecification OBJECT IDENTIFIER ::= {id-ce 43}
+id-ce-attributeDescriptor OBJECT IDENTIFIER ::= {id-ce 48}
+id-ce-userNotice OBJECT IDENTIFIER ::= {id-ce 49}
+id-ce-sOAIdentifier OBJECT IDENTIFIER ::= {id-ce 50}
+id-ce-acceptableCertPolicies OBJECT IDENTIFIER ::= {id-ce 52}
+id-ce-targetInformation OBJECT IDENTIFIER ::= {id-ce 55}
+id-ce-noRevAvail OBJECT IDENTIFIER ::= {id-ce 56}
+
+id-ce-acceptablePrivilegePolicies OBJECT IDENTIFIER ::= {id-ce 57}
+id-ce-indirectIssuer OBJECT IDENTIFIER ::= {id-ce 61}
+id-ce-noAssertion OBJECT IDENTIFIER ::= {id-ce 62}
+id-ce-issuedOnBehalfOf OBJECT IDENTIFIER ::= {id-ce 64}
+id-ce-singleUse OBJECT IDENTIFIER ::= {id-ce 65}
+id-ce-groupAC OBJECT IDENTIFIER ::= {id-ce 66}
+id-ce-allowedAttAss OBJECT IDENTIFIER ::= {id-ce 67}
+id-ce-attributeMappings OBJECT IDENTIFIER ::= {id-ce 68}
+id-ce-holderNameConstraints OBJECT IDENTIFIER ::= {id-ce 69}
+-- PMI matching rules --
+id-mr-attributeCertificateMatch OBJECT IDENTIFIER ::= {id-mr 42}
+id-mr-attributeCertificateExactMatch OBJECT IDENTIFIER ::= {id-mr 45}
+id-mr-holderIssuerMatch OBJECT IDENTIFIER ::= {id-mr 46}
+id-mr-authAttIdMatch OBJECT IDENTIFIER ::= {id-mr 53}
+id-mr-roleSpecCertIdMatch OBJECT IDENTIFIER ::= {id-mr 54}
+id-mr-basicAttConstraintsMatch OBJECT IDENTIFIER ::= {id-mr 55}
+id-mr-delegatedNameConstraintsMatch OBJECT IDENTIFIER ::= {id-mr 56}
+id-mr-timeSpecMatch OBJECT IDENTIFIER ::= {id-mr 57}
+id-mr-attDescriptorMatch OBJECT IDENTIFIER ::= {id-mr 58}
+id-mr-acceptableCertPoliciesMatch OBJECT IDENTIFIER ::= {id-mr 59}
+id-mr-delegationPathMatch OBJECT IDENTIFIER ::= {id-mr 61}
+id-mr-sOAIdentifierMatch OBJECT IDENTIFIER ::= {id-mr 66}
+id-mr-extensionPresenceMatch OBJECT IDENTIFIER ::= {id-mr 67}
+id-mr-dualStringMatch OBJECT IDENTIFIER ::= {id-mr 69}
+END -- AttributeCertificateDefinitions
