@@ -55,7 +55,7 @@ module Backoffice_TestCases_TC {
                 
                 // Repetitions
                 // insert loop statement in case multiple APDUs are sent according to TP
-                {
+                //for (…) {…}
                                     
                   
                   // Preamble - Initial conditions 
