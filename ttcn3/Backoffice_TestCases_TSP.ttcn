@@ -57,7 +57,10 @@ module Backoffice_TestCases_TSP {
         } // End of group Invalid_Behaviour
         
     } // End of group LISTOFUSERS
+<<<<<<< HEAD
     
+=======
+>>>>>>> refs/remotes/origin/master
     group USERDETAILS {
     
           group Valid_Behaviour {
