@@ -4,7 +4,7 @@
  * @version   $id$
  */
 module Backoffice_Pics {
-    
+  
     /**
      * @desc    Replicate the Interoperabili Statement Proforma in TTCN3 code
      */
