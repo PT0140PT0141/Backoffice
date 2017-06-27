@@ -33,4 +33,9 @@ module Backoffice_Functions language "TTCN-3:2010 Advanced Parameterization" {
 		log("*** " & theTestcase & ": tescase not to be executed according to TP validity conditions and parameters in PICS ***");
 	}
 	  
+	function f_checkMinimumTime(in timer t_compare, in float v_timeMin) {	                      
+        if (t_compare.read <= v_timeMin) setverdict(fail);
+    }  
+	  
+	  
 } 
