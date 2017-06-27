@@ -57,10 +57,7 @@ module Backoffice_TestCases_TSP {
         } // End of group Invalid_Behaviour
         
     } // End of group LISTOFUSERS
-<<<<<<< HEAD
-    
-=======
->>>>>>> refs/remotes/origin/master
+
     group USERDETAILS {
     
           group Valid_Behaviour {
@@ -80,7 +77,7 @@ module Backoffice_TestCases_TSP {
                 
                 // Preamble - Initial Conditions
                 f_Backoffice_Preamble();
-                // Front End shall already received Context Data
+                // IUT should receive Context Data
                 f_SendRequestAPDU(m_user_Details_Request);
 
                 // Preamble done
