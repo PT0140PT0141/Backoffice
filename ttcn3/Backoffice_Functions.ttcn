@@ -34,7 +34,7 @@ module Backoffice_Functions language "TTCN-3:2010 Advanced Parameterization" {
 	}
 	  
 	function f_checkMinimumTime(in timer t_compare, in float v_timeMin) {	                      
-        if (t_compare.read <= v_timeMin) setverdict(fail);
+        if (t_compare.read <= v_timeMin) {setverdict(fail)};
     }  
 	  
 	  
