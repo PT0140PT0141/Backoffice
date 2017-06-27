@@ -42,14 +42,14 @@ CountryCode, IssuerIdentifier
 FROM AVIAEINumberingAndDataStructures {iso(1) standard(0) iso14816(14816) } 
 
 -- ISO 9594-8
-Certificate, AlgorithmIdentifier, CertificateSerialNumber, Name
-FROM AuthenticationFramework
-	{joint-iso-itu-t ds(5) module(1) authenticationFramework(7) 7} 
+-- Certificate, AlgorithmIdentifier, CertificateSerialNumber, Name
+-- FROM AuthenticationFramework
+--	{joint-iso-itu-t ds(5) module(1) authenticationFramework(7) 7} 
 
 -- RFC 5035 Enhanced Security Services
-SigningCertificateV2
-FROM ExtendedSecurityServices-2006
-	{iso(1) member-body(2) us(840) rsadsi(113549) pkcs(1) pkcs-9(9) smime(16) modules(0) id-mod-ess-2006(30)};
+-- SigningCertificateV2
+-- FROM ExtendedSecurityServices-2006
+--	{iso(1) member-body(2) us(840) rsadsi(113549) pkcs(1) pkcs-9(9) smime(16) modules(0) id-mod-ess-2006(30)};
 
 InfoExchange ::= 			SEQUENCE { 
 	infoExchangeContent			InfoExchangeContent, 
