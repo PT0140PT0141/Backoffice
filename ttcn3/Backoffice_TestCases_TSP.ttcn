@@ -24,7 +24,7 @@ module Backoffice_TestCases_TSP {
     import from Backoffice_Pixits all;
     import from Backoffice_Pics all;
     import from Backoffice_Templates all;
-
+	
     /**
      /**
       * @desc    These Test Cases apply to Toll Service Provider claiming conformance to [16986:2016] and applying Test Purposes as from TS xxxxx:2018 Annex B
@@ -40,7 +40,7 @@ module Backoffice_TestCases_TSP {
               * @desc    TP_TSP_Base_BV_01: Verify that a TC validates correct infoExchanceAuthenticators in received APDUs and generates correct infoExchangeAuthenticators 
               * @remark  [16986:2016], Clause 6.2.2 and Table A.1/2 
               */
-             testcase TP_TSP_Base_BV_01() runs on Iut system TestAdapter {
+             testcase TP_TSP_Base_BV_01() runs on IutComp system TestAdapter {
                  
              } // TP_TSP_Base_BV_01
         } // End of group Valid_Behaviour
@@ -57,15 +57,12 @@ module Backoffice_TestCases_TSP {
         } // End of group Invalid_Behaviour
         
     } // End of group LISTOFUSERS
-<<<<<<< HEAD
-    
-=======
->>>>>>> refs/remotes/origin/master
+
     group USERDETAILS {
     
           group Valid_Behaviour {
 
-             testcase TP_TSP_USERDETAILS_BV_01() runs on EutComp system TestAdapter {
+             testcase TP_TSP_USERDETAILS_BV_01() runs on IutComp system TestAdapter {
              
               /**
               * @desc    TP_TSP_USERDETAILS_BV_01: Verify that the TSP correctly receives an APDU containing valid RequestADUs and provides valid ProvideUserDetailsADUs 
@@ -105,7 +102,7 @@ module Backoffice_TestCases_TSP {
                 f_Backoffice_Postamble();
              } // End of TP_TSP_USERDETAILS_BV_01
             
-            testcase TP_TSP_USERDETAILS_BV_02() runs on EutComp system TestAdapter {
+            testcase TP_TSP_USERDETAILS_BV_02() runs on IutComp system TestAdapter {
              
               /**
               * @desc    TP_TSP_USERDETAILS_BV_02: Verify that the TSP correctly receives a RequestADUs of type userDetailsRequest with listOfUsersParametersRequested containing user details that cannot be provided because of data privacy issues 
@@ -113,43 +110,43 @@ module Backoffice_TestCases_TSP {
               */
               
              // Local variables
-                var userDetails v_userDetails;
+                //var userDetails v_userDetails;
                 
                 // Repetitions
                 // insert loop statement in case multiple APDUs are sent according to TP
                 
                 // Preamble - Initial Conditions
-                f_Backoffice_Preamble();
+                //f_Backoffice_Preamble();
                 // Front End shall already received Context Data
-                f_SendRequestAPDU(m_user_Details_PrivacyBound_Request);
+                //f_SendRequestAPDU(m_user_Details_PrivacyBound_Request);
 
                 // Preamble done
 
                 // Test body start
-                t_UserDetails_Time1.start;
+                //t_UserDetails_Time1.start;
                 // transaction sequence #1: Wait for UserDetails message
-                alt {
-                    [] pco.receive(mw_userDetailsPrivacy_apduIdentifier) -> value v_apduIdentifier { // No specific test was requiered
+                //alt {
+                //    [] pco.receive(mw_userDetailsPrivacy_apduIdentifier) -> value v_apduIdentifier { // No specific test was requiered
                         // Stop timer
-                        t_UserDetails_Time1.stop;
+                //        t_UserDetails_Time1.stop;
                         
                  // Transaction sequence #2: Send DefaultACK
-                        pco.send(m_defaultAck_apduIdentifier(v_defaultAck.apduIdentifier));
+                //        pco.send(m_defaultAck_apduIdentifier(v_defaultAck.apduIdentifier));
                         //  Set verdict pass
-                        setverdict(pass);
+                 //       setverdict(pass);
                     }
                 } // End of alt statement
                 // Test body done
 
                 // Postamble - Final Conditions
-                f_Backoffice_Postamble();
+                //f_Backoffice_Postamble();
              } // End of TP_TSP_USERDETAILS_BV_02
                          
  		} // End of group Valid_Behaviour
          
          group Invalid_Behaviour {
 
-            testcase TP_TSP_USERDETAILS_BI_01() runs on EutComp system TestAdapter {
+            testcase TP_TSP_USERDETAILS_BI_01() runs on IutComp system TestAdapter {
              
               /**
               * @desc    TP_TSP_USERDETAILS_BI_01: Verify that the TSP correctly responds to an incorrect RequestADUs of type userDetailsRequest 
@@ -186,7 +183,7 @@ module Backoffice_TestCases_TSP {
                 f_Backoffice_Postamble();
              } // End of TP_TSP_USERDETAILS_BI_01
                          
-            testcase TP_TSP_USERDETAILS_BI_02() runs on EutComp system TestAdapter {
+            testcase TP_TSP_USERDETAILS_BI_02() runs on IutComp system TestAdapter {
              
               /**
               * @desc    TP_TSP_USERDETAILS_BI_02: Verify that the TSP correctly receives a RequestADUs of type userDetailsRequest with listOfUsersParametersRequested containing non-supported user details
@@ -226,7 +223,7 @@ module Backoffice_TestCases_TSP {
                 f_Backoffice_Postamble();
              } // End of TP_TSP_USERDETAILS_BI_02
 
-            testcase TP_TSP_USERDETAILS_BI_03() runs on EutComp system TestAdapter {
+            testcase TP_TSP_USERDETAILS_BI_03() runs on IutComp system TestAdapter {
              
               /**
               * @desc    TP_TSP_USERDETAILS_BI_02: Verify that the TSP correctly receives a RequestADUs of type userDetailsRequest with listOfUsersParametersRequested containing user details that cannot be provided because of missing agreement
@@ -266,7 +263,7 @@ module Backoffice_TestCases_TSP {
                 f_Backoffice_Postamble();
              } // End of TP_TSP_USERDETAILS_BI_03
 
-             testcase TP_TSP_USERDETAILS_BV_01() runs on EutComp system TestAdapter {
+             testcase TP_TSP_USERDETAILS_BV_01() runs on IutComp system TestAdapter {
              
               /**
               * @desc    TP_TSP_USERDETAILS_BI_04: Verify that a TSP responds correctly to a RequestADU sent earlier than allowed 

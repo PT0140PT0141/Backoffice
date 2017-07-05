@@ -39,7 +39,7 @@ UserClassDefinition, AbsolutePointCoordinates, Iso17575-3AduBody
 FROM EfcAutonomousContextData {iso(1) standard(0) 17575 part3(3) version2(2)}
  
 CountryCode, IssuerIdentifier 
-FROM AVIAEINumberingAndDataStructures {iso(1) standard(0) iso14816(14816) } 
+FROM AVIAEINumberingAndDataStructures {iso(1) standard(0) iso14816(14816) };
 
 -- ISO 9594-8
 -- Certificate, AlgorithmIdentifier, CertificateSerialNumber, Name
