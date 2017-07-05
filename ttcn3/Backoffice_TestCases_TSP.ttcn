@@ -35,7 +35,7 @@ module Backoffice_TestCases_TSP {
           * @desc    Test subgroup objective:
           * - to test IUT with respect to the correctness of base and general functionalities that are required in many or all transaction types;
           */
-         group Valid_Behaviour {
+     	group Valid_Behaviour {
              /**
               * @desc    TP_TSP_Base_BV_01: Verify that a TC validates correct infoExchanceAuthenticators in received APDUs and generates correct infoExchangeAuthenticators 
               * @remark  [16986:2016], Clause 6.2.2 and Table A.1/2 
@@ -45,10 +45,11 @@ module Backoffice_TestCases_TSP {
              } // TP_TSP_Base_BV_01
         } // End of group Valid_Behaviour
          
-         group Invalid_Behaviour {		
+        group Invalid_Behaviour {		
         } // End of group Invalid_Behaviour
         
     } // End of group Base
+    
     group LISTOFUSERS {
          group Valid_Behaviour {
  		} // End of group Valid_Behaviour
@@ -64,42 +65,41 @@ module Backoffice_TestCases_TSP {
 
              testcase TP_TSP_USERDETAILS_BV_01() runs on IutComp system TestAdapter {
              
-              /**
-              * @desc    TP_TSP_USERDETAILS_BV_01: Verify that the TSP correctly receives an APDU containing valid RequestADUs and provides valid ProvideUserDetailsADUs 
-              * @remark  [16986:2016], Clause 6.4 and Table A.1/2 AND Table A.7/1  
-              */
-              
-             // Local variables
-                var userDetails v_userDetails;
-                
-                // Repetitions
-                // insert loop statement in case multiple APDUs are sent according to TP
-                
-                // Preamble - Initial Conditions
-                f_Backoffice_Preamble();
-                // Front End shall already received Context Data
-                f_SendRequestAPDU(m_user_Details_Request);
-
-                // Preamble done
-
-                // Test body start
-                t_UserDetails_Time1.start;
-                // transaction sequence #1: Wait for UserDetails message
-                alt {
-                    [] pco.receive(mw_userDetails_apduIdentifier) -> value v_apduIdentifier {
-                        // Stop timer
+                  /**
+                  * @desc    TP_TSP_USERDETAILS_BV_01: Verify that the TSP correctly receives an APDU containing valid RequestADUs and provides valid ProvideUserDetailsADUs 
+                  * @remark  [16986:2016], Clause 6.4 and Table A.1/2 AND Table A.7/1  
+                  */
+                  
+                 // Local variables
+                 var userDetails v_userDetails;
+                    
+                 // Repetitions
+                 // insert loop statement in case multiple APDUs are sent according to TP
+                   
+                 // Preamble - Initial Conditions
+                 f_Backoffice_Preamble();
+                 // Front End shall already received Context Data
+//                 f_SendRequestAPDU(m_user_Details_Request);
+    
+                 // Preamble done
+    
+                 // Test body start
+//                 t_UserDetails_Time1.start;
+                 // transaction sequence #1: Wait for UserDetails message
+/*
+                 alt {
+                      [] pco.receive(mw_userDetails_apduIdentifier) -> value v_apduIdentifier {
+                      	// Stop timer
                         t_UserDetails_Time1.stop;
-                        
-                 // Transaction sequence #2: Send DefaultACK
+                            
+                        // Transaction sequence #2: Send DefaultACK
                         pco.send(m_defaultAck_apduIdentifier(v_defaultAck.apduIdentifier));
                         //  Set verdict pass
                         setverdict(pass);
-                    }
-                } // End of alt statement
-                // Test body done
+                      }
+                    } // End of alt statement
+*/                    // Test body done
 
-                // Postamble - Final Conditions
-                f_Backoffice_Postamble();
              } // End of TP_TSP_USERDETAILS_BV_01
             
             testcase TP_TSP_USERDETAILS_BV_02() runs on IutComp system TestAdapter {
@@ -134,17 +134,17 @@ module Backoffice_TestCases_TSP {
                 //        pco.send(m_defaultAck_apduIdentifier(v_defaultAck.apduIdentifier));
                         //  Set verdict pass
                  //       setverdict(pass);
-                    }
-                } // End of alt statement
+               //     }
+                //} // End of alt statement
                 // Test body done
 
                 // Postamble - Final Conditions
                 //f_Backoffice_Postamble();
-             } // End of TP_TSP_USERDETAILS_BV_02
+            } // End of TP_TSP_USERDETAILS_BV_02
                          
  		} // End of group Valid_Behaviour
          
-         group Invalid_Behaviour {
+        group Invalid_Behaviour {
 
             testcase TP_TSP_USERDETAILS_BI_01() runs on IutComp system TestAdapter {
              
@@ -154,21 +154,22 @@ module Backoffice_TestCases_TSP {
               */
               
              // Local variables
-                var userDetails v_userDetails;
+                //var userDetails v_userDetails;
                 
                 // Repetitions
                 // insert loop statement in case multiple APDUs are sent according to TP
                 
                 // Preamble - Initial Conditions
-                f_Backoffice_Preamble();
+                
                 // Front End shall already received Context Data
-                f_SendRequestAPDU(m_user_Details_Invalid_Request);
+                //f_SendRequestAPDU(m_user_Details_Invalid_Request);
 
                 // Preamble done
 
                 // Test body start
-                t_UserDetails_Time1.start;
+                //t_UserDetails_Time1.start;
                 // transaction sequence #1: Wait for Nack message
+                /*
                 alt {
                     [] pco.receive(mw_nack_SemanticError)  { // No specific test was requiered
                         // Stop timer
@@ -177,10 +178,9 @@ module Backoffice_TestCases_TSP {
                         setverdict(pass);
                     }
                 } // End of alt statement
+                */
                 // Test body done
 
-                // Postamble - Final Conditions
-                f_Backoffice_Postamble();
              } // End of TP_TSP_USERDETAILS_BI_01
                          
             testcase TP_TSP_USERDETAILS_BI_02() runs on IutComp system TestAdapter {
@@ -191,21 +191,22 @@ module Backoffice_TestCases_TSP {
               */
               
              // Local variables
-                var userDetails v_userDetails;
+//                var userDetails v_userDetails;
                 
                 // Repetitions
                 // insert loop statement in case multiple APDUs are sent according to TP
                 
                 // Preamble - Initial Conditions
-                f_Backoffice_Preamble();
+//                f_Backoffice_Preamble();
                 // Front End shall already received Context Data
-                f_SendRequestAPDU(m_user_Details_NotSupportedDetails);
+                //f_SendRequestAPDU(m_user_Details_NotSupportedDetails);
 
                 // Preamble done
 
                 // Test body start
-                t_UserDetails_Time1.start;
+//                t_UserDetails_Time1.start;
                 // transaction sequence #1: Wait for Nack message
+ /*
                 alt {
                     [] pco.receive(mw_userDetailsAttrNotAvailable_apduIdentifier) -> value v_apduIdentifier { // No specific test was requiered
                         // Stop timer
@@ -218,9 +219,7 @@ module Backoffice_TestCases_TSP {
                     }
                 } // End of alt statement
                 // Test body done
-
-                // Postamble - Final Conditions
-                f_Backoffice_Postamble();
+*/
              } // End of TP_TSP_USERDETAILS_BI_02
 
             testcase TP_TSP_USERDETAILS_BI_03() runs on IutComp system TestAdapter {
@@ -246,6 +245,7 @@ module Backoffice_TestCases_TSP {
                 // Test body start
                 t_UserDetails_Time1.start;
                 // transaction sequence #1: Wait for Nack message
+/*                
                 alt {
                     [] pco.receive(mw_userDetailsMissingAgreement_apduIdentifier) -> value v_apduIdentifier { // No specific test was requiered
                         // Stop timer
@@ -257,13 +257,12 @@ module Backoffice_TestCases_TSP {
                         setverdict(pass);
                     }
                 } // End of alt statement
+*/
                 // Test body done
 
-                // Postamble - Final Conditions
-                f_Backoffice_Postamble();
              } // End of TP_TSP_USERDETAILS_BI_03
 
-             testcase TP_TSP_USERDETAILS_BV_01() runs on IutComp system TestAdapter {
+             testcase TP_TSP_USERDETAILS_BI_04() runs on IutComp system TestAdapter {
              
               /**
               * @desc    TP_TSP_USERDETAILS_BI_04: Verify that a TSP responds correctly to a RequestADU sent earlier than allowed 
