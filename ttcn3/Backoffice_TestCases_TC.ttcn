@@ -68,7 +68,7 @@ module Backoffice_TestCases_TC {
 	 group USERDETAILS {
          group Valid_Behaviour {
               
-         	testcase Testcase_TP_TC_Base_BV_01() runs on IutComp system TestAdapter {
+         	testcase Testcase_TP_TC_USERDETAILS_BV_01() runs on IutComp system TestAdapter {
                
                 // Local variables
 
@@ -78,23 +78,36 @@ module Backoffice_TestCases_TC {
                   // No intial conditions according to TP
                         
                   // Test body start
-                                               
+                      
+                  // TP to be started at IUT side; perhaps via an External Function         
+                  fx_initiateTransactionFromIut("TC_USERDETAILS");
+                  t_tseq.start(initialiseTransactionTimeOut);                             
+                  
                   alt {
 
 				  // First transaction
-				  // Required in orde to check TIMEA_MIN at second transaction
+				  // Required in order to check TIMEA_MIN at second transaction
 
                       // Transaction sequence # 1
-    
-                      t_tseq.start(USERDETAILS_TIME1_MAX_TSP)
-    
-                      // Do all the operations in this step
-    
-					  f_checkMinimumTime(t_tseq, USERDETAILS_TIME1_MIN_TSP) 	                      
+                      []iutPort.receive(mw_userDetailsRequestAdu) -> value m_userDetailsRequestAduInit;
+                      
+                      [] any timer.timeout
+                      	 setverdict(fail);                     
+                  }
+                  
+                  iutPort.send(mw_provideUserDetailsAdu(
+                      m_userDetailsRequestAduInit.userDetailsRequest.listOfUserParametersRequested,
+                      m_userDetailsRequestAduInit.userDetailsRequest.userId)
+                  )
+                      
+                      t_tseq.start(USERDETAILS_TIME1_MAX_TSP);                   
+                      
+                      	
+    				  f_checkMinimumTime(t_tseq, USERDETAILS_TIME1_MIN_TSP); 	                      
     
                       // Transaction sequence # 2
                       
-                      t_tseq.start(USERDETAILS_TIME2_MAX_TSP)
+                      t_tseq.start(USERDETAILS_TIME2_MAX_TSP);
                      
                       // Do all the operations in this step
                      
@@ -110,7 +123,9 @@ module Backoffice_TestCases_TC {
                             
 				  // Second transaction
 
-
+					  //start timer for TIMEA_MIN
+					  // check TIMEA_MIN (if present in the transaction)
+					  	
                       // Transaction sequence # 1
                       t_tseq.start(USERDETAILS_TIME1_MAX_TSP)
     
@@ -134,8 +149,7 @@ module Backoffice_TestCases_TC {
                       
                       f_checkMinimumTime(t_tseq, USERDETAILS_TIME3_MIN_TSP) 
 
-                      any timer.timeout
-                  
+
                 }
     
       

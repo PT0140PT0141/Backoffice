@@ -129,7 +129,7 @@ module Backoffice_TestCases_TSP {
                 t_UserDetails_Time1.start;
                 // transaction sequence #1: Wait for UserDetails message
                 alt {
-                    [] pco.receive(mw_userDetailsPrivacy_apduIdentifier) -> value v_apduIdentifier { // No specific test was requiered
+                    [] pco.receive(mw_userDetailsPrivacy.apduIdentifier) -> value v_apduIdentifier { // No specific test was requiered
                         // Stop timer
                         t_UserDetails_Time1.stop;
                         

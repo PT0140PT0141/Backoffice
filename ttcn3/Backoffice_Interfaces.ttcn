@@ -33,7 +33,7 @@ module Backoffice_Interfaces language "TTCN-3:2010 Advanced Parameterization" {
      /**
 	  * @desc Defines a configuration message based port used to trigger, simulate, configure the IUT
       */
-     type port IutAccessPort message {
+     type port IutControlPort message {
      	in EquipmentOperationRsp;
         out EquipmentOperationReq;
      } // End of port EquipmentAccessPort
@@ -43,7 +43,7 @@ module Backoffice_Interfaces language "TTCN-3:2010 Advanced Parameterization" {
      */
     type component IutComp {
         port IutPort iutPort;
-        port IutAccessPort iutAccessPort; 
+        port IutControlPort iutControlPort; 
         timer t_testcaseStart;
     }
 
