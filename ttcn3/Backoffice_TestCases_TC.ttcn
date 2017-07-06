@@ -46,26 +46,43 @@ module Backoffice_TestCases_TC {
               * @desc    TP_TC_Base_BV_01: Verify that a TC validates correct infoExchanceAuthenticators in received APDUs and generates correct infoExchangeAuthenticators 
               * @remark  [16986:2016], Clause 6.2.2 and Table A.1/1 
               */
-             testcase Testcase_TP_TC_Base_BV_01() runs on IutComp system TestAdapter {
-                
+                     } 
+        } // End of group Valid_Behaviour
+            
+        /**
+         * @desc    Invalid behaviour Test cases
+         * @remark  0 TCs
+         */
+ 		} // End of group Valid_Behaviour
+ 		
+         
+         group Invalid_Behaviour {		
+        } // End of group Invalid_Behaviour
+        
+    } // End of group Base 		
+              
+              
+     // the folloiwng TC shall be used as template
+     // still under developmnet
+              
+	 group USERDETAILS {
+         group Valid_Behaviour {
+              
+         	testcase Testcase_TP_TC_Base_BV_01() runs on IutComp system TestAdapter {
+               
                 // Local variables
-                // for example:
-                // var MyAsn1Type v_myAsn1Instance;
-                timer t_tseq
-                
-                // Repetitions
-                // insert loop statement in case multiple APDUs are sent according to TP
-                {
-                                    
+
+                timer t_tseq                            
                   
                   // Preamble - Initial conditions 
                   // No intial conditions according to TP
                         
                   // Test body start
-                  
-                  
-              
+                                               
                   alt {
+
+				  // First transaction
+				  // Required in orde to check TIMEA_MIN at second transaction
 
                       // Transaction sequence # 1
     
@@ -89,25 +106,41 @@ module Backoffice_TestCases_TC {
                       
                       // Do all the operations in this step
                       
-                      f_checkMinimumTime(t_tseq, USERDETAILS_TIME3_MIN_TSP) 	                      
-                                            
+                      f_checkMinimumTime(t_tseq, USERDETAILS_TIME3_MIN_TSP)
+                            
+				  // Second transaction
+
+
+                      // Transaction sequence # 1
+                      t_tseq.start(USERDETAILS_TIME1_MAX_TSP)
+    
+                      // Do all the operations in this step
+    
+					  f_checkMinimumTime(t_tseq, USERDETAILS_TIME1_MIN_TSP) 	                      
+    
+                      // Transaction sequence # 2
+                      
+                      t_tseq.start(USERDETAILS_TIME2_MAX_TSP)
+                     
+                      // Do all the operations in this step
+                     
+                      f_checkMinimumTime(t_tseq, USERDETAILS_TIME2_MIN_TSP) 	                      
+                      
+                      // Transaction sequence # 3
+                      
+                      t_tseq.start(USERDETAILS_TIME3_MAX_TSP) 
+                      
+                      // Do all the operations in this step
+                      
+                      f_checkMinimumTime(t_tseq, USERDETAILS_TIME3_MIN_TSP) 
+
                       any timer.timeout
                   
                 }
     
-             } 
-        } // End of group Valid_Behaviour
-            
-        /**
-         * @desc    Invalid behaviour Test cases
-         * @remark  0 TCs
-         */
- 		} // End of group Valid_Behaviour
-         
-         group Invalid_Behaviour {		
-        } // End of group Invalid_Behaviour
-        
-    } // End of group Base
+      
+
+    
     group USERDETAILS {
          group Valid_Behaviour {
  		} // End of group Valid_Behaviour
