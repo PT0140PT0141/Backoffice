@@ -71,13 +71,13 @@ module Backoffice_TestCases_TSP {
                   */
                   
                  // Local variables
-                 var userDetails v_userDetails;
+//                 var userDetails v_userDetails;
                     
                  // Repetitions
                  // insert loop statement in case multiple APDUs are sent according to TP
                    
                  // Preamble - Initial Conditions
-                 f_Backoffice_Preamble();
+//                 f_Backoffice_Preamble();
                  // Front End shall already received Context Data
 //                 f_SendRequestAPDU(m_user_Details_Request);
     
@@ -230,20 +230,20 @@ module Backoffice_TestCases_TSP {
               */
               
              // Local variables
-                var userDetails v_userDetails;
+ //               var userDetails v_userDetails;
                 
                 // Repetitions
                 // insert loop statement in case multiple APDUs are sent according to TP
                 
                 // Preamble - Initial Conditions
-                f_Backoffice_Preamble();
+//                f_Backoffice_Preamble();
                 // Front End shall already received Context Data
-                f_SendRequestAPDU(m_user_Details_MissingAgreement);
+//                f_SendRequestAPDU(m_user_Details_MissingAgreement);
 
                 // Preamble done
 
                 // Test body start
-                t_UserDetails_Time1.start;
+ //               t_UserDetails_Time1.start;
                 // transaction sequence #1: Wait for Nack message
 /*                
                 alt {
@@ -270,25 +270,25 @@ module Backoffice_TestCases_TSP {
               */
               
              // Local variables
-                var userDetails v_userDetails;
+//                var userDetails v_userDetails;
                 
                 // Repetitions
                 // insert loop statement in case multiple APDUs are sent according to TP
                 
                 // Preamble - Initial Conditions
-                f_Backoffice_Preamble();
+//                f_Backoffice_Preamble();
                 // Front End shall already received Context Data
-                f_SendRequestAPDU(m_user_Details_Request);
+//                f_SendRequestAPDU(m_user_Details_Request);
                 
                 // Preamble done
 
                 // Test body start
                 // transaction sequence #1: Send a second request immediately
-                f_SendRequestAPDU(m_user_Details_Request);
+//                f_SendRequestAPDU(m_user_Details_Request);
 
-                t_UserDetails_Time1.start;
+//                t_UserDetails_Time1.start;
                 // transaction sequence #2: Wait for Nack message
-                alt {
+/*                alt {
                     [] pco.receive(mw_mw_nack_TooOften)  {
                         // Stop timer
                         t_UserDetails_Time1.stop;
@@ -297,11 +297,8 @@ module Backoffice_TestCases_TSP {
                         setverdict(pass);
                     }
                 } // End of alt statement
-                // Test body done
+*/                // Test body done
 
-                // Postamble - Final Conditions
-                f_Backoffice_Postamble();
-             } // End of TP_TSP_USERDETAILS_BI_04             		
         } // End of group Invalid_Behaviour
  
     } // End of group LISTOFUSERS
