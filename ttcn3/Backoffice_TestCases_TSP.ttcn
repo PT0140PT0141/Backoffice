@@ -30,7 +30,7 @@ module Backoffice_TestCases_TSP {
       * @desc    These Test Cases apply to Toll Service Provider claiming conformance to [16986:2016] and applying Test Purposes as from TS xxxxx:2018 Annex B
       * @remark  nn TCs
       */
-     group Base {
+    group Base {
          /**
           * @desc    Test subgroup objective:
           * - to test IUT with respect to the correctness of base and general functionalities that are required in many or all transaction types;
@@ -262,14 +262,14 @@ module Backoffice_TestCases_TSP {
 
              } // End of TP_TSP_USERDETAILS_BI_03
 
-             testcase TP_TSP_USERDETAILS_BI_04() runs on IutComp system TestAdapter {
+            testcase TP_TSP_USERDETAILS_BI_04() runs on IutComp system TestAdapter {
              
               /**
               * @desc    TP_TSP_USERDETAILS_BI_04: Verify that a TSP responds correctly to a RequestADU sent earlier than allowed 
               * @remark  [16986:2016], Clause 6.4 and Table A.1/2 AND Table A.7/1  
               */
               
-             // Local variables
+            // Local variables
 //                var userDetails v_userDetails;
                 
                 // Repetitions
@@ -298,10 +298,12 @@ module Backoffice_TestCases_TSP {
                     }
                 } // End of alt statement
 */                // Test body done
+        	} // End of TP_TSP_USERDETAILS_BI_04
 
         } // End of group Invalid_Behaviour
  
-    } // End of group LISTOFUSERS
+    } // End of group USERDETAILS
+    
     group EXCEPTIONLIST {
          group Valid_Behaviour {
  		} // End of group Valid_Behaviour
@@ -310,6 +312,7 @@ module Backoffice_TestCases_TSP {
         } // End of group Invalid_Behaviour
 
     } // End of group EXCEPTIONLIST
+    
     group TRUSTOBJECTS {
          group Valid_Behaviour {
  		} // End of group Valid_Behaviour
@@ -318,6 +321,7 @@ module Backoffice_TestCases_TSP {
         } // End of group Invalid_Behaviour
 
     } // End of group TRUSTOBJECTS
+    
     group PAYMENTCLAIM {
          group Valid_Behaviour {
  		} // End of group Valid_Behaviour
@@ -335,6 +339,7 @@ module Backoffice_TestCases_TSP {
         } // End of group Invalid_Behaviour
 
     } // End of group DSRC.CONTRACTISSUERLIST
+    
     group DSRC_EFCCONTEXTDATA {
          group Valid_Behaviour {
  		} // End of group Valid_Behaviour
@@ -343,6 +348,7 @@ module Backoffice_TestCases_TSP {
         } // End of group Invalid_Behaviour
 
     } // End of group DSRC.EFCCONTEXTDATA
+    
     group DSRC_BILLINGDETAILS {
          group Valid_Behaviour {
  		} // End of group Valid_Behaviour
@@ -351,6 +357,7 @@ module Backoffice_TestCases_TSP {
         } // End of group Invalid_Behaviour
 
     } // End of group DSRC.BILLINGDETAILS
+    
     group DSRC_REPORTABNORMALOBE {
          group Valid_Behaviour {
  		} // End of group Valid_Behaviour
@@ -359,6 +366,7 @@ module Backoffice_TestCases_TSP {
         } // End of group Invalid_Behaviour
 
     } // End of group DSRC.REPORTABNORMALOBE
+    
     group GNSS_TOLLDECLARATION {
          group Valid_Behaviour {
  		} // End of group Valid_Behaviour
@@ -375,6 +383,7 @@ module Backoffice_TestCases_TSP {
         } // End of group Invalid_Behaviour
 
     } // End of group GNSS.BILLINGDETAILS_TSP
+    
     group GNSS_BILLINGDETAILS_TC {
          group Valid_Behaviour {
  		} // End of group Valid_Behaviour
@@ -383,6 +392,7 @@ module Backoffice_TestCases_TSP {
         } // End of group Invalid_Behaviour
 
     } // End of group GNSS.BILLINGDETAILS.TC
+    
     group GNSS_PAYMENTANNOUNCEMENT {
          group Valid_Behaviour {
  		} // End of group Valid_Behaviour

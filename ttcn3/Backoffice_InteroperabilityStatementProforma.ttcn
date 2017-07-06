@@ -155,17 +155,17 @@ module Backoffice_Interoperability_Statement {
      modulepar float t_GNSS_BILLINGDETAILS_TC_PARAM1_MAX_TC := c_veryLongTime;
      modulepar float t_GNSS_BILLINGDETAILS_TC_PARAM1_MAX_TSP := c_veryLongTime;
      
-     modulepar float t_GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC := t_veryLongTime
+     modulepar float t_GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC := c_veryLongTime;
      modulepar float t_GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC := 0.0;
-     modulepar float t_GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TSP := t_veryLongTime
+     modulepar float t_GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TSP := c_veryLongTime;
      modulepar float t_GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TSP := 0.0;  
-     modulepar float t_GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC := t_veryLongTime
+     modulepar float t_GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC := c_veryLongTime;
      modulepar float t_GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TSP := 0.0;      
-     modulepar float t_GNSS_PAYMENTANNOUNCEMENT_TIMEB_MIN_TC := t_veryLongTime
+     modulepar float t_GNSS_PAYMENTANNOUNCEMENT_TIMEB_MIN_TC := c_veryLongTime;
      modulepar float t_GNSS_PAYMENTANNOUNCEMENT_TIMEB_MIN_TSP := 0.0; 
-     modulepar float t_GNSS_PAYMENTANNOUNCEMENT_PARAM1_MAX_TC := t_veryLongTime
-     modulepar float t_GNSS_PAYMENTANNOUNCEMENT_PARAM1_MAX_TSP := t_veryLongTime
-     modulepar float t_GNSS_PAYMENTANNOUNCEMENT_PARAM2_MAX_TC := t_veryLongTime
-     modulepar float t_GNSS_PAYMENTANNOUNCEMENT_PARAM2_MAX_TSP := t_veryLongTime                                                
+     modulepar float t_GNSS_PAYMENTANNOUNCEMENT_PARAM1_MAX_TC := c_veryLongTime;
+     modulepar float t_GNSS_PAYMENTANNOUNCEMENT_PARAM1_MAX_TSP := c_veryLongTime;
+     modulepar float t_GNSS_PAYMENTANNOUNCEMENT_PARAM2_MAX_TC := c_veryLongTime;
+     modulepar float t_GNSS_PAYMENTANNOUNCEMENT_PARAM2_MAX_TSP := c_veryLongTime;                                               
 
-                }		 
+}		 
