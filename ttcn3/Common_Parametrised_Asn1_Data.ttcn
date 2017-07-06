@@ -340,7 +340,7 @@ module Common_Parameterised_Asn1_Data language "TTCN-3:2010 Advanced Parameteriz
         EFC_ContextMark                     serviceProviderContract,
         Provider                            tollContext optional,
         Provider                            chargeReportFinalRecipient optional,
-        GeneralizedTime                     timeOfReport optional,
+//        GeneralizedTime                     timeOfReport optional,
         Period                              reportPeriod optional,
         VersionId                           versionInfo optional,
         UsageStatementList                  usageStatementList,
@@ -359,7 +359,7 @@ module Common_Parameterised_Asn1_Data language "TTCN-3:2010 Advanced Parameteriz
 
     type record Signed <in type Payload> {
         Payload                 payload,
-        GeneralizedTime         timeOfAuthentication,
+//        GeneralizedTime         timeOfAuthentication,
         MessageAuthenticator    authenticator
     }
 
