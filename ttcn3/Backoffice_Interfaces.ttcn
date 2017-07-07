@@ -19,11 +19,10 @@ module Backoffice_Interfaces language "TTCN-3:2010 Advanced Parameterization" {
      *          Common_Parameterised_Asn1_Data TTCN-3 module is a workaround
      */
     import from Common_Parameterised_Asn1_Data all;
-    import from Common_LibUpperTester all;
-    import from Common_Pixits all;
+    import from Backoffice_Pixits all;
 
     /**
-     * @desc Defines a message based port which allows to exchange ISO TS 17575 messages with the EUT
+     * @desc Defines a message based port which allows to exchange ISO 12855 messages with the IUT
      */
      type port IutPort message {
        in AuthenticatedChargeReport;
@@ -48,11 +47,11 @@ module Backoffice_Interfaces language "TTCN-3:2010 Advanced Parameterization" {
     }
 
     /**
-     * @desc   This component type shall be used to define the physical interface with the EUT
+     * @desc   This component type shall be used to define the physical interface with the IUT
      */
     type component TestAdapter {
         port IutPort taPort;
-        port IutAccessPort taAccessPort; 
+        port IutControlPort taAccessPort; 
     }
     
 }
