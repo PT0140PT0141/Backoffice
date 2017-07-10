@@ -42,15 +42,15 @@ CountryCode, IssuerIdentifier
 FROM AVIAEINumberingAndDataStructures {iso(1) standard(0) iso14816(14816) } 
 
 -- ISO 9594-8
-Certificate, AlgorithmIdentifier, CertificateSerialNumber, Name
-FROM AuthenticationFramework
-	{joint-iso-itu-t ds(5) module(1) authenticationFramework(7) 7} ;
+--Certificate, AlgorithmIdentifier, CertificateSerialNumber, Name
+--FROM AuthenticationFramework
+--	{joint-iso-itu-t ds(5) module(1) authenticationFramework(7) 7}
 
 -- RFC 5035 Enhanced Security Services
 -- SigningCertificateV2
 -- FROM ExtendedSecurityServices-2006
---	{iso(1) member-body(2) us(840) rsadsi(113549) pkcs(1) pkcs-9(9) smime(16) modules(0) id-mod-ess-2006(30)};
-
+--	{iso(1) member-body(2) us(840) rsadsi(113549) pkcs(1) pkcs-9(9) smime(16) modules(0) id-mod-ess-2006(30)}
+;
 InfoExchange ::= 			SEQUENCE { 
 	infoExchangeContent			InfoExchangeContent, 
 	infoExchangeAuthenticator	ApduAuthenticator OPTIONAL   
@@ -1029,13 +1029,13 @@ UserParameterStatus ::=   INTEGER {
 	-- 101-255 reserved for private use 
 	} (0..255)
  
-CCCEvent ::= 			SEQUENCE { 
-	userId				UserId OPTIONAL, 
-	timeOfEvent			GeneralizedTime OPTIONAL, 
-	locationOfEvent			Location OPTIONAL,     
-	cccMessages			AttributeList{CccContainer}, -- need to be CCC message containers 
-	initiatedActions		SEQUENCE OF InitiatedAction 
-	} 
+--CCCEvent ::= 			SEQUENCE { 
+--	userId				UserId OPTIONAL, 
+--	timeOfEvent			GeneralizedTime OPTIONAL, 
+--	locationOfEvent			Location OPTIONAL,     -- need to be CCC message containers
+--	cccMessages			AttributeList{CccContainer},  
+--	initiatedActions		SEQUENCE OF InitiatedAction 
+--	} 
  
 InitiatedAction ::=   		INTEGER {  
 	-- The attribute indicates the action the TC performed as a result of the CCC data 
@@ -1466,8 +1466,8 @@ CertificateType ::= INTEGER {
 PublicKeyObject ::= SEQUENCE {
     publicKeyType       PublicKeyType,
     serialNumber        INTEGER,
-    issuer              Provider,
-    algorithmIdentifier AlgorithmIdentifier,  -- definition of the public key algorithm, e.g. RSA, ECC 
+    issuer              Provider,        -- definition of the public key algorithm, e.g. RSA, ECC
+--    algorithmIdentifier AlgorithmIdentifier,   
     publicKey           OCTET STRING
     }
 
@@ -1490,9 +1490,9 @@ DsrcKeyObject ::= SEQUENCE {
     }
 
 EncryptionKeyId ::= CHOICE {
-    certificate SEQUENCE {
-        serialNumber    CertificateSerialNumber,    -- receivers certificate serial number
-        issuer          Name                        -- receivers certificate issuer, CA name
+    certificate SEQUENCE {    -- receivers certificate serial number
+--        serialNumber    CertificateSerialNumber,    -- receivers certificate issuer, CA name
+--        issuer          Name                        
     	},
     publicKey SEQUENCE {
         serialNumber  INTEGER,
@@ -1500,11 +1500,11 @@ EncryptionKeyId ::= CHOICE {
         }
     }
 
-MacKeyObject ::= SEQUENCE {
-    serialNumber        CertificateSerialNumber,    -- receivers certificate serial number
-    issuer              Name,                       -- receivers certificate issuer, CA name
-    timestamp           UTCTime,                    -- time of the encryption
-    algorithmIdentifier AlgorithmIdentifier,        -- MAC algorithm definition
+MacKeyObject ::= SEQUENCE {-- receivers certificate serial number
+--    serialNumber        CertificateSerialNumber,     -- receivers certificate issuer, CA name
+--    issuer              Name,                      
+    timestamp           UTCTime,                    -- time of the encryption-- MAC algorithm definition
+--    algorithmIdentifier AlgorithmIdentifier,        
     masterKeyRef        INTEGER,
     encrKey             OCTET STRING     (CONSTRAINED BY { -- encryption using the certificate referred to by serialNumber and issuer of Key -- }),
     kVC                 OCTET STRING (SIZE(3)) (CONSTRAINED BY { --  Key Verification Code according to ISO 11568 part 2 calculated encrypting one block size of zeros with the plain key, then truncated to leftmost three bytes to obtain keyVerificationCode --})
@@ -1559,9 +1559,9 @@ KeyUsage ::= INTEGER{
 	-- (100..127) Reserved for private use
 	}
 	
-KeySet::= SEQUENCE {
-	serialNumber	CertificateSerialNumber,  -- receivers certificate serial number
-	issuer			Name,                     -- receivers certificate issuer, CA name
+KeySet::= SEQUENCE {-- receivers certificate serial number
+--	serialNumber	CertificateSerialNumber,  -- receivers certificate issuer, CA name
+--	issuer			Name,                     
 	timestamp		UTCTime,                  -- time of the encryption
 	eFCCMs			SEQUENCE OF EFCCM,
 	keys			SEQUENCE OF EncrKey
@@ -1582,19 +1582,19 @@ ApduAuthenticator ::= 	SEQUENCE {
 
 AuthenticatorEfc ::= 	SEQUENCE {
 	tbsAuthenticatorEfc	TbsAuthenticatorEfc,
-	signatureAlgorithm	AlgorithmIdentifier OPTIONAL,
+--	signatureAlgorithm	AlgorithmIdentifier OPTIONAL,
 	signatureValue		OCTET STRING  -- signature of tbsAuthenticator
 	}
 
 TbsAuthenticatorEfc ::= SEQUENCE {
 	version			INTEGER DEFAULT 1,
 	signatureAlgorithm	AlgorithmIdentifier,
-	issuer			Name,
-	serialNumber		CertificateSerialNumber, -- signers certificate serial number
+--	issuer			Name,-- signers certificate serial number
+--	serialNumber		CertificateSerialNumber, 
 	apduContentDigest	ApduContentDigest, -- hash and hash algorithm identifier of authenticated payload
 	signatureDate		GeneralizedTime,
-	certificates		SEQUENCE OF Certificate OPTIONAL,
---	signingCertificate	SigningCertificateV2 OPTIONAL
+	certificates		SEQUENCE OF Certificate OPTIONAL
+--signingCertificate	SigningCertificateV2 OPTIONAL
 	}
 
 ApduContentDigest ::= 	SEQUENCE {

@@ -5,7 +5,7 @@
  *
  *  Source:    EfcDsrcGeneric.asn
  *  Generator: TTworkbench ASN.1 Parser 1.1.14.201606151123
- *  Date:      7/7/17 11:46 AM
+ *  Date:      7/10/17 11:38 AM
  *
  * ----------------------------------------------------------------------------
  *  The ASN.1 to TTCN-3 is a proprietary mapping based on the ES 201 873-7 ETSI standard.
@@ -34,7 +34,9 @@
 module EfcDsrcGeneric language "ASN.1:1997" {
   import from ASNAUX all; 
 
-  import from EfcDsrcApplication language "ASN.1:1997" all; 
+  import from EfcDsrcApplication language "ASN.1:1997" {
+    type ReceiptContract, PaymentMeansBalance, TrailerCharacteristics, SoundLevel, ReceiptFinancialPart, PaymentSecurityData, VehicleTotalDistance, ActualNumberOfPassengers, VehicleAuthenticator, LPN, ReceiptOBUId, VehicleClass, PassengerCapacity, ExhaustEmissionValues, DieselEmissionValues, SessionLocation, TrailerLicencePlateNumber, Engine, EquipmentOBUId, EquipmentStatus, ReceiptAuthenticator, ReceiptServiceSerialNumber, PersonalAccountNumber, SignedValue, ValidityOfContract, ReceiptServicePart, VehicleWeightLaden, DriverCharacteristics, ReceiptDistance, VehicleDimensions, VehicleWeightLimits, ReceiptData2, PaymentMeans, ContractVehicle, ContractAuthenticator, ReceiptData1, ReceiptICC_Id, SessionClass, ReceiptText, CO2EmissionValue, VehicleAxles, ICC_Id, VehicleSpecificCharacteristics, PaymentMeansUnit, AxleWeightLimits; 
+  }; 
 
   type integer ActionType (
     0 .. 127, 

@@ -20,14 +20,20 @@ module Backoffice_Interfaces language "TTCN-3:2010 Advanced Parameterization" {
      */
     import from Common_Parameterised_Asn1_Data all;
     import from Backoffice_Pixits all;
-
+	import from Backoffice_Templates all;
+	import from Common_LibUpperTester all;
+	
     /**
      * @desc Defines a message based port which allows to exchange ISO 12855 messages with the IUT
      */
      type port IutPort message {
-       in AuthenticatedChargeReport;
-       inout Iso17575_3InformationContent, ChargeReport, ChargeReportResponse;
-     } 
+       inout DummyInfoExchange;
+     }
+     
+	type record DummyInfoExchange {
+			   integer code,
+			   charstring reason optional
+	} 
 
      /**
 	  * @desc Defines a configuration message based port used to trigger, simulate, configure the IUT
