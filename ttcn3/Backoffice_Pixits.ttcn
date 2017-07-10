@@ -6,7 +6,7 @@
 module Backoffice_Pixits {
 
 
-    modulepar float initialiseTransactionTimeOut := 10;
+    modulepar float initialiseTransactionTimeOut := 10.0;
 
 
   

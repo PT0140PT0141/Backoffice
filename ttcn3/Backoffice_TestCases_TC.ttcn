@@ -21,17 +21,13 @@ module Backoffice_TestCases_TC {
      *          Common_Parameterised_Asn1_Data TTCN-3 module is a workaround
      */
     import from Common_Parameterised_Asn1_Data all;
-    import from Common_Interfaces all;
-    import from Common_Functions all;
-    import from Common_Pixits all;
-    import from Common_Templates all;
+    import from Backoffice_Functions all;
+    import from Backoffice_Pixits all;
+    import from Backoffice_Templates all;
     
     // Backoffice
-    import from Backoffice_Profile_Functions all;
-    import from Backoffice_Profile all;
-    import from Backoffice_Profile_Templates all;
     import from Backoffice_Pics all;
-    
+    import from Backoffice_Interfaces all;
 /**
       * @desc    These Test Cases apply to Toll Charger claiming conformance to [16986:2016] and applying Test Purposes as from TS xxxxx:2018 Annex A
       * @remark  nn TCs
@@ -46,17 +42,14 @@ module Backoffice_TestCases_TC {
               * @desc    TP_TC_Base_BV_01: Verify that a TC validates correct infoExchanceAuthenticators in received APDUs and generates correct infoExchangeAuthenticators 
               * @remark  [16986:2016], Clause 6.2.2 and Table A.1/1 
               */
-                     } 
+                
         } // End of group Valid_Behaviour
             
         /**
          * @desc    Invalid behaviour Test cases
          * @remark  0 TCs
          */
- 		} // End of group Valid_Behaviour
- 		
-         
-         group Invalid_Behaviour {		
+        group Invalid_Behaviour {		
         } // End of group Invalid_Behaviour
         
     } // End of group Base 		
@@ -69,7 +62,7 @@ module Backoffice_TestCases_TC {
          group Valid_Behaviour {
               
          	testcase Testcase_TP_TC_USERDETAILS_BV_01() runs on IutComp system TestAdapter {
-               
+/*               
                 // Local variables
 
                 timer t_tseq                            
@@ -148,11 +141,11 @@ module Backoffice_TestCases_TC {
                       // Do all the operations in this step
                       
                       f_checkMinimumTime(t_tseq, USERDETAILS_TIME3_MIN_TSP) 
+*/
 
-
-                }
-    
-      
+            }
+         }
+	 }  
 
     
     group USERDETAILS {
@@ -196,7 +189,7 @@ module Backoffice_TestCases_TC {
         } // End of group Invalid_Behaviour
 
     } // End of group PAYMENTCLAIM
-    group DSRC.CONTRACTISSUERLIST {
+    group DSRC_CONTRACTISSUERLIST {
          group Valid_Behaviour {
  		} // End of group Valid_Behaviour
          
@@ -204,7 +197,7 @@ module Backoffice_TestCases_TC {
         } // End of group Invalid_Behaviour
 
     } // End of group DSRC.CONTRACTISSUERLIST
-    group DSRC.EFCCONTEXTDATA {
+    group DSRC_EFCCONTEXTDATA {
          group Valid_Behaviour {
  		} // End of group Valid_Behaviour
          
@@ -212,7 +205,7 @@ module Backoffice_TestCases_TC {
         } // End of group Invalid_Behaviour
 
     } // End of group DSRC.EFCCONTEXTDATA
-    group DSRC.BILLINGDETAILS {
+    group DSRC_BILLINGDETAILS {
          group Valid_Behaviour {
  		} // End of group Valid_Behaviour
          
@@ -220,7 +213,8 @@ module Backoffice_TestCases_TC {
         } // End of group Invalid_Behaviour
 
     } // End of group DSRC.BILLINGDETAILS
-    group DSRC.REPORTABNORMALOBE {
+    
+    group DSRC_REPORTABNORMALOBE {
          group Valid_Behaviour {
  		} // End of group Valid_Behaviour
          
@@ -228,7 +222,7 @@ module Backoffice_TestCases_TC {
         } // End of group Invalid_Behaviour
 
     } // End of group DSRC.REPORTABNORMALOBE
-    group GNSS.TOLLDECLARATION {
+    group GNSS_TOLLDECLARATION {
          group Valid_Behaviour {
  		} // End of group Valid_Behaviour
          
@@ -236,7 +230,7 @@ module Backoffice_TestCases_TC {
         } // End of group Invalid_Behaviour
 
     } // End of group GNSS.TOLLDECLARATION
-    group GNSS.BILLINGDETAILS.TSP {
+    group GNSS_BILLINGDETAILS_TSP {
          group Valid_Behaviour {
  		} // End of group Valid_Behaviour
          
@@ -244,7 +238,7 @@ module Backoffice_TestCases_TC {
         } // End of group Invalid_Behaviour
 
     } // End of group GNSS.BILLINGDETAILS.TSP
-    group GNSS.BILLINGDETAILS.TC {
+    group GNSS_BILLINGDETAILS_TC {
          group Valid_Behaviour {
  		} // End of group Valid_Behaviour
          
@@ -252,7 +246,7 @@ module Backoffice_TestCases_TC {
         } // End of group Invalid_Behaviour
 
     } // End of group GNSS.BILLINGDETAILS.TC
-    group GNSS.PAYMENTANNOUNCEMENT {
+    group GNSS_PAYMENTANNOUNCEMENT {
          group Valid_Behaviour {
  		} // End of group Valid_Behaviour
          
