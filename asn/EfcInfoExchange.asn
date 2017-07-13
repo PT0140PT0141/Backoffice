@@ -89,8 +89,8 @@ Adus ::= CHOICE {
 	paymentClaimADUs		[9]	SEQUENCE OF PaymentClaimADU, 
 	reportQAADUs			[10] SEQUENCE OF ReportQAADU, 
 	statusADUs			[11] SEQUENCE OF StatusADU, 
-	provideUserDetailsADUs		[12] SEQUENCE OF ProvideUserDetailsADU, 
-	reportCCCEventADUs		[13] SEQUENCE OF ReportCCCEventADU, 
+	provideUserDetailsADUs		[12] SEQUENCE OF ProvideUserDetailsADU, --The reportCCCEventADU is not used in CEN/TS 16986 but uses advanced parametrisation. In order to facilitate the coding this choice is therefore commented out in this test suite.
+--	reportCCCEventADUs		[13] SEQUENCE OF ReportCCCEventADU, 
 	provideUserIdListADUs		[14] SEQUENCE OF ProvideUserIdListADU,
 	paymentAnnouncementADUs		[15] SEQUENCE OF PaymentAnnouncementADU,
 	contractIssuerListADUs		[16] SEQUENCE OF ContractIssuerListADU
@@ -135,12 +135,12 @@ RequestADU ::= CHOICE {
 		userDetailsRequestReason	UserDetailsRequestReason OPTIONAL,
 		userInfoValidityPeriod		Period OPTIONAL
 		},
-	cccEventRequest			SEQUENCE {
-		requestedADUType		AduType (reportCCCEventADU), 
-		userId				UserId OPTIONAL,
-		startTime			GeneralizedTime OPTIONAL,
-		endTime				GeneralizedTime OPTIONAL
-		},
+--The reportCCCEventADU is not used in CEN/TS 16986 but uses advanced parametrisation. In order to facilitate the coding this choice is therefore commented out in this test suite.--	cccEventRequest			SEQUENCE {--
+--		requestedADUType		AduType (reportCCCEventADU), --
+--		userId				UserId OPTIONAL,--
+--		startTime			GeneralizedTime OPTIONAL,--
+--		endTime				GeneralizedTime OPTIONAL--
+--		},
 	userListRequest			SEQUENCE {
 		requestedADUType		AduType (provideUserIdListADU), 
 		userIdRequestType		UserIdRequestType,
@@ -456,7 +456,7 @@ ContractIssuerListADU ::= 	SEQUENCE {
 	validFrom 			GeneralizedTime -- Timestamp the entry becomes valid
 	}
 
-ReportCCCEventADU ::= CCCEvent 
+--The reportCCCEventADU is not used in CEN/TS 16986 but uses advanced parametrisation. In order to facilitate the coding this choice is therefore commented out in this test suite.--ReportCCCEventADU ::= CCCEvent 
 
 PaymentAnnouncementADU ::= 	SEQUENCE {
 	paymentAnnouncementID		INTEGER,
@@ -577,8 +577,8 @@ BillingDetailsId	::=	SEQUENCE {
 	dateOfService			GeneralizedTime OPTIONAL
 	}
 
-AssociatedEventData ::= 	SEQUENCE { 
-	cccRecord			CCCEvent OPTIONAL, 
+AssociatedEventData ::= 	SEQUENCE { -- MOVE TO Backoffice_Parametrised_Asn1_Data
+--	cccRecord			CCCEvent OPTIONAL, 
 	imageRecord			ImageRecord OPTIONAL, 
 	anprRecord			AnprRecord OPTIONAL, 
 	classificationRecord		ClassificationRecord OPTIONAL, 
@@ -707,7 +707,7 @@ AduType ::= INTEGER {
    reportQAADU             	(10), 
    statusADU              	(11), 
    provideUserDetailsADU    	(12), 
-   reportCCCEventADU        	(13), 
+--The reportCCCEventADU is not used in CEN/TS 16986 but uses advanced parametrisation. In order to facilitate the coding this choice is therefore commented out in this test suite.--   reportCCCEventADU        	(13), 
    provideUserIdListADU		(14),
    paymentAnnouncementADU 	(15),
    contractIssuerListADU	(16)
