@@ -5,7 +5,11 @@
  *
  *  Source:    EfcAutonomousCharging.asn
  *  Generator: TTworkbench ASN.1 Parser 1.1.14.201606151123
+<<<<<<< HEAD
  *  Date:      7/6/17 11:38 AM
+=======
+ *  Date:      7/13/17 1:54 PM
+>>>>>>> branch 'master' of https://github.com/PT0140PT0141/Backoffice
  *
  * ----------------------------------------------------------------------------
  *  The ASN.1 to TTCN-3 is a proprietary mapping based on the ES 201 873-7 ETSI standard.

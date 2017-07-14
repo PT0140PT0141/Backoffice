@@ -18,41 +18,75 @@ module Backoffice_Interfaces language "TTCN-3:2010 Advanced Parameterization" {
      * @desc    TTCN-3 does not support ASN.1 parameterization (ETSI ES 201 873-7 V4.5.1 Clause 10)
      *          Common_Parameterised_Asn1_Data TTCN-3 module is a workaround
      */
+<<<<<<< HEAD
 //    import from Common_Parameterised_Asn1_Data all;
 //    import from Common_LibUpperTester all;
 //    import from Common_Pixits all;
 
+=======
+    import from Common_Parameterised_Asn1_Data all;
+    import from Backoffice_Pixits all;
+	import from Backoffice_Templates all;
+	import from Common_LibUpperTester all;
+	
+>>>>>>> branch 'master' of https://github.com/PT0140PT0141/Backoffice
     /**
-     * @desc Defines a message based port which allows to exchange ISO TS 17575 messages with the EUT
+     * @desc Defines a message based port which allows to exchange ISO 12855 messages with the IUT
      */
      type port IutPort message {
+<<<<<<< HEAD
 //       in AuthenticatedChargeReport;
 //       inout Iso17575_3InformationContent, ChargeReport, ChargeReportResponse;
      } 
+=======
+       inout DummyInfoExchange;
+     }
+     
+	type record DummyInfoExchange {
+			   integer code,
+			   charstring reason optional
+	} 
+>>>>>>> branch 'master' of https://github.com/PT0140PT0141/Backoffice
 
      /**
 	  * @desc Defines a configuration message based port used to trigger, simulate, configure the IUT
       */
+<<<<<<< HEAD
      type port IutAccessPort message {
 //     	in EquipmentOperationRsp;
 //        out EquipmentOperationReq;
+=======
+     type port IutControlPort message {
+     	in EquipmentOperationRsp;
+        out EquipmentOperationReq;
+>>>>>>> branch 'master' of https://github.com/PT0140PT0141/Backoffice
      } // End of port EquipmentAccessPort
 
     /**
      * @desc   This component type shall be used to create the MTC in order to test the IUT
      */
     type component IutComp {
+<<<<<<< HEAD
 //        port IutPort iutPort;
 //        port IutAccessPort iutAccessPort; 
+=======
+        port IutPort iutPort;
+        port IutControlPort iutControlPort; 
+>>>>>>> branch 'master' of https://github.com/PT0140PT0141/Backoffice
         timer t_testcaseStart;
     }
 
     /**
-     * @desc   This component type shall be used to define the physical interface with the EUT
+     * @desc   This component type shall be used to define the physical interface with the IUT
      */
     type component TestAdapter {
+<<<<<<< HEAD
 //        port IutPort taPort;
 //        port IutAccessPort taAccessPort; 
+=======
+        port IutPort taPort;
+        port IutControlPort taAccessPort; 
+>>>>>>> branch 'master' of https://github.com/PT0140PT0141/Backoffice
     }
     
 }

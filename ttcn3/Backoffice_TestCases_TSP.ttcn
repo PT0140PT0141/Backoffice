@@ -70,26 +70,33 @@ module Backoffice_TestCases_TSP {
               * @desc    TP_TSP_USERDETAILS_BV_01: Verify that the TSP correctly receives an APDU containing valid RequestADUs and provides valid ProvideUserDetailsADUs 
               * @remark  [16986:2016], Clause 6.4 and Table A.1/2 AND Table A.7/1  
               */
-              
+/*              
              // Local variables
-                var userDetails v_userDetails;
+//                var userDetails v_userDetails;
                 
                 // Repetitions
                 // insert loop statement in case multiple APDUs are sent according to TP
                 
                 // Preamble - Initial Conditions
+<<<<<<< HEAD
                 f_Backoffice_Preamble();
                 // IUT should receive Context Data
                 f_SendRequestAPDU(m_user_Details_Request);
+=======
+//                f_Backoffice_Preamble();
+                // Front End shall already received Context Data
+//                f_SendRequestAPDU(m_user_Details_Request);
+>>>>>>> branch 'master' of https://github.com/PT0140PT0141/Backoffice
 
                 // Preamble done
 
                 // Test body start
-                t_UserDetails_Time1.start;
+//                t_UserDetails_Time1.start;
                 // transaction sequence #1: Wait for UserDetails message
                 alt {
-                    [] pco.receive(mw_userDetails_apduIdentifier) -> value v_apduIdentifier {
+//                    [] pco.receive(mw_userDetails_apduIdentifier) -> value v_apduIdentifier {
                         // Stop timer
+<<<<<<< HEAD
 =======
                   /**
                   * @desc    TP_TSP_USERDETAILS_BV_01: Verify that the TSP correctly receives an APDU containing valid RequestADUs and provides valid ProvideUserDetailsADUs 
@@ -121,12 +128,26 @@ module Backoffice_TestCases_TSP {
                             
                         // Transaction sequence #2: Send DefaultACK
                         pco.send(m_defaultAck_apduIdentifier(v_defaultAck.apduIdentifier));
+=======
+//                        t_UserDetails_Time1.stop;
+                        
+                 // Transaction sequence #2: Send DefaultACK
+//                        pco.send(m_defaultAck_apduIdentifier(v_defaultAck.apduIdentifier));
+>>>>>>> branch 'master' of https://github.com/PT0140PT0141/Backoffice
                         //  Set verdict pass
+<<<<<<< HEAD
                         setverdict(pass);
                       }
                     } // End of alt statement
 */                    // Test body done
 
+=======
+//                        setverdict(pass);
+//                    }
+                } // End of alt statement
+                // Test body done
+*/
+>>>>>>> branch 'master' of https://github.com/PT0140PT0141/Backoffice
              } // End of TP_TSP_USERDETAILS_BV_01
             
             testcase TP_TSP_USERDETAILS_BV_02() runs on IutComp system TestAdapter {
@@ -136,6 +157,7 @@ module Backoffice_TestCases_TSP {
               * @remark  [16986:2016], Clause 6.4 and Table A.1/2 AND Table A.7/1  
               */
               
+/*
              // Local variables
                 //var userDetails v_userDetails;
                 
@@ -152,8 +174,13 @@ module Backoffice_TestCases_TSP {
                 // Test body start
                 //t_UserDetails_Time1.start;
                 // transaction sequence #1: Wait for UserDetails message
+<<<<<<< HEAD
                 //alt {
                 //    [] pco.receive(mw_userDetailsPrivacy_apduIdentifier) -> value v_apduIdentifier { // No specific test was requiered
+=======
+                alt {
+                    [] pco.receive(mw_userDetailsPrivacy.apduIdentifier) -> value v_apduIdentifier { // No specific test was requiered
+>>>>>>> branch 'master' of https://github.com/PT0140PT0141/Backoffice
                         // Stop timer
                 //        t_UserDetails_Time1.stop;
                         
@@ -166,8 +193,14 @@ module Backoffice_TestCases_TSP {
                 // Test body done
 
                 // Postamble - Final Conditions
+<<<<<<< HEAD
                 //f_Backoffice_Postamble();
             } // End of TP_TSP_USERDETAILS_BV_02
+=======
+                f_Backoffice_Postamble();
+  */
+             } // End of TP_TSP_USERDETAILS_BV_02
+>>>>>>> branch 'master' of https://github.com/PT0140PT0141/Backoffice
                          
  		} // End of group Valid_Behaviour
          
@@ -179,35 +212,57 @@ module Backoffice_TestCases_TSP {
               * @desc    TP_TSP_USERDETAILS_BI_01: Verify that the TSP correctly responds to an incorrect RequestADUs of type userDetailsRequest 
               * @remark  [16986:2016], Clause 6.4 and Table A.1/2 AND Table A.7/1  
               */
-              
+    /*          
              // Local variables
+<<<<<<< HEAD
                 //var userDetails v_userDetails;
+=======
+//                var userDetails v_userDetails;
+>>>>>>> branch 'master' of https://github.com/PT0140PT0141/Backoffice
                 
                 // Repetitions
                 // insert loop statement in case multiple APDUs are sent according to TP
                 
                 // Preamble - Initial Conditions
+<<<<<<< HEAD
                 
+=======
+//                f_Backoffice_Preamble();
+>>>>>>> branch 'master' of https://github.com/PT0140PT0141/Backoffice
                 // Front End shall already received Context Data
+<<<<<<< HEAD
                 //f_SendRequestAPDU(m_user_Details_Invalid_Request);
+=======
+//                f_SendRequestAPDU(m_user_Details_Invalid_Request);
+>>>>>>> branch 'master' of https://github.com/PT0140PT0141/Backoffice
 
                 // Preamble done
 
                 // Test body start
+<<<<<<< HEAD
                 //t_UserDetails_Time1.start;
+=======
+//                t_UserDetails_Time1.start;
+>>>>>>> branch 'master' of https://github.com/PT0140PT0141/Backoffice
                 // transaction sequence #1: Wait for Nack message
                 /*
                 alt {
-                    [] pco.receive(mw_nack_SemanticError)  { // No specific test was requiered
+//                    [] pco.receive(mw_nack_SemanticError)  { // No specific test was requiered
                         // Stop timer
-                        t_UserDetails_Time1.stop;
+//                        t_UserDetails_Time1.stop;
                        //  Set verdict pass
-                        setverdict(pass);
+//                        setverdict(pass);
                     }
                 } // End of alt statement
                 */
                 // Test body done
 
+<<<<<<< HEAD
+=======
+                // Postamble - Final Conditions
+//                f_Backoffice_Postamble();
+ */
+>>>>>>> branch 'master' of https://github.com/PT0140PT0141/Backoffice
              } // End of TP_TSP_USERDETAILS_BI_01
                          
             testcase TP_TSP_USERDETAILS_BI_02() runs on IutComp system TestAdapter {
@@ -216,7 +271,7 @@ module Backoffice_TestCases_TSP {
               * @desc    TP_TSP_USERDETAILS_BI_02: Verify that the TSP correctly receives a RequestADUs of type userDetailsRequest with listOfUsersParametersRequested containing non-supported user details
               * @remark  [16986:2016], Clause 6.4 and Table A.1/2 AND Table A.7/1  
               */
-              
+   /*           
              // Local variables
 //                var userDetails v_userDetails;
                 
@@ -246,6 +301,13 @@ module Backoffice_TestCases_TSP {
                     }
                 } // End of alt statement
                 // Test body done
+<<<<<<< HEAD
+=======
+
+                // Postamble - Final Conditions
+                f_Backoffice_Postamble();
+                
+>>>>>>> branch 'master' of https://github.com/PT0140PT0141/Backoffice
 */
              } // End of TP_TSP_USERDETAILS_BI_02
 
@@ -256,6 +318,7 @@ module Backoffice_TestCases_TSP {
               * @remark  [16986:2016], Clause 6.4 and Table A.1/2 AND Table A.7/1  
               */
               
+/*
              // Local variables
  //               var userDetails v_userDetails;
                 
@@ -286,18 +349,32 @@ module Backoffice_TestCases_TSP {
                 } // End of alt statement
 */
                 // Test body done
+<<<<<<< HEAD
 
+=======
+*/
+>>>>>>> branch 'master' of https://github.com/PT0140PT0141/Backoffice
              } // End of TP_TSP_USERDETAILS_BI_03
 
+<<<<<<< HEAD
             testcase TP_TSP_USERDETAILS_BI_04() runs on IutComp system TestAdapter {
+=======
+             testcase TP_TSP_USERDETAILS_BI_04() runs on IutComp system TestAdapter {
+>>>>>>> branch 'master' of https://github.com/PT0140PT0141/Backoffice
              
               /**
               * @desc    TP_TSP_USERDETAILS_BI_04: Verify that a TSP responds correctly to a RequestADU sent earlier than allowed 
               * @remark  [16986:2016], Clause 6.4 and Table A.1/2 AND Table A.7/1  
               */
+<<<<<<< HEAD
               
             // Local variables
 //                var userDetails v_userDetails;
+=======
+/*              
+             // Local variables
+                var userDetails v_userDetails;
+>>>>>>> branch 'master' of https://github.com/PT0140PT0141/Backoffice
                 
                 // Repetitions
                 // insert loop statement in case multiple APDUs are sent according to TP
@@ -324,9 +401,15 @@ module Backoffice_TestCases_TSP {
                         setverdict(pass);
                     }
                 } // End of alt statement
+<<<<<<< HEAD
 */                // Test body done
         	} // End of TP_TSP_USERDETAILS_BI_04
 
+=======
+                // Test body done
+*/
+             } // End of TP_TSP_USERDETAILS_BI_04             		
+>>>>>>> branch 'master' of https://github.com/PT0140PT0141/Backoffice
         } // End of group Invalid_Behaviour
  
     } // End of group USERDETAILS

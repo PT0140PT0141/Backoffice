@@ -25,9 +25,9 @@ module Backoffice_TestExecution {
              */
             
             if (PICS_A1_1_isTC) {
-            	execute(Testcase_TP_TC_Base_BV_01())
+            	execute(Testcase_TP_TC_USERDETAILS_BV_01())
             } else{
-            	f_LogNotExecuted("Testcase_TP_TC_Base_BV_01");
+            	f_LogNotExecuted("Testcase_TP_TC_USERDETAILS_BV_01");
             }
             
             

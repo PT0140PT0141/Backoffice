@@ -5,7 +5,11 @@
  *
  *  Source:    EfcAutonomousContextData.asn
  *  Generator: TTworkbench ASN.1 Parser 1.1.14.201606151123
+<<<<<<< HEAD
  *  Date:      7/6/17 11:38 AM
+=======
+ *  Date:      7/13/17 1:54 PM
+>>>>>>> branch 'master' of https://github.com/PT0140PT0141/Backoffice
  *
  * ----------------------------------------------------------------------------
  *  The ASN.1 to TTCN-3 is a proprietary mapping based on the ES 201 873-7 ETSI standard.
@@ -34,15 +38,25 @@
 module EfcAutonomousContextData language "ASN.1:1997" {
   import from ASNAUX all; 
 
-  import from EfcDsrcApplication language "ASN.1:1997" all; 
+  import from EfcDsrcApplication language "ASN.1:1997" {
+    type TrailerAxles, EquipmentOBUId, PayUnit, CopValue, VehicleWeightLaden, VehicleClass, PaymentMeans, Provider, TractorAxles, EuroValue, PaymentFee, UnitType, DateCompact; 
+  }; 
 
-  import from AVIAEINumberingAndDataStructures language "ASN.1:1997" all; 
+  import from AVIAEINumberingAndDataStructures language "ASN.1:1997" {
+    type CS5, IssuerIdentifier, CountryCode; 
+  }; 
 
-  import from EfcDsrcGeneric language "ASN.1:1997" all; 
+  import from EfcDsrcGeneric language "ASN.1:1997" {
+    type AttributeIdList; 
+  }; 
 
-  import from EfcCcc language "ASN.1:1997" all; 
+  import from EfcCcc language "ASN.1:1997" {
+    type Latitude, Longitude; 
+  }; 
 
-  import from EfcAutonomousCharging language "ASN.1:1997" all; 
+  import from EfcAutonomousCharging language "ASN.1:1997" {
+    type VersionId, MessageAuthenticator, Duration, Distance; 
+  }; 
 
   type record AuthenticatedIso17575_3Adu {
     bitstring iso17575_3AduPer,
