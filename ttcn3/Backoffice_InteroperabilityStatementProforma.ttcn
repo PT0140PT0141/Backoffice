@@ -15,14 +15,12 @@ module Backoffice_Interoperability_Statement {
      modulepar float v_USERDETAILS_TIME1_MIN_TSP := 0.0;  
      modulepar float v_USERDETAILS_TIMEA_MIN_TC := c_veryLongTime;
      modulepar float v_USERDETAILS_TIMEA_MIN_TSP := 0.0;
-
      modulepar float v_LISTOFUSERS_TIME1_MAX_TC := c_veryLongTime;
      modulepar float v_LISTOFUSERS_TIME1_MIN_TC := 0.0;
      modulepar float v_LISTOFUSERS_TIME1_MAX_TSP := c_veryLongTime;
      modulepar float v_LISTOFUSERS_TIME1_MIN_TSP := 0.0;  
      modulepar float v_LISTOFUSERS_TIMEA_MIN_TC := c_veryLongTime;
      modulepar float v_LISTOFUSERS_TIMEA_MIN_TSP := 0.0;
-
 	 modulepar float v_EXCEPTIONLIST_BLACK_TIME0_MAX_TC := c_veryLongTime;
 	 modulepar float v_EXCEPTIONLIST_BLACK_TIME0_MIN_TC := 0.0;
 	 modulepar float v_EXCEPTIONLIST_BLACK_TIME0_MAX_TSP := c_veryLongTime;
@@ -31,7 +29,6 @@ module Backoffice_Interoperability_Statement {
 	 modulepar float v_EXCEPTIONLIST_BLACK_TIME1_MIN_TC := 0.0;
 	 modulepar float v_EXCEPTIONLIST_BLACK_TIME1_MAX_TSP := c_veryLongTime;
 	 modulepar float v_EXCEPTIONLIST_BLACK_TIME1_MIN_TSP := 0.0;
-
 	 modulepar float v_EXCEPTIONLIST_WHITE_TIME0_MAX_TC := c_veryLongTime;
 	 modulepar float v_EXCEPTIONLIST_WHITE_TIME0_MIN_TC := 0.0;
 	 modulepar float v_EXCEPTIONLIST_WHITE_TIME0_MAX_TSP := c_veryLongTime;
@@ -40,7 +37,6 @@ module Backoffice_Interoperability_Statement {
 	 modulepar float v_EXCEPTIONLIST_WHITE_TIME1_MIN_TC := 0.0;
 	 modulepar float v_EXCEPTIONLIST_WHITE_TIME1_MAX_TSP := c_veryLongTime;
 	 modulepar float v_EXCEPTIONLIST_WHITE_TIME1_MIN_TSP := 0.0;
-	 
 	 modulepar float v_EXCEPTIONLIST_DISCOUNT_TIME0_MAX_TC := c_veryLongTime;
 	 modulepar float v_EXCEPTIONLIST_DISCOUNT_TIME0_MIN_TC := 0.0;
 	 modulepar float v_EXCEPTIONLIST_DISCOUNT_TIME0_MAX_TSP := c_veryLongTime;
@@ -49,7 +45,6 @@ module Backoffice_Interoperability_Statement {
 	 modulepar float v_EXCEPTIONLIST_DISCOUNT_TIME1_MIN_TC := 0.0;
 	 modulepar float v_EXCEPTIONLIST_DISCOUNT_TIME1_MAX_TSP := c_veryLongTime;
 	 modulepar float v_EXCEPTIONLIST_DISCOUNT_TIME1_MIN_TSP := 0.0;
-	 
      modulepar float v_TRUSTOBJECTS_TYPE1_TIME1_MAX_TC := c_veryLongTime;
      modulepar float v_TRUSTOBJECTS_TYPE1_TIME1_MIN_TC := 0.0;
      modulepar float v_TRUSTOBJECTS_TYPE1_TIME1_MAX_TSP := c_veryLongTime;
@@ -62,7 +57,6 @@ module Backoffice_Interoperability_Statement {
      modulepar float v_TRUSTOBJECTS_TYPE1_TIMEA_MIN_TSP := 0.0;
      modulepar float v_TRUSTOBJECTS_TYPE1_TIMEB_MIN_TC := 0.0;
      modulepar float v_TRUSTOBJECTS_TYPE1_TIMEB_MIN_TSP := 0.0;
- 
      modulepar float v_TRUSTOBJECTS_TYPE2_TIME1_MAX_TC := c_veryLongTime;
      modulepar float v_TRUSTOBJECTS_TYPE2_TIME1_MIN_TC := 0.0;
      modulepar float v_TRUSTOBJECTS_TYPE2_TIME1_MAX_TSP := c_veryLongTime;
@@ -75,7 +69,6 @@ module Backoffice_Interoperability_Statement {
      modulepar float v_TRUSTOBJECTS_TYPE2_TIMEA_MIN_TSP := 0.0;
      modulepar float v_TRUSTOBJECTS_TYPE2_TIMEB_MIN_TC := 0.0;
      modulepar float v_TRUSTOBJECTS_TYPE2_TIMEB_MIN_TSP := 0.0;
-     
      modulepar float v_PAYMENTCLAIM_TIME1_MAX_TC := c_veryLongTime;
      modulepar float v_PAYMENTCLAIM_TIME1_MIN_TC := 0.0;
      modulepar float v_PAYMENTCLAIM_TIME1_MAX_TSP := c_veryLongTime;
@@ -84,35 +77,30 @@ module Backoffice_Interoperability_Statement {
      modulepar float v_PAYMENTCLAIM_TIMEA_MIN_TSP := 0.0;
      modulepar float v_PAYMENTCLAIM_TIMEB_MIN_TC := c_veryLongTime;
      modulepar float v_PAYMENTCLAIM_TIMEB_MIN_TSP := 0.0;
-     
      modulepar float v_DSRC_CONTRACTISSUERLIST_TIME1_MAX_TC := c_veryLongTime;
      modulepar float v_DSRC_CONTRACTISSUERLIST_TIME1_MIN_TC := 0.0;
      modulepar float v_DSRC_CONTRACTISSUERLIST_TIME1_MAX_TSP := c_veryLongTime;
      modulepar float v_DSRC_CONTRACTISSUERLIST_TIME1_MIN_TSP := 0.0;  
      modulepar float v_DSRC_CONTRACTISSUERLIST_TIMEA_MIN_TC := c_veryLongTime;
      modulepar float v_DSRC_CONTRACTISSUERLIST_TIMEA_MIN_TSP := 0.0; 
-     
      modulepar float v_DSRC_EFCCONTEXTDATA_TIME1_MAX_TC := c_veryLongTime;
      modulepar float v_DSRC_EFCCONTEXTDATA_TIME1_MIN_TC := 0.0;
      modulepar float v_DSRC_EFCCONTEXTDATA_TIME1_MAX_TSP := c_veryLongTime;
      modulepar float v_DSRC_EFCCONTEXTDATA_TIME1_MIN_TSP := 0.0;  
      modulepar float v_DSRC_EFCCONTEXTDATA_TIMEA_MIN_TC := c_veryLongTime;
      modulepar float v_DSRC_EFCCONTEXTDATA_TIMEA_MIN_TSP := 0.0;
-     
      modulepar float v_DSRC_BILLINGDETAILS_TIME1_MAX_TC := c_veryLongTime;
      modulepar float v_DSRC_BILLINGDETAILS_TIME1_MIN_TC := 0.0;
      modulepar float v_DSRC_BILLINGDETAILS_TIME1_MAX_TSP := c_veryLongTime;
      modulepar float v_DSRC_BILLINGDETAILS_TIME1_MIN_TSP := 0.0;  
      modulepar float v_DSRC_BILLINGDETAILS_TIMEA_MIN_TC := c_veryLongTime;
      modulepar float v_DSRC_BILLINGDETAILS_TIMEA_MIN_TSP := 0.0;
-     
      modulepar float v_DSRC_REPORTABNORMALOBE_TIME1_MAX_TC := c_veryLongTime;
      modulepar float v_DSRC_REPORTABNORMALOBE_TIME1_MIN_TC := 0.0;
      modulepar float v_DSRC_REPORTABNORMALOBE_TIME1_MAX_TSP := c_veryLongTime;
      modulepar float v_DSRC_REPORTABNORMALOBE_TIME1_MIN_TSP := 0.0;  
      modulepar float v_DSRC_REPORTABNORMALOBE_TIMEA_MIN_TC := c_veryLongTime;
      modulepar float v_DSRC_REPORTABNORMALOBE_TIMEA_MIN_TSP := 0.0;
-     
      modulepar float v_GNSS_TOLLDECLARATIONS_TIME1_MAX_TC := c_veryLongTime;
      modulepar float v_GNSS_TOLLDECLARATIONS_TIME1_MIN_TC := 0.0;
      modulepar float v_GNSS_TOLLDECLARATIONS_TIME1_MAX_TSP := c_veryLongTime;
@@ -131,7 +119,6 @@ module Backoffice_Interoperability_Statement {
      modulepar float v_GNSS_TOLLDECLARATIONS_PARAM4_MAX_TSP := c_veryLongTime;
      modulepar float v_GNSS_TOLLDECLARATIONS_PARAM5_MAX_TC := c_veryLongTime;
      modulepar float v_GNSS_TOLLDECLARATIONS_PARAM5_MAX_TSP := c_veryLongTime;
-     
      modulepar float v_GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC := c_veryLongTime;
      modulepar float v_GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC := 0.0;
      modulepar float v_GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TSP := c_veryLongTime;
@@ -142,7 +129,6 @@ module Backoffice_Interoperability_Statement {
      modulepar float v_GNSS_BILLINGDETAILS_TSP_TIMEB_MIN_TSP := 0.0;
      modulepar float v_GNSS_BILLINGDETAILS_TSP_PARAM1_MAX_TC := c_veryLongTime;
      modulepar float v_GNSS_BILLINGDETAILS_TSP_PARAM1_MAX_TSP := c_veryLongTime;
-     
      modulepar float v_GNSS_BILLINGDETAILS_TC_TIME1_MAX_TC := c_veryLongTime;
      modulepar float v_GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC := 0.0;
      modulepar float v_GNSS_BILLINGDETAILS_TC_TIME1_MAX_TSP := c_veryLongTime;
@@ -153,7 +139,6 @@ module Backoffice_Interoperability_Statement {
      modulepar float v_GNSS_BILLINGDETAILS_TC_TIMEB_MIN_TSP := 0.0;
      modulepar float v_GNSS_BILLINGDETAILS_TC_PARAM1_MAX_TC := c_veryLongTime;
      modulepar float v_GNSS_BILLINGDETAILS_TC_PARAM1_MAX_TSP := c_veryLongTime;
-     
      modulepar float v_GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC := c_veryLongTime;
      modulepar float v_GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC := 0.0;
      modulepar float v_GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TSP := c_veryLongTime;
@@ -166,4 +151,4 @@ module Backoffice_Interoperability_Statement {
      modulepar float v_GNSS_PAYMENTANNOUNCEMENT_PARAM1_MAX_TSP := c_veryLongTime;
      modulepar float v_GNSS_PAYMENTANNOUNCEMENT_PARAM2_MAX_TC := c_veryLongTime;
      modulepar float v_GNSS_PAYMENTANNOUNCEMENT_PARAM2_MAX_TSP := c_veryLongTime;                                                
-                }		 
+}		 

@@ -6,7 +6,7 @@
  * @remark  See clause 5.3 for TC namimg conventions
  * @version $id$
  */
-module Backoffice_TE { 
+module Backoffice_TestExecution { 
     import from Backoffice_TestCases_TSP all;
     import from Backoffice_TestCases_TC all;
     import from Backoffice_Pics all;

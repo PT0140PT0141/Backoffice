@@ -39,18 +39,29 @@ UserClassDefinition, AbsolutePointCoordinates
 FROM EfcAutonomousContextData {iso(1) standard(0) 17575 part3(3) version2(2)}
  
 CountryCode, IssuerIdentifier 
-FROM AVIAEINumberingAndDataStructures {iso(1) standard(0) iso14816(14816) } 
+FROM AVIAEINumberingAndDataStructures {iso(1) standard(0) iso14816(14816) };
 
 -- ISO 9594-8
+<<<<<<< HEAD
+-- Certificate, AlgorithmIdentifier, CertificateSerialNumber, Name
+-- FROM AuthenticationFramework
+--	{joint-iso-itu-t ds(5) module(1) authenticationFramework(7) 7} 
+=======
 --Certificate, AlgorithmIdentifier, CertificateSerialNumber, Name
 --FROM AuthenticationFramework
 --	{joint-iso-itu-t ds(5) module(1) authenticationFramework(7) 7}
+>>>>>>> branch 'master' of https://github.com/PT0140PT0141/Backoffice
 
 -- RFC 5035 Enhanced Security Services
 -- SigningCertificateV2
 -- FROM ExtendedSecurityServices-2006
+<<<<<<< HEAD
+--	{iso(1) member-body(2) us(840) rsadsi(113549) pkcs(1) pkcs-9(9) smime(16) modules(0) id-mod-ess-2006(30)};
+
+=======
 --	{iso(1) member-body(2) us(840) rsadsi(113549) pkcs(1) pkcs-9(9) smime(16) modules(0) id-mod-ess-2006(30)}
 ;
+>>>>>>> branch 'master' of https://github.com/PT0140PT0141/Backoffice
 InfoExchange ::= 			SEQUENCE { 
 	infoExchangeContent			InfoExchangeContent, 
 	infoExchangeAuthenticator	ApduAuthenticator OPTIONAL   
@@ -1029,6 +1040,15 @@ UserParameterStatus ::=   INTEGER {
 	-- 101-255 reserved for private use 
 	} (0..255)
  
+<<<<<<< HEAD
+CCCEvent ::= 			SEQUENCE { 
+	userId				UserId OPTIONAL, 
+	timeOfEvent			GeneralizedTime OPTIONAL, 
+	locationOfEvent			Location OPTIONAL,     
+--	cccMessages			AttributeList{CccContainer}, -- need to be CCC message containers 
+	initiatedActions		SEQUENCE OF InitiatedAction 
+	} 
+=======
 --CCCEvent ::= 			SEQUENCE { 
 --	userId				UserId OPTIONAL, 
 --	timeOfEvent			GeneralizedTime OPTIONAL, 
@@ -1036,6 +1056,7 @@ UserParameterStatus ::=   INTEGER {
 --	cccMessages			AttributeList{CccContainer},  
 --	initiatedActions		SEQUENCE OF InitiatedAction 
 --	} 
+>>>>>>> branch 'master' of https://github.com/PT0140PT0141/Backoffice
  
 InitiatedAction ::=   		INTEGER {  
 	-- The attribute indicates the action the TC performed as a result of the CCC data 

@@ -5,10 +5,6 @@
  */
 module Backoffice_Pixits {
 
-
     modulepar float initialiseTransactionTimeOut := 10.0;
-
-
-  
         
 } // End of module Common_Pixits

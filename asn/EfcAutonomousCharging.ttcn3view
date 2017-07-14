@@ -5,7 +5,7 @@
  *
  *  Source:    EfcAutonomousCharging.asn
  *  Generator: TTworkbench ASN.1 Parser 1.1.14.201606151123
- *  Date:      7/14/17 12:05 PM
+ *  Date:      7/14/17 12:32 PM
  *
  * ----------------------------------------------------------------------------
  *  The ASN.1 to TTCN-3 is a proprietary mapping based on the ES 201 873-7 ETSI standard.
@@ -38,20 +38,16 @@ module EfcAutonomousCharging language "ASN.1:1997" {
     type TrailerCharacteristics, Int1, EquipmentOBUId, Int2, EFC_ContextMark, VehicleLicencePlateNumber, Int4, DriverCharacteristics, VehicleWeightLaden, VehicleDimensions, VehicleWeightLimits, SetMMIRq, VehicleClass, PaymentMeans, Provider, PaymentFee, VehicleAxles, VehicleSpecificCharacteristics; 
   }; 
 
-  import from AVIAEINumberingAndDataStructures language "ASN.1:1997" {
-    type CS5, IssuerIdentifier, CountryCode; 
-  }; 
-
-  import from EfcDsrcGeneric language "ASN.1:1997" {
-    type AttributeIdList; 
-  }; 
-
   import from EfcCcc language "ASN.1:1997" {
     type ActiveContexts, GnssStatus, CommunicationStatus, DistanceRecordingStatus, VehicleAxlesHistory, OBEStatusHistory; 
   }; 
 
   import from EfcAutonomousContextData language "ASN.1:1997" {
     type LocalVehicleClassId; 
+  }; 
+
+  import from EfcDsrcGeneric language "ASN.1:1997" {
+    type ObeConfiguration, ActionType, AttributeIdList, EventType, ReturnStatus, DSRCApplicationEntityID, Time, Get_Request, Dsrc_EID, Profile, BeaconID; 
   }; 
 
   type record AuthenticatedChargeReport {
@@ -354,4 +350,5 @@ module EfcAutonomousCharging language "ASN.1:1997" {
       ASNAUX.UTF8String value_
     } extendedVersionId
   }
+
 }

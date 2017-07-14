@@ -5,7 +5,7 @@
  *
  *  Source:    EfcCcc.asn
  *  Generator: TTworkbench ASN.1 Parser 1.1.14.201606151123
- *  Date:      7/14/17 12:05 PM
+ *  Date:      7/14/17 12:32 PM
  *
  * ----------------------------------------------------------------------------
  *  The ASN.1 to TTCN-3 is a proprietary mapping based on the ES 201 873-7 ETSI standard.
@@ -38,16 +38,12 @@ module EfcCcc language "ASN.1:1997" {
     type EquipmentOBUId, EFC_ContextMark, LPN, VehicleAxles, VehicleSpecificCharacteristics, VehicleCurrentMaxTrainWeight, PaymentMeans, Provider; 
   }; 
 
-  import from AVIAEINumberingAndDataStructures language "ASN.1:1997" {
-    type CS5, IssuerIdentifier, CountryCode; 
+  import from EfcAutonomousContextData language "ASN.1:1997" {
+    type LocalVehicleClassId; 
   }; 
 
   import from EfcDsrcGeneric language "ASN.1:1997" {
-    type AttributeIdList; 
-  }; 
-
-  import from EfcAutonomousContextData language "ASN.1:1997" {
-    type LocalVehicleClassId; 
+    type ObeConfiguration, ActionType, AttributeIdList, EventType, ReturnStatus, DSRCApplicationEntityID, Time, Get_Request, Dsrc_EID, Profile, BeaconID; 
   }; 
 
   type record of record {
