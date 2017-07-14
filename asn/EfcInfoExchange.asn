@@ -20,22 +20,22 @@ VehicleWeightLaden,VehicleIdentificationNumber,VehicleLicencePlateNumber,
 VehicleAuthenticator,ValidityOfContract,ReceiptContract,PayUnit, 
 PaymentMeansUnit,PaymentMeansBalance,DriverCharacteristics,ContractValidity  
 FROM EfcDsrcApplication {iso(1) standard(0) 14906 application(0) version5(5)} 
- 
-EquipmentOBUId, ApplicationContextMark, AttributeList{}, EfcContainer, ObeConfiguration, Time, VST, SessionLocation 
+ -- PT140: Unnecessary (unused) import of ApplicationContextMark removed to facilitate TTCN3 compile
+EquipmentOBUId, AttributeList{}, EfcContainer, ObeConfiguration, Time, VST, SessionLocation 
 FROM EfcDsrcGeneric {iso(1) standard(0) 14906 generic(1) version5(5)}
 
--- CccContainer
+-- PT140: MOVED TO Common_Parametrised_Asn1_Data-- CccContainer
 -- FROM EfcCcc {iso(1) standard(0) 12813 version2(2)}
  
 ObeId, Distance, ChargeObjectId, ChargeReport, AuthenticatedChargeReport, Period
 FROM EfcAutonomousCharging {iso(1) standard(0) 17575 part1(1) version2(2)}  
 
-LocationClassId, ChargeDistance,
-Iso17575-3AduBody, TariffClassId, EntityId, CordonEntryLocation,  
+LocationClassId, ChargeDistance,-- PT140: MOVE TO Backoffice_Parametrised_Asn1_Data
+-- Iso17575-3AduBody, TariffClassId, EntityId, CordonEntryLocation,  
 CordonExitLocation, ChargeUnit, Point, TimeClassId, VersionAndValidity, 
 TollContextOverview,  
 TariffTable, TariffClassDefinition, LocalVehicleClassDefinition, TimeClassDefinition,  
-UserClassDefinition, AbsolutePointCoordinates, Iso17575-3AduBody
+UserClassDefinition, AbsolutePointCoordinates
 FROM EfcAutonomousContextData {iso(1) standard(0) 17575 part3(3) version2(2)}
  
 CountryCode, IssuerIdentifier 
@@ -89,7 +89,7 @@ Adus ::= CHOICE {
 	paymentClaimADUs		[9]	SEQUENCE OF PaymentClaimADU, 
 	reportQAADUs			[10] SEQUENCE OF ReportQAADU, 
 	statusADUs			[11] SEQUENCE OF StatusADU, 
-	provideUserDetailsADUs		[12] SEQUENCE OF ProvideUserDetailsADU, --The reportCCCEventADU is not used in CEN/TS 16986 but uses advanced parametrisation. In order to facilitate the coding this choice is therefore commented out in this test suite.
+	provideUserDetailsADUs		[12] SEQUENCE OF ProvideUserDetailsADU, --PT140: The reportCCCEventADU is not used in CEN/TS 16986 but uses advanced parametrisation. In order to facilitate the coding this choice is therefore commented out in this test suite.
 --	reportCCCEventADUs		[13] SEQUENCE OF ReportCCCEventADU, 
 	provideUserIdListADUs		[14] SEQUENCE OF ProvideUserIdListADU,
 	paymentAnnouncementADUs		[15] SEQUENCE OF PaymentAnnouncementADU,
@@ -135,7 +135,7 @@ RequestADU ::= CHOICE {
 		userDetailsRequestReason	UserDetailsRequestReason OPTIONAL,
 		userInfoValidityPeriod		Period OPTIONAL
 		},
---The reportCCCEventADU is not used in CEN/TS 16986 but uses advanced parametrisation. In order to facilitate the coding this choice is therefore commented out in this test suite.--	cccEventRequest			SEQUENCE {--
+--PT140: The reportCCCEventADU is not used in CEN/TS 16986 but uses advanced parametrisation. In order to facilitate the coding this choice is therefore commented out in this test suite.--	cccEventRequest			SEQUENCE {--
 --		requestedADUType		AduType (reportCCCEventADU), --
 --		userId				UserId OPTIONAL,--
 --		startTime			GeneralizedTime OPTIONAL,--
@@ -235,15 +235,15 @@ EfcContextDataADU::= 	SEQUENCE {
 	entityOverview 			EntityOverview OPTIONAL,
 	domainType			CHOICE { 
 		gnssContext [1] 		SEQUENCE { 
-			contextInterrelations	Iso17575-3AduBody OPTIONAL, 
+-- PT140: MOVE TO Backoffice_Parametrised_Asn1_Data--			contextInterrelations	Iso17575-3AduBody OPTIONAL, 
 			regimeContextData		SEQUENCE OF SEQUENCE { 
-				iso175753ADU			Iso17575-3AduBody, 
+-- PT140: MOVE TO Backoffice_Parametrised_Asn1_Data--				iso175753ADU			Iso17575-3AduBody, 
 				feeModifiers			FeeModifiers OPTIONAL 
 				} 
 			}, 
 		dsrcContext [2] 		SEQUENCE { 
 			regimeContextData 		SEQUENCE { 
-				iso175753ADU    	  Iso17575-3AduBody, 
+-- PT140: MOVE TO Backoffice_Parametrised_Asn1_Data--				iso175753ADU    	  Iso17575-3AduBody, 
 				feeModifiers    	  FeeModifiers OPTIONAL        
 				} 
 			},
@@ -456,7 +456,7 @@ ContractIssuerListADU ::= 	SEQUENCE {
 	validFrom 			GeneralizedTime -- Timestamp the entry becomes valid
 	}
 
---The reportCCCEventADU is not used in CEN/TS 16986 but uses advanced parametrisation. In order to facilitate the coding this choice is therefore commented out in this test suite.--ReportCCCEventADU ::= CCCEvent 
+--PT140: The reportCCCEventADU is not used in CEN/TS 16986 but uses advanced parametrisation. In order to facilitate the coding this choice is therefore commented out in this test suite.--ReportCCCEventADU ::= CCCEvent 
 
 PaymentAnnouncementADU ::= 	SEQUENCE {
 	paymentAnnouncementID		INTEGER,
@@ -577,7 +577,7 @@ BillingDetailsId	::=	SEQUENCE {
 	dateOfService			GeneralizedTime OPTIONAL
 	}
 
-AssociatedEventData ::= 	SEQUENCE { -- MOVE TO Backoffice_Parametrised_Asn1_Data
+AssociatedEventData ::= 	SEQUENCE { -- PT140: MOVE TO Backoffice_Parametrised_Asn1_Data
 --	cccRecord			CCCEvent OPTIONAL, 
 	imageRecord			ImageRecord OPTIONAL, 
 	anprRecord			AnprRecord OPTIONAL, 
