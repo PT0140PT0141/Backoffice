@@ -24,8 +24,8 @@ FROM EfcDsrcApplication {iso(1) standard(0) 14906 application(0) version5(5)}
 EquipmentOBUId, ApplicationContextMark, AttributeList{}, EfcContainer, ObeConfiguration, Time, VST, SessionLocation 
 FROM EfcDsrcGeneric {iso(1) standard(0) 14906 generic(1) version5(5)}
 
-CccContainer
-FROM EfcCcc {iso(1) standard(0) 12813 version2(2)}
+-- CccContainer
+-- FROM EfcCcc {iso(1) standard(0) 12813 version2(2)}
  
 ObeId, Distance, ChargeObjectId, ChargeReport, AuthenticatedChargeReport, Period
 FROM EfcAutonomousCharging {iso(1) standard(0) 17575 part1(1) version2(2)}  
@@ -39,7 +39,7 @@ UserClassDefinition, AbsolutePointCoordinates, Iso17575-3AduBody
 FROM EfcAutonomousContextData {iso(1) standard(0) 17575 part3(3) version2(2)}
  
 CountryCode, IssuerIdentifier 
-FROM AVIAEINumberingAndDataStructures {iso(1) standard(0) iso14816(14816) } 
+FROM AVIAEINumberingAndDataStructures {iso(1) standard(0) iso14816(14816) };
 
 -- ISO 9594-8
 -- Certificate, AlgorithmIdentifier, CertificateSerialNumber, Name
@@ -1033,7 +1033,7 @@ CCCEvent ::= 			SEQUENCE {
 	userId				UserId OPTIONAL, 
 	timeOfEvent			GeneralizedTime OPTIONAL, 
 	locationOfEvent			Location OPTIONAL,     
-	cccMessages			AttributeList{CccContainer}, -- need to be CCC message containers 
+--	cccMessages			AttributeList{CccContainer}, -- need to be CCC message containers 
 	initiatedActions		SEQUENCE OF InitiatedAction 
 	} 
  
