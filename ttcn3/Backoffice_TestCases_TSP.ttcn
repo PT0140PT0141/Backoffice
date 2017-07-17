@@ -65,89 +65,53 @@ module Backoffice_TestCases_TSP {
 
              testcase TP_TSP_USERDETAILS_BV_01() runs on IutComp system TestAdapter {
              
-<<<<<<< HEAD
-              /**
-              * @desc    TP_TSP_USERDETAILS_BV_01: Verify that the TSP correctly receives an APDU containing valid RequestADUs and provides valid ProvideUserDetailsADUs 
-              * @remark  [16986:2016], Clause 6.4 and Table A.1/2 AND Table A.7/1  
-              */
-/*              
-             // Local variables
-//                var userDetails v_userDetails;
-                
-                // Repetitions
-                // insert loop statement in case multiple APDUs are sent according to TP
-                
-                // Preamble - Initial Conditions
-<<<<<<< HEAD
-                f_Backoffice_Preamble();
-                // IUT should receive Context Data
-                f_SendRequestAPDU(m_user_Details_Request);
-=======
-//                f_Backoffice_Preamble();
-                // Front End shall already received Context Data
-//                f_SendRequestAPDU(m_user_Details_Request);
->>>>>>> branch 'master' of https://github.com/PT0140PT0141/Backoffice
-
-                // Preamble done
-
-                // Test body start
-//                t_UserDetails_Time1.start;
-                // transaction sequence #1: Wait for UserDetails message
-                alt {
-//                    [] pco.receive(mw_userDetails_apduIdentifier) -> value v_apduIdentifier {
-                        // Stop timer
-<<<<<<< HEAD
-=======
                   /**
                   * @desc    TP_TSP_USERDETAILS_BV_01: Verify that the TSP correctly receives an APDU containing valid RequestADUs and provides valid ProvideUserDetailsADUs 
                   * @remark  [16986:2016], Clause 6.4 and Table A.1/2 AND Table A.7/1  
                   */
                   
                  // Local variables
-//                 var userDetails v_userDetails;
+                var infoExchangeContent v_infoExchangeContent;
+//              var userDetails v_userDetails;
+				var integer v_numStruct;
+				var boolean v_MatchResult;
+				var ApduIdentifier v_receivedAPDUIdentifier;
                     
                  // Repetitions
                  // insert loop statement in case multiple APDUs are sent according to TP
                    
                  // Preamble - Initial Conditions
 //                 f_Backoffice_Preamble();
-                 // Front End shall already received Context Data
-//                 f_SendRequestAPDU(m_user_Details_Request);
+                 // Front End shall initially receive a Request
+                 // named as Transaction sequence #1
+//                 f_SendAPDU(m_user_Details_Request);
     
                  // Preamble done
     
                  // Test body start
 //                 t_UserDetails_Time1.start;
-                 // transaction sequence #1: Wait for UserDetails message
+                 // Transaction sequence #2: Wait for UserDetails message
 /*
+				 f_receiveAPDUs(pco, v_infoExchangeContent, v_numStruct);
+					// Save APDU Identifier for later use
+					v_receivedAPDUIdentifier := v_infoExchangeContent.apci.apduIdentifier
+// here loop to extract all ADUs from received InfoExchange and process them one by one (if more than one)
+// loop to be made according to the value of v_numStruct
                  alt {
-                      [] pco.receive(mw_userDetails_apduIdentifier) -> value v_apduIdentifier {
-                      	// Stop timer
->>>>>>> branch 'master' of https://github.com/PT0140PT0141/Backoffice
-                        t_UserDetails_Time1.stop;
+                      [] f_matchInADUs(mw_userDetails) -> value v_userDetails {
+                      		
+							// User Details ADU arrived. Stop timer
+                        	t_UserDetails_Time1.stop;
                             
-                        // Transaction sequence #2: Send DefaultACK
-                        pco.send(m_defaultAck_apduIdentifier(v_defaultAck.apduIdentifier));
-=======
-//                        t_UserDetails_Time1.stop;
+                        // Transaction sequence #3: Send DefaultACK with correct identifier and set verdict
                         
-                 // Transaction sequence #2: Send DefaultACK
-//                        pco.send(m_defaultAck_apduIdentifier(v_defaultAck.apduIdentifier));
->>>>>>> branch 'master' of https://github.com/PT0140PT0141/Backoffice
-                        //  Set verdict pass
-<<<<<<< HEAD
-                        setverdict(pass);
+						f_SendAPDU(pco, m_defaultAck(defaultAck.apduIdentifier := v_receivedAPDUIdentifier));
+                        
+						setverdict(pass);
                       }
                     } // End of alt statement
 */                    // Test body done
 
-=======
-//                        setverdict(pass);
-//                    }
-                } // End of alt statement
-                // Test body done
-*/
->>>>>>> branch 'master' of https://github.com/PT0140PT0141/Backoffice
              } // End of TP_TSP_USERDETAILS_BV_01
             
             testcase TP_TSP_USERDETAILS_BV_02() runs on IutComp system TestAdapter {

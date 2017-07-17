@@ -1,8 +1,8 @@
 /**
  * @author  PT0140  
- * @desc    This module provides common templates for both Charging and ContextData TCs. Most of these templates shall be used to modify the new ones.
- * @see     [17575-1:2016]: Test suite structure and test purpose
- * @see     Electronic fee collection (EFC) — Conformity evaluation of Front End and Back End equipment to ISO 17575-3 — Part 1: Test suite structure and test purpose
+ * @desc    This module provides common templates for both Toll Charger and Toll Service Provider TCs. Most of these templates shall be used to modify the new ones.
+ * @see     [17154-1:2017]: Test suite structure and test purpose
+ * @see     Electronic fee collection — Evaluation of implementation for conformity to CEN/TS 16986 — Part 1: Test suite structure and purposes
  * @remark  See Annex C - Data structures
  * @version $id$
  */
@@ -40,5 +40,20 @@ module Backoffice_Templates language "TTCN-3:2010 Advanced Parameterization" {
 	 * @see     [17575-3:2016], Clause 7.2 Message authentication (data type Iso17575-3-InformationContent)
 	 */
 	template (value) integer m_InfoExchange := 0;  //does this need to be complemented with a mw_ version, using the (present) modifier? Of course this should not be an integer but rather reference the ASN.1 InfoExchange construct
-            
+
+	template RequestADU m_user_Details_Request := {
+	  	requestedADUType := provideUserDetailsADU,
+	  	userId := definedUserid,
+		listOfParametersRequested := omit,
+		userDetailsRequestReason := omit,
+		userInfoValidityPeriod := omit
+	}
+	
+	template ProvideUserDetailsADU mw_userDetails := {
+	  originaluserIdRequest := ?,
+	  userId := ?,
+	  statusFlag := optional ,
+	  listOfUserParameters := optional
+	}
+	         
 } // End of module Backoffice_Templates

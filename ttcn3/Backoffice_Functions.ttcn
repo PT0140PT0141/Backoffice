@@ -28,14 +28,40 @@ module Backoffice_Functions language "TTCN-3:2010 Advanced Parameterization" {
         }  
     } 
 
-
+	group Internal {
+	  
+	  var set of ADUs InfoExchange_ADUS ;
+	  var InfoExchange v_info_Exchange ;
+	  
 	function f_LogNotExecuted(in charstring theTestcase){
 		log("*** " & theTestcase & ": tescase not to be executed according to TP validity conditions and parameters in PICS ***");
-	}
+		}
 	  
 	function f_checkMinimumTime(in timer t_compare, in float v_timeMin) {	                      
         if (t_compare.read <= v_timeMin) {setverdict(fail)};
-    }  
+    	}  
+	
+	// Function f_prepareInfoExchange to be used in case of multiple ADUs InfoExchange
+	// It  concatenates multiple ADUs into a single stream and prepare APCI accordingly
+	function f_prepareInfoExchange(in InfoExchange_ADUS v_InfoExchange_ADUS, in boolean v_authenticate, out InfoExchange v_Infoexchange) {
 	  
+		}
+	
+	// Function f_receiveAPDUs receives the complete APDU into a buffer, and passes it back, together with the number
+	// of ADUS that are contained in the ADUs field
+	function f_receiveAPDUs(in port t_port, out infoExchangeContent v_infoExchangeContent, out integer v_numStruct) {
 	  
+		}
+
+	// Function f_SendAPDU sends the APDU by using the given APDU in the given port and calculating the Authenticator, if requested
+	function f_SendAPDU (in port t_port, in InfoExchange t_APDU, in boolean Authenticator) {
+	  
+	}
+	
+	// Function f_MatchInADUs gives back an ADU of the given type, if found in the passed set of ADUs
+	function f_matchInADUs (in ADUs ADUToBeMatched) {
+	 
+		}
+	}
+	}
 } 

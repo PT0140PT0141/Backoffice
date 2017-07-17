@@ -6,5 +6,11 @@
 module Backoffice_Pixits {
 
     modulepar float initialiseTransactionTimeOut := 10.0;
+    modulepar xxx definedUserid := {
+      pan := *,
+      contractSerialNumber := *,
+      licensePlateNumber := *,
+      obeId := *
+    }
         
 } // End of module Common_Pixits
