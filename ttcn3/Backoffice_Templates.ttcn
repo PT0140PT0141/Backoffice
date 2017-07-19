@@ -34,12 +34,30 @@ module Backoffice_Templates language "TTCN-3:2010 Advanced Parameterization" {
     import from Backoffice_Pics all;
     import from Backoffice_Functions all;
 	
+
 	/**
-	 * @desc    Main send template for any unsecured ADU
-	 * @param   p_notAuthenticatedIso17575_3Adu Unsecured ADU (of data type Iso17575-3Adu)
-	 * @see     [17575-3:2016], Clause 7.2 Message authentication (data type Iso17575-3-InformationContent)
-	 */
-	template (value) integer m_InfoExchange := 0;  //does this need to be complemented with a mw_ version, using the (present) modifier? Of course this should not be an integer but rather reference the ASN.1 InfoExchange construct
+     * @desc    Main send template for any unsecured ADU
+     * @param   p_notAuthenticatedInfoExchangeAdu Unsecured ADU (of data type InfoExchange)
+     * @see     [12855:2016], Clause xx Message authentication
+     */
+            template (value) InfoExchange m_InfoExchange_unsecured(
+            	in template (value) InfoExchange p_notAuthenticatedInfoExchange
+           		)
+            := {
+                notAuthenticatedInfoExchange := p_notAuthenticatedInfoExchange            
+            } // End of template m_InfoExchange_unsecured
+	
+     /**
+      * @desc    Main send template for any secured ADU
+      * @param   p_notAuthenticatedInfoExchangeAdu Secured ADU (of data type InfoExchange)
+      * @see     [12855:2016], Clause xx Message authentication
+      */
+            template (value) InfoExchange m_InfoExchange_secured(
+                in template (value) InfoExchange p_authenticatedInfoExchange
+            ) := {
+                authenticatedInfoExchange := p_authenticatedInfoExchange
+            } // End of template m_InfoExchange_secured
+
 
 	template RequestADU m_user_Details_Request := {
 	  	requestedADUType := provideUserDetailsADU,
@@ -47,6 +65,34 @@ module Backoffice_Templates language "TTCN-3:2010 Advanced Parameterization" {
 		listOfParametersRequested := omit,
 		userDetailsRequestReason := omit,
 		userInfoValidityPeriod := omit
+	}
+
+	template RequestADU m_user_Details_Invalid_Request := {
+	  
+	}
+
+	template RequestADU m_user_Details_NotSupportedDetails := {
+	  
+	}
+
+	template RequestADU m_user_Details_PrivacyBound_Request := {
+	  
+	}
+	
+	template AckADU m_defaultAck := {
+	  
+	}
+
+	template AckADU mw_nack_SemanticError := {
+	  
+	}
+
+	template AckADU mw_userDetailsAttrNotAvailable := {
+	  
+	}
+	
+	template ProvideUserDetailsADU mw_userDetailsPrivacy_apduIdentifier := {
+	  
 	}
 	
 	template ProvideUserDetailsADU mw_userDetails := {

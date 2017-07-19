@@ -54,12 +54,18 @@ module Backoffice_Functions language "TTCN-3:2010 Advanced Parameterization" {
 		}
 
 	// Function f_SendAPDU sends the APDU by using the given APDU in the given port and calculating the Authenticator, if requested
-	function f_SendAPDU (in port t_port, in InfoExchange t_APDU, in boolean Authenticator) {
-	  
+	function f_SendAPDU (in port t_port, in  template (value) InfoExchange t_APDU) {
+		 if (not (PICS_SECURED_MODE)) {
+                pco.send(m_InfoExchange_unsecured(t_APDU));
+            } else {
+                var template (value) AuthenticatedInfoExchange v_secured_packet;
+                f_secured_packet(p_InfoExchange_Adu, v_secured_packet);
+                pco.send(m_InfoExchange_secured(v_secured_packet));
+            }	  
 	}
 	
 	// Function f_MatchInADUs gives back an ADU of the given type, if found in the passed set of ADUs
-	function f_matchInADUs (in ADUs ADUToBeMatched) {
+	function f_matchInADUs (in ADUs ADUToBeMatched, in ADUs bufferToSearch) {
 	 
 		}
 	}
