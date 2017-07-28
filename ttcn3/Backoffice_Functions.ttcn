@@ -30,8 +30,9 @@ module Backoffice_Functions language "TTCN-3:2010 Advanced Parameterization" {
 
 	group Internal {
 	  
-	  var set of ADUs InfoExchange_ADUS ;
-	  var InfoExchange v_info_Exchange ;
+	  var set of ADUs InfoExchange_ADUS;
+	  var InfoExchange v_info_Exchange;
+	  timer waitTimer; 
 	  
 	function f_LogNotExecuted(in charstring theTestcase){
 		log("*** " & theTestcase & ": tescase not to be executed according to TP validity conditions and parameters in PICS ***");
@@ -40,6 +41,16 @@ module Backoffice_Functions language "TTCN-3:2010 Advanced Parameterization" {
 	function f_checkMinimumTime(in timer t_compare, in float v_timeMin) {	                      
         if (t_compare.read <= v_timeMin) {setverdict(fail)};
     	}  
+    	
+    // Function which inserts a waiting time - parameter t_wait - and gives back TRUE in case waiting time is over
+	function f_waitTime(in timer t_wait, out boolean v_timeElapsed) {
+		v_timeElapsed := false;
+		t_waitTimer.start(t_wait);
+		while (t_waitTimer.running) {
+			// empty loop = do nothing, but just wait
+			}
+		v_timeElapsed := true // waiting time elapsed
+		}
 	
 	// Function f_prepareInfoExchange to be used in case of multiple ADUs InfoExchange
 	// It  concatenates multiple ADUs into a single stream and prepare APCI accordingly
