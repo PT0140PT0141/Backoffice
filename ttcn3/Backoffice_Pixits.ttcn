@@ -12,5 +12,16 @@ module Backoffice_Pixits {
       licensePlateNumber := *,
       obeId := *
     }
+    
+    modulepar record of integer supportedListOfParameters := {
+      
+    }
+    
+     modulepar record of integer notAgreedListOfParameters := {
+      
+    }
+    
+
+    
         
 } // End of module Common_Pixits

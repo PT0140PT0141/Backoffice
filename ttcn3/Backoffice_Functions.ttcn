@@ -57,9 +57,9 @@ module Backoffice_Functions language "TTCN-3:2010 Advanced Parameterization" {
 	  
 		}
 	
-	// Function f_receiveAPDUs receives the complete APDU into a buffer, and passes it back, together with the number
-	// of ADUS that are contained in the ADUs field
-	function f_receiveAPDUs(in port t_port, out infoExchangeContent v_infoExchangeContent, out integer v_numStruct) {
+	// Function f_receiveAPDUs receives APDU containing ADUs of the specified type and passes back 
+	// the APCI part and the ADU's part in two variables
+	function f_receiveAPDUs(in Adus, out ApciFields v_apci, out Adus v_adus) {
 	  
 		}
 
@@ -74,10 +74,6 @@ module Backoffice_Functions language "TTCN-3:2010 Advanced Parameterization" {
             }	  
 	}
 	
-	// Function f_MatchInADUs gives back an ADU of the given type, if found in the passed set of ADUs
-	function f_matchInADUs (in ADUs ADUToBeMatched, in ADUs bufferToSearch) {
-	 
-		}
 	}
 	}
 } 

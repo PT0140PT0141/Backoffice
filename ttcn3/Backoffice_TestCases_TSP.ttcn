@@ -72,19 +72,17 @@ module Backoffice_TestCases_TSP {
                   
                  // Local variables
                 var InfoExchangeContent v_infoExchangeContent;
-                var ProvideUserDetailsADU v_userDetails;
-				var integer v_numStruct;
-				var boolean v_MatchResult;
+                var Apci v_apci;
+                var ProvideUserDetailsADUs v_userDetails;
 				var ApduIdentifier v_receivedAPDUIdentifier;
+				var UserId v_Userid; // value to be taken from PIXIT
                     
-                 // Repetitions
-                 // insert loop statement in case multiple APDUs are sent according to TP
                    
                  // Preamble - Initial Conditions
                  f_Backoffice_Preamble();
                  // Front End shall initially receive a Request
                  // named as Transaction sequence #1
-                 f_SendAPDU(m_user_Details_Request);
+                 f_SendAPDU(m_user_Details_Request userId := v_Userid);
     
                  // Preamble done
     
@@ -92,22 +90,22 @@ module Backoffice_TestCases_TSP {
                  t_UserDetails_Time1.start;
                  // Transaction sequence #2: Wait for UserDetails message
 
-				 f_receiveAPDUs(pco, v_infoExchangeContent, v_numStruct);
-					// Save APDU Identifier for later use
-					v_receivedAPDUIdentifier := v_infoExchangeContent.apci.apduIdentifier
-// here loop to extract all ADUs from received InfoExchange and process them one by one (if more than one)
-// loop to be made according to the value of v_numStruct
+				 					
+// Either we receive an APDU containing Provide User Details ADU(s) or the timeout expires
+// timeout expiration handling is in the altstep branch
+
                  alt {
-                      [] f_matchInADUs(mw_userDetails, v_infoExchangeContent.adus) -> value v_userDetails {
+                      [] f_receiveAPDUs(mw_userDetails userid := v_Userid, v_apci, v_userDetails) {
                       		
 							// User Details ADU arrived. Stop timer
                         	t_UserDetails_Time1.stop;
                             
                         // Transaction sequence #3: Send DefaultACK with correct identifier and set verdict
-
-// SYNTAX FOR SETTING A VALUE INTO A TEMPLATE TO BE CHECKED
                         
-						f_SendAPDU(pco, m_defaultAck(apci.apduIdentifier := v_receivedAPDUIdentifier));
+                        v_receivedAPDUIdentifier := v_apci.apduIdentifier;
+
+                        
+						f_SendAPDU(m_defaultAck apci.apduIdentifier := v_receivedAPDUIdentifier);
 
 //                       
 						setverdict(pass);
@@ -123,21 +121,20 @@ module Backoffice_TestCases_TSP {
               * @remark  [16986:2016], Clause 6.4 and Table A.1/2 AND Table A.7/1  
               */
               
+                 // Local variables
                 var InfoExchangeContent v_infoExchangeContent;
-                var ProvideUserDetailsADU v_userDetails;
-				var integer v_numStruct;
-				var boolean v_MatchResult;
+                var Apci v_apci;
+                var ProvideUserDetailsADUs v_userDetails;
 				var ApduIdentifier v_receivedAPDUIdentifier;
-                    
-                 // Repetitions
-                 // insert loop statement in case multiple APDUs are sent according to TP
+ 				var UserId v_Userid; // value to be taken from PIXIT
+ 				                   
                    
                  // Preamble - Initial Conditions
                  f_Backoffice_Preamble();
                  // Front End shall initially receive a Request
                  // named as Transaction sequence #1
                 
-				f_SendRequestAPDU(m_user_Details_PrivacyBound_Request);
+				f_SendRequestAPDU(m_user_Details_PrivacyBound_Request userId := v_Userid);
 
                 // Preamble done
 
@@ -145,24 +142,23 @@ module Backoffice_TestCases_TSP {
 				t_UserDetails_Time1.start;
                 // transaction sequence #2: Wait for UserDetails message
 
-				 f_receiveAPDUs(pco, v_infoExchangeContent, v_numStruct);
-					// Save APDU Identifier for later use
-					v_receivedAPDUIdentifier := v_infoExchangeContent.apci.apduIdentifier
-// here  extract  ADUs from received InfoExchange and process it
+
+// Either we receive an APDU containing Provide User Details ADU(s) or the timeout expires
+// timeout expiration handling is in the altstep branch
 
                   alt {
-                	    [] f_matchInADUs(mw_userDetailsPrivacy_apduIdentifier, v_infoExchangeContent.adus) -> value v_userDetails { 
+                	    [] f_receiveAPDUs(mw_userDetailsPrivacy_apduIdentifier userId := v_Userid,  v_apci, v_userDetails)  { 
 
                         // Stop timer
                 	       t_UserDetails_Time1.stop;
                         
                  // Transaction sequence #3: Send DefaultACK
+                 
+                  			v_receivedAPDUIdentifier := v_apci.apduIdentifier;
 
-// SYNTAX FOR SETTING A VALUE INTO A TEMPLATE TO BE CHECKED
-                			f_SendAPDU(pco, m_defaultAck(apci.apduIdentifier := v_receivedAPDUIdentifier));
-//
+                			f_SendAPDU(m_defaultAck apci.apduIdentifier := v_receivedAPDUIdentifier);
                  //  Set verdict pass
-                 	       setverdict(pass);
+                 	    	setverdict(pass);
                     		}
                  }// End of alt statement
 
@@ -183,13 +179,10 @@ module Backoffice_TestCases_TSP {
 
                 var AckADU v_receivedAck;
 				var InfoExchangeContent v_infoExchangeContent;
-                var ProvideUserDetailsADU v_userDetails;
-				var integer v_numStruct;
-				var boolean v_MatchResult;
-				var ApduIdentifier v_receivedAPDUIdentifier;
+				var ApduIdentifier v_APDUIdentifier;
+				var UserId v_Userid; // value to be taken from PIXIT
+				
                 
-                // Repetitions
-                // insert loop statement in case multiple APDUs are sent according to TP
                 
                 // Preamble - Initial Conditions
                 
@@ -197,7 +190,7 @@ module Backoffice_TestCases_TSP {
                  // Front End shall initially receive a Request
                  // named as Transaction sequence #1
 
-                f_SendRequestAPDU(m_user_Details_Invalid_Request);
+                f_SendRequestAPDU(m_user_Details_Invalid_Request) -> value v_APDUIdentifier; // Store assigned identifier for checking correct AcK
 
                 // Preamble done
 
@@ -205,10 +198,11 @@ module Backoffice_TestCases_TSP {
 
                 t_UserDetails_Time1.start;
 
-                // transaction sequence #2: Wait for Nack message
-				f_receiveAPDUs(pco, v_infoExchangeContent, v_numStruct);
+                // transaction sequence #2: Wait for Nack message with semantic error code
+// Either we receive an APDU containing Nack or the timeout expires
+// timeout expiration handling is in the altstep branch				
                 alt {
-                    [] f_matchInADUs(mw_nack_SemanticError, v_infoExchangeContent.adus) -> value v_receivedAck { // No specific test was required
+                    [] f_receiveAPDUs(m_defaultAck {ApduIdentifier := v_APDUIdentifier, apduAckCode:= 3000},  v_apci, v_receivedAck) { // No specific test was required
                         // Stop timer
                         t_UserDetails_Time1.stop;
                        //  Set verdict pass
@@ -225,38 +219,38 @@ module Backoffice_TestCases_TSP {
               /**
               * @desc    TP_TSP_USERDETAILS_BI_02: Verify that the TSP correctly receives a RequestADUs of type userDetailsRequest with listOfUsersParametersRequested containing non-supported user details
               * @remark  [16986:2016], Clause 6.4 and Table A.1/2 AND Table A.7/1  
-              */
-   /*           
+              */          
              // Local variables
                 var AckADU v_receivedAck;
 				var InfoExchangeContent v_infoExchangeContent;
                 var ProvideUserDetailsADU v_userDetails;
-				var integer v_numStruct;
-				var boolean v_MatchResult;
+				var UserId v_Userid; // value to be taken from PIXIT
 				var ApduIdentifier v_receivedAPDUIdentifier;
-                
-                // Repetitions
-                // insert loop statement in case multiple APDUs are sent according to TP
+				var record of integer v_SupportedParameters; // should be initialised with PIXIT value supportedListOfParameters
                 
                 // Preamble - Initial Conditions
                 f_Backoffice_Preamble();
 
 // Front End shall initially receive a Request named as Transaction sequence #1
-
-                f_SendRequestAPDU(m_user_Details_NotSupportedDetails);
+// Create a value that is not supported by the IUT
+				for (var integer v_Support :=1; v_Support:=v_Support+1)
+					if not(isvalue(v_SupportedParameters{v_Support}) ) v_unsupported := v_Support; break;
+					continue;
+// Invalid Parameter to be requested found and to be sent to IuT	
+                f_SendRequestAPDU(m_user_Details_Request {userId := v_Userid,listOfParametersRequested := v_unsupported}) -> value v_APDUIdentifier; // Store assigned identifier for checking correct AcK
 
                 // Preamble done
 
                 // Test body start
                 t_UserDetails_Time1.start;
                 // transaction sequence #2: Wait for Nack message
- 				f_receiveAPDUs(pco, v_infoExchangeContent, v_numStruct);
+// Either we receive an APDU containing Nack or the timeout expires
+// timeout expiration handling is in the altstep branch	
                 alt {
-                    [] f_matchInADUs(mw_userDetailsAttrNotAvailable, v_infoExchangeContent.adus) -> value v_receivedAck { // No specific test was requiered
+                    [] f_receiveAPDUs(mw_userDetails {userid := v_Userid, listOfUserParameters.userParameterStatus := 1, listOfUserParameters.UserParameterResponse := omit, listOfUserParameters.userInfoValidityPeriod := omit }, v_apci, v_userDetails,  v_apci, v_receivedAck) { // No specific test was required
                         // Stop timer
                         t_UserDetails_Time1.stop;
-                        
-                        //  Set verdict pass
+                       //  Set verdict pass
                         setverdict(pass);
                     }
                 } // End of alt statement
@@ -269,44 +263,45 @@ module Backoffice_TestCases_TSP {
               /**
               * @desc    TP_TSP_USERDETAILS_BI_03: Verify that the TSP correctly receives a RequestADUs of type userDetailsRequest with listOfUsersParametersRequested containing user details that cannot be provided because of missing agreement
               * @remark  [16986:2016], Clause 6.4 and Table A.1/2 AND Table A.7/1  
-              */
-              
+              */       
 
              // Local variables
                 var AckADU v_receivedAck;
 				var InfoExchangeContent v_infoExchangeContent;
                 var ProvideUserDetailsADU v_userDetails;
-				var integer v_numStruct;
-				var boolean v_MatchResult;
+				var UserId v_Userid; // value to be taken from PIXIT
 				var ApduIdentifier v_receivedAPDUIdentifier;
-                
-                // Repetitions
-                // insert loop statement in case multiple APDUs are sent according to TP
+				var record of integer v_NotAgreedParameters; // should be initialised with PIXIT value notAgreedListOfParameters
                 
                 // Preamble - Initial Conditions
                 f_Backoffice_Preamble();
-// Front End shall initially receive a Request named as Transaction sequence #1
 
-                f_SendRequestAPDU(m_user_Details_MissingAgreement);
+// Front End shall initially receive a Request named as Transaction sequence #1
+// Create a value that is not supported by the IUT
+				for (var integer v_Support :=1; v_Support:=v_Support+1)
+					if isvalue(v_NotAgreedParameters{v_Support}) v_unsupported := v_Support; break;
+					continue;
+// Invalid Parameter to be requested found and to be sent to IuT	
+                f_SendRequestAPDU(m_user_Details_Request {userId := v_Userid,listOfParametersRequested := v_unsupported}) -> value v_APDUIdentifier; // Store assigned identifier for checking correct AcK
 
                 // Preamble done
 
                 // Test body start
-               t_UserDetails_Time1.start;
+                t_UserDetails_Time1.start;
                 // transaction sequence #2: Wait for Nack message
- 				f_receiveAPDUs(pco, v_infoExchangeContent, v_numStruct);                
+// Either we receive an APDU containing Nack or the timeout expires
+// timeout expiration handling is in the altstep branch	
                 alt {
-                    [] f_matchInADUs(mw_userDetailsMissingAgreement,  v_infoExchangeContent.adus) -> value v_receivedAck { // No specific test was requiered
+                    [] f_receiveAPDUs(mw_userDetails {userid := v_Userid, listOfUserParameters.userParameterStatus := 3, listOfUserParameters.UserParameterResponse := omit, listOfUserParameters.userInfoValidityPeriod := omit }, v_apci, v_userDetails,  v_apci, v_receivedAck) { // No specific test was required
                         // Stop timer
                         t_UserDetails_Time1.stop;
-                        
-                        //  Set verdict pass
+                       //  Set verdict pass
                         setverdict(pass);
                     }
                 } // End of alt statement
-
-            }    // Test body done
-
+                // Test body done
+            } // End of TP_TSP_USERDETAILS_BI_03
+            
             testcase TP_TSP_USERDETAILS_BI_04() runs on IutComp system TestAdapter {
 
              
@@ -319,30 +314,25 @@ module Backoffice_TestCases_TSP {
                 var AckADU v_receivedAck;
 				var InfoExchangeContent v_infoExchangeContent;
                 var ProvideUserDetailsADU v_userDetails;
-				var integer v_numStruct;
-				var boolean v_MatchResult;
 				var ApduIdentifier v_receivedAPDUIdentifier;
-				               
-                // Repetitions
-                // insert loop statement in case multiple APDUs are sent according to TP
+
                 
                 // Preamble - Initial Conditions
                 f_Backoffice_Preamble();
 // Front End shall initially receive a Request
 
-                f_SendRequestAPDU(m_user_Details_Request);
+                f_SendRequestAPDU(m_user_Details_Request)-> value v_APDUIdentifier;
                 
                 // Preamble done
 
                 // Test body start
                 // transaction sequence #1: Send a second request immediately
-                f_SendRequestAPDU(m_user_Details_Request);
+                f_SendRequestAPDU(m_user_Details_Request) -> value v_APDUIdentifier;
 
                 t_UserDetails_Time1.start;
                 // transaction sequence #2: Wait for Nack message
-				f_receiveAPDUs(pco, v_infoExchangeContent, v_numStruct);                
                 alt {
-                    [] f_matchInADUs(mw_mw_nack_TooOften, v_infoExchangeContent)  {
+                    [] f_receiveAPDUs(m_defaultAck {ApduIdentifier := v_APDUIdentifier, apduAckCode:= NAck_requestSentTooOften},  v_apci, v_receivedAck)  {
                         // Stop timer
                         t_UserDetails_Time1.stop;
 

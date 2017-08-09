@@ -66,8 +66,8 @@ module Backoffice_Templates language "TTCN-3:2010 Advanced Parameterization" {
 		userDetailsRequestReason := omit,
 		userInfoValidityPeriod := omit
 	}
-
-	template RequestADU m_user_Details_Invalid_Request := {
+// Two invalid User Details Request ADUs concatenated
+	template ADUs m_user_Details_Invalid_Request := {
 	  
 	}
 
@@ -80,18 +80,23 @@ module Backoffice_Templates language "TTCN-3:2010 Advanced Parameterization" {
 	}
 	
 	template AckADU m_defaultAck := {
-	  
+	  ApduIdentifier := ?,
+	  explicitlyAckedAdus := optional,
+	  apduAckCode := ?,
+	  apduAckText := optional,
+	  issues := optional
 	}
 
-	template AckADU mw_nack_SemanticError := {
-	  
-	}
-
-	template AckADU mw_userDetailsAttrNotAvailable := {
-	  
-	}
 	
 	template ProvideUserDetailsADU mw_userDetailsPrivacy_apduIdentifier := {
+	  
+	  originaluserIdRequest := ?,
+	  userId := ?,
+	  statusFlag := optional ,
+	  listOfUserParameters.UserParameterResponse := omit,
+	  listOfUserParameters.userParameterResponse := ?,
+	  listOfUserParameters.userParameterStatus := 2,
+	  listOfUserParameters.userInfoValidityPeriod := omit
 	  
 	}
 	
@@ -101,5 +106,25 @@ module Backoffice_Templates language "TTCN-3:2010 Advanced Parameterization" {
 	  statusFlag := optional ,
 	  listOfUserParameters := optional
 	}
-	         
+	
+    modulepar integer semanticError := 3000;
+ 	
+ 	modulepar integer actionCodeNotSupported := 3010;
+ 
+	modulepar integer acceptedWithWarning := 4000;
+	
+	modulepar integer sequenceError := 4;
+
+	modulepar integre otherReason := 5;
+
+	modulepar integer protocolVersionError := 6;
+  
+	modulepar integer originatorRejected := 7;
+  
+	modulepar integer recipientUnknown := 8;
+
+	modulepar integer relatedApduUnknown := 9;
+   
+    modulepar integer NAck_requestSentTooOften := 10 ;
+    	         
 } // End of module Backoffice_Templates
