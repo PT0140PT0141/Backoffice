@@ -77,24 +77,25 @@ module Backoffice_TestCases_TC {
                 // Preamble - Initial conditions 
                 // No intial conditions according to TP
                                              
-                // TP to be started at IUT side; perhaps via an External Function         
+                // TP to be started at IUT side; perhaps via an External Function
+                // FIRST TRANSACTION
+                         
                 fx_initiateTransactionFromIut("TC_USERDETAILS");
-                t_tseq.start(initialiseTransactionTimeOut);                             
-                t_UserDetails_Time1.start(v_USERDETAILS_TIME1_MAX_TSP);   
-                
+                t_tseq.start(initialiseTransactionTimeOut); // start transaction timeout timer                              
+                 
                 alt {
-
-				// First transaction
-				// Required in order to check TIMEA_MIN at second transaction
-
                     // Transaction sequence #1
                     [] iutPort.receive(mw_userDetailsRequest) -> value v_infoExchangeContent {
-                    	t_UserDetails_Time1.start(USERDETAILS_TIME1_MIN_TSP) // start timer for TIME1
+                    	// RequestADU received with expected content
                     	}
                     
                     // To be done: add logging with a function
                       
                     [] any timer.timeout {
+                      	 // nothing received or wrong content --> transaction timeout
+                      	 // Note: we may have to wait until the timeout as the IUT
+                      	 // could also send another massage first and later the expacted message
+                      	 // or we clearly forbid such behaviour for test purposes   
                       	 setverdict(fail)
                       	 }                     
                 }
@@ -102,7 +103,7 @@ module Backoffice_TestCases_TC {
                 // Transaction sequence #2
                 // Tester can send the next message (ProvideUserDetails) not immediately, as IUT (TC) may have defined a minimum value for TIME1.
                 // Therefore, timer required. Wait mode.
-                while (t_UserDetails_Time1.running){};
+                f_waitTime(USERDETAILS_TIME1_MIN_TC);
                   
                 // After minimum timer elapses: send next message                 
                 iutPort.send(mw_provideUserDetailsAdu(
@@ -111,74 +112,349 @@ module Backoffice_TestCases_TC {
                 )
                   
                 // start timer for TIME2 immediately after sending the ProvideUserDetails
-                t_tseq.start(USERDETAILS_TIME2_MAX_TC);    
+                t_UserDetails_Time2.start(USERDETAILS_TIME2_MAX_TC);    
                       
                 // Transaction sequence #3
-                // Tester ecpects to receive an AckADU within TIME22 
+                // Tester expects to receive an AckADU within TIME2_MAX 
                 alt {
                       // t.b.d. we need to take care on the correct APCI field values
-                      [] iutPort.receive(mw_AckAdu) -> value v_infoExchangeContent                    
-                     
+                      [] iutPort.receive(mw_AckAdu) -> value v_infoExchangeContent {
+                     	// AckADU received
+                     	}
+                     	
                       [] any timer.timeout {
+                      	 // nothing received or wrong content --> timeout of transaction timer or TIME2 MAX
+                      	 // Note: we may have to wait until the timeout = TIME2 MAX as the IUT
+                      	 // could also send another massage first and later the expected message                      	 	
                       	 	setverdict(fail)
                       }                     
                 }
+              
+            } //end test case TP_TC_USERDETAILS_BV_01   
+                           
+         } // End group Valid Behaviour
+         
+         group Invalid Behaviour {
+ 
+         	testcase Testcase_TP_TC_USERDETAILS_BI_01() runs on IutComp system TestAdapter {
+               
+                // Local variables
+
+                timer t_tseq, t_UserDetails_Time1, t_UserDetails_Time2, t_UserDetails_Timea                            
                   
-                // Tester can send the second tarsnaction not immediately, as IUT (TC) may have defined a minimum value for TIMEA
-                // Therefore, timer required
-                // to be done: convert into a "wait" function
-                t_UserDetails_Timea.start(USERDETAILS_TIMEA_MIN_TC);
-                while (t_UserDetails_Timea.running);                  
-                  
-                // Second transaction
-                     
+                // Preamble - Initial conditions 
+                // No intial conditions according to TP
+                                             
+                // TP to be started at IUT side; perhaps via an External Function
+                // FIRST TRANSACTION
+                         
+                fx_initiateTransactionFromIut("TC_USERDETAILS");
+                t_tseq.start(initialiseTransactionTimeOut); // start transaction timeout timer                              
+                 
                 alt {
-
-				// First transaction
-				// Required in order to check TIMEA_MIN at second transaction
-
                     // Transaction sequence #1
                     [] iutPort.receive(mw_userDetailsRequest) -> value v_infoExchangeContent {
-                    	t_UserDetails_Time1.start(USERDETAILS_TIME1_MIN_TSP) // start timer for TIME1
+                    	// RequestADU received with expected content
                     	}
                     
                     // To be done: add logging with a function
                       
-                    [] any timer.timeout
-                      	 setverdict(fail);                     
+                    [] any timer.timeout {
+                      	 // nothing received or wrong content --> transaction timeout
+                      	 // Note: we may have to wait until the timeout as the IUT
+                      	 // could also send another massage first and later the expacted message
+                      	 // or we clearly forbid such behaviour for test purposes   
+                      	 setverdict(fail)
+                      	 }                     
                 }
  
                 // Transaction sequence #2
                 // Tester can send the next message (ProvideUserDetails) not immediately, as IUT (TC) may have defined a minimum value for TIME1.
                 // Therefore, timer required. Wait mode.
-                while (t_UserDetails_Time1.running);
+                f_waitTime(USERDETAILS_TIME1_MIN_TC);
                   
                 // After minimum timer elapses: send next message                 
-                iutPort.send(mw_provideUserDetailsAdu(
+                iutPort.send(mw_provideUserDetailsAdu_WrongUserId(
                       m_userDetailsRequestAduInit.userDetailsRequest.listOfUserParametersRequested,
-                      m_userDetailsRequestAduInit.userDetailsRequest.userId)
+                      m_invalid.wrongUserId) // user IDs not corresponding the requested user IDs 
                 )
                   
                 // start timer for TIME2 immediately after sending the ProvideUserDetails
-                t_tseq.start(USERDETAILS_TIME2_MAX_TC);    
+                t_UserDetails_Time2.start(USERDETAILS_TIME2_MAX_TC);    
                       
                 // Transaction sequence #3
-                // Tester ecpects to receive an AckADU within TIME22 
+                // Tester expects to receive an AckADU within TIME2_MAX 
                 alt {
-
                       // t.b.d. we need to take care on the correct APCI field values
-                      [] iutPort.receive(mw_AckAdu) -> value v_infoExchangeContent;                    
-                     
-                      [] any timer.timeout
-                      	 	setverdict(fail);                     
+                      [] iutPort.receive(mw_AckAdu_SemanticError) -> value v_infoExchangeContent                    
+                     	// AckADU with Semantic Error received
+                     	
+                      [] any timer.timeout {
+                      	 // nothing received or wrong content --> timeout of transaction timer or TIME2 MAX
+                      	 // Note: we may have to wait until the timeout = TIME2 MAX as the IUT
+                      	 // could also send another massage first and later the expected message                      	 	
+                      	 	setverdict(fail)
+                      }                     
                 }
               
-            } //end test case TP_TC_USERDETAILS_BV_01   
-                           
-         } // End group Valid_Behaviour
+            } //end test case TP_TC_USERDETAILS_BI_01            
          
-         group Invalid Behaviour {
-         }
+         
+         	testcase Testcase_TP_TC_USERDETAILS_BI_02() runs on IutComp system TestAdapter {
+               
+                // Local variables
+
+                timer t_tseq, t_UserDetails_Time1, t_UserDetails_Time2, t_UserDetails_Timea                            
+                  
+                // Preamble - Initial conditions 
+                // No intial conditions according to TP
+                                             
+                // TP to be started at IUT side; perhaps via an External Function
+                // FIRST TRANSACTION
+                         
+                fx_initiateTransactionFromIut("TC_USERDETAILS");
+                t_tseq.start(initialiseTransactionTimeOut); // start transaction timeout timer                              
+                 
+                alt {
+                    // Transaction sequence #1
+                    [] iutPort.receive(mw_userDetailsRequest) -> value v_infoExchangeContent {
+                    	// RequestADU received with expected content
+                    	}
+                    
+                    // To be done: add logging with a function
+                      
+                    [] any timer.timeout {
+                      	 // nothing received or wrong content --> transaction timeout
+                      	 // Note: we may have to wait until the timeout as the IUT
+                      	 // could also send another massage first and later the expacted message
+                      	 // or we clearly forbid such behaviour for test purposes   
+                      	 setverdict(fail)
+                      	 }                     
+                }
+ 
+                // Transaction sequence #2
+                // Tester can send the next message (ProvideUserDetails) not immediately, as IUT (TC) may have defined a minimum value for TIME1.
+                // Therefore, timer required. Wait mode.
+                f_waitTime(USERDETAILS_TIME1_MIN_TC);
+                  
+                // After minimum timer elapses: send next message                 
+                iutPort.send(mw_provideUserDetailsInvalidAdu_NoStatusFlag(
+                      m_userDetailsRequestAduInit.userDetailsRequest.listOfUserParametersRequested,
+                      m_invalid.noStatusFlag) // status flag missing 
+                )
+                  
+                // start timer for TIME2 immediately after sending the ProvideUserDetails
+                t_UserDetails_Time2.start(USERDETAILS_TIME2_MAX_TC);    
+                      
+                // Transaction sequence #3
+                // Tester expects to receive an AckADU within TIME2_MAX 
+                alt {
+                      // t.b.d. we need to take care on the correct APCI field values
+                      [] iutPort.receive(mw_AckAdu_SemanticError) -> value v_infoExchangeContent                    
+                     	// AckADU with Semantic Error Ackreceived
+                     	
+                      [] any timer.timeout {
+                      	 // nothing received or wrong content --> timeout of transaction timer or TIME2 MAX
+                      	 // Note: we may have to wait until the timeout = TIME2 MAX as the IUT
+                      	 // could also send another massage first and later the expected message                      	 	
+                      	 	setverdict(fail)
+                      }                     
+                }
+              
+            } //end test case TP_TC_USERDETAILS_BI_02            
+          
+          
+         	testcase Testcase_TP_TC_USERDETAILS_BI_03() runs on IutComp system TestAdapter {
+               
+                // Local variables
+
+                timer t_tseq, t_UserDetails_Time1, t_UserDetails_Time2, t_UserDetails_Timea                            
+                  
+                // Preamble - Initial conditions 
+                // No intial conditions according to TP
+                                             
+                // TP to be started at IUT side; perhaps via an External Function
+                // FIRST TRANSACTION
+                         
+                fx_initiateTransactionFromIut("TC_USERDETAILS");
+                t_tseq.start(initialiseTransactionTimeOut); // start transaction timeout timer                              
+                 
+                alt {
+                    // Transaction sequence #1
+                    [] iutPort.receive(mw_userDetailsRequest) -> value v_infoExchangeContent {
+                    	// RequestADU received with expected content
+                    	}
+                    
+                    // To be done: add logging with a function
+                      
+                    [] any timer.timeout {
+                      	 // nothing received or wrong content --> transaction timeout
+                      	 // Note: we may have to wait until the timeout as the IUT
+                      	 // could also send another massage first and later the expacted message
+                      	 // or we clearly forbid such behaviour for test purposes   
+                      	 setverdict(fail)
+                      	 }                     
+                }
+ 
+                // Transaction sequence #2
+                // Tester can send the next message (ProvideUserDetails) not immediately, as IUT (TC) may have defined a minimum value for TIME1.
+                // Therefore, timer required. Wait mode.
+                f_waitTime(USERDETAILS_TIME1_MIN_TC);
+                  
+                // After minimum timer elapses: send next message                 
+                iutPort.send(mw_provideUserDetailsInvalidAdu_NoListOfUsersParameters(
+                      m_userDetailsRequestAduInit.userDetailsRequest.listOfUserParametersRequested,
+                      m_invalid.listOfUsersParameters) // no ListOfUsersParameters present 
+                )
+                  
+                // start timer for TIME2 immediately after sending the ProvideUserDetails
+                t_UserDetails_Time2.start(USERDETAILS_TIME2_MAX_TC);    
+                      
+                // Transaction sequence #3
+                // Tester expects to receive an AckADU within TIME2_MAX 
+                alt {
+                      // t.b.d. we need to take care on the correct APCI field values
+                      [] iutPort.receive(mw_AckAdu_SemanticError) -> value v_infoExchangeContent                    
+                     	// AckADU with Semantic Error received
+                     	
+                      [] any timer.timeout {
+                      	 // nothing received or wrong content --> timeout of transaction timer or TIME2 MAX
+                      	 // Note: we may have to wait until the timeout = TIME2 MAX as the IUT
+                      	 // could also send another massage first and later the expected message                      	 	
+                      	 	setverdict(fail)
+                      }                     
+                }
+              
+            } //end test case TP_TC_USERDETAILS_BI_03            
+ 
+ 
+         	testcase Testcase_TP_TC_USERDETAILS_BI_04() runs on IutComp system TestAdapter {
+               
+                // Local variables
+
+                timer t_tseq, t_UserDetails_Time1, t_UserDetails_Time2, t_UserDetails_Timea                            
+                  
+                // Preamble - Initial conditions 
+                // No intial conditions according to TP
+                                             
+                // TP to be started at IUT side; perhaps via an External Function
+                // FIRST TRANSACTION
+                         
+                fx_initiateTransactionFromIut("TC_USERDETAILS");
+                t_tseq.start(initialiseTransactionTimeOut); // start transaction timeout timer                              
+                 
+                alt {
+                    // Transaction sequence #1
+                    [] iutPort.receive(mw_userDetailsRequest) -> value v_infoExchangeContent {
+                    	// RequestADU received with expected content
+                    	}
+                    
+                    // To be done: add logging with a function
+                      
+                    [] any timer.timeout {
+                      	 // nothing received or wrong content --> transaction timeout
+                      	 // Note: we may have to wait until the timeout as the IUT
+                      	 // could also send another massage first and later the expacted message
+                      	 // or we clearly forbid such behaviour for test purposes   
+                      	 setverdict(fail)
+                      	 }                     
+                }
+ 
+                // Transaction sequence #2
+                // Tester can send the next message (ProvideUserDetails) not immediately, as IUT (TC) may have defined a minimum value for TIME1.
+                // Therefore, timer required. Wait mode.
+                f_waitTime(USERDETAILS_TIME1_MIN_TC);
+                  
+                // After minimum timer elapses: send next message                 
+                iutPort.send(mw_provideUserDetailsInvalidAdu_StatusFlagInvalidValue(
+                      m_userDetailsRequestAduInit.userDetailsRequest.listOfUserParametersRequested,
+                      m_invalid.statusFlagInvalidValue) // status flag has invalid value (e.g. 6) 
+                )
+                  
+                // start timer for TIME2 immediately after sending the ProvideUserDetails
+                t_UserDetails_Time2.start(USERDETAILS_TIME2_MAX_TC);    
+                      
+                // Transaction sequence #3
+                // Tester expects to receive an AckADU within TIME2_MAX 
+                alt {
+                      // t.b.d. we need to take care on the correct APCI field values
+                      [] iutPort.receive(mw_AckAdu_SemanticError) -> value v_infoExchangeContent                    
+                     	// AckADU with Semantic Error received
+                     	
+                      [] any timer.timeout {
+                      	 // nothing received or wrong content --> timeout of transaction timer or TIME2 MAX
+                      	 // Note: we may have to wait until the timeout = TIME2 MAX as the IUT
+                      	 // could also send another massage first and later the expected message                      	 	
+                      	 	setverdict(fail)
+                      }                     
+                }
+              
+            } //end test case TP_TC_USERDETAILS_BI_04            
+ 
+ 
+          	testcase Testcase_TP_TC_USERDETAILS_BI_05() runs on IutComp system TestAdapter {
+               
+                // Local variables
+
+                timer t_tseq, t_UserDetails_Time1, t_UserDetails_Time2, t_UserDetails_Timea                            
+                  
+                // Preamble - Initial conditions 
+                // No intial conditions according to TP
+                                             
+                // TP to be started at IUT side; perhaps via an External Function
+                // FIRST TRANSACTION
+                         
+                fx_initiateTransactionFromIut("TC_USERDETAILS");
+                t_tseq.start(initialiseTransactionTimeOut); // start transaction timeout timer                              
+                 
+                alt {
+                    // Transaction sequence #1
+                    [] iutPort.receive(mw_userDetailsRequest) -> value v_infoExchangeContent {
+                    	// RequestADU received with expected content
+                    	}
+                    
+                    // To be done: add logging with a function
+                      
+                    [] any timer.timeout {
+                      	 // nothing received or wrong content --> transaction timeout
+                      	 // Note: we may have to wait until the timeout as the IUT
+                      	 // could also send another massage first and later the expacted message
+                      	 // or we clearly forbid such behaviour for test purposes   
+                      	 setverdict(fail)
+                      	 }                     
+                }
+ 
+                // Transaction sequence #2
+                // Tester can send the next message (ProvideUserDetails) not immediately, as IUT (TC) may have defined a minimum value for TIME1.
+                // Therefore, timer required. Wait mode.
+                f_waitTime(USERDETAILS_TIME1_MIN_TC);
+                  
+                // After minimum timer elapses: send next message                 
+                iutPort.send(mw_provideUserDetailsInvalidAdu_UserParameterInvalidValues(
+                      m_userDetailsRequestAduInit.userDetailsRequest.listOfUserParametersRequested,
+                      m_invalid.userParametersInvalidValues) // UserParameter have invalid content 
+                )
+                  
+                // start timer for TIME2 immediately after sending the ProvideUserDetails
+                t_UserDetails_Time2.start(USERDETAILS_TIME2_MAX_TC);    
+                      
+                // Transaction sequence #3
+                // Tester expects to receive an AckADU within TIME2_MAX 
+                alt {
+                      // t.b.d. we need to take care on the correct APCI field values
+                      [] iutPort.receive(mw_AckAdu_SemanticError) -> value v_infoExchangeContent                    
+                     	// AckADU with Semantic Error received
+                     	
+                      [] any timer.timeout {
+                      	 // nothing received or wrong content --> timeout of transaction timer or TIME2 MAX
+                      	 // Note: we may have to wait until the timeout = TIME2 MAX as the IUT
+                      	 // could also send another massage first and later the expected message                      	 	
+                      	 	setverdict(fail)
+                      }                     
+                }
+              
+            } //end test case TP_TC_USERDETAILS_BI_05                     
+         } // End group Invalid Behaviour
      } // End group USERDETAILS    
       
     
