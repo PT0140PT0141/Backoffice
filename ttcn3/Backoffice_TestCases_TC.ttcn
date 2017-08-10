@@ -98,6 +98,8 @@ module Backoffice_TestCases_TC {
                       	 // or we clearly forbid such behaviour for test purposes   
                       	 setverdict(fail);
                       	 f_addLogEntry("Testcase_TP_TC_USERDETAILS_BV_01", " timeout in sequence #1");
+                      	 stop; //to stop test exceution at this stage and to avoid the sequences below are executed
+                      	 //the alternative is to move part below inside/nested into the receive branch above 
                       	 }                     
                 }
  
@@ -169,7 +171,9 @@ module Backoffice_TestCases_TC {
                       	 // could also send another massage first and later the expacted message
                       	 // or we clearly forbid such behaviour for test purposes   
                       	 setverdict(fail);
-                      	 f_addLogEntry("Testcase_TP_TC_USERDETAILS_BI_01", " timeout in sequence #1");                      	 
+                      	 f_addLogEntry("Testcase_TP_TC_USERDETAILS_BI_01", " timeout in sequence #1");
+                      	 stop; //to stop test exceution at this stage and to avoid the sequences below are executed
+                      	 //the alternative is to move part below inside/nested into the receive branch above                       	                       	 
                       	 }                     
                 }
  
@@ -237,7 +241,9 @@ module Backoffice_TestCases_TC {
                       	 // could also send another massage first and later the expacted message
                       	 // or we clearly forbid such behaviour for test purposes   
                       	 setverdict(fail);
-                      	 f_addLogEntry("Testcase_TP_TC_USERDETAILS_BI_02", " timeout in sequence #1");                      	 
+                      	 f_addLogEntry("Testcase_TP_TC_USERDETAILS_BI_02", " timeout in sequence #1");
+                      	 stop; //to stop test exceution at this stage and to avoid the sequences below are executed
+                      	 //the alternative is to move part below inside/nested into the receive branch above                       	                       	 
                       	 }                     
                 }
  
@@ -306,7 +312,9 @@ module Backoffice_TestCases_TC {
                       	 // could also send another massage first and later the expacted message
                       	 // or we clearly forbid such behaviour for test purposes   
                       	 setverdict(fail);
-                      	 f_addLogEntry("Testcase_TP_TC_USERDETAILS_BI_03", " timeout in sequence #1");                      	 
+                      	 f_addLogEntry("Testcase_TP_TC_USERDETAILS_BI_03", " timeout in sequence #1");
+                      	 stop; //to stop test exceution at this stage and to avoid the sequences below are executed
+                      	 //the alternative is to move part below inside/nested into the receive branch above                       	                       	 
                       	 }                     
                 }
  
@@ -375,7 +383,9 @@ module Backoffice_TestCases_TC {
                       	 // could also send another massage first and later the expacted message
                       	 // or we clearly forbid such behaviour for test purposes   
                       	 setverdict(fail);
-                      	 f_addLogEntry("Testcase_TP_TC_USERDETAILS_BI_04", " timeout in sequence #1");                      	 
+                      	 f_addLogEntry("Testcase_TP_TC_USERDETAILS_BI_04", " timeout in sequence #1");
+                      	 stop; //to stop test exceution at this stage and to avoid the sequences below are executed
+                      	 //the alternative is to move part below inside/nested into the receive branch above                       	                       	 
                       	 }                     
                 }
  
@@ -444,7 +454,9 @@ module Backoffice_TestCases_TC {
                       	 // could also send another massage first and later the expacted message
                       	 // or we clearly forbid such behaviour for test purposes   
                       	 setverdict(fail);
-                      	 f_addLogEntry("Testcase_TP_TC_USERDETAILS_BI_05", " timeout in sequence #1");                      	 
+                      	 f_addLogEntry("Testcase_TP_TC_USERDETAILS_BI_05", " timeout in sequence #1");
+                      	 stop; //to stop test exceution at this stage and to avoid the sequences below are executed
+                      	 //the alternative is to move part below inside/nested into the receive branch above                       	                       	 
                       	 }                     
                 }
  
