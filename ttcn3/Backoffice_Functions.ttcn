@@ -33,10 +33,13 @@ module Backoffice_Functions language "TTCN-3:2010 Advanced Parameterization" {
 	  var set of ADUs InfoExchange_ADUS;
 	  var InfoExchange v_info_Exchange;
 	  timer waitTimer;
-	   
-	  
+
 	function f_LogNotExecuted(in charstring theTestcase){
-		log("*** " & theTestcase & ": tescase not to be executed according to TP validity conditions and parameters in PICS ***");
+		log("*** " & theTestcase & ": testcase not to be executed according to TP validity conditions and parameters in PICS ***");
+		}
+
+	function f_addLogEntry(in charstring theTestcase, text){
+		log("*** " & theTestcase & : text);
 		}
 	  
 	function f_checkMinimumTime(in timer t_compare, in float v_timeMin) {	                      
@@ -50,6 +53,8 @@ module Backoffice_Functions language "TTCN-3:2010 Advanced Parameterization" {
 			// empty loop = do nothing, but just wait
 			}
 		}
+	
+
 	
 	// Function f_prepareInfoExchange to be used in case of multiple ADUs InfoExchange
 	// It  concatenates multiple ADUs into a single stream and prepare APCI accordingly
