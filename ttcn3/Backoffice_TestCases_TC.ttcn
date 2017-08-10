@@ -72,7 +72,7 @@ module Backoffice_TestCases_TC {
                
                 // Local variables
 
-                timer t_tseq, t_UserDetails_Time1, t_UserDetails_Time2, t_UserDetails_Timea                            
+                timer t_tseq, t_UserDetails_Time1, t_UserDetails_Time2                           
                   
                 // Preamble - Initial conditions 
                 // No intial conditions according to TP
@@ -96,7 +96,8 @@ module Backoffice_TestCases_TC {
                       	 // Note: we may have to wait until the timeout as the IUT
                       	 // could also send another massage first and later the expacted message
                       	 // or we clearly forbid such behaviour for test purposes   
-                      	 setverdict(fail)
+                      	 setverdict(fail);
+                      	 f_addLogEntry("Testcase_TP_TC_USERDETAILS_BV_01", " timeout in sequence #1");
                       	 }                     
                 }
  
@@ -120,13 +121,16 @@ module Backoffice_TestCases_TC {
                       // t.b.d. we need to take care on the correct APCI field values
                       [] iutPort.receive(mw_AckAdu) -> value v_infoExchangeContent {
                      	// AckADU received
+                     		setverdict(pass);
+                     		f_addLogEntry("Testcase_TP_TC_USERDETAILS_BV_01", getverdict);
                      	}
                      	
                       [] any timer.timeout {
                       	 // nothing received or wrong content --> timeout of transaction timer or TIME2 MAX
                       	 // Note: we may have to wait until the timeout = TIME2 MAX as the IUT
                       	 // could also send another massage first and later the expected message                      	 	
-                      	 	setverdict(fail)
+                      	 	setverdict(fail);
+                      	 	f_addLogEntry("Testcase_TP_TC_USERDETAILS_BV_01", "timeout in sequence #3");
                       }                     
                 }
               
@@ -164,7 +168,8 @@ module Backoffice_TestCases_TC {
                       	 // Note: we may have to wait until the timeout as the IUT
                       	 // could also send another massage first and later the expacted message
                       	 // or we clearly forbid such behaviour for test purposes   
-                      	 setverdict(fail)
+                      	 setverdict(fail);
+                      	 f_addLogEntry("Testcase_TP_TC_USERDETAILS_BI_01", " timeout in sequence #1");                      	 
                       	 }                     
                 }
  
@@ -186,14 +191,17 @@ module Backoffice_TestCases_TC {
                 // Tester expects to receive an AckADU within TIME2_MAX 
                 alt {
                       // t.b.d. we need to take care on the correct APCI field values
-                      [] iutPort.receive(mw_AckAdu_SemanticError) -> value v_infoExchangeContent                    
+                      [] iutPort.receive(mw_AckAdu_SemanticError) -> value v_infoExchangeContent {                   
                      	// AckADU with Semantic Error received
-                     	
+                     		setverdict(pass);
+                     		f_addLogEntry("Testcase_TP_TC_USERDETAILS_BI_01", getverdict);                     	
+                      }
                       [] any timer.timeout {
                       	 // nothing received or wrong content --> timeout of transaction timer or TIME2 MAX
                       	 // Note: we may have to wait until the timeout = TIME2 MAX as the IUT
                       	 // could also send another massage first and later the expected message                      	 	
-                      	 	setverdict(fail)
+                      	 	setverdict(fail);
+                      	 	f_addLogEntry("Testcase_TP_TC_USERDETAILS_BI_01", "timeout in sequence #3");                      	 	
                       }                     
                 }
               
@@ -228,7 +236,8 @@ module Backoffice_TestCases_TC {
                       	 // Note: we may have to wait until the timeout as the IUT
                       	 // could also send another massage first and later the expacted message
                       	 // or we clearly forbid such behaviour for test purposes   
-                      	 setverdict(fail)
+                      	 setverdict(fail);
+                      	 f_addLogEntry("Testcase_TP_TC_USERDETAILS_BI_02", " timeout in sequence #1");                      	 
                       	 }                     
                 }
  
@@ -250,14 +259,18 @@ module Backoffice_TestCases_TC {
                 // Tester expects to receive an AckADU within TIME2_MAX 
                 alt {
                       // t.b.d. we need to take care on the correct APCI field values
-                      [] iutPort.receive(mw_AckAdu_SemanticError) -> value v_infoExchangeContent                    
+                      [] iutPort.receive(mw_AckAdu_SemanticError) -> value v_infoExchangeContent {                    
                      	// AckADU with Semantic Error Ackreceived
+                     		setverdict(pass);
+                     		f_addLogEntry("Testcase_TP_TC_USERDETAILS_BI_02", getverdict);
+                      }	                     	
                      	
                       [] any timer.timeout {
                       	 // nothing received or wrong content --> timeout of transaction timer or TIME2 MAX
                       	 // Note: we may have to wait until the timeout = TIME2 MAX as the IUT
                       	 // could also send another massage first and later the expected message                      	 	
-                      	 	setverdict(fail)
+                      	 	setverdict(fail);
+                      	 	f_addLogEntry("Testcase_TP_TC_USERDETAILS_BI_02", "timeout in sequence #3");                      	 	
                       }                     
                 }
               
@@ -292,7 +305,8 @@ module Backoffice_TestCases_TC {
                       	 // Note: we may have to wait until the timeout as the IUT
                       	 // could also send another massage first and later the expacted message
                       	 // or we clearly forbid such behaviour for test purposes   
-                      	 setverdict(fail)
+                      	 setverdict(fail);
+                      	 f_addLogEntry("Testcase_TP_TC_USERDETAILS_BI_03", " timeout in sequence #1");                      	 
                       	 }                     
                 }
  
@@ -314,14 +328,18 @@ module Backoffice_TestCases_TC {
                 // Tester expects to receive an AckADU within TIME2_MAX 
                 alt {
                       // t.b.d. we need to take care on the correct APCI field values
-                      [] iutPort.receive(mw_AckAdu_SemanticError) -> value v_infoExchangeContent                    
+                      [] iutPort.receive(mw_AckAdu_SemanticError) -> value v_infoExchangeContent {                   
                      	// AckADU with Semantic Error received
+                     		setverdict(pass);
+                     		f_addLogEntry("Testcase_TP_TC_USERDETAILS_BI_03", getverdict);
+                      }                     	
                      	
                       [] any timer.timeout {
                       	 // nothing received or wrong content --> timeout of transaction timer or TIME2 MAX
                       	 // Note: we may have to wait until the timeout = TIME2 MAX as the IUT
                       	 // could also send another massage first and later the expected message                      	 	
-                      	 	setverdict(fail)
+                      	 	setverdict(fail);
+                      	 	f_addLogEntry("Testcase_TP_TC_USERDETAILS_BI_03", "timeout in sequence #3");                      	 	
                       }                     
                 }
               
@@ -356,7 +374,8 @@ module Backoffice_TestCases_TC {
                       	 // Note: we may have to wait until the timeout as the IUT
                       	 // could also send another massage first and later the expacted message
                       	 // or we clearly forbid such behaviour for test purposes   
-                      	 setverdict(fail)
+                      	 setverdict(fail);
+                      	 f_addLogEntry("Testcase_TP_TC_USERDETAILS_BI_04", " timeout in sequence #1");                      	 
                       	 }                     
                 }
  
@@ -378,14 +397,18 @@ module Backoffice_TestCases_TC {
                 // Tester expects to receive an AckADU within TIME2_MAX 
                 alt {
                       // t.b.d. we need to take care on the correct APCI field values
-                      [] iutPort.receive(mw_AckAdu_SemanticError) -> value v_infoExchangeContent                    
+                      [] iutPort.receive(mw_AckAdu_SemanticError) -> value v_infoExchangeContent {                   
                      	// AckADU with Semantic Error received
+                     		setverdict(pass);
+                     		f_addLogEntry("Testcase_TP_TC_USERDETAILS_BI_04", getverdict);
+                      }                     	
                      	
                       [] any timer.timeout {
                       	 // nothing received or wrong content --> timeout of transaction timer or TIME2 MAX
                       	 // Note: we may have to wait until the timeout = TIME2 MAX as the IUT
                       	 // could also send another massage first and later the expected message                      	 	
-                      	 	setverdict(fail)
+                      	 	setverdict(fail);
+                      	 	f_addLogEntry("Testcase_TP_TC_USERDETAILS_BI_04", "timeout in sequence #3");                      	 	
                       }                     
                 }
               
@@ -420,7 +443,8 @@ module Backoffice_TestCases_TC {
                       	 // Note: we may have to wait until the timeout as the IUT
                       	 // could also send another massage first and later the expacted message
                       	 // or we clearly forbid such behaviour for test purposes   
-                      	 setverdict(fail)
+                      	 setverdict(fail);
+                      	 f_addLogEntry("Testcase_TP_TC_USERDETAILS_BI_05", " timeout in sequence #1");                      	 
                       	 }                     
                 }
  
@@ -442,14 +466,18 @@ module Backoffice_TestCases_TC {
                 // Tester expects to receive an AckADU within TIME2_MAX 
                 alt {
                       // t.b.d. we need to take care on the correct APCI field values
-                      [] iutPort.receive(mw_AckAdu_SemanticError) -> value v_infoExchangeContent                    
+                      [] iutPort.receive(mw_AckAdu_SemanticError) -> value v_infoExchangeContent {                   
                      	// AckADU with Semantic Error received
+                     		setverdict(pass);
+                     		f_addLogEntry("Testcase_TP_TC_USERDETAILS_BI_05", getverdict);
+                      }                     	
                      	
                       [] any timer.timeout {
                       	 // nothing received or wrong content --> timeout of transaction timer or TIME2 MAX
                       	 // Note: we may have to wait until the timeout = TIME2 MAX as the IUT
                       	 // could also send another massage first and later the expected message                      	 	
-                      	 	setverdict(fail)
+                      	 	setverdict(fail);
+                      	 	f_addLogEntry("Testcase_TP_TC_USERDETAILS_BI_05", "timeout in sequence #3");                      	 	
                       }                     
                 }
               
