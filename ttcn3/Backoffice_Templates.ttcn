@@ -73,21 +73,18 @@ module Backoffice_Templates language "TTCN-3:2010 Advanced Parameterization" {
 
 	template RequestADU m_user_Details_Request := {
 	  	requestedADUType := provideUserDetailsADU,
-	  	userId := definedUserid,
-		listOfParametersRequested := omit,
+	  	userId := DEFINED_USERID,
+		listOfParametersRequested := ?,
 		userDetailsRequestReason := omit,
 		userInfoValidityPeriod := omit
 	}
 // Two invalid User Details Request ADUs concatenated. First one without userid, second one with empty list of parameters
 	template provideUserDetailsADUs m_user_Details_Invalid_Request := {
-	  m_user_Details_Request {userId := null},
+	  m_user_Details_Request {listOfParametersRequested := omit},
 	  m_user_Details_Request {listOfParametersRequested := null}
 	}
 
-	template RequestADU m_user_Details_PrivacyBound_Request := {
-	  
-	}
-	
+
 	template AckADU m_defaultAck := {
 	  ApduIdentifier := ?,
 	  explicitlyAckedAdus := optional,
