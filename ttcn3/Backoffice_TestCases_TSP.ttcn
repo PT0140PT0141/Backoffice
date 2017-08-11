@@ -76,13 +76,20 @@ module Backoffice_TestCases_TSP {
                 var ProvideUserDetailsADUs v_userDetails;
 				var ApduIdentifier v_receivedAPDUIdentifier;
 				var UserId v_Userid; // value to be taken from PIXIT
-                    
+				var listOfParametersRequested v_ListOfParameters;   
                    
                  // Preamble - Initial Conditions
+                 v_Userid := DEFINED_USERID; // value to be taken from PIXIT 
+// we want to ask a random number of parameters randomly chosen among those supported
+                 const maxParms := float2int(rnd()) mod sizeof(SUPPORTED_LIST_OF_PARAMETERS);
+                 for (var integer v_ct :=0; v_ct<maxParms;v_ct:=v_ct+1) {
+                   v_ListOfParameters[v_ct] := SUPPORTED_LIST_OF_PARAMETERS[float2int(rnd()) mod sizeof(SUPPORTED_LIST_OF_PARAMETERS)];
+                 };
                  f_Backoffice_Preamble();
                  // Front End shall initially receive a Request
                  // named as Transaction sequence #1
-                 f_SendAPDU(m_user_Details_Request userId := v_Userid);
+                 
+                 f_SendAPDU(m_user_Details_Request {listOfParametersRequested := v_ListOfParameters});
     
                  // Preamble done
     
@@ -126,15 +133,18 @@ module Backoffice_TestCases_TSP {
                 var Apci v_apci;
                 var ProvideUserDetailsADUs v_userDetails;
 				var ApduIdentifier v_receivedAPDUIdentifier;
- 				var UserId v_Userid; // value to be taken from PIXIT
- 				                   
+ 				var UserId v_Userid;
+				var listOfParametersRequested v_ListOfParameters;    				                   
                    
                  // Preamble - Initial Conditions
+                v_Userid := DEFINED_USERID; // value to be taken from PIXIT 
+				v_ListOfParameters := PRIVACYBOUND_LIST_OF_PARAMETERS;   
+
                  f_Backoffice_Preamble();
                  // Front End shall initially receive a Request
                  // named as Transaction sequence #1
                 
-				f_SendRequestAPDU(m_user_Details_PrivacyBound_Request userId := v_Userid);
+				 f_SendAPDU(m_user_Details_Request {listOfParametersRequested := v_ListOfParameters});
 
                 // Preamble done
 
@@ -179,9 +189,7 @@ module Backoffice_TestCases_TSP {
 
                 var AckADU v_receivedAck;
 				var InfoExchangeContent v_infoExchangeContent;
-				var ApduIdentifier v_APDUIdentifier;
-				var UserId v_Userid; // value to be taken from PIXIT
-				
+				var ApduIdentifier v_APDUIdentifier;				
                 
                 
                 // Preamble - Initial Conditions
@@ -226,18 +234,24 @@ module Backoffice_TestCases_TSP {
                 var ProvideUserDetailsADU v_userDetails;
 				var UserId v_Userid; // value to be taken from PIXIT
 				var ApduIdentifier v_receivedAPDUIdentifier;
-				var record of integer v_SupportedParameters; // should be initialised with PIXIT value supportedListOfParameters
+				var listOfParametersRequested v_SupportedParameters; // should be initialised with PIXIT value supportedListOfParameters
+                var integer v_unsupported;
+                var boolean found;
                 
                 // Preamble - Initial Conditions
                 f_Backoffice_Preamble();
 
 // Front End shall initially receive a Request named as Transaction sequence #1
 // Create a value that is not supported by the IUT
-				for (var integer v_Support :=1; v_Support:=v_Support+1)
-					if not(isvalue(v_SupportedParameters{v_Support}) ) v_unsupported := v_Support; break;
+				v_SupportedParameters := SUPPORTED_LIST_OF_PARAMETERS;
+				found := false;
+				for (var integer v_Support :=0;  v_Support:=v_Support+1, found := false)
+					for (var integer v_ind := 0, v_ind < sizeof(SUPPORTED_LIST_OF_PARAMETERS), v_ind := v_ind + 1)
+						if NOT( v_SupportedParameters[v_IND]  := v_Support) v_unsupported := v_Support; found := true; break;
+						continue;
 					continue;
 // Invalid Parameter to be requested found and to be sent to IuT	
-                f_SendRequestAPDU(m_user_Details_Request {userId := v_Userid,listOfParametersRequested := v_unsupported}) -> value v_APDUIdentifier; // Store assigned identifier for checking correct AcK
+                f_SendRequestAPDU(m_user_Details_Request {userId := v_Userid,listOfParametersRequested[0] := v_unsupported}) -> value v_APDUIdentifier; // Store assigned identifier for checking correct AcK
 
                 // Preamble done
 
@@ -271,18 +285,16 @@ module Backoffice_TestCases_TSP {
                 var ProvideUserDetailsADU v_userDetails;
 				var UserId v_Userid; // value to be taken from PIXIT
 				var ApduIdentifier v_receivedAPDUIdentifier;
-				var record of integer v_NotAgreedParameters; // should be initialised with PIXIT value notAgreedListOfParameters
+				var integer v_unsupported; // should be initialised with PIXIT value notAgreedListOfParameters
                 
                 // Preamble - Initial Conditions
                 f_Backoffice_Preamble();
 
 // Front End shall initially receive a Request named as Transaction sequence #1
-// Create a value that is not supported by the IUT
-				for (var integer v_Support :=1; v_Support:=v_Support+1)
-					if isvalue(v_NotAgreedParameters{v_Support}) v_unsupported := v_Support; break;
-					continue;
-// Invalid Parameter to be requested found and to be sent to IuT	
-                f_SendRequestAPDU(m_user_Details_Request {userId := v_Userid,listOfParametersRequested := v_unsupported}) -> value v_APDUIdentifier; // Store assigned identifier for checking correct AcK
+/// Take a random value among those  not agreed upon by the IUT
+				v_unsupported := NOT_AGREED_LIST[float2int(rnd()) mod sizeof(NOT_AGREED_LIST)];
+
+                f_SendRequestAPDU(m_user_Details_Request {listOfParametersRequested[0] := v_unsupported}) -> value v_APDUIdentifier; // Store assigned identifier for checking correct AcK
 
                 // Preamble done
 
@@ -292,7 +304,7 @@ module Backoffice_TestCases_TSP {
 // Either we receive an APDU containing Nack or the timeout expires
 // timeout expiration handling is in the altstep branch	
                 alt {
-                    [] f_receiveAPDUs(mw_userDetails {userid := v_Userid, listOfUserParameters.userParameterStatus := 3, listOfUserParameters.UserParameterResponse := omit, listOfUserParameters.userInfoValidityPeriod := omit }, v_apci, v_userDetails,  v_apci, v_receivedAck) { // No specific test was required
+                    [] f_receiveAPDUs(mw_userDetails {listOfUserParameters.userParameterStatus := 3, listOfUserParameters.UserParameterResponse := omit, listOfUserParameters.userInfoValidityPeriod := omit }, v_apci, v_userDetails,  v_apci, v_receivedAck) { // No specific test was required
                         // Stop timer
                         t_UserDetails_Time1.stop;
                        //  Set verdict pass
