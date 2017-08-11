@@ -6,20 +6,26 @@
 module Backoffice_Pixits {
 
     modulepar float initialiseTransactionTimeOut := 10.0;
-    modulepar xxx definedUserid := {
+    modulepar UserId DEFINED_USERID := {
       pan := *,
       contractSerialNumber := *,
       licensePlateNumber := *,
       obeId := *
     }
     
-    modulepar record of integer supportedListOfParameters := {
+    modulepar record of integer SUPPORTED_LIST_OF_PARAMETERS := {
+      
+    }
+ 
+     modulepar record of integer PRIVACYBOUND_LIST_OF_PARAMETERS := {
+      
+    }   
+     
+     modulepar record of integer NOT_AGREED_LIST := {
       
     }
     
-     modulepar record of integer notAgreedListOfParameters := {
-      
-    }
+
     
 
     
