@@ -61,14 +61,14 @@ module Backoffice_Templates language "TTCN-3:2010 Advanced Parameterization" {
 	template ApciFields m_apciFields  { 
 
 		aidIdentifier := 1, // 12855 Protocol Version number 
-		apduOriginator := ?, // Source of the content of the APDU 
-		informationSenderID := ?, // Sender of this content 
-		informationrecipientID := ?,  
-		apduIdentifier := ?,
-		previousApduId := omit,
+		apduOriginator := *, // Source of the content of the APDU 
+		informationSenderID := *, // Sender of this content 
+		informationrecipientID := *,  
+		apduIdentifier := *,
+		previousApduId := optional,
 		nextApduId := omit,
-		inResponseToApduId := omit, 
-		apduDate :=  ?
+		inResponseToApduId := optional, 
+		apduDate :=  *
 	} 
 
 	template RequestADU m_user_Details_Request := {
@@ -96,23 +96,25 @@ module Backoffice_Templates language "TTCN-3:2010 Advanced Parameterization" {
 	
 	template ProvideUserDetailsADU mw_userDetailsPrivacy_apduIdentifier := {
 	  
-	  originaluserIdRequest := ?,
-	  userId := ?,
+	  originaluserIdRequest := *,
+	  userId := *,
 	  statusFlag := optional ,
 	  listOfUserParameters.UserParameterResponse := omit,
-	  listOfUserParameters.userParameterResponse := ?,
+	  listOfUserParameters.userParameterResponse := *,
 	  listOfUserParameters.userParameterStatus := 2,
 	  listOfUserParameters.userInfoValidityPeriod := omit
 	  
 	}
 	
 	template ProvideUserDetailsADU mw_userDetails := {
-	  originaluserIdRequest := ?,
-	  userId := ?,
+	  originaluserIdRequest := *,
+	  userId := *,
 	  statusFlag := optional ,
-	  listOfUserParameters := optional
+	  listOfUserParameters := *
 	}
 	
+    modulepar Provider TESTER_ID := *;
+    
     modulepar integer semanticError := 3000;
  	
  	modulepar integer actionCodeNotSupported := 3010;

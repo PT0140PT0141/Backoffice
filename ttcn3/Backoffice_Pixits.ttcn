@@ -6,6 +6,10 @@
 module Backoffice_Pixits {
 
     modulepar float initialiseTransactionTimeOut := 10.0;
+    
+    modulepar Provider ORIGINATOR := *;
+    modulepar Provider SENDER := *;
+    modulepar Provider IUT_DESTINATION := *;
     modulepar UserId DEFINED_USERID := {
       pan := *,
       contractSerialNumber := *,

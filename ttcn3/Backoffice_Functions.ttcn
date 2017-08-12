@@ -17,7 +17,7 @@ module Backoffice_Functions language "TTCN-3:2010 Advanced Parameterization" {
          * @see     Clauses 7. EFC communication services (functions)
          * @see     Clauses 8. The use of a communication stack)
          */
-        //external function fx_templateWeMightNeedSomethingLikeThis() return CommunicationErrorCodes ;
+       external function f_compute_authenticator(in var InfoExchangeContent v_InfoExchange) return infoExchangeAuthenticator ;
         
         group Security {        
             /**
@@ -54,31 +54,55 @@ module Backoffice_Functions language "TTCN-3:2010 Advanced Parameterization" {
 			}
 		}
 	
-
-	
-	// Function f_prepareInfoExchange to be used in case of multiple ADUs InfoExchange
+	// Function f_prepare_toReceive_InfoExchange to put ADUs together with APCIS and prepare InfoExchange to be received
 	// It  concatenates multiple ADUs into a single stream and prepare APCI accordingly
-	function f_prepareInfoExchange(in InfoExchange_ADUS v_InfoExchange_ADUS, in boolean v_authenticate, out InfoExchange v_Infoexchange) {
-	  
+	
+	function f_prepare_toReceive_InfoExchange(in ADUS v_InfoExchange_ADUS) return InfoExchange {
+		var InfoExchangeContent v_InfoexchangeContent;
+		var InfoExchange v_InfoExchange;
+		v_InfoexchangeContent.apci := m_apciFields  { apduOriginator := ORIGINATOR, informationSenderID := SENDER, 
+			informationrecipientID := TESTER_ID,
+			};
+		v_InfoexchangeContent.adus := v_InfoExchange_ADUS;
+		v_InfoExchange.infoExchangeContent := v_InfoexchangeContent;
+		v_InfoExchange.infoExchangeAuthenticator := AnyOrOmit;
+		
+		return v_Infoexchange;
+		}
+
+	function f_prepare_toSend_InfoExchange(in ADUS v_InfoExchange_ADUS, in integer v_APDU_To_Answer) return InfoExchange {
+		var InfoExchangeContent v_InfoexchangeContent;
+		var InfoExchange v_InfoExchange;
+		if (v_APDU_To_Answer != null) {
+			v_InfoexchangeContent.apci := m_apciFields  { apduOriginator := TESTER_ID, informationSenderID := TESTER_ID, 
+				informationrecipientID := ORIGINATOR
+				};
+			}
+		else {
+			v_InfoexchangeContent.apci := m_apciFields  { apduOriginator := TESTER_ID, informationSenderID := TESTER_ID, 
+				informationrecipientID := ORIGINATOR, RelatedApduId.apduOriginator := ORIGINATOR,
+				RelatedApduId.apduIdentifier := float2int(rnd())
+				};
+			}
+		v_InfoexchangeContent.adus := v_InfoExchange_ADUS;
+		v_InfoExchange.infoExchangeContent := v_InfoexchangeContent;
+		
+		return v_Infoexchange;
 		}
 	
-	// Function f_receiveAPDUs receives APDU containing ADUs of the specified type and passes back 
-	// the APCI part and the ADU's part in two variables
-	function f_receiveAPDUs(in Adus, out ApciFields v_apci, out Adus v_adus) {
-	  
-		}
 
 	// Function f_SendAPDU sends the APDU by using the given APDU in the given port and calculating the Authenticator, if requested
-	function f_SendAPDU (in port t_port, in  template (value) InfoExchange t_APDU) {
+	function f_SendAPDU (in InfoExchange t_APDU) {
 		 if (not (PICS_SECURED_MODE)) {
-                pco.send(m_InfoExchange_unsecured(t_APDU));
+                v_InfoExchange.infoExchangeAuthenticator := omit;
             } else {
-                var template (value) AuthenticatedInfoExchange v_secured_packet;
-                f_secured_packet(p_InfoExchange_Adu, v_secured_packet);
-                pco.send(m_InfoExchange_secured(v_secured_packet));
-            }	  
+                v_InfoExchange.infoExchangeAuthenticator := f_compute_authenticator(v_InfoexchangeContent);
+            }
+            
+          IutComp.send(v_InfoExchange);
+             	  
 	}
 	
 	}
-	}
-} 
+}
+ 
