@@ -87,7 +87,7 @@ module Backoffice_TestCases_TSP {
 // the v_listOfParameters record will be made of a random number of elements containing randomly picked up
 // parameter identifiers from the list of supported parameters (PIXIT value)
 
-                 const maxParms := float2int(rnd()) mod sizeof(SUPPORTED_LIST_OF_PARAMETERS);
+                 const integer maxParms := float2int(rnd()) mod sizeof(SUPPORTED_LIST_OF_PARAMETERS);
                  for (var integer v_ct :=0; v_ct<maxParms;v_ct:=v_ct+1) {
                    v_ListOfParameters[v_ct] := SUPPORTED_LIST_OF_PARAMETERS[float2int(rnd()) mod sizeof(SUPPORTED_LIST_OF_PARAMETERS)];
                  };
