@@ -106,6 +106,8 @@ module Backoffice_Templates language "TTCN-3:2010 Advanced Parameterization" {
 	  
 	}
 	
+	//PT140: to check if optional elements which are not specified are omitted by default  
+	
 	template ProvideUserDetailsADU mw_userDetails := {
 	  originaluserIdRequest := *,
 	  userId := *,

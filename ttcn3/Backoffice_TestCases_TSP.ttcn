@@ -96,22 +96,22 @@ module Backoffice_TestCases_TSP {
 // of the record of type requestAdus
 // The f_prepare_toSend_InfoExchange function builds the APDU to be sent from the record of ADUs provided
                 
-                 v_Request[0] := f_prepare_toSend_InfoExchange(m_user_Details_Request{listOfParametersRequested := v_ListOfParameters});
+                 v_infoExchangeContent := f_createInfoExchange(m_user_Details_Request{listOfParametersRequested := v_ListOfParameters});
  
- // The ADU is sent by the f_sendAPDU function, which builds the apci for InfoExchangeContent and appends
+ // The ADU is sent by the f_sendAPDU function, which appends
  // the ApduAuthenticator if so requirered by the PICS               
                 
-                 f_SendAPDU(v_Request);
+                 f_sendApdu(v_infoExchangeContent);
                  
  // Prepare data to receive
 				v_userDetails := mw_userDetails;
 // The f_prepare_toReceive_InfoExchange function prepares the InfoExchangeContent by concatenating the expected
 // ADU to be received with the proper apci and returns the complete APDU to be received
 				
-				v_infoExchange := f_prepare_toReceive_InfoExchange (v_userDetails) ;  
+				v_infoExchange := f_createInfoExchangeForComparison(v_userDetails);  
     
 // Test body start
-                 t_UserDetails_Time1.start;
+                 t_UserDetails_Time1.start(c_USERDETAILS_TIME1_MAX_TSP);
 // Transaction sequence #2: Wait for UserDetails message
 				 					
 // Either we receive an APDU containing Provide User Details ADU(s) or the timeout expires
@@ -119,24 +119,24 @@ module Backoffice_TestCases_TSP {
 
                  alt {
  // Storing what we received in the same variable (not very clean ...)
-                      [] IutComp.receive(v_infoExchange) -> value v_infoExchange {
+                      [] IutComp.receive(v_infoExchange) -> value v_infoExchangeReceived {
                       		
 						// User Details ADU arrived. Stop timer
                         	t_UserDetails_Time1.stop;
-                            
+                        	f_checkMinimumTime(t_UserDetails_Time1, c_USERDETAILS_TIME1_MIN_TSP);
+                       
                         // Transaction sequence #3: Send DefaultACK with correct identifier and set verdict
-                        
-                        v_receivedAPDUIdentifier := v_infoExchange.apci.apduIdentifier;
 
 						// The f_prepare_toSend_InfoExchange function builds the APDU to be sent from the record of ADUs provided
                 
-                 		v_Ack[0] := f_prepare_toSend_InfoExchange(m_defaultAck);
+                 			v_infoExchangeContentToBeSent := f_createInfoExchange(m_defaultAck);
+ 							v_infoExchangeContentToBeSent.apci.apduIdentifier := v_infoExchangeReceived.apci.apduIdentifier;
  
  // The ADU is sent by the f_sendAPDU function, which builds the apci for InfoExchangeContent and appends
  // the ApduAuthenticator if so requirered by the PICS
  // Note that this time we pass the identifier of the APDU to be Acked, because that is required by 16986 for Acks               
                 
-						f_SendAPDU(v_Ack, v_receivedAPDUIdentifier);
+						f_SendAPDU(v_infoExchangeContentToBeSent);
 
 //                       
 						setverdict(pass);

@@ -31,12 +31,16 @@ module Backoffice_Functions language "TTCN-3:2010 Advanced Parameterization" {
 		log("*** " & theTestcase & ": testcase not to be executed according to TP validity conditions and parameters in PICS ***");
 		}
 
-	function f_addLogEntry(in charstring theTestcase, text){
-		log("*** " & theTestcase & : text);
+	function f_addLogEntry(in charstring text){
+		log("*** " & testcasename() & ":" & text);
 		}
 	  
 	function f_checkMinimumTime(in timer t_compare, in float v_timeMin) {	                      
-        if (t_compare.read <= v_timeMin) {setverdict(fail)};
+        if (t_compare.read <= v_timeMin) {
+        	setverdict(fail);
+        	f_addLogEntry("minimum time not correct");
+        	stop
+        	};
     	}  
     	
     // Function which inserts a waiting time - parameter t_wait - und waits in a "do-nothing-loop"
@@ -50,7 +54,7 @@ module Backoffice_Functions language "TTCN-3:2010 Advanced Parameterization" {
 	// Function f_prepare_toReceive_InfoExchange to put ADUs together with APCIS and prepare InfoExchange to be received
 	// It  concatenates multiple ADUs into a single stream and prepare APCI accordingly
 	
-	function f_prepare_toReceive_InfoExchange(in ADUS v_InfoExchange_ADUS) return InfoExchange {
+	function f_createInfoExchangeForComparison(in ADUS v_InfoExchange_ADUS) return InfoExchange {
 		var InfoExchangeContent v_InfoexchangeContent;
 		var InfoExchange v_InfoExchange;
 		v_InfoexchangeContent.apci := m_apciFields  { apduOriginator := ORIGINATOR, informationSenderID := SENDER, 
@@ -63,7 +67,7 @@ module Backoffice_Functions language "TTCN-3:2010 Advanced Parameterization" {
 		return v_Infoexchange;
 		}
 
-	function f_prepare_toSend_InfoExchange(in ADUS v_InfoExchange_ADUS, in integer v_APDU_To_Answer) return InfoExchange {
+	function f_createInfoExchange(in ADUS v_InfoExchange_ADUS, in integer v_APDU_To_Answer) return InfoExchange {
 		var InfoExchangeContent v_InfoexchangeContent;
 		var InfoExchange v_InfoExchange;
 		if (v_APDU_To_Answer != null) {
@@ -81,19 +85,20 @@ module Backoffice_Functions language "TTCN-3:2010 Advanced Parameterization" {
 		v_InfoexchangeContent.adus := v_InfoExchange_ADUS;
 		v_InfoExchange.infoExchangeContent := v_InfoexchangeContent;
 		
-		return v_Infoexchange;
+		return v_infoExchange;
 		}
 	
 
 	// Function f_SendAPDU sends the APDU by using the given APDU in the given port and calculating the Authenticator, if requested
-	function f_SendAPDU (in InfoExchange t_APDU) {
+	function f_sendAPDU (in InfoExchangeContent v_infoExchangeContent) {
+		 var InfoExchange v_infoExchange;
 		 if (not (PICS_SECURED_MODE)) {
-                v_InfoExchange.infoExchangeAuthenticator := omit;
+                v_infoExchange.infoExchangeAuthenticator := omit;  //PT140: check if omit or null or something else 
             } else {
-                v_InfoExchange.infoExchangeAuthenticator := fx_computeAuthenticator(v_InfoexchangeContent);
+                v_infoExchange.infoExchangeAuthenticator := fx_computeAuthenticator(v_infoExchangeContent);
             }
-            
-          IutComp.send(v_InfoExchange);
+          v_infoExchange.infoExchangeContent := v_infoExchangeContent;  
+          IutComp.send(v_infoExchange);
              	  
 	}
 	
