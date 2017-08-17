@@ -72,7 +72,8 @@ module Backoffice_TestCases_TC {
                
                 // Local variables
 
-                timer t_tseq, t_UserDetails_Time1, t_UserDetails_Time2                           
+                timer t_tseq, t_UserDetails_Time1, t_UserDetails_Time2
+                var InfoExchange v_infoExchange                           
                   
                 // Preamble - Initial conditions 
                 // No intial conditions according to TP
@@ -85,12 +86,11 @@ module Backoffice_TestCases_TC {
                  
                 alt {
                     // Transaction sequence #1
-                    [] iutPort.receive(mw_userDetailsRequest) -> value v_infoExchangeContent {
+                    [] iutPort.receive(mw_userDetailsRequest) -> value v_infoExchange {
                     	// RequestADU received with expected content
+                    	// Need to decompose the received APDU here for re-use of some data in the ProvideUserDetailsAPDU
                     	}
-                    
-                    // To be done: add logging with a function
-                      
+                                          
                     [] any timer.timeout {
                       	 // nothing received or wrong content --> transaction timeout
                       	 // Note: we may have to wait until the timeout as the IUT
@@ -108,7 +108,8 @@ module Backoffice_TestCases_TC {
                 // Therefore, timer required. Wait mode.
                 f_waitTime(USERDETAILS_TIME1_MIN_TC);
                   
-                // After minimum timer elapses: send next message                 
+                // After minimum timer elapses: send next message
+                // to be changed. Not correct.                 
                 iutPort.send(mw_provideUserDetailsAdu(
                       m_userDetailsRequestAduInit.userDetailsRequest.listOfUserParametersRequested,
                       m_userDetailsRequestAduInit.userDetailsRequest.userId)
@@ -121,7 +122,7 @@ module Backoffice_TestCases_TC {
                 // Tester expects to receive an AckADU within TIME2_MAX 
                 alt {
                       // t.b.d. we need to take care on the correct APCI field values
-                      [] iutPort.receive(mw_AckAdu) -> value v_infoExchangeContent {
+                      [] iutPort.receive(mw_AckAdu) -> value v_infoExchange {
                      	// AckADU received
                      		setverdict(pass);
                      		f_addLogEntry("Testcase_TP_TC_USERDETAILS_BV_01", getverdict);
@@ -159,7 +160,7 @@ module Backoffice_TestCases_TC {
                  
                 alt {
                     // Transaction sequence #1
-                    [] iutPort.receive(mw_userDetailsRequest) -> value v_infoExchangeContent {
+                    [] iutPort.receive(mw_userDetailsRequest) -> value v_infoExchange {
                     	// RequestADU received with expected content
                     	}
                     
@@ -195,7 +196,7 @@ module Backoffice_TestCases_TC {
                 // Tester expects to receive an AckADU within TIME2_MAX 
                 alt {
                       // t.b.d. we need to take care on the correct APCI field values
-                      [] iutPort.receive(mw_AckAdu_SemanticError) -> value v_infoExchangeContent {                   
+                      [] iutPort.receive(mw_AckAdu_SemanticError) -> value v_infoExchange {                   
                      	// AckADU with Semantic Error received
                      		setverdict(pass);
                      		f_addLogEntry("Testcase_TP_TC_USERDETAILS_BI_01", getverdict);                     	
@@ -229,7 +230,7 @@ module Backoffice_TestCases_TC {
                  
                 alt {
                     // Transaction sequence #1
-                    [] iutPort.receive(mw_userDetailsRequest) -> value v_infoExchangeContent {
+                    [] iutPort.receive(mw_userDetailsRequest) -> value v_infoExchange {
                     	// RequestADU received with expected content
                     	}
                     
@@ -265,7 +266,7 @@ module Backoffice_TestCases_TC {
                 // Tester expects to receive an AckADU within TIME2_MAX 
                 alt {
                       // t.b.d. we need to take care on the correct APCI field values
-                      [] iutPort.receive(mw_AckAdu_SemanticError) -> value v_infoExchangeContent {                    
+                      [] iutPort.receive(mw_AckAdu_SemanticError) -> value v_infoExchange {                    
                      	// AckADU with Semantic Error Ackreceived
                      		setverdict(pass);
                      		f_addLogEntry("Testcase_TP_TC_USERDETAILS_BI_02", getverdict);
@@ -300,7 +301,7 @@ module Backoffice_TestCases_TC {
                  
                 alt {
                     // Transaction sequence #1
-                    [] iutPort.receive(mw_userDetailsRequest) -> value v_infoExchangeContent {
+                    [] iutPort.receive(mw_userDetailsRequest) -> value v_infoExchange {
                     	// RequestADU received with expected content
                     	}
                     
@@ -336,7 +337,7 @@ module Backoffice_TestCases_TC {
                 // Tester expects to receive an AckADU within TIME2_MAX 
                 alt {
                       // t.b.d. we need to take care on the correct APCI field values
-                      [] iutPort.receive(mw_AckAdu_SemanticError) -> value v_infoExchangeContent {                   
+                      [] iutPort.receive(mw_AckAdu_SemanticError) -> value v_infoExchange {                   
                      	// AckADU with Semantic Error received
                      		setverdict(pass);
                      		f_addLogEntry("Testcase_TP_TC_USERDETAILS_BI_03", getverdict);
@@ -371,7 +372,7 @@ module Backoffice_TestCases_TC {
                  
                 alt {
                     // Transaction sequence #1
-                    [] iutPort.receive(mw_userDetailsRequest) -> value v_infoExchangeContent {
+                    [] iutPort.receive(mw_userDetailsRequest) -> value v_infoExchange {
                     	// RequestADU received with expected content
                     	}
                     
@@ -407,7 +408,7 @@ module Backoffice_TestCases_TC {
                 // Tester expects to receive an AckADU within TIME2_MAX 
                 alt {
                       // t.b.d. we need to take care on the correct APCI field values
-                      [] iutPort.receive(mw_AckAdu_SemanticError) -> value v_infoExchangeContent {                   
+                      [] iutPort.receive(mw_AckAdu_SemanticError) -> value v_infoExchange {                   
                      	// AckADU with Semantic Error received
                      		setverdict(pass);
                      		f_addLogEntry("Testcase_TP_TC_USERDETAILS_BI_04", getverdict);
@@ -442,7 +443,7 @@ module Backoffice_TestCases_TC {
                  
                 alt {
                     // Transaction sequence #1
-                    [] iutPort.receive(mw_userDetailsRequest) -> value v_infoExchangeContent {
+                    [] iutPort.receive(mw_userDetailsRequest) -> value v_infoExchange {
                     	// RequestADU received with expected content
                     	}
                     
@@ -478,7 +479,7 @@ module Backoffice_TestCases_TC {
                 // Tester expects to receive an AckADU within TIME2_MAX 
                 alt {
                       // t.b.d. we need to take care on the correct APCI field values
-                      [] iutPort.receive(mw_AckAdu_SemanticError) -> value v_infoExchangeContent {                   
+                      [] iutPort.receive(mw_AckAdu_SemanticError) -> value v_infoExchange {                   
                      	// AckADU with Semantic Error received
                      		setverdict(pass);
                      		f_addLogEntry("Testcase_TP_TC_USERDETAILS_BI_05", getverdict);
