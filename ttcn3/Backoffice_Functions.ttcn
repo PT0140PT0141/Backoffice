@@ -17,15 +17,8 @@ module Backoffice_Functions language "TTCN-3:2010 Advanced Parameterization" {
          * @see     Clauses 7. EFC communication services (functions)
          * @see     Clauses 8. The use of a communication stack)
          */
-       external function f_compute_authenticator(in var InfoExchangeContent v_InfoExchange) return infoExchangeAuthenticator ;
+       external function fx_computeAuthenticator(in InfoExchangeContent v_InfoExchange) return infoExchangeAuthenticator;
         
-        group Security {        
-            /**
-             * @desc Initialise external security module
-             * @return true on success, false  otherwise
-             */
-            external function fx_aGroupWithinAGroup_PerhapsWeNeedThis() return boolean;
-        }  
     } 
 
 	group Internal {
@@ -81,6 +74,7 @@ module Backoffice_Functions language "TTCN-3:2010 Advanced Parameterization" {
 		else {
 			v_InfoexchangeContent.apci := m_apciFields  { apduOriginator := TESTER_ID, informationSenderID := TESTER_ID, 
 				informationrecipientID := ORIGINATOR, RelatedApduId.apduOriginator := ORIGINATOR,
+//PT140: Need to look at all uses of random to put in a multiplier that gives the right range
 				RelatedApduId.apduIdentifier := float2int(rnd())
 				};
 			}
@@ -96,7 +90,7 @@ module Backoffice_Functions language "TTCN-3:2010 Advanced Parameterization" {
 		 if (not (PICS_SECURED_MODE)) {
                 v_InfoExchange.infoExchangeAuthenticator := omit;
             } else {
-                v_InfoExchange.infoExchangeAuthenticator := f_compute_authenticator(v_InfoexchangeContent);
+                v_InfoExchange.infoExchangeAuthenticator := fx_computeAuthenticator(v_InfoexchangeContent);
             }
             
           IutComp.send(v_InfoExchange);
