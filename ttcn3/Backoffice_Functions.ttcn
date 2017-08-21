@@ -27,9 +27,41 @@ module Backoffice_Functions language "TTCN-3:2010 Advanced Parameterization" {
 	  var InfoExchange v_info_Exchange;
 	  timer waitTimer;
 
-	function f_LogNotExecuted(in charstring theTestcase){
-		log("*** " & theTestcase & ": testcase not to be executed according to TP validity conditions and parameters in PICS ***");
-		}
+        /**
+         * @desc        ADU filtering for received messages on IuTComp
+         * @verdict     Unchanged on success, fail otherwise and the component is stopped if PX_ProcessUnexpectedADUAsError is set to true
+         */
+        altstep a_defaults() runs on IutPort {
+            [] pco.receive -> value v_infoExchange {
+                f_addLogEntry(any2unistr(v_infoExchangeContent));
+                repeat; // Ignore unexpected ADUs, but log them
+            }
+
+            [] any timer.timeout {
+                f_addLogEntry("Unexpected timeout occured");
+                setverdict(inconc);
+                stop;
+            } // End of any timer.timeout
+        } // End of altstep a_ADU_filter
+ 
+ //PT140: need to check ports to be initialised
+ //PT140: port names left as those from 17575 tests  
+ 	function f_Backoffice_Preamble() runs on IutPort {
+            // Initialize communication stack
+            f_InitializeCommunication();
+            
+            // Map TTCN-3 ports to TestAdapter ports
+            map(self:pco, system:ta_pco);
+            map(self:eaPort, system:ta_eaPort);
+            
+            // Activate message filtering and timeouts
+            // See  
+            activate(a_defaults());
+            // Activate UpperTester
+            activate(a_upperTester());
+
+        } // End of function f_Backoffice_Preamble()
+    
 
 	function f_addLogEntry(in charstring text){
 		log("*** " & testcasename() & ":" & text);
