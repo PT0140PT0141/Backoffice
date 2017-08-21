@@ -7,7 +7,7 @@
  * @version $id$
  */
 module Backoffice_Templates language "TTCN-3:2010 Advanced Parameterization" {
-	 
+	
     /**
      * @desc    [17575-1:2016], Charging
      * @see     Annex A (normative) EFC data type specifications
@@ -96,7 +96,7 @@ module Backoffice_Templates language "TTCN-3:2010 Advanced Parameterization" {
 	
 	template ProvideUserDetailsADU mw_userDetailsPrivacy_apduIdentifier := {
 	  
-	  originaluserIdRequest := *,
+	  originaluserIdRequest := DEFINED_USERID,
 	  userId := *,
 	  statusFlag := optional ,
 	  listOfUserParameters.UserParameterResponse := omit,
@@ -106,10 +106,8 @@ module Backoffice_Templates language "TTCN-3:2010 Advanced Parameterization" {
 	  
 	}
 	
-	//PT140: to check if optional elements which are not specified are omitted by default  
-	
 	template ProvideUserDetailsADU mw_userDetails := {
-	  originaluserIdRequest := *,
+	  originaluserIdRequest := DEFINED_USERID,
 	  userId := *,
 	  statusFlag := optional ,
 	  listOfUserParameters := *
