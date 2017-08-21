@@ -1,31 +1,378 @@
 module Backoffice_Parameterised_Asn1_Data language "TTCN-3:2010 Advanced Parameterization" {
 
-import from EfcInfoExchange language "ASN.1:1997" all;
-import from EfcCcc language "ASN.1:1997" all;
-import from Common_Parameterised_Asn1_Data all;
+	import from EfcInfoExchange language "ASN.1:1997" all;
+	import from EfcDsrcGeneric language "ASN.1:1997" all;
+	import from EfcDsrcApplication language "ASN.1:1997" all;
+	import from EfcAutonomousCharging language "ASN.1:1997" all;
+	import from EfcAutonomousContextData language "ASN.1:1997" all;
+	import from EfcLac language "ASN.1:1997" all;
+	import from EfcCcc language "ASN.1:1997" all;
+	import from Common_Parametrised_Asn1_Data all;
 
-	type record CCCEvent <in type CccContainer> {
-		UserId 						userId optional, 
-		GeneralizedTime 			timeOfEvent optional, 
-		Location 					locationOfEvent optional,     
-		AttributeList<CccContainer>	cccMessages,
-		set of InitiatedAction		initiatedActions 
+
+//	EfcContextDataADU::= 	SEQUENCE { 
+//	  entityOverview 			EntityOverview OPTIONAL,
+//	  domainType			CHOICE { 
+//		  gnssContext [1] 		SEQUENCE { 
+//			  contextInterrelations	Iso17575-3AduBody OPTIONAL, 
+//			  regimeContextData		SEQUENCE OF SEQUENCE { 
+//				  iso175753ADU			Iso17575-3AduBody, 
+//				  feeModifiers			FeeModifiers OPTIONAL 
+//				  } 
+//			  }, 
+//		  dsrcContext [2] 		SEQUENCE { 
+//			  regimeContextData 		SEQUENCE { 
+//				  iso175753ADU    	  Iso17575-3AduBody, 
+//				  feeModifiers    	  FeeModifiers OPTIONAL        
+//				  } 
+//			  },
+//		  dsrcClosedContext [3] 		SEQUENCE { 
+//			  closedContext			ClosedContextDefinition,
+//			  feeModifiers			FeeModifiers 	OPTIONAL
+//			  }
+//		  }
+//	  } 
+
+	type record EfcContextDataADU {
+		EntityOverview entityOverview optional,
+		union {
+			record {
+//				PT140: Uncomment this when the Iso17575_3AduBody issue is resolved
+//				Iso17575_3AduBody contextInterrelations optional,
+				record of record {
+//				PT140: Uncomment this when the Iso17575_3AduBody issue is resolved
+//					Iso17575_3AduBody iso175753ADU,
+					FeeModifiers 	  feeModifiers optional
+				} regimeContextData
+			} gnssContext,
+			record {
+				record {
+//				PT140: Uncomment this when the Iso17575_3AduBody issue is resolved
+//					Iso17575_3AduBody iso175753ADU,
+					FeeModifiers feeModifiers optional
+				} regimeContextData
+			} dsrcContext,
+			record {
+				ClosedContextDefinition closedContext,
+				FeeModifiers feeModifiers optional
+			} dsrcClosedContext
+		} domainType
 	}
-   
+
+
+//	Adus ::= CHOICE { 
+//	  requestAdus				[1]	SEQUENCE OF RequestADU, 
+//	  ackAdus					[2]	SEQUENCE OF AckADU, 
+//	  trustObjectAdus			[3]	SEQUENCE OF TrustObjectADU,
+//	  efcContextDataADUs		[4]	SEQUENCE OF EfcContextDataADU, 
+//	  exceptionListADUs		[5]	SEQUENCE OF ExceptionListADU, 
+//	  reportAbnormalOBEADUs	[6]	SEQUENCE OF ReportAbnormalOBEADU, 
+//	  tollDeclarationADUs		[7]	SEQUENCE OF TollDeclarationADU, 
+//	  billingDetailsADUs		[8]	SEQUENCE OF BillingDetailsADU, 
+//	  paymentClaimADUs		[9]	SEQUENCE OF PaymentClaimADU, 
+//	  reportQAADUs			[10] SEQUENCE OF ReportQAADU, 
+//	  statusADUs				[11] SEQUENCE OF StatusADU, 
+//	  provideUserDetailsADUs	[12] SEQUENCE OF ProvideUserDetailsADU, 
+//	  reportCCCEventADUs		[13] SEQUENCE OF ReportCCCEventADU, 
+//	  provideUserIdListADUs	[14] SEQUENCE OF ProvideUserIdListADU,
+//	  paymentAnnouncementADUs	[15] SEQUENCE OF PaymentAnnouncementADU,
+//	  contractIssuerListADUs	[16] SEQUENCE OF ContractIssuerListADU
+//	  } 
+
+	type union Adus {
+	  record of RequestADU requestAdus,
+	  record of AckADU ackAdus,
+	  record of TrustObjectADU trustObjectAdus,
+	  record of EfcContextDataADU efcContextDataADUs,
+	  record of ExceptionListADU exceptionListADUs,
+	  record of ReportAbnormalOBEADU reportAbnormalOBEADUs,
+	  record of TollDeclarationADU tollDeclarationADUs,
+	  record of BillingDetailsADU billingDetailsADUs,
+	  record of PaymentClaimADU paymentClaimADUs,
+	  record of ReportQAADU reportQAADUs,
+	  record of StatusADU statusADUs,
+	  record of ProvideUserDetailsADU provideUserDetailsADUs,
+	  record of ReportCCCEventADU reportCCCEventADUs, 
+	  record of ProvideUserIdListADU provideUserIdListADUs,
+	  record of PaymentAnnouncementADU paymentAnnouncementADUs,
+	  record of ContractIssuerListADU contractIssuerListADUs
+	}
+
+  
+//	CCCEvent ::= 			SEQUENCE { 
+//	  userId				UserId OPTIONAL, 
+//	  timeOfEvent			GeneralizedTime OPTIONAL, 
+//	  locationOfEvent			Location OPTIONAL,     
+//	  cccMessages			AttributeList{CccContainer}, -- need to be CCC message containers 
+//	  initiatedActions		SEQUENCE OF InitiatedAction 
+//	  } 
+
+
+  type record CCCEvent {
+    UserId userId optional,
+    ASNAUX.GeneralizedTime timeOfEvent optional,
+    Location locationOfEvent optional,
+//	PT140: Uncomment this when AttributeList issue is resolved. I find it weird that the definition in Common_Parametrised_Asn1_Data seems to be parametrised
+//     type union CccContainer <in type Container> 
+//	  AttributeList<CccContainer>	cccMessages,
+    record of InitiatedAction initiatedActions
+  }
+	
+	//ReportCCCEventADU ::= CCCEvent
+	type CCCEvent ReportCCCEventADU;
+	
+
+//	  InfoExchange ::= 			SEQUENCE { 
+//	  infoExchangeContent			InfoExchangeContent, 
+//	  infoExchangeAuthenticator	ApduAuthenticator OPTIONAL   
+//		  -- over the single attribute InfoExchangeContent 
+//	  } 
+
+	type record InfoExchange {
+	  InfoExchangeContent infoExchangeContent,
+	  ApduAuthenticator infoExchangeAuthenticator optional
+	}
+
+
+//	InfoExchangeContent ::= 	SEQUENCE { 
+//	  apci   						ApciFields,    -- Header 
+//	  adus   						Adus     
+//		  -- Sequence of individual ADUs of the same type 
+//	  } 
+	
+	type record InfoExchangeContent {
+	  ApciFields apci,
+	  Adus adus
+	}
+
+//TollDeclarationADU ::= 		SEQUENCE { 
+//	tollDeclarationId		TollDeclarationId, 
+//	gnssTollDeclaration 		SEQUENCE OF CHOICE {
+//		chargeReport			ChargeReport,
+//		authenticatedChargeReport	AuthenticatedChargeReport
+//		},
+//	actionCode			ActionCode OPTIONAL 
+//} 
+
+  type record TollDeclarationADU {
+    TollDeclarationId tollDeclarationId,
+    record of union {
+//	  PT140: Uncomment this when the ChargeReport issue is resolved
+//	  ChargeReport chargeReport,
+      EfcAutonomousCharging.AuthenticatedChargeReport authenticatedChargeReport
+    } gnssTollDeclaration,
+    ActionCode actionCode optional
+  }
+
+
+//AssociatedEventData ::= 	SEQUENCE { 
+//--	cccRecord			CCCEvent OPTIONAL, 
+//	imageRecord			ImageRecord OPTIONAL, 
+//	anprRecord			AnprRecord OPTIONAL, 
+//	classificationRecord		ClassificationRecord OPTIONAL, 
+//	operatorRecord			OperatorRecord OPTIONAL, 
+//--	dsrcData			DSRCData{EfcContainer}  OPTIONAL 
+//	} 
+
+
+	type record AssociatedEventData {
+//		PT140: Uncomment this when CCCEvent issue is resolved 
+//      CCCEvent cccRecord optional,
+	  ImageRecord imageRecord optional,
+	  AnprRecord anprRecord optional,
+	  ClassificationRecord classificationRecord optional,
+	  OperatorRecord operatorRecord optional
+	  //,
+//	  PT140: Uncomment this when DSRCData issue is resolved 
+//		DSRCData<EfcContainer>	dsrcData optional
+	}
+
+//BillingDetailsADU ::= 		SEQUENCE { 
+//	billingDetailsId 		BillingDetailsId,
+//	tollContext			Provider, 
+//	userId				UserId OPTIONAL, 
+//	relatedBillingDetails		BillingDetailsId OPTIONAL,
+//	period				Period OPTIONAL, 
+//	billingDetailsAmount		ExtendedPaymentAmount, 
+//	usageDetails			SEQUENCE { 
+//		contextName			UTF8String, 
+//		appliedUserClass		UTF8String, 
+//		perDeclaredVehicleClasses	SEQUENCE OF SEQUENCE { 
+//			declaredVehicleClass	UTF8String, 
+//			perUsedTimeClasses	SEQUENCE OF SEQUENCE { 
+//				appliedTimeClass	UTF8String, 
+//				costCenter	UTF8String OPTIONAL, 
+//				usageList	SEQUENCE OF UsageList 
+//				} 
+//			}  
+//		} OPTIONAL, 
+//	refTollDeclaration		SEQUENCE OF TollDeclarationId OPTIONAL, 
+//	associatedEventData		SEQUENCE OF AssociatedEventData OPTIONAL,
+//	actionCode 			ActionCode OPTIONAL,
+//	paymentReference		UTF8String OPTIONAL
+//	} 
+
+  type record BillingDetailsADU {
+    BillingDetailsId billingDetailsId,
+    EfcDsrcApplication.Provider tollContext,
+    UserId userId optional,
+    BillingDetailsId relatedBillingDetails optional,
+    EfcAutonomousCharging.Period period optional,
+    ExtendedPaymentAmount billingDetailsAmount,
+    record {
+      ASNAUX.UTF8String contextName,
+      ASNAUX.UTF8String appliedUserClass,
+      record of record {
+        ASNAUX.UTF8String declaredVehicleClass,
+        record of record {
+          ASNAUX.UTF8String appliedTimeClass,
+          ASNAUX.UTF8String costCenter optional,
+          record of UsageList usageList
+        } perUsedTimeClasses
+      } perDeclaredVehicleClasses
+    } usageDetails optional,
+    record of TollDeclarationId refTollDeclaration optional,
+    record of AssociatedEventData associatedEventData optional,
+    ActionCode actionCode optional,
+    ASNAUX.UTF8String paymentReference optional
+  }
+
+
+
+
+//UsageList ::=    SEQUENCE {
+//	usageListEntry		CHOICE { 
+//		forSectionedRoads	[1] SEQUENCE {  
+//			howManyTimes				INTEGER,  
+//			listOfSections				SEQUENCE OF	Section OPTIONAL,  
+//			invoiceAggregationNumber	UTF8String OPTIONAL,
+//			fee							ExtendedPaymentAmount OPTIONAL, 
+//			feeQualifier				FeeQualifier OPTIONAL
+//			}, 
+//		forTravellingInArea	[2] SEQUENCE { 
+//			areaDisplayName		UTF8String, 
+//			accumulatedDistance	INTEGER, -- Length in meters, 
+//			beginOfAccumulation	GeneralizedTime OPTIONAL, 
+//			endOfAccumulation	GeneralizedTime OPTIONAL, 
+//			fee					ExtendedPaymentAmount OPTIONAL, 
+//			feeQualifier		FeeQualifier OPTIONAL 
+//			}, 
+//		forStayingInArea	[3] SEQUENCE { 
+//			areaDisplayName	UTF8String, 
+//			qualifier 		CHOICE { 
+//				howOften		[1] INTEGER, 
+//				entranceTime	[2] GeneralizedTime 
+//				} OPTIONAL, 
+//			stayedDuration	INTEGER,   -- in number of charge units 
+//			chargeUnit		ChargeUnit, -- from ISO 17575-3:2015 
+//			fee				ExtendedPaymentAmount OPTIONAL, 
+//			feeQualifier	FeeQualifier OPTIONAL 
+//			}, 
+//		forCordonCrossings	[4] SEQUENCE { 
+//			qualifier 		CHOICE { 
+//				howOften		[1] INTEGER, 
+//				entranceTime	[2] GeneralizedTime 
+//				} OPTIONAL, 
+//			entranceChargeObject		CordonEntryLocation,  -- from ISO 17575-3:2015 
+//			entranceChargeObjectName	UTF8String OPTIONAL, 
+//			exitChargeObject			CordonExitLocation OPTIONAL, 
+//			exitChargeObjectName		UTF8String OPTIONAL, 
+//			exitTime					GeneralizedTime OPTIONAL, 
+//			fee							ExtendedPaymentAmount OPTIONAL, 
+//			feeQualifier				FeeQualifier OPTIONAL 
+//			}, 
+//		freeTextDetail		[5] SEQUENCE { 
+//			textLanguage	LanguageID, 
+//			textDetail		UTF8String, 
+//			fee				ExtendedPaymentAmount OPTIONAL, 
+//			feeQualifier	FeeQualifier OPTIONAL 
+//			} 
+//		},
+//	includedDiscounts	SEQUENCE OF SEQUENCE {
+//			textLanguage		LanguageID OPTIONAL,
+//			textDetail			UTF8String OPTIONAL,
+//			discount			ExtendedPaymentAmount,
+//			discountQualifier	DiscountQualifier
+//			} OPTIONAL,
+//		associatedEventData		SEQUENCE OF AssociatedEventData OPTIONAL,
+//		externalCosts			ExternalCosts OPTIONAL -- allows to indicate external costs
+//	}   
+
+  type record UsageList {
+    union {
+      record {
+        integer howManyTimes,
+        record of Section listOfSections optional,
+        ASNAUX.UTF8String invoiceAggregationNumber optional,
+        ExtendedPaymentAmount fee optional,
+        FeeQualifier feeQualifier optional
+      } forSectionedRoads,
+      record {
+        ASNAUX.UTF8String areaDisplayName,
+        integer accumulatedDistance,
+        ASNAUX.GeneralizedTime beginOfAccumulation optional,
+        ASNAUX.GeneralizedTime endOfAccumulation optional,
+        ExtendedPaymentAmount fee optional,
+        FeeQualifier feeQualifier optional
+      } forTravellingInArea,
+      record {
+        ASNAUX.UTF8String areaDisplayName,
+        union {
+          integer howOften,
+          ASNAUX.GeneralizedTime entranceTime
+        } qualifier optional,
+        integer stayedDuration,
+        EfcAutonomousContextData.ChargeUnit chargeUnit,
+        ExtendedPaymentAmount fee optional,
+        FeeQualifier feeQualifier optional
+      } forStayingInArea,
+      record {
+        union {
+          integer howOften,
+          ASNAUX.GeneralizedTime entranceTime
+        } qualifier optional,
+        EfcAutonomousContextData.CordonEntryLocation entranceChargeObject,
+        ASNAUX.UTF8String entranceChargeObjectName optional,
+        EfcAutonomousContextData.CordonExitLocation exitChargeObject optional,
+        ASNAUX.UTF8String exitChargeObjectName optional,
+        ASNAUX.GeneralizedTime exitTime optional,
+        ExtendedPaymentAmount fee optional,
+        FeeQualifier feeQualifier optional
+      } forCordonCrossings,
+      record {
+        LanguageID textLanguage,
+        ASNAUX.UTF8String textDetail,
+        ExtendedPaymentAmount fee optional,
+        FeeQualifier feeQualifier optional
+      } freeTextDetail
+    } usageListEntry,
+    record of record {
+      LanguageID textLanguage optional,
+      ASNAUX.UTF8String textDetail optional,
+      ExtendedPaymentAmount discount,
+      DiscountQualifier discountQualifier
+    } includedDiscounts optional,
+    record of AssociatedEventData associatedEventData optional,
+    ExternalCosts externalCosts optional
+  }
+
+//DSRCData{Container}  ::= 	SEQUENCE { 
+//         dsrcRSEData          		DsrcRSEData OPTIONAL,
+//         dsrcAttributesRead    		AttributeList{Container} OPTIONAL, 
+//         dsrcAttributesWritten 		AttributeList{Container} OPTIONAL, 
+//         dsrcAttrAuth        			DsrcAttrAuth OPTIONAL, 
+//         chargeObjectId       		ChargeObjectId OPTIONAL 
+//	}
+
+//	PT140: Uncomment this when DSRCData issue is resolved 
+//	type union DSRCData <in type Container> {
+//		DsrcRSEData dsrcRSEData optional,
+//		AttributeList<Container> dsrcAttributesRead optional,
+//		AttributeList<Container> dsrcAttributesWritten optional,
+//		DsrcAttrAuth dsrcAttrAuth optional,
+//		Event_Report_Request<Container> event_report_request,
+//		EfcAutonomousCharging.ChargeObjectId chargeObjectId optional
+//	  }
 }
 
-/*
-CCCEvent ::= 			SEQUENCE { 
-
-	userId				UserId OPTIONAL, 
-
-	timeOfEvent			GeneralizedTime OPTIONAL, 
-
-	locationOfEvent			Location OPTIONAL,     
-
-	cccMessages			AttributeList{CccContainer}, -- need to be CCC message containers 
-
-	initiatedActions		SEQUENCE OF InitiatedAction 
-
-	} 
-*/
+	
