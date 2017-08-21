@@ -78,10 +78,10 @@ module Backoffice_Functions language "TTCN-3:2010 Advanced Parameterization" {
 		else {
 			v_InfoexchangeContent.apci := m_apciFields  { apduOriginator := TESTER_ID, informationSenderID := TESTER_ID, 
 				informationrecipientID := ORIGINATOR, RelatedApduId.apduOriginator := ORIGINATOR,
-//PT140: Need to look at all uses of random to put in a multiplier that gives the right range
-				RelatedApduId.apduIdentifier := float2int(rnd())
+				RelatedApduId.apduIdentifier := v_APDU_To_Answer
 				};
 			}
+		v_InfoexchangeContent.apci.apduIdentifier := float2int(rnd()) * 65535;
 		v_InfoexchangeContent.adus := v_InfoExchange_ADUS;
 		v_InfoExchange.infoExchangeContent := v_InfoexchangeContent;
 		
@@ -104,4 +104,3 @@ module Backoffice_Functions language "TTCN-3:2010 Advanced Parameterization" {
 	
 	}
 }
- 
