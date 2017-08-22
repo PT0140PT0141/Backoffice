@@ -73,10 +73,11 @@ module Backoffice_TestCases_TC {
                 // Local variables
 
                 timer t_tseq, t_UserDetails_Time1, t_UserDetails_Time2
-                var InfoExchange v_infoExchange                           
+                var InfoExchange v_infoExchange
+                var ProvideUserDetailsADUs v_userDetails;
+				var ApduIdentifier v_receivedAPDUIdentifier;                           
                   
-                // Preamble - Initial conditions 
-                // No intial conditions according to TP
+                f_Backoffice_Preamble();  // among others, activate altstep
                                              
                 // TP to be started at IUT side; perhaps via an External Function
                 // FIRST TRANSACTION
@@ -89,24 +90,29 @@ module Backoffice_TestCases_TC {
                     [] iutPort.receive(mw_userDetailsRequest) -> value v_infoExchange {
                     	// RequestADU received with expected content
                     	// Need to decompose the received APDU here for re-use of some data in the ProvideUserDetailsAPDU
+						f_addLogEntry(any2unistr(v_infoExchange)); //log received message
+						v_receivedAPDUIdentifier := v_infoExchange.apci.apduIdentifier; // save APDU Identifier
                     	}
-                                          
-                    [] any timer.timeout {
-                      	 // nothing received or wrong content --> transaction timeout
-                      	 // Note: we may have to wait until the timeout as the IUT
-                      	 // could also send another massage first and later the expacted message
-                      	 // or we clearly forbid such behaviour for test purposes   
-                      	 setverdict(fail);
-                      	 f_addLogEntry("Testcase_TP_TC_USERDETAILS_BV_01", " timeout in sequence #1");
-                      	 stop; //to stop test exceution at this stage and to avoid the sequences below are executed
-                      	 //the alternative is to move part below inside/nested into the receive branch above 
-                      	 }                     
+                    
+                    // alt-Branch for general timeout or non-expected message received located in default altstep                                     
                 }
  
                 // Transaction sequence #2
                 // Tester can send the next message (ProvideUserDetails) not immediately, as IUT (TC) may have defined a minimum value for TIME1.
                 // Therefore, timer required. Wait mode.
                 f_waitTime(USERDETAILS_TIME1_MIN_TC);
+                
+                // prepare userDetails for the provideUserDetailsADUs based on what was requested by the IUT
+                v_userDetails := //Comment from Jan for Jan: Continue here
+                                    
+                v_infoExchangeContent := f_createInfoExchange(v_userDetails, v_receivedAPDUIdentifier);
+				// The f_createInfoExchange function builds the APDU to be sent from the record of ADUs provided              
+                                 		 
+ 				// The APDU is sent by the f_sendAPDU function, which builds the apci for InfoExchangeContent and appends
+ 				// the ApduAuthenticator if so requirered by the PICS
+                
+				f_SendAPDU(v_infoExchangeContent);
+ 				f_addLogEntry(any2unistr(v_infoExchangeContent)); //logs send message
                   
                 // After minimum timer elapses: send next message
                 // to be changed. Not correct.                 
