@@ -13,12 +13,12 @@ module Backoffice_TestCases_TSP {
     import from EfcAutonomousCharging language "ASN.1:1997" all;
     import from EfcDsrcApplication language "ASN.1:1997" all;
     import from EfcInfoExchange language "ASN.1:1997" all;
-     
+    
     /**
      * @desc    TTCN-3 does not support ASN.1 parameterization (ETSI ES 201 873-7 V4.5.1 Clause 10)
      *          Common_Parameterised_Asn1_Data TTCN-3 module is a workaround
      */
-    import from Common_Parametrised_Asn1_Data all;
+    import from Common_Parameterised_Asn1_Data all;
     import from Backoffice_Interfaces all;
     import from Backoffice_Functions all;
     import from Backoffice_Pixits all;
@@ -81,63 +81,75 @@ module Backoffice_TestCases_TSP {
 				var listOfParametersRequested v_ListOfParameters;   
                    
                  // Preamble - Initial Conditions
+                 f_Backoffice_Preamble();  // among others, activate altstep
                  v_Userid := DEFINED_USERID; // value to be taken from PIXIT 
                  
 // we want to ask for a random number of parameters randomly chosen among those supported
 // the v_listOfParameters record will be made of a random number of elements containing randomly picked up
 // parameter identifiers from the list of supported parameters (PIXIT value)
 
-                 const integer maxParms := float2int(rnd()) mod sizeof(SUPPORTED_LIST_OF_PARAMETERS);
+                 const maxParms := float2int(rnd()) * sizeof(SUPPORTED_LIST_OF_PARAMETERS);
                  for (var integer v_ct :=0; v_ct<maxParms;v_ct:=v_ct+1) {
-                   v_ListOfParameters[v_ct] := SUPPORTED_LIST_OF_PARAMETERS[float2int(rnd()) mod sizeof(SUPPORTED_LIST_OF_PARAMETERS)];
+                   v_ListOfParameters[v_ct] := SUPPORTED_LIST_OF_PARAMETERS[float2int(rnd()) * sizeof(SUPPORTED_LIST_OF_PARAMETERS)];
                  };
 // IUT shall initially receive a Request as per Transaction sequence #1
 // the request is made with the list of parameters just elaborated and stored as the only field
 // of the record of type requestAdus
-// The f_prepare_toSend_InfoExchange function builds the APDU to be sent from the record of ADUs provided
-                
-                 v_infoExchangeContent := f_createInfoExchange(m_user_Details_Request{listOfParametersRequested := v_ListOfParameters});
+
+// Prepare the record of ADUs with 1 ADU
+				v_Request[0] := m_user_Details_Request {listOfParametersRequested := v_ListOfParameters};
+// The f_createInfoExchange function builds the APDU to be sent from the record of ADUs provided
+                        
+                 v_infoExchangeContent := f_createInfoExchange(v_Request);
  
- // The ADU is sent by the f_sendAPDU function, which appends
+ // The ADU is sent by the f_sendAPDU function, which builds the apci for InfoExchangeContent and appends
  // the ApduAuthenticator if so requirered by the PICS               
                 
-                 f_sendApdu(v_infoExchangeContent);
-                 
- // Prepare data to receive
-				v_userDetails := mw_userDetails;
-// The f_prepare_toReceive_InfoExchange function prepares the InfoExchangeContent by concatenating the expected
-// ADU to be received with the proper apci and returns the complete APDU to be received
+                 f_SendAPDU(v_infoExchangeContent);
+ // Log what we sent
+ 				f_addLogEntry(any2unistr(v_infoExchangeContent));                
+ // Prepare the record of ADUs to receive
+				v_userDetails[0] := mw_userDetails;
+// The f_createInfoExchangeForComparison function prepares the InfoExchangeContent by concatenating the expected
+// ADU to be received with the proper apci and returns the complete InfoExchange APDU to be received
 				
 				v_infoExchange := f_createInfoExchangeForComparison(v_userDetails);  
     
 // Test body start
-                 t_UserDetails_Time1.start(c_USERDETAILS_TIME1_MAX_TSP);
+                 t_UserDetails_Time1.start;
 // Transaction sequence #2: Wait for UserDetails message
 				 					
 // Either we receive an APDU containing Provide User Details ADU(s) or the timeout expires
-// timeout expiration handling is supposedly in the altstep branch
+// timeout expiration is handled in the altstep branch
 
                  alt {
  // Storing what we received in the same variable (not very clean ...)
-                      [] IutComp.receive(v_infoExchange) -> value v_infoExchangeReceived {
+                      [] IutComp.receive(v_infoExchange) -> value v_infoExchange {
                       		
 						// User Details ADU arrived. Stop timer
                         	t_UserDetails_Time1.stop;
-                        	f_checkMinimumTime(t_UserDetails_Time1, c_USERDETAILS_TIME1_MIN_TSP);
-                       
+ 						
+ 						// Log what we recevived
+ 							f_addLogEntry(any2unistr(v_infoExchange));
+ 							                              
                         // Transaction sequence #3: Send DefaultACK with correct identifier and set verdict
+                        
+                        v_receivedAPDUIdentifier := v_infoExchange.apci.apduIdentifier;
 
-						// The f_prepare_toSend_InfoExchange function builds the APDU to be sent from the record of ADUs provided
-                
-                 			v_infoExchangeContentToBeSent := f_createInfoExchange(m_defaultAck);
- 							v_infoExchangeContentToBeSent.apci.apduIdentifier := v_infoExchangeReceived.apci.apduIdentifier;
+// Prepare the record of ADUs with 1 Ack ADU                        
+                        v_Ack[0] := f_createInfoExchange(m_defaultAck);
+
+// The f_createInfoExchange function builds the APDU to be sent from the record of ADUs provided
+// Note that this time we pass the identifier of the APDU to be Acked, because that is required by 16986 for Acks               
+                                 		
+                 		v_infoExchangeContent := f_createInfoExchange(v_Ack[0], v_receivedAPDUIdentifier);
  
  // The ADU is sent by the f_sendAPDU function, which builds the apci for InfoExchangeContent and appends
  // the ApduAuthenticator if so requirered by the PICS
- // Note that this time we pass the identifier of the APDU to be Acked, because that is required by 16986 for Acks               
                 
-						f_SendAPDU(v_infoExchangeContentToBeSent);
-
+						f_SendAPDU(v_infoExchangeContent);
+ // Log what we sent
+ 						f_addLogEntry(any2unistr(v_infoExchangeContent));  
 //                       
 						setverdict(pass);
                       }
@@ -154,8 +166,10 @@ module Backoffice_TestCases_TSP {
               
                  // Local variables
                 var InfoExchangeContent v_infoExchangeContent;
-                var Apci v_apci;
+                var InfoExchange v_infoExchange;
                 var ProvideUserDetailsADUs v_userDetails;
+                var requestAdus v_Request;
+                var ackAdus v_Ack; 
 				var ApduIdentifier v_receivedAPDUIdentifier;
  				var UserId v_Userid;
 				var listOfParametersRequested v_ListOfParameters;    				                   
@@ -164,14 +178,30 @@ module Backoffice_TestCases_TSP {
                 v_Userid := DEFINED_USERID; // value to be taken from PIXIT 
 				v_ListOfParameters := PRIVACYBOUND_LIST_OF_PARAMETERS;   
 
-                 f_Backoffice_Preamble();
-                 // Front End shall initially receive a Request
-                 // named as Transaction sequence #1
+                 f_Backoffice_Preamble(); // among others, activate altstep
+// IUT shall initially receive a Request as per Transaction sequence #1
+// the request is made with the list of parameters just elaborated and stored as the only field
+// of the record of type requestAdus
+
+// Prepare the record of ADUs with 1 ADU
+				v_Request[0] := m_user_Details_Request {listOfParametersRequested := v_ListOfParameters};
+// The f_createInfoExchange function builds the APDU to be sent from the record of ADUs provided
+                        
+                 v_infoExchangeContent := f_createInfoExchange(v_Request);
+ 
+ // The ADU is sent by the f_sendAPDU function, which builds the apci for InfoExchangeContent and appends
+ // the ApduAuthenticator if so requirered by the PICS  
                 
-				 f_SendAPDU(m_user_Details_Request {listOfParametersRequested := v_ListOfParameters});
-
-                // Preamble done
-
+				 f_SendAPDU(v_infoExchangeContent);
+// Log what we sent
+ 				f_addLogEntry(any2unistr(v_infoExchangeContent));                
+ // Prepare the record of ADUs to receive
+				v_userDetails[0] := mw_userDetailsPrivacy_apduIdentifier {userId := v_Userid};
+// The f_createInfoExchangeForComparison function prepares the InfoExchangeContent by concatenating the expected
+// ADU to be received with the proper apci and returns the complete InfoExchange APDU to be received
+				
+				v_infoExchange := f_createInfoExchangeForComparison(v_userDetails);
+				  
                 // Test body start
 				t_UserDetails_Time1.start;
                 // transaction sequence #2: Wait for UserDetails message
@@ -181,17 +211,34 @@ module Backoffice_TestCases_TSP {
 // timeout expiration handling is in the altstep branch
 
                   alt {
-                	    [] f_receiveAPDUs(mw_userDetailsPrivacy_apduIdentifier userId := v_Userid,  v_apci, v_userDetails)  { 
+                	    [] IutComp.receive(v_infoExchange) -> value v_infoExchange  { 
 
                         // Stop timer
                 	       t_UserDetails_Time1.stop;
                         
-                 // Transaction sequence #3: Send DefaultACK
+ 						// Log what we recevived
+ 							f_addLogEntry(any2unistr(v_infoExchange));
+ 						
+ 						// Transaction sequence #3: Send DefaultACK
                  
-                  			v_receivedAPDUIdentifier := v_apci.apduIdentifier;
+                  			v_receivedAPDUIdentifier := v_infoExchange.apci.apduIdentifier;
 
-                			f_SendAPDU(m_defaultAck apci.apduIdentifier := v_receivedAPDUIdentifier);
-                 //  Set verdict pass
+// Prepare the record of ADUs with 1 Ack ADU                        
+                        v_Ack[0] := f_createInfoExchange(m_defaultAck);
+
+// The f_createInfoExchange function builds the APDU to be sent from the record of ADUs provided
+// Note that this time we pass the identifier of the APDU to be Acked, because that is required by 16986 for Acks               
+                                 		
+                 		v_infoExchangeContent := f_createInfoExchange(v_Ack[0], v_receivedAPDUIdentifier);
+ 
+ // The ADU is sent by the f_sendAPDU function, which builds the apci for InfoExchangeContent and appends
+ // the ApduAuthenticator if so requirered by the PICS
+                
+						f_SendAPDU(v_infoExchangeContent);
+ // Log what we sent
+ 						f_addLogEntry(any2unistr(v_infoExchangeContent));
+ 
+ //  Set verdict pass
                  	    	setverdict(pass);
                     		}
                  }// End of alt statement
@@ -212,6 +259,7 @@ module Backoffice_TestCases_TSP {
              // Local variables
 
                 var AckADU v_receivedAck;
+                var ackAdus v_Ack; 
 				var InfoExchangeContent v_infoExchangeContent;
 				var ApduIdentifier v_APDUIdentifier;				
                 
@@ -222,9 +270,29 @@ module Backoffice_TestCases_TSP {
                  // Front End shall initially receive a Request
                  // named as Transaction sequence #1
 
-                f_SendRequestAPDU(m_user_Details_Invalid_Request) -> value v_APDUIdentifier; // Store assigned identifier for checking correct AcK
-
-                // Preamble done
+// Prepare the record of ADUs with 2 incorrect ADUs
+				v_Request := m_user_Details_Invalid_Request;
+// The f_createInfoExchange function builds the APDU to be sent from the record of ADUs provided
+                        
+                 v_infoExchangeContent := f_createInfoExchange(v_Request);
+//Save created identifier for later usage                 
+                 v_APDUIdentifier := v_InfoexchangeContent.apci.apduIdentifier;
+ 
+ // The ADU is sent by the f_sendAPDU function, which builds the apci for InfoExchangeContent and appends
+ // the ApduAuthenticator if so requirered by the PICS               
+                
+                 f_SendAPDU(v_infoExchangeContent);
+ // Log what we sent
+ 				f_addLogEntry(any2unistr(v_infoExchangeContent));                
+ // Prepare the Ack ADU to receive with its proper code
+				v_Ack[0] := m_defaultAck {apduAckCode:= 3000};
+// The f_createInfoExchangeForComparison function prepares the InfoExchangeContent by concatenating the expected
+// ADU to be received with the proper apci and returns the complete InfoExchange APDU to be received
+				
+				v_infoExchange := f_createInfoExchangeForComparison(v_Ack);
+// Set the expected APDU identifier to the value of the previously sent APDU identifier  
+                v_InfoexchangeContent.apci.apduIdentifier := v_APDUIdentifier;
+  
 
                 // Test body start
 
@@ -234,10 +302,12 @@ module Backoffice_TestCases_TSP {
 // Either we receive an APDU containing Nack or the timeout expires
 // timeout expiration handling is in the altstep branch				
                 alt {
-                    [] f_receiveAPDUs(m_defaultAck {ApduIdentifier := v_APDUIdentifier, apduAckCode:= 3000},  v_apci, v_receivedAck) { // No specific test was required
+                    [] IutComp.receive(v_infoExchange) -> value v_infoExchange {
                         // Stop timer
                         t_UserDetails_Time1.stop;
-                       //  Set verdict pass
+ 						// Log what we recevived
+ 							f_addLogEntry(any2unistr(v_infoExchange));
+ 						//  Set verdict pass
                         setverdict(pass);
                     }
                 } // End of alt statement
@@ -253,11 +323,14 @@ module Backoffice_TestCases_TSP {
               * @remark  [16986:2016], Clause 6.4 and Table A.1/2 AND Table A.7/1  
               */          
              // Local variables
-                var AckADU v_receivedAck;
-				var InfoExchangeContent v_infoExchangeContent;
-                var ProvideUserDetailsADU v_userDetails;
-				var UserId v_Userid; // value to be taken from PIXIT
+                var InfoExchangeContent v_infoExchangeContent;
+                var InfoExchange v_infoExchange;
+                var ProvideUserDetailsADUs v_userDetails;
+                var requestAdus v_Request;
+                var ackAdus v_Ack; 
 				var ApduIdentifier v_receivedAPDUIdentifier;
+ 				var UserId v_Userid;
+				var listOfParametersRequested v_ListOfParameters; 
 				var listOfParametersRequested v_SupportedParameters; // should be initialised with PIXIT value supportedListOfParameters
                 var integer v_unsupported;
                 var boolean found;
@@ -266,7 +339,7 @@ module Backoffice_TestCases_TSP {
                 f_Backoffice_Preamble();
 
 // Front End shall initially receive a Request named as Transaction sequence #1
-// Create a value that is not supported by the IUT
+// Find a parameter whose value  is not supported by the IUT
 				v_SupportedParameters := SUPPORTED_LIST_OF_PARAMETERS;
 				found := false;
 				for (var integer v_Support :=0;  v_Support:=v_Support+1, found := false)
@@ -274,21 +347,46 @@ module Backoffice_TestCases_TSP {
 						if NOT( v_SupportedParameters[v_IND]  := v_Support) v_unsupported := v_Support; found := true; break;
 						continue;
 					continue;
+
+// Prepare the list of requested parameters with one element which is unsupported				
+				listOfParametersRequested[0] := v_unsupported;
+/ Prepare the record of ADUs with 1 ADU
+				v_Request[0] := m_user_Details_Request {listOfParametersRequested := v_ListOfParameters};
+// The f_createInfoExchange function builds the APDU to be sent from the record of ADUs provided
+                        
+                 v_infoExchangeContent := f_createInfoExchange(v_Request);
+//Save created identifier for later usage                 
+                 v_APDUIdentifier := v_InfoexchangeContent.apci.apduIdentifier;
+                  				
 // Invalid Parameter to be requested found and to be sent to IuT	
-                f_SendRequestAPDU(m_user_Details_Request {userId := v_Userid,listOfParametersRequested[0] := v_unsupported}) -> value v_APDUIdentifier; // Store assigned identifier for checking correct AcK
+               f_SendAPDU(v_infoExchangeContent);
+ // Log what we sent
+ 				f_addLogEntry(any2unistr(v_infoExchangeContent)); 
 
-                // Preamble done
-
+// Prepare the record of ADUs to receive
+				v_userDetails[0] := mw_userDetails {
+					userid := v_Userid,
+					listOfUserParameters.userParameterStatus := 1,
+					listOfUserParameters.UserParameterResponse := omit,
+					listOfUserParameters.userInfoValidityPeriod := omit
+					};
+// The f_createInfoExchangeForComparison function prepares the InfoExchangeContent by concatenating the expected
+// ADU to be received with the proper apci and returns the complete InfoExchange APDU to be received
+				
+				v_infoExchange := f_createInfoExchangeForComparison(v_userDetails);
+				  
                 // Test body start
                 t_UserDetails_Time1.start;
                 // transaction sequence #2: Wait for Nack message
 // Either we receive an APDU containing Nack or the timeout expires
 // timeout expiration handling is in the altstep branch	
                 alt {
-                    [] f_receiveAPDUs(mw_userDetails {userid := v_Userid, listOfUserParameters.userParameterStatus := 1, listOfUserParameters.UserParameterResponse := omit, listOfUserParameters.userInfoValidityPeriod := omit }, v_apci, v_userDetails,  v_apci, v_receivedAck) { // No specific test was required
+                    [] IutComp.receive(v_infoExchange) -> value v_infoExchange {
                         // Stop timer
                         t_UserDetails_Time1.stop;
-                       //  Set verdict pass
+ 						// Log what we recevived
+ 						f_addLogEntry(any2unistr(v_infoExchange));                       
+ 						//  Set verdict pass
                         setverdict(pass);
                     }
                 } // End of alt statement
@@ -304,11 +402,14 @@ module Backoffice_TestCases_TSP {
               */       
 
              // Local variables
-                var AckADU v_receivedAck;
-				var InfoExchangeContent v_infoExchangeContent;
-                var ProvideUserDetailsADU v_userDetails;
-				var UserId v_Userid; // value to be taken from PIXIT
+                var InfoExchangeContent v_infoExchangeContent;
+                var InfoExchange v_infoExchange;
+                var ProvideUserDetailsADUs v_userDetails;
+                var requestAdus v_Request;
+                var ackAdus v_Ack; 
 				var ApduIdentifier v_receivedAPDUIdentifier;
+ 				var UserId v_Userid;
+				var listOfParametersRequested v_ListOfParameters; 
 				var integer v_unsupported; // should be initialised with PIXIT value notAgreedListOfParameters
                 
                 // Preamble - Initial Conditions
@@ -316,22 +417,45 @@ module Backoffice_TestCases_TSP {
 
 // Front End shall initially receive a Request named as Transaction sequence #1
 /// Take a random value among those  not agreed upon by the IUT
-				v_unsupported := NOT_AGREED_LIST[float2int(rnd()) mod sizeof(NOT_AGREED_LIST)];
+				v_unsupported := NOT_AGREED_LIST[float2int(rnd()) * sizeof(NOT_AGREED_LIST)];
+// Prepare the list of requested parameters with one element which is unsupported				
+				listOfParametersRequested[0] := v_unsupported;
+/ Prepare the record of ADUs with 1 ADU
+				v_Request[0] := m_user_Details_Request {listOfParametersRequested := v_ListOfParameters};
+// The f_createInfoExchange function builds the APDU to be sent from the record of ADUs provided
+                        
+                 v_infoExchangeContent := f_createInfoExchange(v_Request);
+//Save created identifier for later usage                 
+                 v_APDUIdentifier := v_InfoexchangeContent.apci.apduIdentifier;
+                  				
+// Invalid Parameter to be requested found and to be sent to IuT	
+               f_SendAPDU(v_infoExchangeContent);
+ // Log what we sent
+ 				f_addLogEntry(any2unistr(v_infoExchangeContent)); 
 
-                f_SendRequestAPDU(m_user_Details_Request {listOfParametersRequested[0] := v_unsupported}) -> value v_APDUIdentifier; // Store assigned identifier for checking correct AcK
-
-                // Preamble done
-
+// Prepare the record of ADUs to receive
+				v_userDetails[0] := mw_userDetails {
+					listOfUserParameters.userParameterStatus := 3,
+					listOfUserParameters.UserParameterResponse := omit,
+					listOfUserParameters.userInfoValidityPeriod := omit
+					};
+// The f_createInfoExchangeForComparison function prepares the InfoExchangeContent by concatenating the expected
+// ADU to be received with the proper apci and returns the complete InfoExchange APDU to be received
+				
+				v_infoExchange := f_createInfoExchangeForComparison(v_userDetails);
+				
                 // Test body start
                 t_UserDetails_Time1.start;
                 // transaction sequence #2: Wait for Nack message
 // Either we receive an APDU containing Nack or the timeout expires
 // timeout expiration handling is in the altstep branch	
                 alt {
-                    [] f_receiveAPDUs(mw_userDetails {listOfUserParameters.userParameterStatus := 3, listOfUserParameters.UserParameterResponse := omit, listOfUserParameters.userInfoValidityPeriod := omit }, v_apci, v_userDetails,  v_apci, v_receivedAck) { // No specific test was required
+                    [] IutComp.receive(v_infoExchange) -> value v_infoExchange {
                         // Stop timer
                         t_UserDetails_Time1.stop;
-                       //  Set verdict pass
+ 						// Log what we recevived
+ 						f_addLogEntry(any2unistr(v_infoExchange));   
+ 						//  Set verdict pass
                         setverdict(pass);
                     }
                 } // End of alt statement
@@ -347,31 +471,86 @@ module Backoffice_TestCases_TSP {
               */
 
              // Local variables
-                var AckADU v_receivedAck;
-				var InfoExchangeContent v_infoExchangeContent;
-                var ProvideUserDetailsADU v_userDetails;
+                var InfoExchangeContent v_infoExchangeContent;
+                var InfoExchange v_infoExchange;
+                var ProvideUserDetailsADUs v_userDetails;
+                var requestAdus v_Request;
+                var ackAdus v_Ack; 
 				var ApduIdentifier v_receivedAPDUIdentifier;
+ 				var UserId v_Userid;
+				var listOfParametersRequested v_ListOfParameters; 
 
                 
                 // Preamble - Initial Conditions
                 f_Backoffice_Preamble();
-// Front End shall initially receive a Request
+                 v_Userid := DEFINED_USERID; // value to be taken from PIXIT 
+                 
+// we want to ask for a random number of parameters randomly chosen among those supported
+// the v_listOfParameters record will be made of a random number of elements containing randomly picked up
+// parameter identifiers from the list of supported parameters (PIXIT value)
 
-                f_SendRequestAPDU(m_user_Details_Request)-> value v_APDUIdentifier;
+                 const maxParms := float2int(rnd()) * sizeof(SUPPORTED_LIST_OF_PARAMETERS);
+                 for (var integer v_ct :=0; v_ct<maxParms;v_ct:=v_ct+1) {
+                   v_ListOfParameters[v_ct] := SUPPORTED_LIST_OF_PARAMETERS[float2int(rnd()) * sizeof(SUPPORTED_LIST_OF_PARAMETERS)];
+                 };
+// IUT shall initially receive a Request as per Transaction sequence #1
+// the request is made with the list of parameters just elaborated and stored as the only field
+// of the record of type requestAdus
+
+// Prepare the record of ADUs with 1 ADU
+				v_Request[0] := m_user_Details_Request {listOfParametersRequested := v_ListOfParameters};
+// The f_createInfoExchange function builds the APDU to be sent from the record of ADUs provided
+                        
+                 v_infoExchangeContent := f_createInfoExchange(v_Request);
+ 
+ // The ADU is sent by the f_sendAPDU function, which builds the apci for InfoExchangeContent and appends
+ // the ApduAuthenticator if so requirered by the PICS               
                 
-                // Preamble done
+                 f_SendAPDU(v_infoExchangeContent);
+ // Log what we sent
+ 				f_addLogEntry(any2unistr(v_infoExchangeContent));
 
                 // Test body start
                 // transaction sequence #1: Send a second request immediately
-                f_SendRequestAPDU(m_user_Details_Request) -> value v_APDUIdentifier;
+// we want to ask for a random number of parameters randomly chosen among those supported
+// the v_listOfParameters record will be made of a random number of elements containing randomly picked up
+// parameter identifiers from the list of supported parameters (PIXIT value)
 
+                 const maxParms := float2int(rnd()) * sizeof(SUPPORTED_LIST_OF_PARAMETERS);
+                 for (var integer v_ct :=0; v_ct<maxParms;v_ct:=v_ct+1) {
+                   v_ListOfParameters[v_ct] := SUPPORTED_LIST_OF_PARAMETERS[float2int(rnd()) * sizeof(SUPPORTED_LIST_OF_PARAMETERS)];
+                 };
+
+// Prepare the record of ADUs with 1 ADU
+				v_Request[0] := m_user_Details_Request {listOfParametersRequested := v_ListOfParameters};
+// The f_createInfoExchange function builds the APDU to be sent from the record of ADUs provided
+                        
+                 v_infoExchangeContent := f_createInfoExchange(v_Request);
+ // Save created identifier for later usage                
+                 v_receivedAPDUIdentifier := v_infoExchange.apci.apduIdentifier; 
+ // The ADU is sent by the f_sendAPDU function, which builds the apci for InfoExchangeContent and appends
+ // the ApduAuthenticator if so requirered by the PICS               
+                
+                 f_SendAPDU(v_infoExchangeContent);
+ // Log what we sent
+ 				f_addLogEntry(any2unistr(v_infoExchangeContent));
+
+ // Prepare the Ack ADU to receive with its proper code
+				v_Ack[0] := m_defaultAck {apduAckCode:= NAck_requestSentTooOften};
+// The f_createInfoExchangeForComparison function prepares the InfoExchangeContent by concatenating the expected
+// ADU to be received with the proper apci and returns the complete InfoExchange APDU to be received
+				
+				v_infoExchange := f_createInfoExchangeForComparison(v_Ack);
+// Set the expected APDU identifier to the value of the previously sent APDU identifier  
+                v_InfoexchangeContent.apci.apduIdentifier := v_APDUIdentifier;
                 t_UserDetails_Time1.start;
                 // transaction sequence #2: Wait for Nack message
                 alt {
-                    [] f_receiveAPDUs(m_defaultAck {ApduIdentifier := v_APDUIdentifier, apduAckCode:= NAck_requestSentTooOften},  v_apci, v_receivedAck)  {
+                    [] IutComp.receive(v_infoExchange) -> value v_infoExchange  {
                         // Stop timer
                         t_UserDetails_Time1.stop;
-
+ 						// Log what we recevived
+ 							f_addLogEntry(any2unistr(v_infoExchange));
                         //  Set verdict pass
                         setverdict(pass);
                     }
