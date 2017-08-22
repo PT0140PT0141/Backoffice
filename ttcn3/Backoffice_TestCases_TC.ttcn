@@ -74,7 +74,7 @@ module Backoffice_TestCases_TC {
 
                 timer t_tseq, t_UserDetails_Time1, t_UserDetails_Time2
                 var InfoExchange v_infoExchange
-                var ProvideUserDetailsADUs v_userDetails;
+                var ProvideUserDetailsADUs v_provideUserDetailsAdus;
 				var ApduIdentifier v_receivedAPDUIdentifier;                           
                   
                 f_Backoffice_Preamble();  // among others, activate altstep
@@ -84,10 +84,13 @@ module Backoffice_TestCases_TC {
                          
                 fx_initiateTransactionFromIut("TC_USERDETAILS");
                 t_tseq.start(initialiseTransactionTimeOut); // start transaction timeout timer                              
+                
+				v_infoExchange := f_createInfoExchangeForComparison(v_userDetailsRequest);
+				//PT140: to be checked in function if userDetailsRequest is correcetly composed                 
                  
                 alt {
                     // Transaction sequence #1
-                    [] iutPort.receive(mw_userDetailsRequest) -> value v_infoExchange {
+                    [] iutPort.receive(v_infoExchange) -> value v_infoExchange {
                     	// RequestADU received with expected content
                     	// Need to decompose the received APDU here for re-use of some data in the ProvideUserDetailsAPDU
 						f_addLogEntry(any2unistr(v_infoExchange)); //log received message
@@ -103,7 +106,15 @@ module Backoffice_TestCases_TC {
                 f_waitTime(USERDETAILS_TIME1_MIN_TC);
                 
                 // prepare userDetails for the provideUserDetailsADUs based on what was requested by the IUT
-                v_userDetails := //Comment from Jan for Jan: Continue here
+                v_provideUserDetailsAdu := {
+                	originalUserIdRequest := v_infoExchange.infoExchangeContent.requestAdus.userDetailsRequest.userId;
+                	userId := TEST_USER_ID[0]; //Test data to be provided by the tester
+                    statusFlag := 1; //Test data to be provided by the tester
+                    listOfUserParameters : //PT140: this is a long list of possibilities. How to deat with it?
+                    // I suggest to just pick some examples
+                    }
+                
+                
                                     
                 v_infoExchangeContent := f_createInfoExchange(v_userDetails, v_receivedAPDUIdentifier);
 				// The f_createInfoExchange function builds the APDU to be sent from the record of ADUs provided              
@@ -329,12 +340,6 @@ module Backoffice_TestCases_TC {
                 // Tester can send the next message (ProvideUserDetails) not immediately, as IUT (TC) may have defined a minimum value for TIME1.
                 // Therefore, timer required. Wait mode.
                 f_waitTime(USERDETAILS_TIME1_MIN_TC);
-                  
-                // After minimum timer elapses: send next message                 
-                iutPort.send(mw_provideUserDetailsInvalidAdu_NoListOfUsersParameters(
-                      m_userDetailsRequestAduInit.userDetailsRequest.listOfUserParametersRequested,
-                      m_invalid.listOfUsersParameters) // no ListOfUsersParameters present 
-                )
                   
                 // start timer for TIME2 immediately after sending the ProvideUserDetails
                 t_UserDetails_Time2.start(USERDETAILS_TIME2_MAX_TC);    
