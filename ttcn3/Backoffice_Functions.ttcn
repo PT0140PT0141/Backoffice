@@ -86,36 +86,36 @@ module Backoffice_Functions language "TTCN-3:2010 Advanced Parameterization" {
 	// Function f_prepare_toReceive_InfoExchange to put ADUs together with APCIS and prepare InfoExchange to be received
 	// It  concatenates multiple ADUs into a single stream and prepare APCI accordingly
 	
-	function f_createInfoExchangeForComparison(in ADUS v_InfoExchange_ADUS) return InfoExchange {
-		var InfoExchangeContent v_InfoexchangeContent;
-		var InfoExchange v_InfoExchange;
-		v_InfoexchangeContent.apci := m_apciFields  { apduOriginator := ORIGINATOR, informationSenderID := SENDER, 
-			informationrecipientID := TESTER_ID,
+	function f_createInfoExchangeForComparison(in ADUS v_infoExchangeAdus) return infoExchange {
+		var InfoExchangeContent v_infoExchangeContent;
+		var InfoExchange v_infoExchange;
+		v_infoExchangeContent.apci := m_apciFields  { apduOriginator := ORIGINATOR, informationSenderId := SENDER, 
+			informationRecipientId := TESTER_ID,
 			};
-		v_InfoexchangeContent.adus := v_InfoExchange_ADUS;
-		v_InfoExchange.infoExchangeContent := v_InfoexchangeContent;
+		v_infoExchangeContent.adus := v_infoExchangeAdus;
+		v_infoExchange.infoExchangeContent := v_infoExchangeContent;
 		v_InfoExchange.infoExchangeAuthenticator := AnyOrOmit;
 		
-		return v_Infoexchange;
+		return v_infoExchange;
 		}
 
-	function f_createInfoExchange(in ADUS v_InfoExchange_ADUS, in integer v_APDU_To_Answer) return InfoExchange {
-		var InfoExchangeContent v_InfoexchangeContent;
-		var InfoExchange v_InfoExchange;
-		if (v_APDU_To_Answer != null) {
-			v_InfoexchangeContent.apci := m_apciFields  { apduOriginator := TESTER_ID, informationSenderID := TESTER_ID, 
-				informationrecipientID := ORIGINATOR
+	function f_createInfoExchange(in ADUS v_infoExchangeAdus, in integer v_apduToAnswer) return InfoExchange {
+		var InfoExchangeContent v_infoExchangeContent;
+		var InfoExchange v_infoExchange;
+		if (v_apduToAnswer != null) {
+			v_infoExchangeContent.apci := m_apciFields  { apduOriginator := TESTER_ID, informationSenderId := TESTER_ID, 
+				informationRecipientId := ORIGINATOR
 				};
 			}
 		else {
-			v_InfoexchangeContent.apci := m_apciFields  { apduOriginator := TESTER_ID, informationSenderID := TESTER_ID, 
-				informationrecipientID := ORIGINATOR, RelatedApduId.apduOriginator := ORIGINATOR,
-				RelatedApduId.apduIdentifier := v_APDU_To_Answer
+			v_infoExchangeContent.apci := m_apciFields  { apduOriginator := TESTER_ID, informationSenderID := TESTER_ID, 
+				informationRecipientId := ORIGINATOR, RelatedApduId.apduOriginator := ORIGINATOR,
+				RelatedApduId.apduIdentifier := v_apduToAnswer
 				};
 			}
-		v_InfoexchangeContent.apci.apduIdentifier := float2int(rnd()) * 65535;
-		v_InfoexchangeContent.adus := v_InfoExchange_ADUS;
-		v_InfoExchange.infoExchangeContent := v_InfoexchangeContent;
+		v_infoExchangeContent.apci.apduIdentifier := float2int(rnd()) * 65535;
+		v_infoExchangeContent.adus := v_infoExchangeAdus;
+		v_infoExchange.infoExchangeContent := v_infoExchangeContent;
 		
 		return v_infoExchange;
 		}
