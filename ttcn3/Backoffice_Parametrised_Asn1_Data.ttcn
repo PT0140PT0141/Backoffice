@@ -32,23 +32,19 @@ module Backoffice_Parameterised_Asn1_Data language "TTCN-3:2010 Advanced Paramet
 //			  }
 //		  }
 //	  } 
-
 	type record EfcContextDataADU {
 		EntityOverview entityOverview optional,
 		union {
 			record {
-//				PT140: Uncomment this when the Iso17575_3AduBody issue is resolved
-//				Iso17575_3AduBody contextInterrelations optional,
+				Iso17575_3AduBody contextInterrelations optional,
 				record of record {
-//				PT140: Uncomment this when the Iso17575_3AduBody issue is resolved
-//					Iso17575_3AduBody iso175753ADU,
+					Iso17575_3AduBody iso175753ADU,
 					FeeModifiers 	  feeModifiers optional
 				} regimeContextData
 			} gnssContext,
 			record {
 				record {
-//				PT140: Uncomment this when the Iso17575_3AduBody issue is resolved
-//					Iso17575_3AduBody iso175753ADU,
+					Iso17575_3AduBody iso175753ADU,
 					FeeModifiers feeModifiers optional
 				} regimeContextData
 			} dsrcContext,
@@ -78,7 +74,6 @@ module Backoffice_Parameterised_Asn1_Data language "TTCN-3:2010 Advanced Paramet
 //	  paymentAnnouncementADUs	[15] SEQUENCE OF PaymentAnnouncementADU,
 //	  contractIssuerListADUs	[16] SEQUENCE OF ContractIssuerListADU
 //	  } 
-
 	type union Adus {
 	  record of RequestADU requestAdus,
 	  record of AckADU ackAdus,
@@ -106,15 +101,11 @@ module Backoffice_Parameterised_Asn1_Data language "TTCN-3:2010 Advanced Paramet
 //	  cccMessages			AttributeList{CccContainer}, -- need to be CCC message containers 
 //	  initiatedActions		SEQUENCE OF InitiatedAction 
 //	  } 
-
-
   type record CCCEvent {
     UserId userId optional,
     ASNAUX.GeneralizedTime timeOfEvent optional,
     Location locationOfEvent optional,
-//	PT140: Uncomment this when AttributeList issue is resolved. I find it weird that the definition in Common_Parametrised_Asn1_Data seems to be parametrised
-//     type union CccContainer <in type Container> 
-//	  AttributeList<CccContainer>	cccMessages,
+    AttributeList<CccContainer>	cccMessages,
     record of InitiatedAction initiatedActions
   }
 	
@@ -157,8 +148,7 @@ module Backoffice_Parameterised_Asn1_Data language "TTCN-3:2010 Advanced Paramet
   type record TollDeclarationADU {
     TollDeclarationId tollDeclarationId,
     record of union {
-//	  PT140: Uncomment this when the ChargeReport issue is resolved
-//	  ChargeReport chargeReport,
+	  ChargeReport chargeReport,
       EfcAutonomousCharging.AuthenticatedChargeReport authenticatedChargeReport
     } gnssTollDeclaration,
     ActionCode actionCode optional
@@ -176,14 +166,13 @@ module Backoffice_Parameterised_Asn1_Data language "TTCN-3:2010 Advanced Paramet
 
 
 	type record AssociatedEventData {
-//		PT140: Uncomment this when CCCEvent issue is resolved 
-//      CCCEvent cccRecord optional,
+      CCCEvent cccRecord optional,
 	  ImageRecord imageRecord optional,
 	  AnprRecord anprRecord optional,
 	  ClassificationRecord classificationRecord optional,
 	  OperatorRecord operatorRecord optional
-	  //,
 //	  PT140: Uncomment this when DSRCData issue is resolved 
+//,
 //		DSRCData<EfcContainer>	dsrcData optional
 	}
 
@@ -364,15 +353,14 @@ module Backoffice_Parameterised_Asn1_Data language "TTCN-3:2010 Advanced Paramet
 //         chargeObjectId       		ChargeObjectId OPTIONAL 
 //	}
 
-//	PT140: Uncomment this when DSRCData issue is resolved 
-//	type union DSRCData <in type Container> {
-//		DsrcRSEData dsrcRSEData optional,
-//		AttributeList<Container> dsrcAttributesRead optional,
-//		AttributeList<Container> dsrcAttributesWritten optional,
-//		DsrcAttrAuth dsrcAttrAuth optional,
-//		Event_Report_Request<Container> event_report_request,
-//		EfcAutonomousCharging.ChargeObjectId chargeObjectId optional
-//	  }
+	type record DSRCData <in type Container> {
+		DsrcRSEData dsrcRSEData optional,
+		AttributeList<Container> dsrcAttributesRead optional,
+		AttributeList<Container> dsrcAttributesWritten optional,
+		DsrcAttrAuth dsrcAttrAuth optional,
+		Event_Report_Request<Container> event_report_request,
+		EfcAutonomousCharging.ChargeObjectId chargeObjectId optional
+	  }
 }
-
+ 
 	

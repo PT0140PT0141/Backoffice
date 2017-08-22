@@ -19,7 +19,7 @@ module Backoffice_Interfaces language "TTCN-3:2010 Advanced Parameterization" {
      *          Common_Parameterised_Asn1_Data TTCN-3 module is a workaround
      */
 
-    import from Common_Parameterised_Asn1_Data all;
+    import from Common_Parametrised_Asn1_Data all;
     import from Backoffice_Pixits all;
 	import from Backoffice_Templates all;
 	import from Common_LibUpperTester all;
