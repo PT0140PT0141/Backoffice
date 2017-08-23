@@ -35,19 +35,24 @@ module Backoffice_Functions language "TTCN-3:2010 Advanced Parameterization" {
             [] pco.receive -> value v_infoExchange {
                 f_addLogEntry(any2unistr(v_infoExchangeContent));
                 repeat; // Ignore unexpected ADUs, but log them
+                //PT140: or alternatively enter a kind of switch in case an unexpected message should lead to fail
+                //to be entered in Pixit 
             }
 
             [] any timer.timeout {
                 f_addLogEntry("Unexpected timeout occured");
-                setverdict(inconc);
+                setverdict(fail);
                 stop;
             } // End of any timer.timeout
         } // End of altstep a_ADU_filter
  
  //PT140: need to check ports to be initialised
- //PT140: port names left as those from 17575 tests  
+ //PT140: port names left as those from 17575 tests
+ //PT140: add external function from PT141  
  	function f_Backoffice_Preamble() runs on IutPort {
             // Initialize communication stack
+            //PT140: to add log entry for start of test case
+            //PT140: add a log entry for test case end in postamble
             f_InitializeCommunication();
             
             // Map TTCN-3 ports to TestAdapter ports

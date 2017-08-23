@@ -124,7 +124,7 @@ module Backoffice_TestCases_TSP {
 
                  alt {
  // Storing what we received in the same variable (not very clean ...)
-                      [] IutComp.receive(v_infoExchange) -> value v_infoExchange {
+                      [] IutComp.receive(v_infoExchange) -> value v_infoExchange { //PT140: variable name to be changed
                       		
 						// User Details ADU arrived. Stop timer
                         	t_UserDetails_Time1.stop;
@@ -137,7 +137,9 @@ module Backoffice_TestCases_TSP {
                         v_receivedAPDUIdentifier := v_infoExchange.apci.apduIdentifier;
 
 // Prepare the record of ADUs with 1 Ack ADU                        
-                        v_Ack[0] := f_createInfoExchange(m_defaultAck);
+                        v_Ack[0] := m_defaultAck{apduIdentifier := v_receivedAPDUIdentifier; apduAckCode := ApduReasonCode_apduOK_};
+                        //PT140: fill also other elements of this template
+                      
 
 // The f_createInfoExchange function builds the APDU to be sent from the record of ADUs provided
 // Note that this time we pass the identifier of the APDU to be Acked, because that is required by 16986 for Acks               

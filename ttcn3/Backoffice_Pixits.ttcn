@@ -1,15 +1,15 @@
 /**
  * @author   PT0140  
- * @desc     This module describes the common parameters for TCs execution (Charging and ContextData)
+ * @desc     This module describes the common parameters for TCs execution. To be provided by the IUT implementer
  * @version    $id$
  */
 module Backoffice_Pixits {
 
     modulepar float initialiseTransactionTimeOut := 10.0;
     
-    modulepar Provider ORIGINATOR := *;
-    modulepar Provider SENDER := *;
-    modulepar Provider IUT_DESTINATION := *;
+    modulepar Provider IUT_ORIGINATOR := *;
+    modulepar Provider IUT_SENDER := *;
+    modulepar Provider IUT_INFORMATION_RECIPIENT_ID := *;
     modulepar UserId DEFINED_USERID := {
       pan := *,
       contractSerialNumber := *,
