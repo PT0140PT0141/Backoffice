@@ -82,7 +82,7 @@ module Backoffice_TestCases_TC {
                 // TP to be started at IUT side; perhaps via an External Function
                 // FIRST TRANSACTION
                          
-                fx_initiateTransactionFromIut("TC_USERDETAILS");
+                fx_initiateTransactionFromIut("TC_USERDETAILS"); //PT140: needs to be added in module functions
                 t_tseq.start(initialiseTransactionTimeOut); // start transaction timeout timer                              
                 
 				v_infoExchange := f_createInfoExchangeForComparison(v_userDetailsRequest);
