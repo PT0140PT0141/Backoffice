@@ -106,6 +106,10 @@ module Backoffice_TestCases_TC {
                 f_waitTime(USERDETAILS_TIME1_MIN_TC);
                 
                 // prepare userDetails for the provideUserDetailsADUs based on what was requested by the IUT
+                // PT140: At this place we need gerenaral decisions on two elements:
+                // a) to fix / or not the number of ADUs an IUT sends in a UserDetailsRequest; or to put such value into Pixits
+                // b) to limit / or not the number of test data (in this case userDetailsParameters) which are to be made available
+                // 	at tester side and how / where to prepare them, e.g. test-data mudule 
                 v_provideUserDetailsAdu := {
                 	originalUserIdRequest := v_infoExchange.infoExchangeContent.requestAdus.userDetailsRequest.userId;
                 	userId := TEST_USER_ID[0]; //Test data to be provided by the tester
