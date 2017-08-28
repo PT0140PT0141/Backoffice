@@ -10,6 +10,17 @@
  */
 module Backoffice_Functions language "TTCN-3:2010 Advanced Parameterization" { 
 
+	//importing other modules
+	import from Backoffice_Interfaces all;
+	
+	//importing ASN.1 data automatically translated into TTCN-3	
+	import from EfcInfoExchange language "ASN.1:1997" all;
+
+	//importing ASN.1 data manually translated into TTCN-3
+	import from Backoffice_Parameterised_Asn1_Data all;
+	import from Common_Parametrised_Asn1_Data all;
+
+
     group External {
         /**
          * @desc    These function initializes the communication stack
@@ -17,15 +28,15 @@ module Backoffice_Functions language "TTCN-3:2010 Advanced Parameterization" {
          * @see     Clauses 7. EFC communication services (functions)
          * @see     Clauses 8. The use of a communication stack)
          */
-       external function fx_computeAuthenticator(in InfoExchangeContent v_InfoExchange) return infoExchangeAuthenticator;
+       external function fx_computeAuthenticator(in InfoExchangeContent v_InfoExchange) return ApduAuthenticator;
          
     } 
 
 	group Internal {
 	  
-	  var set of ADUs InfoExchange_ADUS;
+	  var set of Adus v_infoExchange_Adus;
 	  var InfoExchange v_info_Exchange;
-	  timer waitTimer;
+	  timer t_waitTimer;
 
         /**
          * @desc        ADU filtering for received messages on IuTComp
@@ -33,7 +44,7 @@ module Backoffice_Functions language "TTCN-3:2010 Advanced Parameterization" {
          */
         altstep a_defaults() runs on IutPort {
             [] pco.receive -> value v_infoExchange {
-                f_addLogEntry("Unexpected APDU received")
+                f_addLogEntry("Unexpected APDU received");
                 f_addLogEntry(any2unistr(v_infoExchangeContent));
                 repeat; // Ignore unexpected ADUs, but log them
             }

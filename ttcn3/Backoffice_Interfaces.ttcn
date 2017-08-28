@@ -16,7 +16,7 @@ module Backoffice_Interfaces language "TTCN-3:2010 Advanced Parameterization" {
     import from EfcAutonomousContextData language "ASN.1:1997" all;
     /**
      * @desc    TTCN-3 does not support ASN.1 parameterization (ETSI ES 201 873-7 V4.5.1 Clause 10)
-     *          Common_Parameterised_Asn1_Data TTCN-3 module is a workaround
+     *          Common_Parametrised_Asn1_Data TTCN-3 module is a workaround
      */
 
     import from Common_Parametrised_Asn1_Data all;

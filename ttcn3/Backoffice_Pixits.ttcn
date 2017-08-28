@@ -4,34 +4,21 @@
  * @version    $id$
  */
 module Backoffice_Pixits {
-
-    modulepar float initialiseTransactionTimeOut := 10.0;
+	import from EfcDsrcApplication all;
+	
+    modulepar float INITIALISE_TRANSACTION_TIMEOUT := 10.0;
     
-    modulepar Provider IUT_ORIGINATOR := *;
-    modulepar Provider IUT_SENDER := *;
-    modulepar Provider IUT_INFORMATION_RECIPIENT_ID := *;
-    modulepar UserId DEFINED_USERID := {
-      pan := *,
-      contractSerialNumber := *,
-      licensePlateNumber := *,
-      obeId := *
-    }
+    modulepar Provider IUT_ORIGINATOR;
+    modulepar Provider IUT_SENDER;
+    modulepar Provider IUT_INFORMATION_RECIPIENT_ID;
+    modulepar UserId DEFINED_USERID;
     
-    modulepar record of integer SUPPORTED_LIST_OF_PARAMETERS := {
-      
-    }
+ 	//PT140: this is bad naming of the variable
+    modulepar record of integer SUPPORTED_LIST_OF_PARAMETERS;
  
-     modulepar record of integer PRIVACYBOUND_LIST_OF_PARAMETERS := {
-      
-    }   
+    modulepar record of integer PRIVACYBOUND_LIST_OF_PARAMETERS;  
      
-     modulepar record of integer NOT_AGREED_LIST := {
-      
-    }
-    
-
-    
-
+    modulepar record of integer NOT_AGREED_LIST;
     
         
-} // End of module Common_Pixits
+} // End of module Backoffice_Pixits

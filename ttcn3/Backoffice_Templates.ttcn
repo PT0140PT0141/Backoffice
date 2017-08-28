@@ -8,7 +8,15 @@
  */
 module Backoffice_Templates language "TTCN-3:2010 Advanced Parameterization" {
 	
-    /**
+	//importing other modules
+	import from Backoffice_TypesAndValues all;
+	import from Backoffice_Pixits all;
+	import from Backoffice_Pics all;
+	import from Backoffice_Functions all;
+	
+	//importing ASN.1 data automatically translated into TTCN-3	
+	import from EfcInfoExchange language "ASN.1:1997" all;
+	/**
      * @desc    [17575-1:2016], Charging
      * @see     Annex A (normative) EFC data type specifications
      */
@@ -25,14 +33,13 @@ module Backoffice_Templates language "TTCN-3:2010 Advanced Parameterization" {
     import from EfcDsrcApplication language "ASN.1:1997" all;
     /**
      * @desc    TTCN-3 does not support ASN.1 parameterization (ETSI ES 201 873-7 V4.5.1 Clause 10)
-     *          Common_Parameterised_Asn1_Data TTCN-3 module is a workaround
+     *          Common_Parametrised_Asn1_Data TTCN-3 module is a workaround
      */
-    import from Common_Parameterised_Asn1_Data all;
+
+	//importing ASN.1 data manually translated into TTCN-3
+	import from Backoffice_Parameterised_Asn1_Data all;  
+    import from Common_Parametrised_Asn1_Data all;
     
-    import from Backoffice_TypesAndValues all;
-    import from Backoffice_Pixits all;
-    import from Backoffice_Pics all;
-    import from Backoffice_Functions all;
 	
 
 	/**
@@ -40,34 +47,31 @@ module Backoffice_Templates language "TTCN-3:2010 Advanced Parameterization" {
      * @param   p_notAuthenticatedInfoExchangeAdu Unsecured ADU (of data type InfoExchange)
      * @see     [12855:2016], Clause xx Message authentication
      */
-            template (value) InfoExchange m_InfoExchange_unsecured(
-            	in template (value) InfoExchange p_notAuthenticatedInfoExchange
-           		)
-            := {
-                notAuthenticatedInfoExchange := p_notAuthenticatedInfoExchange            
-            } // End of template m_InfoExchange_unsecured
+    template (value) InfoExchange m_InfoExchange_unsecured(in template (value) InfoExchange p_notAuthenticatedInfoExchange) := 
+    {
+    	notAuthenticatedInfoExchange := p_notAuthenticatedInfoExchange            
+    } // End of template m_InfoExchange_unsecured
 	
      /**
       * @desc    Main send template for any secured ADU
       * @param   p_notAuthenticatedInfoExchangeAdu Secured ADU (of data type InfoExchange)
       * @see     [12855:2016], Clause xx Message authentication
       */
-            template (value) InfoExchange m_InfoExchange_secured(
-                in template (value) InfoExchange p_authenticatedInfoExchange
-            ) := {
-                authenticatedInfoExchange := p_authenticatedInfoExchange
-            } // End of template m_InfoExchange_secured
+    template (value) InfoExchange m_InfoExchange_secured(in template (value) InfoExchange p_authenticatedInfoExchange) := 
+    {
+        authenticatedInfoExchange := p_authenticatedInfoExchange
+    } // End of template m_InfoExchange_secured
 
-	template ApciFields m_apciFields  { 
+	template ApciFields m_apciFields := { 
 
 		aidIdentifier := 1, // 12855 Protocol Version number 
 		apduOriginator := *, // Source of the content of the APDU 
 		informationSenderID := *, // Sender of this content 
 		informationrecipientID := *,  
 		apduIdentifier := *,
-		previousApduId := optional,
+		previousApduId := *,
 		nextApduId := omit,
-		inResponseToApduId := optional, 
+		inResponseToApduId := *, 
 		apduDate :=  *
 	} 
 
@@ -85,7 +89,7 @@ module Backoffice_Templates language "TTCN-3:2010 Advanced Parameterization" {
 	  explicitlyAckedAdus := omit,
 	  apduAckCode := ?,
 	  apduAckText := omit,
-	  issues := optional
+	  issues := *
 	}
 
 	
@@ -93,7 +97,7 @@ module Backoffice_Templates language "TTCN-3:2010 Advanced Parameterization" {
 	  
 	  originaluserIdRequest := DEFINED_USERID,
 	  userId := *,
-	  statusFlag := optional ,
+	  statusFlag := * ,
 	  listOfUserParameters.UserParameterResponse := omit,
 	  listOfUserParameters.userParameterResponse := *,
 	  listOfUserParameters.userParameterStatus := 2,
@@ -104,7 +108,7 @@ module Backoffice_Templates language "TTCN-3:2010 Advanced Parameterization" {
 	template ProvideUserDetailsADU mw_userDetails := {
 	  originaluserIdRequest := DEFINED_USERID,
 	  userId := *,
-	  statusFlag := optional ,
+	  statusFlag := * ,
 	  listOfUserParameters := *
 	}
 	

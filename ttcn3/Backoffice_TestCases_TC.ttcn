@@ -19,9 +19,9 @@ module Backoffice_TestCases_TC {
     // LibEfc_Common
     /**
      * @desc    TTCN-3 does not support ASN.1 parameterization (ETSI ES 201 873-7 V4.5.1 Clause 10)
-     *          Common_Parameterised_Asn1_Data TTCN-3 module is a workaround
+     *          Common_Parametrised_Asn1_Data TTCN-3 module is a workaround
      */
-    import from Common_Parameterised_Asn1_Data all;
+    import from Common_Parametrised_Asn1_Data all;
     import from Backoffice_Functions all;
     import from Backoffice_Pixits all;
     import from Backoffice_Templates all;
@@ -72,8 +72,8 @@ module Backoffice_TestCases_TC {
                
                 // Local variables
 
-                timer t_tseq, t_UserDetails_Time1, t_UserDetails_Time2
-                var InfoExchange v_infoExchange
+                timer t_tseq, t_UserDetails_Time1, t_UserDetails_Time2;
+                var InfoExchange v_infoExchange;
                 var ProvideUserDetailsADUs v_provideUserDetailsAdus;
 				var ApduIdentifier v_receivedAPDUIdentifier;                           
                   
@@ -83,7 +83,7 @@ module Backoffice_TestCases_TC {
                 // FIRST TRANSACTION
                          
                 fx_initiateTransactionFromIut("TC_USERDETAILS"); //PT140: needs to be added in module functions
-                t_tseq.start(initialiseTransactionTimeOut); // start transaction timeout timer                              
+                t_tseq.start(INITIALISE_TRANSACTION_TIMEOUT); // start transaction timeout timer                              
                 
 				v_infoExchange := f_createInfoExchangeForComparison(v_userDetailsRequest);
 				//PT140: to be checked in function if userDetailsRequest is correcetly composed                 
@@ -177,7 +177,7 @@ module Backoffice_TestCases_TC {
                 // FIRST TRANSACTION
                          
                 fx_initiateTransactionFromIut("TC_USERDETAILS");
-                t_tseq.start(initialiseTransactionTimeOut); // start transaction timeout timer                              
+                t_tseq.start(INITIALISE_TRANSACTION_TIMEOUT); // start transaction timeout timer                              
                  
                 alt {
                     // Transaction sequence #1
@@ -247,7 +247,7 @@ module Backoffice_TestCases_TC {
                 // FIRST TRANSACTION
                          
                 fx_initiateTransactionFromIut("TC_USERDETAILS");
-                t_tseq.start(initialiseTransactionTimeOut); // start transaction timeout timer                              
+                t_tseq.start(INITIALISE_TRANSACTION_TIMEOUT); // start transaction timeout timer                              
                  
                 alt {
                     // Transaction sequence #1
@@ -318,7 +318,7 @@ module Backoffice_TestCases_TC {
                 // FIRST TRANSACTION
                          
                 fx_initiateTransactionFromIut("TC_USERDETAILS");
-                t_tseq.start(initialiseTransactionTimeOut); // start transaction timeout timer                              
+                t_tseq.start(INITIALISE_TRANSACTION_TIMEOUT); // start transaction timeout timer                              
                  
                 alt {
                     // Transaction sequence #1
@@ -383,7 +383,7 @@ module Backoffice_TestCases_TC {
                 // FIRST TRANSACTION
                          
                 fx_initiateTransactionFromIut("TC_USERDETAILS");
-                t_tseq.start(initialiseTransactionTimeOut); // start transaction timeout timer                              
+                t_tseq.start(INITIALISE_TRANSACTION_TIMEOUT); // start transaction timeout timer                              
                  
                 alt {
                     // Transaction sequence #1
@@ -454,7 +454,7 @@ module Backoffice_TestCases_TC {
                 // FIRST TRANSACTION
                          
                 fx_initiateTransactionFromIut("TC_USERDETAILS");
-                t_tseq.start(initialiseTransactionTimeOut); // start transaction timeout timer                              
+                t_tseq.start(INITIALISE_TRANSACTION_TIMEOUT); // start transaction timeout timer                              
                  
                 alt {
                     // Transaction sequence #1

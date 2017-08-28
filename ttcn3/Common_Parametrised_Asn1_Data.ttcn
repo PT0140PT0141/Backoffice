@@ -973,7 +973,6 @@ module Common_Parametrised_Asn1_Data language "TTCN-3:2010 Advanced Parameteriza
         EFC_ContextMark                     serviceProviderContract,
         Provider                            tollContext optional,
         Provider                            chargeReportFinalRecipient optional,
-		//PT140: Uncommented GeneralizedTime (as compared to the PT141 definition) and added namespace 
 		ASNAUX.GeneralizedTime              timeOfReport optional,
         Period                              reportPeriod optional,
         VersionId                           versionInfo optional,
@@ -997,7 +996,6 @@ module Common_Parametrised_Asn1_Data language "TTCN-3:2010 Advanced Parameteriza
 
     type record Signed <in type Payload> {
         Payload                 payload,
-		//PT140: Uncommented GeneralizedTime (as compared to the PT141 definition) and added namespace 
 		ASNAUX.GeneralizedTime         timeOfAuthentication,
         MessageAuthenticator    authenticator
     }

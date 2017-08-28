@@ -18,7 +18,7 @@ module Backoffice_TestCases_TSP {
      * @desc    TTCN-3 does not support ASN.1 parameterization (ETSI ES 201 873-7 V4.5.1 Clause 10)
      *          Common_Parameterised_Asn1_Data TTCN-3 module is a workaround
      */
-    import from Common_Parameterised_Asn1_Data all;
+    import from Common_Parametrised_Asn1_Data all;
     import from Backoffice_Interfaces all;
     import from Backoffice_Functions all;
     import from Backoffice_Pixits all;
@@ -88,7 +88,7 @@ module Backoffice_TestCases_TSP {
 // the v_listOfParameters record will be made of a random number of elements containing randomly picked up
 // parameter identifiers from the list of supported parameters (PIXIT value)
 
-                 const maxParms := float2int(rnd()) * sizeof(SUPPORTED_LIST_OF_PARAMETERS);
+                 const integer maxParms := float2int(rnd()) * sizeof(SUPPORTED_LIST_OF_PARAMETERS);
                  for (var integer v_ct :=0; v_ct<maxParms;v_ct:=v_ct+1) {
                    v_ListOfParameters[v_ct] := SUPPORTED_LIST_OF_PARAMETERS[float2int(rnd()) * sizeof(SUPPORTED_LIST_OF_PARAMETERS)];
                  };
@@ -97,7 +97,7 @@ module Backoffice_TestCases_TSP {
 // of the record of type requestAdus
 
 // Prepare the record of ADUs with 1 ADU
-				v_Request[0] := m_user_Details_Request {listOfParametersRequested := v_ListOfParameters};
+				v_Request[0] := m_user_Details_Request (listOfParametersRequested := v_ListOfParameters);
 // The f_createInfoExchange function builds the APDU to be sent from the record of ADUs provided
                         
                  v_infoExchangeContent := f_createInfoExchange(v_Request);
@@ -143,11 +143,11 @@ module Backoffice_TestCases_TSP {
                         v_receivedAPDUIdentifier := v_infoExchange.apci.apduIdentifier;
 
 // Prepare the record of ADUs with 1 Ack ADU                        
-                        v_Ack[0] := f_createInfoExchange(m_defaultAck {
+                        v_Ack[0] := f_createInfoExchange(m_defaultAck(
 	  						ApduIdentifier := v_receivedAPDUIdentifier,
 	  						apduAckCode := ApduReasonCode_apduOK_,
 	  						issues := omit
-							}
+							)
                         );
 
 // The f_createInfoExchange function builds the APDU to be sent from the record of ADUs provided
