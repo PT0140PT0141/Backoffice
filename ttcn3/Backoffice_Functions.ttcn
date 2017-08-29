@@ -34,99 +34,95 @@ module Backoffice_Functions language "TTCN-3:2010 Advanced Parameterization" {
 
 	group Internal {
 	  
-	  var set of Adus v_infoExchange_Adus;
-	  var InfoExchange v_info_Exchange;
-	  timer t_waitTimer;
-
         /**
          * @desc        ADU filtering for received messages on IuTComp
          * @verdict     Unchanged on success, fail otherwise and the component is stopped if PX_ProcessUnexpectedADUAsError is set to true
          */
-        altstep a_defaults() runs on IutPort {
-            [] pco.receive -> value v_infoExchange {
+    	altstep a_defaults() runs on MainTestComponent {
+        	var InfoExchange v_infoExchange;
+    		[] iutPort.receive -> value v_infoExchange {
                 f_addLogEntry("Unexpected APDU received");
-                f_addLogEntry(any2unistr(v_infoExchangeContent));
+                f_addLogEntry(any2unistr(v_infoExchange));
                 repeat; // Ignore unexpected ADUs, but log them
             }
-
+    
             [] any timer.timeout {
                 f_addLogEntry("Unexpected timeout occured");
                 setverdict(inconc);
                 stop;
             } // End of any timer.timeout
-        } // End of altstep a_ADU_filter
+        } 
  
- //PT140: need to check ports to be initialised
- //PT140: port names left as those from 17575 tests  
- 	function f_Backoffice_Preamble() runs on IutPort {
-            // Initialize communication stack
-            f_InitializeCommunication();
-            
-            // Map TTCN-3 ports to TestAdapter ports
-            map(self:pco, system:ta_pco);
-            map(self:eaPort, system:ta_eaPort);
-            
-            // Activate message filtering and timeouts
-            // See  
-            activate(a_defaults());
-            // Activate UpperTester
-            activate(a_upperTester());
-            f_addLogEntry("All activations performed. Test case starting");
+	//PT140: need to check ports to be initialised
+    //PT140: port names left as those from 17575 tests  
+ 	function f_Backoffice_Preamble() runs on MainTestComponent {
+ 		
+ 		// Initialize communication stack
+        f_InitializeCommunication();
+        
+        // Map TTCN-3 ports to TestAdapter ports
+        map(self:mtcPort, system:taPort);
+        map(self:eaPort, system:ta_eaPort);
+          
+        // Activate message filtering and timeouts
+        // See  
+        activate(a_defaults());
+        // Activate UpperTester
+        activate(a_upperTester());
+        f_addLogEntry("All activations performed. Test case starting");
 
-        } // End of function f_Backoffice_Preamble()
+	} // End of function f_Backoffice_Preamble()
     
-function f_Backoffice_Postamble() runs on IutPort {
-            // Deactivate communication stack
-            f_DeactivateCommunication();
+	function f_Backoffice_Postamble() runs on MainTestComponent {
+    	// Deactivate communication stack
+        f_DeactivateCommunication();
             
-            // Unmap TTCN-3 ports from TestAdapter ports
-            unmap(self:pco, system:ta_pco);
-            unmap(self:eaPort, system:ta_eaPort);
+        // Unmap TTCN-3 ports from TestAdapter ports
+        unmap(self:iutPort, system:ta_pco);
+        unmap(self:eaPort, system:ta_eaPort);
             
-            // Activate message filtering and timeouts
-            // See  
-            deactivate(a_defaults());
-            // Activate UpperTester
-            deactivate(a_upperTester());
-            f_addLogEntry("Everything deactivated. Test case ended");
+        // Activate message filtering and timeouts
+        // See  
+        deactivate(a_defaults());
+        // Activate UpperTester
+        deactivate(a_upperTester());
+        f_addLogEntry("Everything deactivated. Test case ended");
 
-        } // End of function f_Backoffice_Postamble()
+    } // End of function f_Backoffice_Postamble()
         
 	function f_addLogEntry(in charstring text){
 		log("*** " & testcasename() & ":" & text);
-		}
+	}
 	  
 	function f_checkMinimumTime(in timer t_compare, in float v_timeMin) {	                      
         if (t_compare.read <= v_timeMin) {
         	setverdict(fail);
         	f_addLogEntry("minimum time not correct");
         	stop
-        	};
-    	}  
+    	};
+	}  
     	
     // Function which inserts a waiting time - parameter t_wait - und waits in a "do-nothing-loop"
 	function f_waitTime(in timer t_wait) {
 		t_waitTimer.start(t_wait);
 		while (t_waitTimer.running) {
 			// empty loop = do nothing, but just wait
-			}
 		}
+	}
 	
 	// Function f_prepare_toReceive_InfoExchange to put ADUs together with APCIS and prepare InfoExchange to be received
 	// It  concatenates multiple ADUs into a single stream and prepare APCI accordingly
 	
-	function f_createInfoExchangeForComparison(in ADUS v_InfoExchange_ADUS) return InfoExchange {
+	function f_createInfoExchangeForComparison(in Adus v_infoExchangeAdus) return InfoExchange {
 		var InfoExchangeContent v_InfoexchangeContent;
 		var InfoExchange v_InfoExchange;
-		v_InfoexchangeContent.apci := m_apciFields  { apduOriginator := ORIGINATOR, informationSenderID := SENDER, 
-			informationrecipientID := TESTER_ID,
-			};
-		v_InfoexchangeContent.adus := v_InfoExchange_ADUS;
-		v_InfoExchange.infoExchangeContent := v_InfoexchangeContent;
+		v_InfoexchangeContent.apci := m_apciFields{apduOriginator := ORIGINATOR, informationSenderID := SENDER, informationrecipientID := TESTER_ID};
+		v_InfoexchangeContent.adus := v_infoExchangeAdus;
+		v_InfoExchange.infoExchangeContent := v_infoExchangeContent;
 		v_InfoExchange.infoExchangeAuthenticator := AnyOrOmit;
 		
 		return v_Infoexchange;
-		}
+	}
 
 	function f_createInfoExchange(in ADUS v_InfoExchange_ADUS, in integer v_APDU_To_Answer) return InfoExchange {
 		var InfoExchangeContent v_InfoexchangeContent;

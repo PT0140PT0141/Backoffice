@@ -4,53 +4,39 @@
  * @version	$id$
  */
 module Backoffice_Interfaces language "TTCN-3:2010 Advanced Parameterization" {
-    /**
-     * @desc    [17575-1:2016]: Charging
-     * @see     Annex A (normative) EFC data type specifications
-     */
-    import from EfcAutonomousCharging language "ASN.1:1997" all;
-    /**
-     * @desc    [17575-1:2016]: Context data
-     * @see     A.2 Data specifications
-     */
-    import from EfcAutonomousContextData language "ASN.1:1997" all;
-    /**
-     * @desc    TTCN-3 does not support ASN.1 parameterization (ETSI ES 201 873-7 V4.5.1 Clause 10)
-     *          Common_Parametrised_Asn1_Data TTCN-3 module is a workaround
-     */
 
-    import from Common_Parametrised_Asn1_Data all;
-    import from Backoffice_Pixits all;
-	import from Backoffice_Templates all;
+	//importing other modules
 	import from Common_LibUpperTester all;
+		
+	//importing ASN.1 data automatically translated into TTCN-3	
+	import from EfcInfoExchange language "ASN.1:1997" all;	//from ISO 12855:2015
+
+	//importing ASN.1 data manually translated into TTCN-3
+	import from Backoffice_Parameterised_Asn1_Data all;
+	import from Common_Parametrised_Asn1_Data all;
+
 	
     /**
      * @desc Defines a message based port which allows to exchange ISO 12855 messages with the IUT
      */
-     type port IutPort message {
-
-       inout DummyInfoExchange;
+     type port MtcPort message {
+     	inout InfoExchange;
      }
      
-	type record DummyInfoExchange {
-			   integer code,
-			   charstring reason optional
-	} 
-
      /**
 	  * @desc Defines a configuration message based port used to trigger, simulate, configure the IUT
       */
-     type port IutAccessPort message {
-//     	in EquipmentOperationRsp;
-//        out EquipmentOperationReq;
-     } // End of port EquipmentAccessPort
+     type port MtcAccessPort message {
+     	in EquipmentOperationRsp;
+        out EquipmentOperationReq;
+     } 
 
     /**
      * @desc   This component type shall be used to create the MTC in order to test the IUT
      */
-    type component IutComp {
-//        port IutPort iutPort;
-//        port IutAccessPort iutAccessPort; 
+    type component MainTestComponent {
+        port MtcPort iutPort;
+        port MtcAccessPort iutAccessPort; 
         timer t_testcaseStart;
     }
 
@@ -58,8 +44,8 @@ module Backoffice_Interfaces language "TTCN-3:2010 Advanced Parameterization" {
      * @desc   This component type shall be used to define the physical interface with the IUT
      */
     type component TestAdapter {
-//        port IutPort taPort;
-//        port IutAccessPort taAccessPort; 
+        port MtcPort taPort;
+        port MtcAccessPort taAccessPort; 
     }
    
 }
