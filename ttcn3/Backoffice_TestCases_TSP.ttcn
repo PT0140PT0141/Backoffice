@@ -52,6 +52,7 @@ module Backoffice_TestCases_TSP {
     
     group LISTOFUSERS {
          group Valid_Behaviour {
+           
  		} // End of group Valid_Behaviour
          
          group Invalid_Behaviour {		
@@ -143,12 +144,11 @@ module Backoffice_TestCases_TSP {
                         v_receivedAPDUIdentifier := v_infoExchange.apci.apduIdentifier;
 
 // Prepare the record of ADUs with 1 Ack ADU                        
-                        v_Ack[0] := f_createInfoExchange(m_defaultAck(
+                        v_Ack[0] := m_defaultAck{
 	  						ApduIdentifier := v_receivedAPDUIdentifier,
 	  						apduAckCode := ApduReasonCode_apduOK_,
 	  						issues := omit
-							)
-                        );
+  							};
 
 // The f_createInfoExchange function builds the APDU to be sent from the record of ADUs provided
 // Note that this time we pass the identifier of the APDU to be Acked, because that is required by 16986 for Acks               
@@ -192,6 +192,14 @@ module Backoffice_TestCases_TSP {
                 v_Userid := DEFINED_USERID; // value to be taken from PIXIT 
 				v_ListOfParameters := PRIVACYBOUND_LIST_OF_PARAMETERS;
 				f_Backoffice_Preamble(); // among others, activate altstep
+
+// Check if there are parameters that are privacy bound
+// If not, exit test
+				if (sizeof (v_ListOfParameters) = 0) {
+        			setverdict(inconclusive);
+        			f_addLogEntry("Privacy bound parameters missing. Test cannot be executed");
+        			stop
+        			};
 				
 // IUT shall initially receive a Request as per Transaction sequence #1
 // the request is made with the list of parameters just elaborated and stored as the only field
@@ -244,12 +252,11 @@ module Backoffice_TestCases_TSP {
 
 // Prepare the record of ADUs with 1 Ack ADU                        
                        
-                        v_Ack[0] := f_createInfoExchange(m_defaultAck {
+                        v_Ack[0] := m_defaultAck {
 	  						ApduIdentifier := v_receivedAPDUIdentifier,
 	  						apduAckCode := ApduReasonCode_apduOK_,
 	  						issues := omit
-							}
-                        );
+							};
 
 // The f_createInfoExchange function builds the APDU to be sent from the record of ADUs provided
 // Note that this time we pass the identifier of the APDU to be Acked, because that is required by 16986 for Acks               
@@ -470,13 +477,22 @@ module Backoffice_TestCases_TSP {
                 
 // Preamble - Initial Conditions
                 f_Backoffice_Preamble();
-                 v_Userid := DEFINED_USERID; // value to be taken from PIXIT 
+                v_Userid := DEFINED_USERID; // value to be taken from PIXIT 
+                v_ListOfParameters := NOT_AGREED_LIST;
+
+// Check if there are parameters that are not agreed to be transferred
+// If not, exit test
+				if (sizeof (v_ListOfParameters) = 0) {
+        			setverdict(inconclusive);
+        			f_addLogEntry("Not agreed parameters missing. Test cannot be executed");
+        			stop
+        			};
 
 // Front End shall initially receive a Request named as Transaction sequence #1
-/// Take a random value among those  not agreed upon by the IUT
+// Take a random value among those  not agreed upon by the IUT
 				v_unsupported := NOT_AGREED_LIST[float2int(rnd()) * sizeof(NOT_AGREED_LIST)];
 // Prepare the list of requested parameters with one element which is unsupported				
-				listOfParametersRequested[0] := v_unsupported;
+				v_ListOfParameters[0] := v_unsupported;
 / Prepare the record of ADUs with 1 ADU
 				v_Request[0] := m_user_Details_Request {listOfParametersRequested := v_ListOfParameters};
 // The f_createInfoExchange function builds the APDU to be sent from the record of ADUs provided
@@ -506,7 +522,7 @@ module Backoffice_TestCases_TSP {
   				
 // Test body start
                 t_UserDetails_Time1.start;
-                // transaction sequence #2: Wait for Nack message
+                // transaction sequence #2: Wait for empty User Details
 // Either we receive an APDU containing empty User Details or the timeout expires
 // timeout expiration handling is in the altstep branch	
                 alt {
@@ -515,7 +531,7 @@ module Backoffice_TestCases_TSP {
                         var float v_elapsedTime := t_UserDetails_Time1.read; // Save the current time
                         t_UserDetails_Time1.stop;
 
-						// Log what we recevived
+						// Log what we received
  						f_addLogEntry("The following infoExchange received. Timer value = " & int2char(float2int(v_elapsedTime)));
  						f_addLogEntry(any2unistr(v_infoExchange));   
  						
