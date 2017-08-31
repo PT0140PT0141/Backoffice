@@ -100,17 +100,14 @@ module Backoffice_TestCases_TSP {
  // the ApduAuthenticator if so requirered by the PICS               
                 
                  f_SendAPDU(v_infoExchangeContent);
- // Log what we sent
- 				f_addLogEntry("Sending Request for user parameters");
- 				f_addLogEntry(any2unistr(v_infoExchangeContent));                
+                                
  // Prepare the record of ADUs to receive
 				v_userDetails[0] := mw_userDetails;
 // The f_createInfoExchangeForComparison function prepares the InfoExchangeContent by concatenating the expected
 // ADU to be received with the proper apci and returns the complete InfoExchange APDU to be received
 				
 				v_infoExchange := f_createInfoExchangeForComparison(v_userDetails);
-				f_addLogEntry("Expecting the following infoExchange");
- 				f_addLogEntry(any2unistr(v_infoExchange));  
+ 
     
 // Test body start
                  t_UserDetails_Time1.start;
@@ -152,10 +149,7 @@ module Backoffice_TestCases_TSP {
  // the ApduAuthenticator if so requirered by the PICS
                 
 						f_SendAPDU(v_infoExchangeContent);
- // Log what we sent
- 						f_addLogEntry("Sending the following APDU with positive Ack to the IUT");
- 						f_addLogEntry(any2unistr(v_infoExchangeContent));  
-//                       
+						                      
 						setverdict(pass);
                       }
                     } // End of alt statement
@@ -211,17 +205,13 @@ module Backoffice_TestCases_TSP {
  // the ApduAuthenticator if so requirered by the PICS  
                 
 				 f_SendAPDU(v_infoExchangeContent);
-// Log what we sent
- 				f_addLogEntry("Sending Request for user parameters");
- 				f_addLogEntry(any2unistr(v_infoExchangeContent));                
+                
  // Prepare the record of ADUs to receive
 				v_userDetails[0] := mw_userDetailsPrivacy_apduIdentifier {userId := v_Userid};
 // The f_createInfoExchangeForComparison function prepares the InfoExchangeContent by concatenating the expected
 // ADU to be received with the proper apci and returns the complete InfoExchange APDU to be received
 				
 				v_infoExchange := f_createInfoExchangeForComparison(v_userDetails);
-				f_addLogEntry("Expecting the following infoExchange");
- 				f_addLogEntry(any2unistr(v_infoExchange));
  								  
 // Test body start
 				t_UserDetails_Time1.start;
@@ -263,14 +253,11 @@ module Backoffice_TestCases_TSP {
  // the ApduAuthenticator if so requirered by the PICS
                 
 						f_SendAPDU(v_infoExchangeContent);
- // Log what we sent
- 						f_addLogEntry("Sending the following APDU with positive Ack to the IUT");
- 						f_addLogEntry(any2unistr(v_infoExchangeContent));
  
  //  Set verdict pass
-                 	    	setverdict(pass);
+                 	    setverdict(pass);
                     		}
-                 }// End of alt statement
+                 } // End of alt statement
 
 // Postamble - Final Conditions
                  f_Backoffice_Postamble();  // among others, de-activate altstep
@@ -326,9 +313,7 @@ module Backoffice_TestCases_TSP {
  // the ApduAuthenticator if so requirered by the PICS               
                 
                  f_SendAPDU(v_infoExchangeContent);
- // Log what we sent
- 				f_addLogEntry("Sending two incorrect Requests for user parameters");
- 				f_addLogEntry(any2unistr(v_infoExchangeContent));                
+             
  // Prepare the Ack ADU to be received with its proper code
 				v_Ack[0] := m_defaultAck {
 	  				ApduIdentifier := v_APDUIdentifier,
@@ -341,11 +326,6 @@ module Backoffice_TestCases_TSP {
 				v_infoExchange := f_createInfoExchangeForComparison(v_Ack);
 // Set the expected APDU identifier to the value of the previously sent APDU identifier  
                 v_InfoexchangeContent.apci.apduIdentifier := v_APDUIdentifier;
-
-// Log what we are going to send  
-				
-				f_addLogEntry("Expecting the following infoExchange");
- 				f_addLogEntry(any2unistr(v_infoExchange));    
 
 // Test body start
 
@@ -421,9 +401,6 @@ module Backoffice_TestCases_TSP {
                   				
 // Invalid Parameter to be requested found and to be sent to IuT	
                f_SendAPDU(v_infoExchangeContent);
- // Log what we sent
- 				f_addLogEntry("Sending Request for not supported user parameters");
- 				f_addLogEntry(any2unistr(v_infoExchangeContent)); 
 
 // Prepare the record of ADUs to receive
 				v_userDetails[0] := mw_userDetails {
@@ -436,8 +413,7 @@ module Backoffice_TestCases_TSP {
 // ADU to be received with the proper apci and returns the complete InfoExchange APDU to be received
 				
 				v_infoExchange := f_createInfoExchangeForComparison(v_userDetails);
-				f_addLogEntry("Expecting the following infoExchange");
- 				f_addLogEntry(any2unistr(v_infoExchange)); 				  
+			  
  // Test body start
                 t_UserDetails_Time1.start;
                 // transaction sequence #2: Wait for Nack message
@@ -511,9 +487,6 @@ module Backoffice_TestCases_TSP {
                   				
 // Invalid Parameter to be requested found and to be sent to IuT	
                f_SendAPDU(v_infoExchangeContent);
- // Log what we sent
- 				f_addLogEntry("Sending Request for user parameters");
- 				f_addLogEntry(any2unistr(v_infoExchangeContent)); 
 
 // Prepare the record of ADUs to receive
 				v_userDetails[0] := mw_userDetails {
@@ -525,8 +498,6 @@ module Backoffice_TestCases_TSP {
 // ADU to be received with the proper apci and returns the complete InfoExchange APDU to be received
 				
 				v_infoExchange := f_createInfoExchangeForComparison(v_userDetails);
-				f_addLogEntry("Expecting the following infoExchange");
- 				f_addLogEntry(any2unistr(v_infoExchange));  
   				
 // Test body start
                 t_UserDetails_Time1.start;
@@ -601,9 +572,6 @@ module Backoffice_TestCases_TSP {
  // the ApduAuthenticator if so requirered by the PICS               
                 
                  f_SendAPDU(v_infoExchangeContent);
- // Log what we sent
- 				f_addLogEntry("Sending First Request for user parameters");
- 				f_addLogEntry(any2unistr(v_infoExchangeContent));
 
                 // Test body start
                 // transaction sequence #1: Send a second request immediately
@@ -630,9 +598,6 @@ module Backoffice_TestCases_TSP {
  // the ApduAuthenticator if so requirered by the PICS               
                 
                  f_SendAPDU(v_infoExchangeContent);
- // Log what we sent
- 				f_addLogEntry("Sending second Request for user parameters before TIMEA expires");
- 				f_addLogEntry(any2unistr(v_infoExchangeContent));
 
  // Prepare the Ack ADU to receive with its proper code
 				v_Ack[0] := m_defaultAck {
@@ -647,9 +612,6 @@ module Backoffice_TestCases_TSP {
 // Set the expected APDU identifier to the value of the previously sent APDU identifier  
                 v_InfoexchangeContent.apci.apduIdentifier := v_APDUIdentifier;
 				
-				f_addLogEntry("Expecting the following infoExchange containing a NACK");
- 				f_addLogEntry(any2unistr(v_infoExchange));  
-    
                 t_UserDetails_Time1.start;
                 // transaction sequence #2: Wait for Nack message
                 alt {
@@ -717,9 +679,7 @@ module Backoffice_TestCases_TSP {
  // the ApduAuthenticator if so requirered by the PICS               
                 
                  f_SendAPDU(v_infoExchangeContent);
- // Log what we sent
- 				f_addLogEntry("Sending Request for user list");
- 				f_addLogEntry(any2unistr(v_infoExchangeContent));                
+             
  // Prepare the record of ADUs to receive
 				v_userDetails[0] := mw_provideUserIdList {
 				  originalUserIdRequestType := UserIdRequestType_allUserIdsToGivenCustomer_,
@@ -729,8 +689,6 @@ module Backoffice_TestCases_TSP {
 // ADU to be received with the proper apci and returns the complete InfoExchange APDU to be received
 				
 				v_infoExchange := f_createInfoExchangeForComparison(v_userDetails);
-				f_addLogEntry("Expecting the following infoExchange");
- 				f_addLogEntry(any2unistr(v_infoExchange));  
     
 // Test body start
                  t_UserList_Time1.start;
@@ -779,11 +737,8 @@ module Backoffice_TestCases_TSP {
  // The ADU is sent by the f_sendAPDU function, which builds the apci for InfoExchangeContent and appends
  // the ApduAuthenticator if so requirered by the PICS
                 
-						f_SendAPDU(v_infoExchangeContent);
- // Log what we sent
- 						f_addLogEntry("Sending the following APDU with positive Ack to the IUT");
- 						f_addLogEntry(any2unistr(v_infoExchangeContent));  
-//                       
+						f_SendAPDU(v_infoExchangeContent); 
+						                      
 						setverdict(pass);
                       }
                     } // End of alt statement
@@ -829,9 +784,7 @@ module Backoffice_TestCases_TSP {
  // the ApduAuthenticator if so requirered by the PICS               
                 
                  f_SendAPDU(v_infoExchangeContent);
- // Log what we sent
- 				f_addLogEntry("Sending Request for user list");
- 				f_addLogEntry(any2unistr(v_infoExchangeContent));                
+             
  // Prepare the record of ADUs to receive
 				v_userDetails[0] := mw_provideUserIdList {
 				  originalUserIdRequestType := UserIdRequestType_allUserIdsToGivenCustomer_,
@@ -841,8 +794,6 @@ module Backoffice_TestCases_TSP {
 // ADU to be received with the proper apci and returns the complete InfoExchange APDU to be received
 				
 				v_infoExchange := f_createInfoExchangeForComparison(v_userDetails);
-				f_addLogEntry("Expecting the following infoExchange");
- 				f_addLogEntry(any2unistr(v_infoExchange));  
     
 // Test body start
                  t_UserList_Time1.start;
@@ -892,10 +843,7 @@ module Backoffice_TestCases_TSP {
  // the ApduAuthenticator if so requirered by the PICS
                 
 						f_SendAPDU(v_infoExchangeContent);
- // Log what we sent
- 						f_addLogEntry("Sending the following APDU with positive Ack to the IUT");
- 						f_addLogEntry(any2unistr(v_infoExchangeContent));  
-//                       
+                      
 						setverdict(pass);
                       }
                     } // End of alt statement
@@ -943,9 +891,7 @@ module Backoffice_TestCases_TSP {
  // the ApduAuthenticator if so requirered by the PICS               
                 
                  f_SendAPDU(v_infoExchangeContent);
- // Log what we sent
- 				f_addLogEntry("Sending Request for user list");
- 				f_addLogEntry(any2unistr(v_infoExchangeContent));
+
 // Prepare the record of ADUs to receive
 				v_Ack[0] := m_defaultAck {
 	  				ApduIdentifier := v_APDUIdentifier,
@@ -956,8 +902,6 @@ module Backoffice_TestCases_TSP {
 // ADU to be received with the proper apci and returns the complete InfoExchange APDU to be received
 				
 				v_infoExchange := f_createInfoExchangeForComparison(v_Ack);
-				f_addLogEntry("Expecting the following infoExchange");
- 				f_addLogEntry(any2unistr(v_infoExchange));  
     
 // Test body start
                  t_UserList_Time1.start;
@@ -1026,9 +970,7 @@ module Backoffice_TestCases_TSP {
  // the ApduAuthenticator if so requirered by the PICS               
                 
                  f_SendAPDU(v_infoExchangeContent);
- // Log what we sent
- 				f_addLogEntry("Sending Request for user list");
- 				f_addLogEntry(any2unistr(v_infoExchangeContent));
+
 // Prepare the record of ADUs to receive
 				v_Ack[0] := m_defaultAck {
 	  				ApduIdentifier := v_APDUIdentifier,
@@ -1039,8 +981,6 @@ module Backoffice_TestCases_TSP {
 // ADU to be received with the proper apci and returns the complete InfoExchange APDU to be received
 				
 				v_infoExchange := f_createInfoExchangeForComparison(v_Ack);
-				f_addLogEntry("Expecting the following infoExchange");
- 				f_addLogEntry(any2unistr(v_infoExchange));  
     
 // Test body start
                  t_UserList_Time1.start;
@@ -1108,9 +1048,7 @@ module Backoffice_TestCases_TSP {
  // the ApduAuthenticator if so requirered by the PICS               
                 
                  f_SendAPDU(v_infoExchangeContent);
- // Log what we sent
- 				f_addLogEntry("Sending Request for user list");
- 				f_addLogEntry(any2unistr(v_infoExchangeContent));
+
 // Prepare the record of ADUs to receive
 				v_Ack[0] := m_defaultAck {
 	  				ApduIdentifier := v_APDUIdentifier,
@@ -1121,8 +1059,6 @@ module Backoffice_TestCases_TSP {
 // ADU to be received with the proper apci and returns the complete InfoExchange APDU to be received
 				
 				v_infoExchange := f_createInfoExchangeForComparison(v_Ack);
-				f_addLogEntry("Expecting the following infoExchange");
- 				f_addLogEntry(any2unistr(v_infoExchange));  
     
 // Test body start
                  t_UserList_Time1.start;
@@ -1189,9 +1125,7 @@ module Backoffice_TestCases_TSP {
  // the ApduAuthenticator if so requirered by the PICS               
                 
                  f_SendAPDU(v_infoExchangeContent);
- // Log what we sent
- 				f_addLogEntry("Sending Request for user list");
- 				f_addLogEntry(any2unistr(v_infoExchangeContent));
+
 // Prepare the record of ADUs to receive
 				v_Ack[0] := m_defaultAck {
 	  				ApduIdentifier := v_APDUIdentifier,
@@ -1202,9 +1136,7 @@ module Backoffice_TestCases_TSP {
 // ADU to be received with the proper apci and returns the complete InfoExchange APDU to be received
 				
 				v_infoExchange := f_createInfoExchangeForComparison(v_Ack);
-				f_addLogEntry("Expecting the following infoExchange");
- 				f_addLogEntry(any2unistr(v_infoExchange));  
-    
+
 // Test body start
                  t_UserList_Time1.start;
 // Transaction sequence #2: Wait for Nack ADU
@@ -1270,9 +1202,7 @@ module Backoffice_TestCases_TSP {
  // the ApduAuthenticator if so requirered by the PICS               
                 
                  f_SendAPDU(v_infoExchangeContent);
- // Log what we sent
- 				f_addLogEntry("Sending First Request for user list");
- 				f_addLogEntry(any2unistr(v_infoExchangeContent));
+
 // Prepare again record of ADUs with 1 ADU
 				v_Request[0] := m_user_List_Request {
 					userId := v_Userid,
@@ -1286,9 +1216,7 @@ module Backoffice_TestCases_TSP {
  // the ApduAuthenticator if so requirered by the PICS               
                 
                  f_SendAPDU(v_infoExchangeContent);
- // Log what we sent
- 				f_addLogEntry("Sending Second Request for user list");
- 				f_addLogEntry(any2unistr(v_infoExchangeContent));
+
 // Prepare the record of ADUs to receive
 				v_Ack[0] := m_defaultAck {
 	  				ApduIdentifier := v_APDUIdentifier,
@@ -1299,9 +1227,7 @@ module Backoffice_TestCases_TSP {
 // ADU to be received with the proper apci and returns the complete InfoExchange APDU to be received
 				
 				v_infoExchange := f_createInfoExchangeForComparison(v_Ack);
-				f_addLogEntry("Expecting the following infoExchange");
- 				f_addLogEntry(any2unistr(v_infoExchange));  
-    
+   
 // Test body start
                  t_UserList_Time1.start;
 // Transaction sequence #2: Wait for Nack ADU
