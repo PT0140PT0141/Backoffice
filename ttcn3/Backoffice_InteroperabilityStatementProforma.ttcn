@@ -6,7 +6,7 @@
 module Backoffice_Interoperability_Statement {
  
     /**
-     * @desc    Replicate the Interoperabili Statement Proforma in TTCN3 code
+     * @desc    Replicate the Interoperability Statement Proforma in TTCN3 code
      */
      const float c_veryLongTime := 100000.0;
      modulepar float c_USERDETAILS_TIME1_MAX_TC := c_veryLongTime;
