@@ -27,8 +27,8 @@ module Backoffice_Interfaces language "TTCN-3:2010 Advanced Parameterization" {
 	  * @desc Defines a configuration message based port used to trigger, simulate, configure the IUT
       */
      type port MtcAccessPort message {
-     	in EquipmentOperationRsp;
-        out EquipmentOperationReq;
+        out Iso16986Trigger iso16986Trigger;
+     	in Iso16986TriggerRsp iso16986TriggerRsp;
      } 
 
     /**

@@ -1,0 +1,29 @@
+/*
+ * @author     PT140
+ * @version    $Id$
+ * @desc        xxx
+ */
+module Backoffice_LibUpperTester {
+
+	type enumerated Iso16986Trigger {
+		USERDETAILS_TR_TC_1, 
+		LISTOFUSERS_TR_TC_1, 
+		EXCEPTIONLIST_TR_TSP_1, 
+		TRUSTOBJECTS_TR_1, 
+		TRUSTOBJECTS_TR_2, 
+		PAYMENTCLAIM_TR_TC_1,
+		DSRC_CONTRACTISSUERLIST_TR_TSP_1,
+		DSRC_EFCCONTEXTDATA_TR_TC_1,
+		DSRC_BILLINGDETAILS_TR_TC_1,
+		DSRC_REPORTABNORMALOBE_TR_TC_1,
+		GNSS_TOLLDECLARATION_TR_TSP_1,
+		GNSS_BILLINGDETAILS_TSP_TR_TSP_1,
+		GNSS_BILLINGDETAILS_TC_TR_TC_1,
+		GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1		
+	};
+
+    type record Iso16986TriggerRsp {
+		enumerated {TRIGGERED, NOT_TRIGGERED} responseCode,
+		charstring reason optional        
+	}
+}
