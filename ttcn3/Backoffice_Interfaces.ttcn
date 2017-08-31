@@ -35,8 +35,8 @@ module Backoffice_Interfaces language "TTCN-3:2010 Advanced Parameterization" {
      * @desc   This component type shall be used to create the MTC in order to test the IUT
      */
     type component MainTestComponent {
-        port MtcPort iutPort;
-        port MtcAccessPort iutAccessPort; 
+        port MtcPort mtcPort;
+        port MtcAccessPort mtcAccessPort; 
         timer t_testcaseStart;
     }
 
