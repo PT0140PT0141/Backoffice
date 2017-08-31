@@ -61,6 +61,24 @@ module Backoffice_TesterData {
     	"FaxSubscriberNumber1",
     	"Email1" };    	
     modulepar ASNAUX.UTF8String c_PREFERREDUSERLANGUAGE1 := "IT";
+    
+    /**
+     * @desc    Preparing test user id data
+     */    
+    const c_MAXTESTUSERS := 10000; 
+    type record of UserId UserIdList;
+    var UserIdList v_userIdList;
+    
+    //initialize test user Id values 
+    for (integer index:=0; index< c_MAXTESTUSERS; index := index+1) {
+    	v_userIdList[index] := {
+    		index, //PT140: must be of type pan
+    		index+10000, // contractSerialNumber = INT4; may start e.g. at 10000
+    		"EU"&index, // licenseplatenumber = type LPN
+    		"99"&index, // type obeId = manufacturer id (i.e. 99) + equipment OBU id
+    		}
+	// make them availble at tet run time
+	modulepar UserIdList c_TESTUSERIDLIST := v_userIdList; 
   }
      
     
