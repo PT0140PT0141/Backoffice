@@ -72,29 +72,31 @@ module Backoffice_TestCases_TC {
                
                 // Local variables
 
+                var InfoExchangeContent v_infoExchangeContent;
                 timer t_tseq, t_UserDetails_Time1, t_UserDetails_Time2;
-                var InfoExchange v_infoExchange;
+                var InfoExchange v_expectedInfoExchange, v_receivedInfoExchange, v_preparedInfoExchange;
                 var ProvideUserDetailsADUs v_provideUserDetailsAdus;
 				var ApduIdentifier v_receivedAPDUIdentifier;                           
                   
                 f_Backoffice_Preamble();  // among others, activate altstep
                                              
                 // TP to be started at IUT side; perhaps via an External Function
-                // FIRST TRANSACTION
                          
                 fx_initiateTransactionFromIut("TC_USERDETAILS"); //PT140: needs to be added in module functions
                 t_tseq.start(INITIALISE_TRANSACTION_TIMEOUT); // start transaction timeout timer                              
                 
-				v_infoExchange := f_createInfoExchangeForComparison(v_userDetailsRequest);
-				//PT140: to be checked in function if userDetailsRequest is correcetly composed                 
+				v_expectedInfoExchange := f_createInfoExchangeForComparison(v_userDetailsRequest);
+				//PT140: to be checked in function if userDetailsRequest is correcetly composed
+				//PT140: we can prepare a limited part of the APDU only
+				//PT140: this may contain APCI fields and ADU type                
                  
                 alt {
                     // Transaction sequence #1
-                    [] iutPort.receive(v_infoExchange) -> value v_infoExchange {
+                    [] iutPort.receive(v_expectedInfoExchange) -> value v_receivedInfoExchange {
                     	// RequestADU received with expected content
                     	// Need to decompose the received APDU here for re-use of some data in the ProvideUserDetailsAPDU
 						f_addLogEntry(any2unistr(v_infoExchange)); //log received message
-						v_receivedAPDUIdentifier := v_infoExchange.apci.apduIdentifier; // save APDU Identifier
+						v_receivedAPDUIdentifier := v_receivedInfoExchange.apci.apduIdentifier; // save APDU Identifier
                     	}
                     
                     // alt-Branch for general timeout or non-expected message received located in default altstep                                     
@@ -106,21 +108,20 @@ module Backoffice_TestCases_TC {
                 f_waitTime(USERDETAILS_TIME1_MIN_TC);
                 
                 // prepare userDetails for the provideUserDetailsADUs based on what was requested by the IUT
-                // PT140: At this place we need gerenaral decisions on two elements:
-                // a) to fix / or not the number of ADUs an IUT sends in a UserDetailsRequest; or to put such value into Pixits
-                // b) to limit / or not the number of test data (in this case userDetailsParameters) which are to be made available
-                // 	at tester side and how / where to prepare them, e.g. test-data mudule 
-                v_provideUserDetailsAdu := {
-                	originalUserIdRequest := v_infoExchange.infoExchangeContent.requestAdus.userDetailsRequest.userId;
-                	userId := TEST_USER_ID[0]; //Test data to be provided by the tester
-                    statusFlag := 1; //Test data to be provided by the tester
-                    listOfUserParameters : //PT140: this is a long list of possibilities. How to deat with it?
-                    // I suggest to just pick some examples
-                    }
-                
-                
+                // get the number of ADUs inside the received message
+                v_numberOfReceivedAdus := sizeof(v_receivedInfoExchange.infoExchangeContent.adus.requestAdus);       
+      
+                for (var integer v_index := 0; v_index < v_numberOfReceivedAdus; v_index := v_index+1) {
+                	v_provideUserDetailsAdu[v_index] := {
+                		originalUserIdRequest := v_receivedInfoExchange.infoExchangeContent.adus.requestAdus[v_index].userDetailsRequest.userId;
+                		userId := c_TESTUSERIDLIST[v_index]; //Test data to be provided by the tester
+                        statusFlag := 1; //Test data possibe to send in case of status 1 or 2
+                    	listOfUserParameters := c_USERPARAMETERSRESPONSEDETAILS[v_receivedInfoExchange.infoExchangeContent.adus.requestAdus[v_index].userDetailsRequest.listOfUserParametersRequested;
+                       }
+                	}
+                               
                                     
-                v_infoExchangeContent := f_createInfoExchange(v_userDetails, v_receivedAPDUIdentifier);
+                v_infoExchangeContent := f_createInfoExchange(v_provideUserDetailsAdus, v_receivedAPDUIdentifier);
 				// The f_createInfoExchange function builds the APDU to be sent from the record of ADUs provided              
                                  		 
  				// The APDU is sent by the f_sendAPDU function, which builds the apci for InfoExchangeContent and appends
