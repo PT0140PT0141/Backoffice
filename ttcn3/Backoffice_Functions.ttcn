@@ -120,7 +120,8 @@ module Backoffice_Functions language "TTCN-3:2010 Advanced Parameterization" {
 		v_InfoexchangeContent.adus := v_infoExchangeAdus;
 		v_InfoExchange.infoExchangeContent := v_infoExchangeContent;
 		v_InfoExchange.infoExchangeAuthenticator := AnyOrOmit;
-		
+		f_addLogEntry("Expecting the following infoExchange");
+ 		f_addLogEntry(any2unistr(v_infoExchange)); 
 		return v_Infoexchange;
 	}
 
@@ -141,21 +142,24 @@ module Backoffice_Functions language "TTCN-3:2010 Advanced Parameterization" {
 		v_InfoexchangeContent.apci.apduIdentifier := float2int(rnd()) * 65535;
 		v_InfoexchangeContent.adus := v_InfoExchange_ADUS;
 		v_InfoExchange.infoExchangeContent := v_InfoexchangeContent;
-		
 		return v_infoExchange;
 		}
 	
 
 	// Function f_SendAPDU sends the APDU by using the given APDU in the given port and calculating the Authenticator, if requested
 	function f_sendAPDU (in InfoExchangeContent v_infoExchangeContent) {
-		 var InfoExchange v_infoExchange;
-		 if (not (PICS_SECURED_MODE)) {
-                v_infoExchange.infoExchangeAuthenticator := omit;  //PT140: check if omit or null or something else 
-            } else {
-                v_infoExchange.infoExchangeAuthenticator := fx_computeAuthenticator(v_infoExchangeContent);
-            }
-          v_infoExchange.infoExchangeContent := v_infoExchangeContent;  
-          IutComp.send(v_infoExchange);
+		var InfoExchange v_infoExchange;
+		if (not (PICS_SECURED_MODE)) {
+			v_infoExchange.infoExchangeAuthenticator := omit;  //PT140: check if omit or null or something else 
+ 			f_addLogEntry("Sending The following unauthenticated APDU to the IUT");
+            	
+			} else {
+				v_infoExchange.infoExchangeAuthenticator := fx_computeAuthenticator(v_infoExchangeContent);
+				f_addLogEntry("Sending The following authenticated APDU to the IUT");
+				}
+        v_infoExchange.infoExchangeContent := v_infoExchangeContent;
+		f_addLogEntry(any2unistr(v_infoExchangeContent));  
+        IutComp.send(v_infoExchange);
              	  
 	}
 	
