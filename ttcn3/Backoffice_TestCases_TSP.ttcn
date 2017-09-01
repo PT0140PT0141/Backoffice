@@ -1282,15 +1282,148 @@ module Backoffice_TestCases_TSP {
     
     group PAYMENTCLAIM {
          group Valid_Behaviour {
+            testcase TP_TSP_PaymentClaim_BV_01() runs on IutComp system TestAdapter {
+                   /**    
+				  * @desc	TP_TSP_PAYMENTCLAIM_BV_01: Verify that a TSP performs the PAYMENTCLAIM transaction correctly when using the actionCode=send 
+                  * @remark  [16986:2016], Clause 6.8 and Table A.1/2 AND Table A.7/5 
+                  */
+                 // Local variables
+                var InfoExchangeContent v_infoExchangeContent;
+                var InfoExchange v_infoExchange;
+                var requestAdus v_Request;
+                var ackAdus v_Ack; 
+                
+                } // End of TP_TSP_PAYMENTCLAIM_BV_01
+                
+            testcase TP_TSP_PaymentClaim_BV_02() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_PAYMENTCLAIM_BV_02: Verify that a TSP performs the PAYMENTCLAIM transaction correctly when using the actionCode=revoke or adjust 
+                  * @remark  [16986:2016], Clause 6.8 and Table A.1/2 AND Table A.7/5 
+                  */
+                  
+                 // Local variables
+                var InfoExchangeContent v_infoExchangeContent;
+                var InfoExchange v_infoExchange;
+                var requestAdus v_Request;
+                var ackAdus v_Ack; 
+                
+                } // End of TP_TSP_PAYMENTCLAIM_BV_02
+                
+
+
  		} // End of group Valid_Behaviour
          
-         group Invalid_Behaviour {		
+         group Invalid_Behaviour {
+            testcase TP_TSP_PaymentClaim_BI_01() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_PAYMENTCLAIM_BI_01: Verify that a TSP performs the PAYMENTCLAIM transaction correctly when getting incorrect paymentClaimId 
+                  * @remark  [16986:2016], Clause 6.8 and Table A.1/2 AND Table A.7/5  
+                  */
+                  
+                 // Local variables
+                var InfoExchangeContent v_infoExchangeContent;
+                var InfoExchange v_infoExchange;
+                var requestAdus v_Request;
+                var ackAdus v_Ack; 
+                
+                } // End of TP_TSP_PAYMENTCLAIM_BI_01           		
+
+            testcase TP_TSP_PaymentClaim_BI_02() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_PAYMENTCLAIM_BI_02: Verify that a TSP performs the PAYMENTCLAIM transaction correctly when getting incorrect paymentClaimStatus 
+                  * @remark  [16986:2016], Clause 6.8 and Table A.1/2 AND Table A.7/5  
+                  */
+                  
+                 // Local variables
+                var InfoExchangeContent v_infoExchangeContent;
+                var InfoExchange v_infoExchange;
+                var requestAdus v_Request;
+                var ackAdus v_Ack; 
+                
+                } // End of TP_TSP_PAYMENTCLAIM_BI_02           		
+
+            testcase TP_TSP_PaymentClaim_BI_03() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_PAYMENTCLAIM_BI_03: Verify that a TSP performs the PAYMENTCLAIM transaction correctly when getting incorrect referenceDetailsList 
+                  * @remark  [16986:2016], Clause 6.8 and Table A.1/2 AND Table A.7/5  
+                  */
+                  
+                 // Local variables
+                var InfoExchangeContent v_infoExchangeContent;
+                var InfoExchange v_infoExchange;
+                var requestAdus v_Request;
+                var ackAdus v_Ack; 
+                
+                } // End of TP_TSP_PAYMENTCLAIM_BI_03           		
+
+            testcase TP_TSP_PaymentClaim_BI_04() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_PAYMENTCLAIM_BI_04: Verify that a TSP performs the PAYMENTCLAIM transaction correctly when getting incorrect actionCode 
+                  * @remark  [16986:2016], Clause 6.8 and Table A.1/2 AND Table A.7/5  
+                  */
+                  
+                 // Local variables
+                var InfoExchangeContent v_infoExchangeContent;
+                var InfoExchange v_infoExchange;
+                var requestAdus v_Request;
+                var ackAdus v_Ack; 
+                
+                } // End of TP_TSP_PAYMENTCLAIM_BI_04   
+
+            testcase TP_TSP_PaymentClaim_BI_05() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_PAYMENTCLAIM_BI_05: Getting provoked by various errors with defined specific responses  
+                  * @remark  [16986:2016], Clause 6.8 and Table A.1/2 AND Table A.7/5  
+                  */
+                  
+                 // Local variables
+                var InfoExchangeContent v_infoExchangeContent;
+                var InfoExchange v_infoExchange;
+                var requestAdus v_Request;
+                var ackAdus v_Ack; 
+                
+                } // End of TP_TSP_PAYMENTCLAIM_BI_05   
+
+            testcase TP_TSP_PaymentClaim_BI_06() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_PAYMENTCLAIM_BI_06: Verify that a TSP responds correctly to a PaymentClaimADU sent earlier than allowed  
+                  * @remark  [16986:2016], Clause 6.8 and Table A.1/2 AND Table A.7/5  
+                  */
+                  
+                 // Local variables
+                var InfoExchangeContent v_infoExchangeContent;
+                var InfoExchange v_infoExchange;
+                var requestAdus v_Request;
+                var ackAdus v_Ack; 
+                
+                } // End of TP_TSP_PAYMENTCLAIM_BI_06  
         } // End of group Invalid_Behaviour
 
     } // End of group PAYMENTCLAIM
     
     group DSRC_CONTRACTISSUERLIST {
          group Valid_Behaviour {
+           testcase TP_TSP_CONTRACTISSUERLIST_BV_01() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_CONTRACTISSUERLIST_BV_01: Verify that a TSP performs the PAYMENTCLAIM transaction correctly when using the actionCode=revoke or adjust 
+                  * @remark  [16986:2016], Clause 6.5 and Table A.1/2 AND Table A.7/2  
+                  */
+                  
+                 // Local variables
+                var InfoExchangeContent v_infoExchangeContent;
+                var InfoExchange v_infoExchange;
+                var requestAdus v_Request;
+                var ackAdus v_Ack; 
+                
+                } // End of TP_TSP_CONTRACTISSUERLIST_BV_01
  		} // End of group Valid_Behaviour
          
          group Invalid_Behaviour {		
