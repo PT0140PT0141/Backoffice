@@ -26,4 +26,18 @@ module Backoffice_LibUpperTester {
 		enumerated {TRIGGERED, NOT_TRIGGERED} responseCode,
 		charstring reason optional        
 	}
+
+	//PT140 TODO: rewrite this altstep for the access port  
+    altstep a_upperTester() runs on MainTestComponent{
+//		[] taAccessPort.receive(mw_EO_Response(?)) {
+//        t_wait.stop;
+//        log ("DUT action failed");
+//        setverdict(fail);
+//    }
+		[] t_initialiseTransactionTimeout.timeout {
+			f_addLogEntry("IUT does not respond to initiating trigger");
+            setverdict(inconc);
+            stop;
+		} // End of t_wait.timeout
+    }
 }

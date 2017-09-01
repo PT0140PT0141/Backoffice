@@ -6,7 +6,7 @@
 module Backoffice_Interfaces language "TTCN-3:2010 Advanced Parameterization" {
 
 	//importing other modules
-	import from Common_LibUpperTester all;
+	import from Backoffice_LibUpperTester all;
 		
 	//importing ASN.1 data automatically translated into TTCN-3	
 	import from EfcInfoExchange language "ASN.1:1997" all;	//from ISO 12855:2015
@@ -26,10 +26,11 @@ module Backoffice_Interfaces language "TTCN-3:2010 Advanced Parameterization" {
      /**
 	  * @desc Defines a configuration message based port used to trigger, simulate, configure the IUT
       */
-     type port MtcAccessPort message {
-        out Iso16986Trigger iso16986Trigger;
-     	in Iso16986TriggerRsp iso16986TriggerRsp;
-     } 
+    type port MtcAccessPort message {
+        out Iso16986Trigger;
+        in Iso16986TriggerRsp;
+    } 
+     
 
     /**
      * @desc   This component type shall be used to create the MTC in order to test the IUT
@@ -38,6 +39,7 @@ module Backoffice_Interfaces language "TTCN-3:2010 Advanced Parameterization" {
         port MtcPort mtcPort;
         port MtcAccessPort mtcAccessPort; 
         timer t_testcaseStart;
+        timer t_initialiseTransactionTimeout:=INITIALISE_TRANSACTION_TIMEOUT;
     }
 
     /**

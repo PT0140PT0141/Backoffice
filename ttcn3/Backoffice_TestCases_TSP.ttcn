@@ -22,7 +22,7 @@ module Backoffice_TestCases_TSP {
     import from Backoffice_Interfaces all;
     import from Backoffice_Functions all;
     import from Backoffice_Pixits all;
-    import from Backoffice_Pics all;
+    import from Backoffice_Ics all;
     import from Backoffice_Templates all;
 	
     /**

@@ -9,7 +9,7 @@
 module Backoffice_TestExecution { 
     import from Backoffice_TestCases_TSP all;
     import from Backoffice_TestCases_TC all;
-    import from Backoffice_Pics all;
+    import from Backoffice_Ics all;
     import from Backoffice_Functions all;
 
     control {
@@ -24,12 +24,6 @@ module Backoffice_TestExecution {
              * @remark  [17575-1:2016] (without any specification, let check for transactionCounter)
              */
             
-            if (PICS_A1_1_isTC) {
-            	execute(Testcase_TP_TC_USERDETAILS_BV_01())
-            } else{
-            	f_LogNotExecuted("Testcase_TP_TC_USERDETAILS_BV_01");
-            }
-            
-            
+           	execute(TP_TC_USERDETAILS_BV_01())           
     } 
 } 

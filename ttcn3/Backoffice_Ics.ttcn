@@ -1,0 +1,34 @@
+/**
+ * @author    PT0140  
+ * @desc      This module describes the common functionalities for TCs execution (Charging and ContextData)
+ * @version   $id$
+ */
+module Backoffice_Ics {
+    
+    /**
+     * @desc    Replicate the PICS in TTCN3 code
+     */
+    modulepar boolean ICS_A1_1_isTc := true; 
+    modulepar boolean ICS_A1_2_isTsp := true;
+    modulepar boolean ICS_A2_1_isDsrc := true; 
+    modulepar boolean ICS_A2_2_isGnss := true; 
+    modulepar boolean ICS_A7_1_implementedUSERDETAILS := true; 
+    modulepar boolean ICS_A7_2_implementedLISTOFUSERS := true; 
+    modulepar boolean ICS_A7_3_implementedEXCEPTIONLIST := true; 
+    modulepar boolean ICS_A7_5_implementedPAYMENTCLAIM := true;
+    modulepar boolean ICS_A26_1_implementedDSRCCINTRACTISSUERLIST := true; 
+    modulepar boolean ICS_A26_2_implementedDSRCEFCCONTEXTDATA := true; 
+    modulepar boolean ICS_A26_3_implementedDSRCBILLINGDETAILS := true; 
+    modulepar boolean ICS_A26_4_implementedDSRCREPORTABNORMALOBE := true;
+    modulepar boolean ICS_A30_2_implementedDSRCCONTEXT := true;  
+    modulepar boolean ICS_A30_2_implementedDSRCCLOSEDCONTEXT := true; 
+	//TODO PT140 How do we use these three? They are not values actually given in the PICS. Is it PICS btw, or ICS
+//    modulepar boolean ICS_A36_15_isSent := true;
+//    modulepar boolean ICS_A36_15_isRevoke := true;
+//    modulepar boolean ICS_A36_15_isAdjust := true;   
+    modulepar boolean ICS_A52_1_implementedGNSSBILLINGDETAILSTSP := true; 
+    modulepar boolean ICS_A52_2_implementedGNSSBILLINGDETAILSTC := true; 
+    modulepar boolean ICS_A52_3_implementedGNSSTOLLDECLARATION := true; 
+    modulepar boolean ICS_A52_4_implementedGNSSPAYMENTANNOUNCEMENT := true;
+    modulepar boolean ICS_A56_6_implementedIncludedDiscounts := true;    
+} 

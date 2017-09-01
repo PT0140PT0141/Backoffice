@@ -11,7 +11,7 @@ module Backoffice_Templates language "TTCN-3:2010 Advanced Parameterization" {
 	//importing other modules
 	import from Backoffice_TypesAndValues all;
 	import from Backoffice_Pixits all;
-	import from Backoffice_Pics all;
+	import from Backoffice_Ics all;
 	import from Backoffice_Functions all;
 	
 	//importing ASN.1 data automatically translated into TTCN-3	
@@ -75,7 +75,7 @@ module Backoffice_Templates language "TTCN-3:2010 Advanced Parameterization" {
 		apduDate :=  *
 	} 
 
-	template RequestADU m_user_Details_Request := {
+	template RequestADU m_userDetailsRequest := {
 	  	requestedADUType := AduType_provideUserDetailsADU_,
 	  	userId := DEFINED_USERID,
 		listOfParametersRequested := ?,
