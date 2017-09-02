@@ -7,23 +7,23 @@
  * @version $id$
  */
 module Backoffice_TestExecution { 
-    import from Backoffice_TestCases_TSP all;
-    import from Backoffice_TestCases_TC all;
-    import from Backoffice_Ics all;
-    import from Backoffice_Functions all;
-
-    control {
-        /**
-         * @desc    Group of the TCs based on TPs described in clause A.2.1 BV test purposes: Verify the usage of communication services
-         * Test subgroup objective:
-         * - to test the usage of communication services;
-         * - to test the behaviour of the DUT with respect to data elements contained in Charge Report.
-         */
-            /**
-             * @desc    TC_CR_FE_BV_01: Verify the usage of communication services
-             * @remark  [17575-1:2016] (without any specification, let check for transactionCounter)
-             */
-            
-           	execute(TP_TC_USERDETAILS_BV_01())           
-    } 
+//    import from Backoffice_TestCases_TSP all;
+//    import from Backoffice_TestCases_TC all;
+//    import from Backoffice_Ics all;
+//    import from Backoffice_Functions all;
+//
+//    control {
+//        /**
+//         * @desc    Group of the TCs based on TPs described in clause A.2.1 BV test purposes: Verify the usage of communication services
+//         * Test subgroup objective:
+//         * - to test the usage of communication services;
+//         * - to test the behaviour of the DUT with respect to data elements contained in Charge Report.
+//         */
+//            /**
+//             * @desc    TC_CR_FE_BV_01: Verify the usage of communication services
+//             * @remark  [17575-1:2016] (without any specification, let check for transactionCounter)
+//             */
+//            
+//           	execute(TP_TC_USERDETAILS_BV_01())           
+//    } 
 } 

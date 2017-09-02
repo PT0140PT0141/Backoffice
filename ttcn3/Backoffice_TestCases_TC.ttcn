@@ -47,7 +47,7 @@ module Backoffice_TestCases_TC {
               * @remark  [16986:2016], Clause 6.2.2 and Table A.1/1 
               */
 
-        	testcase Testcase_TP_TC_Base_BV_01() runs on IutComp system TestAdapter {
+        	testcase Testcase_TP_TC_Base_BV_01() runs on MainTestComponent system TestAdapter {
 			}
                 
         } // End of group Valid_Behaviour
@@ -68,7 +68,7 @@ module Backoffice_TestCases_TC {
  group USERDETAILS {
          group Valid_Behaviour {
               
-         	testcase Testcase_TP_TC_USERDETAILS_BV_01() runs on IutComp system TestAdapter {
+         	testcase Testcase_TP_TC_USERDETAILS_BV_01() runs on MainTestComponent system TestAdapter {
                
                 // Local variables
 

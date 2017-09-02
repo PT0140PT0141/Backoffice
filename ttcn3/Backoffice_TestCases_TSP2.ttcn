@@ -60,12 +60,9 @@ module Backoffice_TestCases_TSP {
                  * @remark  [16986:2016], Clause 6.4 and Table A.1/2 AND Table A.7/1  
                  */
                 // Local variables
-                var InfoExchange v_infoExchange;
-                var requestAdus v_Request;
                 var ackAdus v_Ack; 
                 var ProvideUserDetailsADUs v_userDetails;
 				var ApduIdentifier v_receivedAPDUIdentifier;
-				var UserId v_Userid; // value to be taken from PIXIT
                    
                 // Initialisation
                 f_initialiseMtc(ICS_A1_2_isTsp & ICS_A7_1_implementedUSERDETAILS);  //check if the testcase should be run, activate altsteps on ports, etc
@@ -84,7 +81,8 @@ module Backoffice_TestCases_TSP {
                 // of the record of type requestAdus
                 
                 // Prepare the record of ADUs with 1 ADU
-				v_Request[0] := m_userDetailsRequest {
+                var RequestAdu v_requestAdu[1];
+                v_requestAdu[0] := m_userDetailsRequest {
 				  	requestedADUType := AduType_provideUserDetailsADU_ ,
 					listOfParametersRequested := v_ListOfParameters
              	}
@@ -101,9 +99,8 @@ module Backoffice_TestCases_TSP {
 				// The f_createInfoExchangeForComparison function prepares the InfoExchangeContent by concatenating the expected
 				// ADU to be received with the proper apci and returns the complete InfoExchange APDU to be received
 				
-				v_infoExchange := f_createInfoExchangeForComparison(v_userDetails);
+                var InfoExchange v_infoExchangeForComparison := f_createInfoExchangeForComparison(v_userDetails);
  
-    
 				// Test body start
                 t_UserDetails_Time1.start;
 				// Transaction sequence #2: Wait for UserDetails message
