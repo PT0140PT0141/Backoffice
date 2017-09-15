@@ -5,7 +5,7 @@
  * @see     [xxxx-1:2016], Clause 5.2.1  Namimg conventions
  * @version $id$
  */
-module Backoffice_TestCases_TSP {
+module Backoffice_TestCases_TSP2 {
  
     //importing other modules
     import from Backoffice_Interfaces all;
@@ -59,10 +59,6 @@ module Backoffice_TestCases_TSP {
                  * @desc    TP_TSP_USERDETAILS_BV_01: Verify that the TSP correctly receives an APDU containing valid RequestADUs and provides valid ProvideUserDetailsADUs 
                  * @remark  [16986:2016], Clause 6.4 and Table A.1/2 AND Table A.7/1  
                  */
-                // Local variables
-                var ackAdus v_Ack; 
-                var ProvideUserDetailsADUs v_userDetails;
-				var ApduIdentifier v_receivedAPDUIdentifier;
                    
                 // Initialisation
                 f_initialiseMtc(ICS_A1_2_isTsp & ICS_A7_1_implementedUSERDETAILS);  //check if the testcase should be run, activate altsteps on ports, etc
@@ -71,9 +67,10 @@ module Backoffice_TestCases_TSP {
                 // the v_listOfParameters record will be made of a random number of elements containing randomly picked up
                 // parameter identifiers from the list of supported parameters (PIXIT value)
 				var listOfParametersRequested v_ListOfParameters;   
-                const integer maxParms := float2int(rnd()) * sizeof(SUPPORTED_LIST_OF_PARAMETERS);
+                const integer maxParms := float2int(rnd()) * sizeof(USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS);
                 for (var integer v_ct :=0; v_ct<maxParms;v_ct:=v_ct+1) {
-	                v_ListOfParameters[v_ct] := SUPPORTED_LIST_OF_PARAMETERS[float2int(rnd()) * sizeof(SUPPORTED_LIST_OF_PARAMETERS)];
+                	//Note: float2int removes the fractional part and returns just the integer, it is NOT a rounding function. That is why this works
+	                v_ListOfParameters[v_ct] := USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS[float2int(rnd()) * sizeof(SUPPORTED_LIST_OF_PARAMETERS)];
                 };
                 
                 // IUT shall initially receive a Request as per Transaction sequence #1
@@ -95,7 +92,9 @@ module Backoffice_TestCases_TSP {
                 f_SendAPDU(v_infoExchangeContentToSend);
                                 
  				// Prepare the record of ADUs to receive
+                var ProvideUserDetailsADUs v_userDetails;
 				v_userDetails[0] := mw_userDetails;
+
 				// The f_createInfoExchangeForComparison function prepares the InfoExchangeContent by concatenating the expected
 				// ADU to be received with the proper apci and returns the complete InfoExchange APDU to be received
 				
@@ -111,7 +110,7 @@ module Backoffice_TestCases_TSP {
                 alt {
 					// Storing what we received in the same variable (not very clean ...)
                 	[] IutComp.receive(v_infoExchange) -> value v_infoExchange {
-                     		
+                		                    		
 						// User Details ADU arrived. Stop timer
                         var float v_elapsedTime := t_UserDetails_Time1.read; // Save the current time
                         t_UserDetails_Time1.stop;
@@ -122,7 +121,7 @@ module Backoffice_TestCases_TSP {
  						f_addLogEntry(any2unistr(v_infoExchange));
  							                              
                         // Transaction sequence #3: Send DefaultACK with correct identifier and set verdict
-                        
+  						var ApduIdentifier v_receivedAPDUIdentifier;
                         v_receivedAPDUIdentifier := v_infoExchange.infoExchangeContent.apci.apduIdentifier;
 
 						// Prepare the record of ADUs with 1 Ack ADU                        
@@ -148,8 +147,8 @@ module Backoffice_TestCases_TSP {
 				
 				// Postamble - Final Conditions
                 f_closeDownMtc();  // among others, de-activate altstep
-
-             } // End of TP_TSP_USERDETAILS_BV_01
+			
+            } // End of TP_TSP_USERDETAILS_BV_01
             
 //            testcase TP_TSP_USERDETAILS_BV_02() runs on IutComp system TestAdapter {
 //             

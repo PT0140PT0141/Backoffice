@@ -47,7 +47,7 @@ module Backoffice_Templates language "TTCN-3:2010 Advanced Parameterization" {
      * @param   p_notAuthenticatedInfoExchangeAdu Unsecured ADU (of data type InfoExchange)
      * @see     [12855:2016], Clause xx Message authentication
      */
-    template (value) InfoExchange m_InfoExchange_unsecured(in template (value) InfoExchange p_notAuthenticatedInfoExchange) := 
+    template (value) InfoExchange m_infoExchangeUnsecured(in template (value) InfoExchange p_notAuthenticatedInfoExchange) := 
     {
     	notAuthenticatedInfoExchange := p_notAuthenticatedInfoExchange            
     } // End of template m_InfoExchange_unsecured
