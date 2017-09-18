@@ -15,9 +15,11 @@ module Backoffice_Pixits {
 	
     modulepar float INITIALISE_TRANSACTION_TIMEOUT := 10.0;
     
-    modulepar Provider IUT_ORIGINATOR;
-    modulepar Provider IUT_SENDER;
-    modulepar Provider IUT_INFORMATION_RECIPIENT_ID;
+	//For APDUs sent from the IUT...
+    modulepar Provider APDU_ORIGINATOR_FOR_IUT; //value of the InfoExchange.infoExchangeContent.apci.apduOriginator
+    modulepar Provider INFORMATION_SENDER_ID_FOR_IUT;	//value of the InfoExchange.infoExchangeContent.apci.informationSenderID
+    modulepar Provider INFORMATION_RECIPIENT_ID_FOR_IUT;//value of the InfoExchange.infoExchangeContent.apci.informationrecipientID
+
     modulepar UserId DEFINED_USERID;
     
  	type record of integer RecordOfInteger;

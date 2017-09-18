@@ -66,11 +66,11 @@ module Backoffice_TestCases_TSP2 {
                 // we want to ask for a random number of parameters randomly chosen among those supported
                 // the v_listOfParameters record will be made of a random number of elements containing randomly picked up
                 // parameter identifiers from the list of supported parameters (PIXIT value)
-				var listOfParametersRequested v_ListOfParameters;   
+				var record of UserParameterRequest v_listOfParameters;   
                 const integer maxParms := float2int(rnd()) * sizeof(USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS);
                 for (var integer v_ct :=0; v_ct<maxParms;v_ct:=v_ct+1) {
                 	//Note: float2int removes the fractional part and returns just the integer, it is NOT a rounding function. That is why this works
-	                v_ListOfParameters[v_ct] := USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS[float2int(rnd()) * sizeof(SUPPORTED_LIST_OF_PARAMETERS)];
+	                v_listOfParameters[v_ct] := USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS[float2int(rnd()) * sizeof(SUPPORTED_LIST_OF_PARAMETERS)];
                 };
                 
                 // IUT shall initially receive a Request as per Transaction sequence #1
@@ -78,28 +78,25 @@ module Backoffice_TestCases_TSP2 {
                 // of the record of type requestAdus
                 
                 // Prepare the record of ADUs with 1 ADU
-                var RequestAdu v_requestAdu[1];
-                v_requestAdu[0] := m_userDetailsRequest {
+                var RequestAdu v_requestAdus[1];
+                
+                v_requestAdus[0] := m_userDetailsRequest {
 				  	requestedADUType := AduType_provideUserDetailsADU_ ,
 					listOfParametersRequested := v_ListOfParameters
              	}
              	
-                // The f_createInfoExchange function builds the APDU to be sent from the record of ADUs provided
-                var InfoExchangeContent v_infoExchangeContentToSend := f_createInfoExchange(v_Request);
- 
-                // The ADU is sent by the f_sendAPDU function, which builds the apci for InfoExchangeContent and appends
-                // the ApduAuthenticator if so requirered by the PICS               
-                f_SendAPDU(v_infoExchangeContentToSend);
+    			var InfoExchange v_apduUserDetailsReq := mw_initiatingApdu(v_requestAdus);
+
+            	IutComp.send(v_apduUserDetailsReq);   	  
+     			f_addLogEntry("Sent The following unauthenticated APDU to the IUT");
+	    		f_addLogEntry(any2unistr(v_apduUserDetailsReq));  
                                 
  				// Prepare the record of ADUs to receive
                 var ProvideUserDetailsADUs v_userDetails;
-				v_userDetails[0] := mw_userDetails;
 
 				// The f_createInfoExchangeForComparison function prepares the InfoExchangeContent by concatenating the expected
 				// ADU to be received with the proper apci and returns the complete InfoExchange APDU to be received
 				
-                var InfoExchange v_infoExchangeForComparison := f_createInfoExchangeForComparison(v_userDetails);
- 
 				// Test body start
                 t_UserDetails_Time1.start;
 				// Transaction sequence #2: Wait for UserDetails message
@@ -109,7 +106,7 @@ module Backoffice_TestCases_TSP2 {
 
                 alt {
 					// Storing what we received in the same variable (not very clean ...)
-                	[] IutComp.receive(v_infoExchange) -> value v_infoExchange {
+                	[] IutComp.receive(mw_apduUserDetails) -> value v_apduUserdetails{
                 		                    		
 						// User Details ADU arrived. Stop timer
                         var float v_elapsedTime := t_UserDetails_Time1.read; // Save the current time
@@ -118,7 +115,7 @@ module Backoffice_TestCases_TSP2 {
  						// Log what we recevived
  							
  						f_addLogEntry("The following infoExchange received. Timer value = " & int2char(float2int(v_elapsedTime)));
- 						f_addLogEntry(any2unistr(v_infoExchange));
+ 						f_addLogEntry(any2unistr(v_apduUserdetails));
  							                              
                         // Transaction sequence #3: Send DefaultACK with correct identifier and set verdict
   						var ApduIdentifier v_receivedAPDUIdentifier;

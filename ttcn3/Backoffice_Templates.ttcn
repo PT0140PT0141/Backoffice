@@ -40,6 +40,43 @@ module Backoffice_Templates language "TTCN-3:2010 Advanced Parameterization" {
 	import from Backoffice_Parameterised_Asn1_Data all;  
     import from Common_Parametrised_Asn1_Data all;
     
+	//NEW TEMPLATE STRUCTURE---------------------------------------------------------------
+	template InfoExchange mw_infoExchangeNoSec:={
+	  infoExchangeContent:=?,
+	  infoExchangeAuthenticator := omit
+	}
+	
+	
+	template InfoExchangeContent mw_infoExchangeContent(in Adus p_adus) := {
+		apci:={
+    		aidIdentifier := 1, // 12855 Protocol Version number 
+    		apduOriginator := *, // Source of the content of the APDU 
+    		informationSenderID := *, // Sender of this content 
+    		informationrecipientID := *,  
+    		apduIdentifier := *,
+    		previousApduId := *,
+    		nextApduId := omit,
+    		inResponseToApduId := *, 
+    		apduDate :=  *
+		},
+		adus:= p_adus
+	}
+
+	template InfoExchangeContent mw_infoExchangeContentSend(in Adus p_adus) modifies mw_infoExchangeContent := {			
+		apduOriginator := APDU_ORIGINATOR_FOR_IUT,  
+		informationSenderID := INFORMATION_SENDER_ID_FOR_IUT, 
+		informationRecipientID := INFORMATION_RECIPIENT_ID_FOR_IUTn
+	}
+	
+	//template InfoExchange mw_apduUserDetailsReqReceive
+	
+	template Initiating_Apdu
+	
+//def event Initiating_Apdu "An APDU with the APCI-fields set to informationRecipientId = Tester identifier and apduDate = valid date, optional fields on all levels not present"
+//def event Default_Apdu "An APDU with the APCI-fields set to informationRecipientId = Tester identifier, inResponseToApduId = the apduId of the APDU carrying the ADU that is being responded to and apduDate = valid date, other optional fields on all levels not present"
+//def event Default_Ack_Apdu "Default_Apdu containing one AckADU containing {apduAckCode =: apduOK(2)}, with issues being not present"
+	
+	//END OF NEW TEMPLATE STRUCTURE---------------------------------------------------------------
 	
 
 	/**
@@ -47,17 +84,16 @@ module Backoffice_Templates language "TTCN-3:2010 Advanced Parameterization" {
      * @param   p_notAuthenticatedInfoExchangeAdu Unsecured ADU (of data type InfoExchange)
      * @see     [12855:2016], Clause xx Message authentication
      */
-    template (value) InfoExchange m_infoExchangeUnsecured(in template (value) InfoExchange p_notAuthenticatedInfoExchange) := 
-    {
+    template (value) InfoExchange m_infoExchangeUnsecured(in template (value) InfoExchange p_notAuthenticatedInfoExchange) := {
     	notAuthenticatedInfoExchange := p_notAuthenticatedInfoExchange            
-    } // End of template m_InfoExchange_unsecured
+    } 
 	
      /**
       * @desc    Main send template for any secured ADU
       * @param   p_notAuthenticatedInfoExchangeAdu Secured ADU (of data type InfoExchange)
       * @see     [12855:2016], Clause xx Message authentication
       */
-    template (value) InfoExchange m_InfoExchange_secured(in template (value) InfoExchange p_authenticatedInfoExchange) := 
+    template (value) InfoExchange m_infoExchangeSecured(in template (value) InfoExchange p_authenticatedInfoExchange) := 
     {
         authenticatedInfoExchange := p_authenticatedInfoExchange
     } // End of template m_InfoExchange_secured
@@ -75,7 +111,7 @@ module Backoffice_Templates language "TTCN-3:2010 Advanced Parameterization" {
 		apduDate :=  *
 	} 
 
-	template RequestADU m_userDetailsRequest := {
+	template RequestADU mw_userDetailsRequest := {
 	  	requestedADUType := AduType_provideUserDetailsADU_,
 	  	userId := DEFINED_USERID,
 		listOfParametersRequested := ?,
