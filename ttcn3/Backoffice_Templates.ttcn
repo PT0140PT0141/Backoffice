@@ -41,11 +41,11 @@ module Backoffice_Templates language "TTCN-3:2010 Advanced Parameterization" {
     import from Common_Parametrised_Asn1_Data all;
     
 	//NEW TEMPLATE STRUCTURE---------------------------------------------------------------
-	template InfoExchange mw_infoExchangeNoSec:={
-	  infoExchangeContent:=?,
+	
+	template InfoExchange m_infoExchangeNoSec(InfoExchangeContent p_infoExchangeContent):={
+	  infoExchangeContent:=p_infoExchangeContent,
 	  infoExchangeAuthenticator := omit
 	}
-	
 	
 	template InfoExchangeContent mw_infoExchangeContent(in Adus p_adus) := {
 		apci:={
@@ -61,18 +61,25 @@ module Backoffice_Templates language "TTCN-3:2010 Advanced Parameterization" {
 		},
 		adus:= p_adus
 	}
+	
 
+	//InfoExchangeContent SENT BY THE Tester
 	template InfoExchangeContent mw_infoExchangeContentSend(in Adus p_adus) modifies mw_infoExchangeContent := {			
-		apduOriginator := APDU_ORIGINATOR_FOR_IUT,  
-		informationSenderID := INFORMATION_SENDER_ID_FOR_IUT, 
-		informationRecipientID := INFORMATION_RECIPIENT_ID_FOR_IUTn
+		apduOriginator := APDU_ORIGINATOR_FOR_TESTER,  
+		informationSenderID := INFORMATION_SENDER_ID_FOR_TESTER, 
+		informationRecipientID := INFORMATION_SENDER_ID_FOR_IUT,
+		//apduIdentifier shall be a unique identifier for each given apduOriginator that is assigned by the apduOriginator. 
+		//It is used to either acknowledge or request retransmission of a previously issued APDU.
+		apduIdentifier := float2int(rnd()) * 65535
 	}
 	
-	//template InfoExchange mw_apduUserDetailsReqReceive
+	//Corresponds to the event Initiating_Apdu desribed in test purposes. 
+	//Definition: "An APDU with the APCI-fields set to informationRecipientId = Tester identifier and apduDate = valid date, optional fields on all levels not present"
+	template InfoExchangeContent mw_infoExchangeContentSendInit(in Adus p_adus) modifies mw_infoExchangeContentSend := {
+    		inResponseToApduId := omit
+	}
 	
-	template Initiating_Apdu
 	
-//def event Initiating_Apdu "An APDU with the APCI-fields set to informationRecipientId = Tester identifier and apduDate = valid date, optional fields on all levels not present"
 //def event Default_Apdu "An APDU with the APCI-fields set to informationRecipientId = Tester identifier, inResponseToApduId = the apduId of the APDU carrying the ADU that is being responded to and apduDate = valid date, other optional fields on all levels not present"
 //def event Default_Ack_Apdu "Default_Apdu containing one AckADU containing {apduAckCode =: apduOK(2)}, with issues being not present"
 	
@@ -129,17 +136,15 @@ module Backoffice_Templates language "TTCN-3:2010 Advanced Parameterization" {
 	}
 
 	
-	template ProvideUserDetailsADU mw_userDetailsPrivacy_apduIdentifier := {
-	  
-	  originaluserIdRequest := DEFINED_USERID,
-	  userId := *,
-	  statusFlag := * ,
-	  listOfUserParameters.UserParameterResponse := omit,
-	  listOfUserParameters.userParameterResponse := *,
-	  listOfUserParameters.userParameterStatus := 2,
-	  listOfUserParameters.userInfoValidityPeriod := omit
-	  
-	}
+//	template ProvideUserDetailsADU mw_userDetailsPrivacy_apduIdentifier := {
+//        originaluserIdRequest := DEFINED_USERID,
+//        userId := *,
+//        statusFlag := * ,
+//        listOfUserParameters.UserParameterResponse := omit,
+//        listOfUserParameters.userParameterResponse := *,
+//        listOfUserParameters.userParameterStatus := 2,
+//        listOfUserParameters.userInfoValidityPeriod := omit
+//	}
 	
 	template ProvideUserDetailsADU mw_userDetails := {
 	  originaluserIdRequest := DEFINED_USERID,

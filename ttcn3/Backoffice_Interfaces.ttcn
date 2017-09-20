@@ -6,7 +6,8 @@
 module Backoffice_Interfaces language "TTCN-3:2010 Advanced Parameterization" {
 
 	//importing other modules
-	import from Backoffice_LibUpperTester all;
+	import from Backoffice_LibUpperTester[] Iso16986Trigger, Iso16986TriggerRsp;
+	import from Backoffice_Pixits all;
 		
 	//importing ASN.1 data automatically translated into TTCN-3	
 	import from EfcInfoExchange language "ASN.1:1997" all;	//from ISO 12855:2015

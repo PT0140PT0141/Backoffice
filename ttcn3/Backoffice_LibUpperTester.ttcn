@@ -5,6 +5,9 @@
  */
 module Backoffice_LibUpperTester {
 
+	import from Backoffice_Interfaces MainTestComponent;
+	import from Backoffice_Functions all;
+
 	type enumerated Iso16986Trigger {
 		USERDETAILS_TR_TC_1, 
 		LISTOFUSERS_TR_TC_1, 

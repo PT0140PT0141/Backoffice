@@ -5,7 +5,7 @@
  *
  *  Source:    EfcInfoExchange.asn
  *  Generator: TTworkbench ASN.1 Parser 1.1.14.201606151123
- *  Date:      9/1/17 2:17 PM
+ *  Date:      9/20/17 12:56 PM
  *
  * ----------------------------------------------------------------------------
  *  The ASN.1 to TTCN-3 is a proprietary mapping based on the ES 201 873-7 ETSI standard.
@@ -34,37 +34,21 @@
 module EfcInfoExchange language "ASN.1:1997" {
   import from ASNAUX all; 
 
-  import from EfcDsrcApplication language "ASN.1:1997" {
-    type ReceiptContract, PaymentMeansBalance, ContractSerialNumber, VehicleAuthenticator, EnvironmentalCharacteristics, LPN, VehicleClass, ExhaustEmissionValues, DieselEmissionValues, ContractValidity, SessionLocation, FutureCharacteristics, StationType, VehicleIdentificationNumber, EquipmentOBUId, EquipmentStatus, EFC_ContextMark, PersonalAccountNumber, PayUnit, VehicleLicencePlateNumber, ValidityOfContract, ResultOp, EngineCharacteristics, GetInstanceRq, DateAndTime, VehicleWeightLaden, DriverCharacteristics, VehicleDimensions, VehicleWeightLimits, PaymentMeans, Provider, PaymentFee, DateCompact, ReceiptData, VehicleAxles, DescriptiveCharacteristics, VehicleSpecificCharacteristics, GetStampedRq, PaymentMeansUnit; 
-  }; 
+  import from EfcDsrcApplication language "ASN.1:1997" all; 
 
-  import from AVIAEINumberingAndDataStructures language "ASN.1:1997" {
-    type CS5, IssuerIdentifier, CountryCode; 
-  }; 
+  import from AVIAEINumberingAndDataStructures language "ASN.1:1997" all; 
 
-  import from EfcDsrcGeneric language "ASN.1:1997" {
-    type AttributeIdList; 
-  }; 
+  import from EfcDsrcGeneric language "ASN.1:1997" all; 
 
-  import from AuthenticationFramework language "ASN.1:1997" {
-    type CertificateSerialNumber, Certificate, AlgorithmIdentifier, Name; 
-  }; 
+  import from AuthenticationFramework language "ASN.1:1997" all; 
 
-  import from ExtendedSecurityServices_2006 language "ASN.1:1997" {
-    type SigningCertificateV2; 
-  }; 
+  import from ExtendedSecurityServices_2006 language "ASN.1:1997" all; 
 
-  import from EfcAutonomousContextData language "ASN.1:1997" {
-    type ChargeUnit, TariffTable, LocalVehicleClassDefinition, AbsolutePointCoordinates, CordonExitLocation, Point, TariffClassDefinition, ChargeDistance, LocationClassId, CordonEntryLocation, EntityId, TollContextOverview, TariffClassId, VersionAndValidity, TimeClassId, TimeClassDefinition, UserClassDefinition; 
-  }; 
+  import from EfcAutonomousContextData language "ASN.1:1997" all; 
 
-  import from EfcCcc language "ASN.1:1997" {
-    type Latitude, Longitude; 
-  }; 
+  import from EfcCcc language "ASN.1:1997" all; 
 
-  import from EfcAutonomousCharging language "ASN.1:1997" {
-    type VersionId, MessageAuthenticator, Duration, Distance; 
-  }; 
+  import from EfcAutonomousCharging language "ASN.1:1997" all; 
 
   type record ApciFields {
     integer aidIdentifier (0 .. 255),

@@ -122,54 +122,54 @@ module Backoffice_Functions language "TTCN-3:2010 Advanced Parameterization" {
     	// Function f_prepare_toReceive_InfoExchange to put ADUs together with APCIS and prepare InfoExchange to be received
     	// It  concatenates multiple ADUs into a single stream and prepare APCI accordingly
     	
-    	function f_createInfoExchangeForComparison(in Adus p_infoExchangeAdus) return InfoExchange {
-    		var InfoExchangeContent v_infoExchangeContent;
-    		var InfoExchange v_infoExchange;
-    		v_infoExchangeContent.apci := m_apciFields{apduOriginator := ORIGINATOR, informationSenderID := SENDER, informationrecipientID := TESTER_ID};
-    		v_infoExchangeContent.adus := p_infoExchangeAdus;
-    		v_infoExchange.infoExchangeContent := v_infoExchangeContent;
-    		v_infoExchange.infoExchangeAuthenticator := AnyOrOmit;
-    		f_addLogEntry("Expecting the following infoExchange");
-     		f_addLogEntry(any2unistr(v_infoExchange)); 
-    		return v_infoExchange;
-    	}
+//    	function f_createInfoExchangeForComparison(in Adus p_infoExchangeAdus) return InfoExchange {
+//    		var InfoExchangeContent v_infoExchangeContent;
+//    		var InfoExchange v_infoExchange;
+//    		v_infoExchangeContent.apci := m_apciFields{apduOriginator := ORIGINATOR, informationSenderID := SENDER, informationrecipientID := TESTER_ID};
+//    		v_infoExchangeContent.adus := p_infoExchangeAdus;
+//    		v_infoExchange.infoExchangeContent := v_infoExchangeContent;
+//    		v_infoExchange.infoExchangeAuthenticator := AnyOrOmit;
+//    		f_addLogEntry("Expecting the following infoExchange");
+//     		f_addLogEntry(any2unistr(v_infoExchange)); 
+//    		return v_infoExchange;
+//    	}
     
-    	function f_createInfoExchange(in Adus p_adus, in integer p_apduToAnswer) return InfoExchange {
-    		var InfoExchangeContent v_infoExchangeContent;
-    		var InfoExchange v_infoExchange;
-    		
-    		if (p_apduToAnswer != null) {
-    			v_infoExchangeContent.apci := m_apciFields  { 
-    				apduOriginator := TESTER_ID, 
-    				informationSenderID := TESTER_ID, 
-    				informationrecipientID := ORIGINATOR, 
-    				RelatedApduId.apduOriginator := ORIGINATOR,
-    				RelatedApduId.apduIdentifier := p_apduToAnswer
-    			}
-    		} else {
-    			v_InfoexchangeContent.apci := m_apciFields  { 
-    				apduOriginator := TESTER_ID, 
-    				informationSenderID := TESTER_ID, 
-    				informationrecipientID := ORIGINATOR
-    			}
-    		}
-    		
-    		v_infoexchangeContent.apci.apduIdentifier := float2int(rnd()) * 65535;
-    		v_InfoexchangeContent.adus := p_adus;
-    		v_InfoExchange.infoExchangeContent := v_InfoexchangeContent;
-    		return v_infoExchange;
-    	}
+//    	function f_createInfoExchange(in Adus p_adus, in integer p_apduToAnswer) return InfoExchange {
+//    		var InfoExchangeContent v_infoExchangeContent;
+//    		var InfoExchange v_infoExchange;
+//    		
+//    		if (p_apduToAnswer != null) {
+//    			v_infoExchangeContent.apci := m_apciFields  { 
+//    				apduOriginator := TESTER_ID, 
+//    				informationSenderID := TESTER_ID, 
+//    				informationrecipientID := ORIGINATOR, 
+//    				RelatedApduId.apduOriginator := ORIGINATOR,
+//    				RelatedApduId.apduIdentifier := p_apduToAnswer
+//    			}
+//    		} else {
+//    			v_InfoexchangeContent.apci := m_apciFields  { 
+//    				apduOriginator := TESTER_ID, 
+//    				informationSenderID := TESTER_ID, 
+//    				informationrecipientID := ORIGINATOR
+//    			}
+//    		}
+//    		
+//    		v_infoexchangeContent.apci.apduIdentifier := float2int(rnd()) * 65535;
+//    		v_InfoexchangeContent.adus := p_adus;
+//    		v_InfoExchange.infoExchangeContent := v_InfoexchangeContent;
+//    		return v_infoExchange;
+//    	}
     	
     
     	// Function f_sendAPDU sends the APDU by using the given APDU in the given port and calculating the Authenticator, if requested
-    	function f_sendAPDU (in InfoExchangeContent p_infoExchangeContent) {
+    	function f_sendApdu (in InfoExchangeContent p_infoExchangeContent, in boolean p_authOrNot) runs on MainTestComponent{
     		var InfoExchange v_infoExchange;
-    		if (not (PICS_SECURED_MODE)) {
+    		if (not (p_authOrNot)) {
     			v_infoExchange.infoExchangeAuthenticator := omit;  //PT140: check if omit or null or something else 
      			f_addLogEntry("Sending The following unauthenticated APDU to the IUT");
                 	
     		} else {
-    			v_infoExchange.infoExchangeAuthenticator := fx_computeAuthenticator(v_infoExchangeContent);
+    			v_infoExchange.infoExchangeAuthenticator := fx_computeAuthenticator(p_infoExchangeContent);
     			f_addLogEntry("Sending The following authenticated APDU to the IUT");
     		}
             v_infoExchange.infoExchangeContent := p_infoExchangeContent;
