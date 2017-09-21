@@ -39,22 +39,23 @@ module Backoffice_Templates language "TTCN-3:2010 Advanced Parameterization" {
 	import from Backoffice_Parameterised_Asn1_Data all;  
     import from Common_Parametrised_Asn1_Data all;
     
-	//NEW TEMPLATE STRUCTURE---------------------------------------------------------------
-
-    /**
-     * @desc    Generic template for InfoExchange structure, without authentication     
-     */
-	
-	template InfoExchange m_infoExchangeNoSec(InfoExchangeContent p_infoExchangeContent):={
-	  infoExchangeContent:=p_infoExchangeContent,
-	  infoExchangeAuthenticator := omit
-	}
-	
-    /**
-     * @desc    Generic template for InfoExchangeContent structure    
-     */
-	template InfoExchangeContent mw_infoExchangeContent(in Adus p_adus) := {
-		apci:={
+    group ApduTemplates {
+        
+        /**
+         * @desc    Generic template for InfoExchange structure, without authentication     
+         */
+    	template InfoExchange m_infoExchangeNoSec(in ApciFields p_apci, in Adus p_adus):={
+    	  infoExchangeContent:={
+    	  	apci:=p_apci,
+    	  	adus:=p_adus
+    	  },
+    	  infoExchangeAuthenticator := omit
+    	}
+    
+    	/**
+         * @desc Generic template for ApciFields 
+         */
+    	template ApciFields mw_apciFields := { 
     		aidIdentifier := 1, // 12855 Protocol Version number 
     		apduOriginator := ?, // Source of the content of the APDU 
     		informationSenderID := ?, // Sender of this content 
@@ -64,130 +65,114 @@ module Backoffice_Templates language "TTCN-3:2010 Advanced Parameterization" {
     		nextApduId := omit,
     		inResponseToApduId := *, 
     		apduDate :=  ?
-		},
-		adus:= p_adus
-	}
-
-	
-	/**
-     * @desc Generic template for InfoExchangeContent SENT BY THE Tester     
-     */
-	template InfoExchangeContent mw_infoExchangeContentSend(in Adus p_adus) modifies mw_infoExchangeContent := {			
-		apduOriginator := APDU_ORIGINATOR_FOR_TESTER,  
-		informationSenderID := INFORMATION_SENDER_ID_FOR_TESTER, 
-		informationRecipientID := INFORMATION_SENDER_ID_FOR_IUT,
-		//apduIdentifier shall be a unique identifier for each given apduOriginator that is assigned by the apduOriginator. 
-		//It is used to either acknowledge or request retransmission of a previously issued APDU.
-		apci.apduIdentifier := float2int(rnd()) * 65535
-	}
-	
-	/**
-	 * 
-	 * @desc Corresponds to the event Initiating_Apdu desribed in test purposes.
-	 * @desc Definition: "An APDU with the APCI-fields set to informationRecipientId = Tester identifier and apduDate = valid date, 
-	 * @desc optional fields on all levels not present" 
-	 */ 
-	template InfoExchangeContent mw_infoExchangeContentSendInit(in Adus p_adus) modifies mw_infoExchangeContentSend := {
-    		inResponseToApduId := omit
-	}
-	
-	//def event Initiating_Apdu "An APDU with the APCI-fields set to informationRecipientId = Tester identifier and apduDate = valid date, optional fields on all levels not present"
-	//def event Default_Apdu "An APDU with the APCI-fields set to informationRecipientId = Tester identifier, inResponseToApduId = the apduId of the APDU carrying the ADU that is being responded to and apduDate = valid date, other optional fields on all levels not present"
-	//def event Default_Ack_Apdu "Default_Apdu containing one AckADU containing {apduAckCode =: apduOK(2)}, with issues being not present"
-	//def event NAck_Apdu(zero or more sets of Param defined as {aduPosition, aduReasonCode}) "Default_Apdu containing one AckADU containing {apduAckCode= apduOK(2), issues containing one element for each Param set containing {issueADUStruct=aduPosition, issueCode = aduReasonCode }}"
-	//NOTE	the NAck_Apdu definition assumes that there are some valid ADUs in the APDU it is responding to (otherwise an apduAckCode  = apduNotOK(3) might have been a feasible answer
-	//def event NAck_requestSentTooOften "Default_Apdu containing one AckADU containing {apduAckCode= requestSentTooOften(10)}"
-	
-	//END OF NEW TEMPLATE STRUCTURE---------------------------------------------------------------
-	
-
-	/**
-     * @desc    Main send template for any unsecured ADU
-     * @param   p_notAuthenticatedInfoExchangeAdu Unsecured ADU (of data type InfoExchange)
-     * @see     [12855:2016], Clause xx Message authentication
-     */
-    template (value) InfoExchange m_infoExchangeUnsecured(in template (value) InfoExchange p_notAuthenticatedInfoExchange) := {
-    	notAuthenticatedInfoExchange := p_notAuthenticatedInfoExchange            
-    } 
-	
-     /**
-      * @desc    Main send template for any secured ADU
-      * @param   p_notAuthenticatedInfoExchangeAdu Secured ADU (of data type InfoExchange)
-      * @see     [12855:2016], Clause xx Message authentication
-      */
-    template (value) InfoExchange m_infoExchangeSecured(in template (value) InfoExchange p_authenticatedInfoExchange) := 
-    {
-        authenticatedInfoExchange := p_authenticatedInfoExchange
-    } // End of template m_InfoExchange_secured
-
-	template ApciFields m_apciFields := { 
-
-		aidIdentifier := 1, // 12855 Protocol Version number 
-		apduOriginator := *, // Source of the content of the APDU 
-		informationSenderID := *, // Sender of this content 
-		informationrecipientID := *,  
-		apduIdentifier := *,
-		previousApduId := *,
-		nextApduId := omit,
-		inResponseToApduId := *, 
-		apduDate :=  *
-	} 
-
-	template RequestADU mw_userDetailsRequest := {
-	  	requestedADUType := AduType_provideUserDetailsADU_,
-	  	userId := DEFINED_USERID,
-		listOfParametersRequested := ?,
-		userDetailsRequestReason := omit,
-		userInfoValidityPeriod := omit
-	}
-
-
-	template AckADU m_defaultAck := {
-	  ApduIdentifier := ?,
-	  explicitlyAckedAdus := omit,
-	  apduAckCode := ?,
-	  apduAckText := omit,
-	  issues := *
-	}
-
-	
-//	template ProvideUserDetailsADU mw_userDetailsPrivacy_apduIdentifier := {
-//        originaluserIdRequest := DEFINED_USERID,
-//        userId := *,
-//        statusFlag := * ,
-//        listOfUserParameters.UserParameterResponse := omit,
-//        listOfUserParameters.userParameterResponse := *,
-//        listOfUserParameters.userParameterStatus := 2,
-//        listOfUserParameters.userInfoValidityPeriod := omit
-//	}
-	
-	template ProvideUserDetailsADU mw_userDetails := {
-	  originaluserIdRequest := DEFINED_USERID,
-	  userId := *,
-	  statusFlag := * ,
-	  listOfUserParameters := *
-	}
-	
-    modulepar Provider TESTER_ID := *;
+    	}
+    	
+    	/**
+         * @desc Template for ApciFields sent by the Tester     
+         */
+    	template ApciFields mw_apciFieldsSend modifies mw_apciFields:= {			
+    		apduOriginator := APDU_ORIGINATOR_FOR_TESTER,  
+    		informationSenderID := INFORMATION_SENDER_ID_FOR_TESTER, 
+    		informationrecipientID := INFORMATION_SENDER_ID_FOR_IUT,
+    		//apduIdentifier shall be a unique identifier for each given apduOriginator that is assigned by the apduOriginator. 
+    		//It is used to either acknowledge or request retransmission of a previously issued APDU.
+    		apduIdentifier := float2int(rnd()) * 65535
+    	}
+    	
+    	/**
+         * @desc Template for ApciFields in initiating APDUs sent by the Tester     
+         */
+    	template (value) ApciFields m_apciFieldsFirstSend(GeneralizedTime p_apduDate) modifies mw_apciFieldsSend:= {			
+    		previousApduId:=omit,
+    		inResponseToApduId := omit,
+    		apduDate:=p_apduDate
+    	}
+    	
+    	/**
+    	 * 
+    	 * @desc Corresponds to the event Initiating_Apdu desribed in test purposes.
+    	 * @desc Definition: "An APDU with the APCI-fields set to informationRecipientId = Tester identifier and apduDate = valid date, 
+    	 * @desc optional fields on all levels not present" 
+    	 */ 
+    	template (value) InfoExchange m_infoExchangeNoSecInit(in GeneralizedTime p_apduDate, in Adus p_adus) := m_infoExchangeNoSec(
+     		m_apciFieldsFirstSend(p_apduDate), 
+     		p_adus
+     	);
+    	 
+    	//def event Initiating_Apdu "An APDU with the APCI-fields set to informationRecipientId = Tester identifier and apduDate = valid date, optional fields on all levels not present"
+    	//def event Default_Apdu "An APDU with the APCI-fields set to informationRecipientId = Tester identifier, inResponseToApduId = the apduId of the APDU carrying the ADU that is being responded to and apduDate = valid date, other optional fields on all levels not present"
+    	//def event Default_Ack_Apdu "Default_Apdu containing one AckADU containing {apduAckCode =: apduOK(2)}, with issues being not present"
+    	//def event NAck_Apdu(zero or more sets of Param defined as {aduPosition, aduReasonCode}) "Default_Apdu containing one AckADU containing {apduAckCode= apduOK(2), issues containing one element for each Param set containing {issueADUStruct=aduPosition, issueCode = aduReasonCode }}"
+    	//NOTE	the NAck_Apdu definition assumes that there are some valid ADUs in the APDU it is responding to (otherwise an apduAckCode  = apduNotOK(3) might have been a feasible answer
+    	//def event NAck_requestSentTooOften "Default_Apdu containing one AckADU containing {apduAckCode= requestSentTooOften(10)}"
+    	
     
-    modulepar integer semanticError := 3000;
- 	
- 	modulepar integer actionCodeNotSupported := 3010;
- 
-	modulepar integer acceptedWithWarning := 4000;
-	
-	modulepar integer sequenceError := 4;
-
-	modulepar integer otherReason := 5;
-
-	modulepar integer protocolVersionError := 6;
   
-	modulepar integer originatorRejected := 7;
-  
-	modulepar integer recipientUnknown := 8;
+    	template AckADU m_defaultAck := {
+            apduIdentifier := ?,
+            explicitlyAckedAdus := omit,
+            apduAckCode := ?,
+            apduAckText := omit,
+            issues := *
+    	}
+    }
+    
+	group TransactionTemplates{
+		group USERDETAILS {
+    		template RequestADU mw_userDetailsRequest := {
+        		userDetailsRequest:={	
+            	  	requestedADUType := AduType_provideUserDetailsADU_,
+            	  	userId := DEFINED_USER_ID,
+            		listOfParametersRequested := ?,
+            		userDetailsRequestReason := omit,
+            		userInfoValidityPeriod := omit
+        		}
+        	}
+        
+        			
+        //	template ProvideUserDetailsADU mw_userDetailsPrivacy_apduIdentifier := {
+        //        originaluserIdRequest := DEFINED_USERID,
+        //        userId := *,
+        //        statusFlag := * ,
+        //        listOfUserParameters.UserParameterResponse := omit,
+        //        listOfUserParameters.userParameterResponse := *,
+        //        listOfUserParameters.userParameterStatus := 2,
+        //        listOfUserParameters.userInfoValidityPeriod := omit
+        //	}
+        	
+        	template ProvideUserDetailsADU mw_userDetails := {
+            	originaluserIdRequest := DEFINED_USER_ID,
+            	userId := ?,
+            	statusFlag := * ,
+            	listOfUserParameters := *
+        	}
+    	
+		
+		}
+		group LISTOFUSERS {}
+		group EXCEPTIONLIST {}
+		group TRUSTOBJECTS {}
+		group PAYMENTCLAIM{}
+		group DSRC_CONTRACTISSUERLIST{}
+		group DSRC_EFCCONTEXTDATA {}
+		group DSRC_BILLINGDETAILS{}
+		group DSRC_REPORTABNORMALOBE {}
+		group GNSS_TOLLDECLARATIONS {}
+		group GNSS_BILLINGDETAILS_TSP{}
+		group GNSS_BILLINGDETAILS_TC {}
+		group GNSS_PAYMENTANNOUNCEMENT {}
 
-	modulepar integer relatedApduUnknown := 9;
-   
-    modulepar integer NAck_requestSentTooOften := 10 ;
-    	         
-} // End of module Backoffice_Templates
+    	//PT140 TODO should not use modulepar, and is there a better naming? 
+    	//Or could they be grouped with the structures they belong to?
+        const integer c_semanticError := 3000;
+      	modulepar integer actionCodeNotSupported := 3010;
+     	modulepar integer acceptedWithWarning := 4000;
+    	modulepar integer sequenceError := 4;
+    	modulepar integer otherReason := 5;
+    	modulepar integer protocolVersionError := 6;
+    	modulepar integer originatorRejected := 7;
+    	modulepar integer recipientUnknown := 8;
+    	modulepar integer relatedApduUnknown := 9;
+        modulepar integer NAck_requestSentTooOften := 10 ;
+	}
+}

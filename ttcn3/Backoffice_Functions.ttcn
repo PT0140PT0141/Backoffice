@@ -173,7 +173,7 @@ module Backoffice_Functions language "TTCN-3:2010 Advanced Parameterization" {
     		}
             v_infoExchange.infoExchangeContent := p_infoExchangeContent;
     		f_addLogEntry(any2unistr(p_infoExchangeContent));
-            send(v_infoExchange);   	  
+            mtcPort.send(v_infoExchange);   	  
     	}
 	}
 }
