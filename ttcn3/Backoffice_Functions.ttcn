@@ -41,11 +41,12 @@ module Backoffice_Functions language "TTCN-3:2010 Advanced Parameterization" {
          */
     	altstep a_defaults() runs on MainTestComponent {
         	var InfoExchange v_infoExchange;
-    		[] mtcPort.receive -> value v_infoExchange {
-                f_addLogEntry("Unexpected APDU received");
-                f_addLogEntry(any2unistr(v_infoExchange));
-                repeat; // Ignore unexpected ADUs, but log them
-            }
+        	//PT140 TODO fix this, should be uncommented
+//    		[] mtcPort.receive -> value v_infoExchange {
+//                f_addLogEntry("Unexpected APDU received");
+//                f_addLogEntry(any2unistr(v_infoExchange));
+//                repeat; // Ignore unexpected ADUs, but log them
+//            }
     
             [] any timer.timeout {
                 f_addLogEntry("Unexpected timeout occured");
@@ -58,15 +59,15 @@ module Backoffice_Functions language "TTCN-3:2010 Advanced Parameterization" {
         //PT140: port names left as those from 17575 tests  
      	function f_intialiseMtc(boolean p_runTestcase) runs on MainTestComponent {
      
-     		//PT140 TODO check if this works...
      		if (not p_runTestcase) {
      			f_addLogEntry("Testcase shall not be run according to ISO 16986 Implementation Conformance Statement (ICS).");
      			setverdict(inconc);
-     			break;
+     			stop;
      		}
      		
      		// Initialize communication stack
-            f_initializeCommunication();
+            //PT140 TODO is this needed?
+            //f_initializeCommunication();
             
             // Map TTCN-3 ports to TestAdapter ports
             map(self:mtcPort, system:taPort);
@@ -78,25 +79,23 @@ module Backoffice_Functions language "TTCN-3:2010 Advanced Parameterization" {
             activate(a_upperTester());
             
             f_addLogEntry("Initialisations performed. Test case starting.");
-    
-    	} // End of function f_Backoffice_Preamble()
+    	} 
         
     	function f_closeDownMtc() runs on MainTestComponent {
         	// Deactivate communication stack
-            f_deactivateCommunication();
+        	
+        	//PT140 TODO is this needed. Uncomment in that case
+            //f_deactivateCommunication();
                 
             // Unmap TTCN-3 ports from TestAdapter ports
-            unmap(self:iutPort, system:ta_pco);
-            unmap(self:eaPort, system:ta_eaPort);
+			unmap(self:mtcPort, system:taPort);
+			unmap(self:mtcAccessPort, system:taAccessPort);
                 
-            // Activate message filtering and timeouts
-            // See  
-            deactivate(a_defaults());
-            // Activate UpperTester
-            deactivate(a_upperTester());
+            //Deactivates all defaults
+			deactivate;
             f_addLogEntry("Everything deactivated. Test case ended");
     
-        } // End of function f_Backoffice_Postamble()
+        } 
             
     	function f_addLogEntry(in charstring p_text){
     		log("*** " & testcasename() & ":" & p_text);
@@ -173,8 +172,8 @@ module Backoffice_Functions language "TTCN-3:2010 Advanced Parameterization" {
     			f_addLogEntry("Sending The following authenticated APDU to the IUT");
     		}
             v_infoExchange.infoExchangeContent := p_infoExchangeContent;
-    		f_addLogEntry(any2unistr(p_infoExchangeContent));  
-            IutComp.send(v_infoExchange);   	  
+    		f_addLogEntry(any2unistr(p_infoExchangeContent));
+            send(v_infoExchange);   	  
     	}
 	}
 }

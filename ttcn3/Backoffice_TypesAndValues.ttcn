@@ -1,9 +1,0 @@
-/**
- * @author	PT0140  
- * @desc 	This module describes common types and values for both TC and TSP
- * @version	$id$
- */
-module Backoffice_TypesAndValues {
-
-
-} // End of module Common_TypesAndValues

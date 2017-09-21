@@ -5,7 +5,7 @@
  */
 module Backoffice_LibUpperTester {
 
-	import from Backoffice_Interfaces MainTestComponent;
+	import from Backoffice_Interfaces {type MainTestComponent;};
 	import from Backoffice_Functions all;
 
 	type enumerated Iso16986Trigger {
@@ -30,17 +30,22 @@ module Backoffice_LibUpperTester {
 		charstring reason optional        
 	}
 
-	//PT140 TODO: rewrite this altstep for the access port  
+	template Iso16986TriggerRsp m_iso16986TriggerRspNotTriggered:={
+	  responseCode:=NOT_TRIGGERED,
+	  reason := *
+	}
+	
     altstep a_upperTester() runs on MainTestComponent{
-//		[] taAccessPort.receive(mw_EO_Response(?)) {
-//        t_wait.stop;
-//        log ("DUT action failed");
-//        setverdict(fail);
-//    }
+		[] mtcAccessPort.receive(m_iso16986TriggerRspNotTriggered) {
+			//PT140 TODO insert mechanism to read the potential "reason" message and put it in the log
+        	f_addLogEntry("IUT triggering action failed");
+        	setverdict(fail);
+	    }
 		[] t_initialiseTransactionTimeout.timeout {
 			f_addLogEntry("IUT does not respond to initiating trigger");
             setverdict(inconc);
             stop;
 		} // End of t_wait.timeout
     }
+    
 }
