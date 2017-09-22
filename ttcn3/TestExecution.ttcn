@@ -3,10 +3,10 @@
  * @desc    This module provides control par for automatic test execution
  */
 //module Backoffice_TestExecution { 
-//    import from Backoffice_TestCases_TSP all;
-//    import from Backoffice_TestCases_TC all;
-//    import from Backoffice_Ics all;
-//    import from Backoffice_Functions all;
+//    import from EfcInfoExchange_TestCasesTsp all;
+//    import from EfcInfoExchange_TestCasesTc all;
+//    import from EfcInfoExchange_Ics all;
+//    import from EfcInfoExchange_Functions all;
 //    control {
 //        /**
 //         * @desc    Group of the TCs based on TPs described in clause A.2.1 BV test purposes: Verify the usage of communication services

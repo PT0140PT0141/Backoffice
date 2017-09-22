@@ -8,18 +8,18 @@
  * @see     Electronic fee collection (EFC) — Application interface definition for autonomous systems — Part 2: Communication and connections to the lower layers
  * @version $id$
  */
-module Backoffice_Functions language "TTCN-3:2010 Advanced Parameterization" { 
+module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization" { 
 
 	//importing other modules
-	import from Backoffice_Interfaces all;
-	import from Backoffice_LibUpperTester all;
+	import from EfcInfoExchange_Interfaces all;
+	import from EfcInfoExchange_LibUpperTester all;
 		
 	//importing ASN.1 data automatically translated into TTCN-3	
 	import from EfcInfoExchange language "ASN.1:1997" all;
 
 	//importing ASN.1 data manually translated into TTCN-3
-	import from Backoffice_Parameterised_Asn1_Data all;
-	import from Common_Parametrised_Asn1_Data all;
+	import from EfcInfoExchange_ParameterisedAsn1Data all;
+	import from Common_ParametrisedAsn1Data all;
 
 
     group External {

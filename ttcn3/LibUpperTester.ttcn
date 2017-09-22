@@ -3,10 +3,10 @@
  * @version    $Id$
  * @desc        xxx
  */
-module Backoffice_LibUpperTester {
+module EfcInfoExchange_LibUpperTester {
 
-	import from Backoffice_Interfaces {type MainTestComponent;};
-	import from Backoffice_Functions all;
+	import from EfcInfoExchange_Interfaces {type MainTestComponent;};
+	import from EfcInfoExchange_Functions all;
 
 	type enumerated Iso16986Trigger {
 		USERDETAILS_TR_TC_1, 

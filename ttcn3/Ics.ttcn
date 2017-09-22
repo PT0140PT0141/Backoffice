@@ -3,7 +3,7 @@
  * @desc      This module describes the common functionalities for TCs execution (Charging and ContextData)
  * @version   $id$
  */
-module Backoffice_Ics {
+module EfcInfoExchange_Ics {
     
     /**
      * @desc    Replicate the PICS in TTCN3 code

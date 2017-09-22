@@ -3,7 +3,7 @@
  * @desc     This module describes the common parameters for TCs execution. To be provided by the IUT implementer
  * @version    $id$
  */
-module Backoffice_Pixits {
+module EfcInfoExchange_Pixits {
 	//importing other modules
 	
 	//importing ASN.1 data automatically translated into TTCN-3	

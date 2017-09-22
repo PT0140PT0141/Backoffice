@@ -6,7 +6,7 @@
 // * @see     [16407-1:2016], Clause 5.3.2 TP namimg conventions
 // * @version $id$
 // */
-//module Backoffice_TestCases_TC {
+//module EfcInfoExchange_TestCasesTc {
 // /**
 //     * @desc    [17575-1:2016]: Charging
 //     * @see     Annex A (normative) EFC data type specifications
@@ -21,16 +21,16 @@
 //     * @desc    TTCN-3 does not support ASN.1 parameterization (ETSI ES 201 873-7 V4.5.1 Clause 10)
 //     *          Common_Parametrised_Asn1_Data TTCN-3 module is a workaround
 //     */
-//    import from Common_Parametrised_Asn1_Data all;
-//    import from Backoffice_Functions all;
-//    import from Backoffice_Pixits all;
-//    import from Backoffice_Templates all;
+//    import from Common_ParametrisedAsn1Data all;
+//    import from EfcInfoExchange_Functions all;
+//    import from EfcInfoExchange_Pixits all;
+//    import from EfcInfoExchange_Templates all;
 //    
 //    // Backoffice
-//    import from Backoffice_Functions all;
-//    import from Backoffice_Templates all;
-//    import from Backoffice_Ics all;
-//    import from Backoffice_Interfaces all;
+//    import from EfcInfoExchange_Functions all;
+//    import from EfcInfoExchange_Templates all;
+//    import from EfcInfoExchange_Ics all;
+//    import from EfcInfoExchange_Interfaces all;
 //
 ///**
 //      * @desc    These Test Cases apply to Toll Charger claiming conformance to [16986:2016] and applying Test Purposes as from TS xxxxx:2018 Annex A

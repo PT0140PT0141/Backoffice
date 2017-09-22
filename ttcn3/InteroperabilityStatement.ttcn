@@ -3,7 +3,7 @@
  * @desc      This module declares the Interoperability parameters Settings
  * @version   $id$
  */
-module Backoffice_Interoperability_Statement {
+module EfcInfoExchange_InteroperabilityStatement {
  
     /**
      * @desc    Replicate the Interoperability Statement Proforma in TTCN3 code

@@ -1,4 +1,4 @@
-module Backoffice_Parameterised_Asn1_Data language "TTCN-3:2010 Advanced Parameterization" {
+module EfcInfoExchange_ParameterisedAsn1Data language "TTCN-3:2010 Advanced Parameterization" {
 
 	import from EfcInfoExchange language "ASN.1:1997" all;
 	import from EfcDsrcGeneric language "ASN.1:1997" all;
@@ -7,8 +7,7 @@ module Backoffice_Parameterised_Asn1_Data language "TTCN-3:2010 Advanced Paramet
 	import from EfcAutonomousContextData language "ASN.1:1997" all;
 	import from EfcLac language "ASN.1:1997" all;
 	import from EfcCcc language "ASN.1:1997" all;
-	import from Common_Parametrised_Asn1_Data all;
-
+	import from Common_ParametrisedAsn1Data all;
 
 //	EfcContextDataADU::= 	SEQUENCE { 
 //	  entityOverview 			EntityOverview OPTIONAL,
