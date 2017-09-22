@@ -101,6 +101,10 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
     		log("*** " & testcasename() & ":" & p_text);
     	}
     
+    	function f_addLogEntrySentApdu (in InfoExchange p_infoExchange){
+ 			f_addLogEntry("Sent the following APDU to the IUT: " & any2unistr(p_infoExchange));
+    	}
+
     	function f_checkMinimumTime(in timer p_compare, in float p_timeMin) {	                      
             if (p_compare.read <= p_timeMin) {
             	setverdict(fail);
@@ -160,20 +164,5 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
 //    	}
     	
     
-    	// Function f_sendAPDU sends the APDU by using the given APDU in the given port and calculating the Authenticator, if requested
-    	function f_sendApdu (in InfoExchangeContent p_infoExchangeContent, in boolean p_authOrNot) runs on MainTestComponent{
-    		var InfoExchange v_infoExchange;
-    		if (not (p_authOrNot)) {
-    			v_infoExchange.infoExchangeAuthenticator := omit;  //PT140: check if omit or null or something else 
-     			f_addLogEntry("Sending The following unauthenticated APDU to the IUT");
-                	
-    		} else {
-    			v_infoExchange.infoExchangeAuthenticator := fx_computeAuthenticator(p_infoExchangeContent);
-    			f_addLogEntry("Sending The following authenticated APDU to the IUT");
-    		}
-            v_infoExchange.infoExchangeContent := p_infoExchangeContent;
-    		f_addLogEntry(any2unistr(p_infoExchangeContent));
-            mtcPort.send(v_infoExchange);   	  
-    	}
 	}
 }

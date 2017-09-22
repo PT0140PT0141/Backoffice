@@ -62,40 +62,24 @@ module Backoffice_TestCases_TSP2 {
                 f_initialiseMtc(ICS_A1_2_isTsp & ICS_A7_1_implementedUSERDETAILS);  //check if the testcase should be run, activate altsteps on ports, etc
 
                 // we want to ask for a random number of parameters randomly chosen among those supported
-                // the v_listOfParameters record will be made of a random number of elements containing randomly picked up
+                // the v_userParameterRequest array will be made of a random number of elements containing randomly picked up
                 // parameter identifiers from the list of supported parameters (PIXIT value)
-				var record of UserParameterRequest v_listOfParameters;   
-                const integer maxParms := float2int(rnd()) * sizeof(USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS);
-                for (var integer v_ct :=0; v_ct<maxParms;v_ct:=v_ct+1) {
+                const integer totNoParams := sizeof(USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS);
+                const integer noParamsToUse := float2int(rnd() * totNoParams);
+				var UserParameterRequests v_userParameterRequest[noParamsToUse];   
+                for (var integer v_ct :=0; v_ct<noParamsToUse;v_ct:=v_ct+1) {
                 	//Note: float2int removes the fractional part and returns just the integer, it is NOT a rounding function. That is why this works
-	                v_listOfParameters[v_ct] := USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS[float2int(rnd()) * sizeof(SUPPORTED_LIST_OF_PARAMETERS)];
+					v_userParameterRequests[v_ct] := USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS[float2int(rnd()) * totNoParams];
                 };
                 
                 // IUT shall initially receive a Request as per Transaction sequence #1
                 // the request is made with the list of parameters just elaborated and stored as the only field
                 // of the record of type requestAdus
-                
-                // Prepare the record of ADUs with 1 ADU
-                var RequestAdu v_requestAdus[1];
-                
-                v_requestAdus[0] := m_userDetailsRequest {
-				  	requestedADUType := AduType_provideUserDetailsADU_ ,
-					listOfParametersRequested := v_ListOfParameters
-             	}
-             	
-    			var InfoExchange v_apduUserDetailsReq := mw_initiatingApdu(v_requestAdus);
-
-            	IutComp.send(v_apduUserDetailsReq);   	  
-     			f_addLogEntry("Sent The following unauthenticated APDU to the IUT");
-	    		f_addLogEntry(any2unistr(v_apduUserDetailsReq));  
+				var InfoExchange v_apduToSend:= mw_initiatingApdu({ m_requestUserDetails(v_userParameterRequests) });
+				mtcPort.send(v_apduToSend);   	  
+				f_addLogEntrySentApdu(v_apduToSend); 
                                 
- 				// Prepare the record of ADUs to receive
-                var ProvideUserDetailsADUs v_userDetails;
-
-				// The f_createInfoExchangeForComparison function prepares the InfoExchangeContent by concatenating the expected
-				// ADU to be received with the proper apci and returns the complete InfoExchange APDU to be received
-				
-				// Test body start
+				//Test body start
                 t_UserDetails_Time1.start;
 				// Transaction sequence #2: Wait for UserDetails message
 				 					
