@@ -12,7 +12,8 @@ module Backoffice_TestCases_TSP2 {
     import from EfcInfoExchange_Functions all;
     import from EfcInfoExchange_Pixits all;
     import from EfcInfoExchange_Ics all;
-    import from EfcInfoExchange_Templates all;
+	import from EfcInfoExchange_Templates all;
+    import from EfcInfoExchange_InteroperabilityStatement all;
     
     //importing ASN.1 data automatically translated into TTCN-3	
     import from EfcInfoExchange language "ASN.1:1997" all;
@@ -66,66 +67,45 @@ module Backoffice_TestCases_TSP2 {
                 // parameter identifiers from the list of supported parameters (PIXIT value)
                 const integer totNoParams := sizeof(USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS);
                 const integer noParamsToUse := float2int(rnd() * totNoParams);
-				var UserParameterRequests v_userParameterRequest[noParamsToUse];   
+				var UserParameterRequests v_userParameterRequests[noParamsToUse];   
                 for (var integer v_ct :=0; v_ct<noParamsToUse;v_ct:=v_ct+1) {
                 	//Note: float2int removes the fractional part and returns just the integer, it is NOT a rounding function. That is why this works
 					v_userParameterRequests[v_ct] := USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS[float2int(rnd()) * totNoParams];
                 };
                 
-                // IUT shall initially receive a Request as per Transaction sequence #1
-                // the request is made with the list of parameters just elaborated and stored as the only field
-                // of the record of type requestAdus
-				var InfoExchange v_apduToSend:= mw_initiatingApdu({ m_requestUserDetails(v_userParameterRequests) });
+                // Step1: send RequestADU
+				var InfoExchange v_apduToSend:= m_apduNoSecInit({ m_requestUserDetails(v_userParameterRequests), fx_getUtc() });
 				mtcPort.send(v_apduToSend);   	  
 				f_addLogEntrySentApdu(v_apduToSend); 
                                 
-				//Test body start
-                t_UserDetails_Time1.start;
-				// Transaction sequence #2: Wait for UserDetails message
-				 					
+				//Set timer
+                t_step.start(USERDETAILS_TIME1_MAX_TSP);
+                
+				// Step2: Wait for ProvideUserDetailsADU 
 				// Either we receive an APDU containing Provide User Details ADU(s) or the timeout expires
 				// timeout expiration is handled in the altstep branch
 
                 alt {
-					// Storing what we received in the same variable (not very clean ...)
-                	[] IutComp.receive(mw_apduUserDetails) -> value v_apduUserdetails{
+                	[] mtcPort.receive(mw_apduProvideUserDetails) -> value v_apduProvideUserDetails{
                 		                    		
 						// User Details ADU arrived. Stop timer
-                        var float v_elapsedTime := t_UserDetails_Time1.read; // Save the current time
-                        t_UserDetails_Time1.stop;
- 						
- 						// Log what we recevived
- 							
- 						f_addLogEntry("The following infoExchange received. Timer value = " & int2char(float2int(v_elapsedTime)));
- 						f_addLogEntry(any2unistr(v_apduUserdetails));
- 							                              
-                        // Transaction sequence #3: Send DefaultACK with correct identifier and set verdict
-  						var ApduIdentifier v_receivedAPDUIdentifier;
-                        v_receivedAPDUIdentifier := v_infoExchange.infoExchangeContent.apci.apduIdentifier;
-
-						// Prepare the record of ADUs with 1 Ack ADU                        
-                        v_Ack[0] := m_defaultAck{
-	  						ApduIdentifier := v_receivedAPDUIdentifier,
-	  						apduAckCode := ApduReasonCode_apduOK_,
-	  						issues := omit
-						};
-
-                        // The f_createInfoExchange function builds the APDU to be sent from the record of ADUs provided
-                        // Note that this time we pass the identifier of the APDU to be Acked, because that is required by 16986 for Acks               
-                                                         		
-                 		v_infoExchangeContent := f_createInfoExchange(v_Ack[0], v_receivedAPDUIdentifier);
+						f_checkMinimumTime(t_step, USERDETAILS_TIME1_MAX_TSP); // Save the current time
+                        t_step.stop;
  
-						// The ADU is sent by the f_sendAPDU function, which builds the apci for InfoExchangeContent and appends
-						// the ApduAuthenticator if so requirered by the PICS
-                
-						f_SendAPDU(v_infoExchangeContent);
-						                      
-						setverdict(pass);
+ 						//Set verdict
+ 						setverdict(pass);
+ 
+ 						// Log what we recevived 					
+ 						f_addLogEntry("The following InfoExchange received. Timer value = " & int2char(t_step.read));
+ 						f_addLogEntry(any2unistr(v_apduUserdetails)); //PT140 TODO I would like to include this in the statement above but with a linebreak. Does "\n" work?
+ 							                              
+                        // Step3: Send DefaultAck with correct identifier and set verdict
+                        mtcPort.send(m_apduDefaultAck(v_apduProvideUserDetails))
+
                 	}
                 } // End of alt statement
 				
-				// Postamble - Final Conditions
-                f_closeDownMtc();  // among others, de-activate altstep
+                f_closeDownMtc();  
 			
             } // End of TP_TSP_USERDETAILS_BV_01
             

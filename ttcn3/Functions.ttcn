@@ -29,7 +29,8 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
          * @see     Clauses 7. EFC communication services (functions)
          * @see     Clauses 8. The use of a communication stack)
          */
-       external function fx_computeAuthenticator(in InfoExchangeContent p_InfoExchange) return ApduAuthenticator;
+		external function fx_computeAuthenticator(in InfoExchangeContent p_InfoExchange) return ApduAuthenticator;
+    	external function fx_getUtc() return GeneralizedTime;
          
     } 
 
@@ -70,8 +71,8 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
             //f_initializeCommunication();
             
             // Map TTCN-3 ports to TestAdapter ports
-            map(self:mtcPort, system:taPort);
-            map(self:mtcAccessPort, system:taAccessPort);
+            map(p_mtc.mtcPort, system:taPort);
+            map(p_mtc.mtcAccessPort, system:taAccessPort);
               
             // Activate message filtering and timeouts altstep
             activate(a_defaults());
@@ -93,7 +94,7 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
                 
             //Deactivates all defaults
 			deactivate;
-            f_addLogEntry("Everything deactivated. Test case ended");
+            f_addLogEntry("Test case ended.");
     
         } 
             

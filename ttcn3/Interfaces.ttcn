@@ -39,7 +39,7 @@ module EfcInfoExchange_Interfaces language "TTCN-3:2010 Advanced Parameterizatio
     type component MainTestComponent {
         port MtcPort mtcPort;
         port MtcAccessPort mtcAccessPort; 
-        timer t_testcaseStart;
+        timer t_step;
         timer t_initialiseTransactionTimeout:=INITIALISE_TRANSACTION_TIMEOUT;
     }
 

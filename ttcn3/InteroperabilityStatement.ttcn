@@ -5,9 +5,11 @@
  */
 module EfcInfoExchange_InteroperabilityStatement {
  
+ 
     /**
      * @desc    Replicate the Interoperability Statement Proforma in TTCN3 code
      */
+     //Time values expressed in seconds
      const float c_veryLongTime := 100000.0;
      modulepar float USERDETAILS_TIME1_MAX_TC := c_veryLongTime;
      modulepar float USERDETAILS_TIME1_MIN_TC := 0.0;
