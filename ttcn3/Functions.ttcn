@@ -71,8 +71,8 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
             //f_initializeCommunication();
             
             // Map TTCN-3 ports to TestAdapter ports
-            map(p_mtc.mtcPort, system:taPort);
-            map(p_mtc.mtcAccessPort, system:taAccessPort);
+            map(mtc:mtcPort, system:taPort);
+            map(mtc:mtcAccessPort, system:taAccessPort);
               
             // Activate message filtering and timeouts altstep
             activate(a_defaults());

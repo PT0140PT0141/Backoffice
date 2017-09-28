@@ -55,7 +55,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
     	/**
          * @desc Generic template for ApciFields 
          */
-    	template ApciFields mw_apciFields := { 
+    	template ApciFields mw_apci := { 
     		aidIdentifier := 1, // 12855 Protocol Version number 
     		apduOriginator := ?, // Source of the content of the APDU 
     		informationSenderID := ?, // Sender of this content 
@@ -70,7 +70,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
     	/**
          * @desc Template for ApciFields sent by the Tester     
          */
-    	template ApciFields mw_apciFieldsSend modifies mw_apciFields:= {			
+    	template ApciFields mw_apciSend modifies mw_apci:= {			
     		apduOriginator := APDU_ORIGINATOR_FOR_TESTER,  
     		informationSenderID := INFORMATION_SENDER_ID_FOR_TESTER, 
     		informationrecipientID := INFORMATION_SENDER_ID_FOR_IUT,
@@ -82,7 +82,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
     	/**
          * @desc Template for ApciFields in initiating APDUs sent by the Tester     
          */
-    	template (value) ApciFields m_apciFieldsFirstSend(GeneralizedTime p_apduDate) modifies mw_apciFieldsSend:= {			
+    	template (value) ApciFields m_apciFirstSend(GeneralizedTime p_apduDate) modifies mw_apciSend:= {			
     		previousApduId:=omit,
     		inResponseToApduId := omit,
     		apduDate:=p_apduDate
@@ -94,21 +94,28 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
     	 * @desc Definition: "An APDU with the APCI-fields set to informationRecipientId = Tester identifier and apduDate = valid date, 
     	 * @desc optional fields on all levels not present" 
     	 */ 
-    	template (value) InfoExchange m_apduNoSecInit(in GeneralizedTime p_apduDate, in Adus p_adus) := m_infoExchangeNoSec(
-     		m_apciFieldsFirstSend(p_apduDate), 
+    	template (value) InfoExchange m_apduNoSecInit(in GeneralizedTime p_apduDate, in Adus p_adus) := m_apduNoSec(
+     		m_apciFirstSend(p_apduDate), 
      		p_adus
      	);
 
-    	//def event Initiating_Apdu "An APDU with the APCI-fields set to informationRecipientId = Tester identifier and apduDate = valid date, optional fields on all levels not present"
+    	/**
+    	 * 
+    	 * @desc Corresponds to the event Default_Ack_Apdu desribed in test purposes.
+    	 * @desc Definition: "Default_Apdu containing one AckADU containing {apduAckCode =: apduOK(2)}, with issues being not present" 
+    	 */ 
+		template (value) InfoExchange m_apduDefaultAck(in InfoExchange p_apduToAck) := {
+		//PT140 TODO write this template
+		}
+
     	//def event Default_Apdu "An APDU with the APCI-fields set to informationRecipientId = Tester identifier, inResponseToApduId = the apduId of the APDU carrying the ADU that is being responded to and apduDate = valid date, other optional fields on all levels not present"
-    	//def event Default_Ack_Apdu "Default_Apdu containing one AckADU containing {apduAckCode =: apduOK(2)}, with issues being not present"
     	//def event NAck_Apdu(zero or more sets of Param defined as {aduPosition, aduReasonCode}) "Default_Apdu containing one AckADU containing {apduAckCode= apduOK(2), issues containing one element for each Param set containing {issueADUStruct=aduPosition, issueCode = aduReasonCode }}"
     	//NOTE	the NAck_Apdu definition assumes that there are some valid ADUs in the APDU it is responding to (otherwise an apduAckCode  = apduNotOK(3) might have been a feasible answer
     	//def event NAck_requestSentTooOften "Default_Apdu containing one AckADU containing {apduAckCode= requestSentTooOften(10)}"
     	
     
   
-    	template AckADU m_defaultAck := {
+    	template AckADU mw_aduDefaultAck := {
             apduIdentifier := ?,
             explicitlyAckedAdus := omit,
             apduAckCode := ?,
@@ -124,7 +131,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 	
 			type record of UserParameterRequest UserParameterRequests;
 
-    		template RequestADU mw_requestUserDetails := {
+    		template RequestADU mw_aduRequestProvideUserDetails := {
         		userDetailsRequest:={	
             	  	requestedADUType := AduType_provideUserDetailsADU_,
             	  	userId := DEFINED_USER_ID,
@@ -134,12 +141,14 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
         		}
         	}
         	
-        	template (value) RequestADU m_requestUserDetails(UserParameterRequests p_userParameterRequests) modifies mw_requestUserDetails := {
-				listOfParametersRequested := p_userParameterRequests
+        	template (value) RequestADU m_aduRequestProvideUserDetails(UserParameterRequests p_userParameterRequests) modifies mw_aduRequestProvideUserDetails := {
+        		userDetailsRequest:={	
+					listOfParametersRequested := p_userParameterRequests
+        		}
         	}
         	
         	
-        	
+
         			
         //	template ProvideUserDetailsADU mw_userDetailsPrivacy_apduIdentifier := {
         //        originaluserIdRequest := DEFINED_USERID,
@@ -151,13 +160,15 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
         //        listOfUserParameters.userInfoValidityPeriod := omit
         //	}
         	
-        	template ProvideUserDetailsADU mw_userDetails := {
+        	template ProvideUserDetailsADU mw_aduProvideUserDetails := {
             	originaluserIdRequest := DEFINED_USER_ID,
             	userId := ?,
             	statusFlag := * ,
             	listOfUserParameters := *
         	}
-    	
+        	
+			template EfcInfoExchange mw_apduProvideUserDetails :={
+			}
 		
 		}
 		group LISTOFUSERS {}
