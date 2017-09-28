@@ -41,7 +41,7 @@ module EfcInfoExchange_LibUpperTester {
         	f_addLogEntry("IUT triggering action failed");
         	setverdict(fail);
 	    }
-		[] t_initialiseTransactionTimeout.timeout {
+		[] t_transaction.timeout {
 			f_addLogEntry("IUT does not respond to initiating trigger");
             setverdict(inconc);
             stop;
