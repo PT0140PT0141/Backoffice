@@ -5,7 +5,7 @@
  * @see     [xxxx-1:2016], Clause 5.2.1  Namimg conventions
  * @version $id$
  */
-module Backoffice_TestCases_TSP2 {
+module EfcInfoExchange_TestCasesTsp {
  
     //importing other modules
     import from EfcInfoExchange_Interfaces all;
@@ -94,8 +94,8 @@ module Backoffice_TestCases_TSP2 {
  						// Log what we recevived
  						f_addLogEntryApduReceived();
 
-						// User Details ADU arrived. Stop timer
-						f_checkMinimumTime(t_step, USERDETAILS_TIME1_MIN_TSP); // Save the current time
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
                         t_step.stop;
  
  						//Set verdict

@@ -112,10 +112,10 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
 			f_addLogEntry("At time step value " & any2unistr(t_step.read) & ", sent the following APDU to the IUT: " & c_newLine & any2unistr(v_apduReceived));			
 		}		
     
-    	function f_checkMinimumTime(in timer p_compare, in float p_timeMin) {	                      
-            if (p_compare.read <= p_timeMin) {
+    	function f_checkMinimumTStep(in float p_timeMin) runs on MainTestComponent {	                      
+            if (t_step.read <= p_timeMin) {
             	setverdict(fail);
-            	f_addLogEntry("Received APDU before minimum wait time at: " & any2unistr(p_compare.read));
+            	f_addLogEntry("Received APDU before minimum wait time at: " & any2unistr(t_step.read));
             	stop
         	};
     	}  
