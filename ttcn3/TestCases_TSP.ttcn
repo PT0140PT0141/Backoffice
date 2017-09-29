@@ -76,9 +76,11 @@ module Backoffice_TestCases_TSP2 {
                 
                 // Step1: send RequestADU
                 //Note: the adding of an enclosing {} to a variable creates an array with one element being that one variable
-				var InfoExchange v_apduToSend:= m_apduNoSecInit( {m_aduRequestProvideUserDetails(v_userParameterRequests)});
-				mtcPort.send(v_apduToSend);   	  
-				f_addLogEntrySentApdu(v_apduToSend); 
+				f_sendAndLogApdu(
+					m_apduNoSecInit(
+						{m_aduRequestProvideUserDetails(v_userParameterRequests)}
+					)
+				);
                                
 				//Set timer
                 t_step.start(USERDETAILS_TIME1_MAX_TSP);
@@ -86,13 +88,11 @@ module Backoffice_TestCases_TSP2 {
 				// Step2: Wait for ProvideUserDetailsADU 
 				// Either we receive an APDU containing Provide User Details ADU(s) or the timeout expires
 				// timeout expiration is handled in the altstep branch
-
                 alt {
                 	[] mtcPort.receive(mw_apduProvideUserDetails) -> value v_apduReceived{
                 		                    		
- 						// Log what we recevived 					
- 						f_addLogEntry("The following InfoExchange received. Timer value = " & int2char(t_step.read));
- 						f_addLogEntry(any2unistr(v_apduReceived)); //PT140 TODO I would like to include this in the statement above but with a linebreak. Does "\n" work?
+ 						// Log what we recevived
+ 						f_addLogEntryApduReceived();
 
 						// User Details ADU arrived. Stop timer
 						f_checkMinimumTime(t_step, USERDETAILS_TIME1_MIN_TSP); // Save the current time
@@ -100,10 +100,10 @@ module Backoffice_TestCases_TSP2 {
  
  						//Set verdict
  						setverdict(pass);
- 					                              
+ 					    			                              
                         // Step3: Send DefaultAck with correct identifier and set verdict
-                        //PT140 TODO insert wait 
-                        mtcPort.send(m_apduDefaultAck(v_apduReceived))
+                        f_wait(USERDETAILS_TIME2_MIN_TSP);
+						f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
 
                 	}
                 } // End of alt statement

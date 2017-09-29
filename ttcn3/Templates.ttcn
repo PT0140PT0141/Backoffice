@@ -197,13 +197,12 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
             	listOfUserParameters := *
         	}
         	
-        	type record of ProvideUserDetailsADU RecordOfProvideUserDetailsAdus;
-        	
-        	template mw_adusProvideUserDetails := {
-				provideUserDetailsADUs:=record of mw_aduProvideUserDetails
+    	
+        	template Adus mw_adusProvideUserDetails := {
+				provideUserDetailsADUs:=mw_aduProvideUserDetails length(1..infinity)
         	}
         	
-			template InfoExchange mw_apduProvideUserDetails := m_apduNoSec(mw_apci, mw_adusProvideUserDetails)
+			template InfoExchange mw_apduProvideUserDetails := m_apduNoSec(mw_apci, mw_adusProvideUserDetails);
         		
 		}
 		group LISTOFUSERS {}

@@ -23,12 +23,6 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
 
 
     group External {
-        /**
-         * @desc    These function initializes the communication stack
-         * @return  ERNoError on success, error code otherwise
-         * @see     Clauses 7. EFC communication services (functions)
-         * @see     Clauses 8. The use of a communication stack)
-         */
 		external function fx_computeAuthenticator(in InfoExchangeContent p_InfoExchange) return ApduAuthenticator;
     	external function fx_getUtc() return GeneralizedTime;
          
@@ -39,7 +33,7 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
     	altstep a_defaults() runs on MainTestComponent {
     		[] mtcPort.receive(InfoExchange:?) -> value v_apduReceived {
                 f_addLogEntry("Unexpected APDU received");
-                f_addLogEntry(any2unistr(v_apduReceived));
+				f_addLogEntryApduReceived();
                 repeat; // Ignore unexpected ADUs, but log them
             }
     
@@ -95,15 +89,29 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
             f_addLogEntry("Test case ended.");
     
         } 
-            
+        
+        //defining a string that means carrige return (new line) through its ascii value
+	    const charstring c_newLine := int2char(13);
+
+        function f_sendAndLogApdu(in InfoExchange p_apduToSend) runs on MainTestComponent {
+        	mtcPort.send(p_apduToSend);   	  
+			f_addLogEntry("Sent the following APDU to the IUT: " & any2unistr(p_apduToSend));
+		}
+           
     	function f_addLogEntry(in charstring p_text){
     		log("*** " & testcasename() & ":" & p_text);
     	}
-    
-    	function f_addLogEntrySentApdu (in InfoExchange p_infoExchange){
- 			f_addLogEntry("Sent the following APDU to the IUT: " & any2unistr(p_infoExchange));
-    	}
 
+        /**
+         * @desc Function to log received APDUs. It assumes that
+         * @desc the received APDU is stored in the MainTestComponent
+         * @desc v_apduReceived and that the MainTestComponent t_step timer 
+         * @desc is used and running (otherwise it is set back to 0)
+         */		
+		function f_addLogEntryApduReceived() runs on MainTestComponent{
+			f_addLogEntry("At time step value " & any2unistr(t_step.read) & ", sent the following APDU to the IUT: " & c_newLine & any2unistr(v_apduReceived));			
+		}		
+    
     	function f_checkMinimumTime(in timer p_compare, in float p_timeMin) {	                      
             if (p_compare.read <= p_timeMin) {
             	setverdict(fail);
@@ -113,9 +121,9 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
     	}  
         	
         // Function which inserts a waiting time - parameter t_wait - and waits in a "do-nothing-loop"
-    	function f_wait(in float p_wait) {
+    	function f_wait(in float p_wait){
     		timer t_waitTime;
-    		t_waitTime.start (5.0);
+    		t_waitTime.start(p_wait);
     		while (t_waitTime.running) {
     			// empty loop = do nothing, just wait
     		}
