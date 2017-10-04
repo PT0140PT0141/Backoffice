@@ -108,7 +108,7 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
          * @desc v_apduReceived and that the MainTestComponent t_step timer 
          * @desc is used and running (otherwise it is set back to 0)
          */		
-		function f_addLogEntryApduReceived() runs on MainTestComponent{
+		function f_logApduReceivedAndTStep() runs on MainTestComponent{
 			f_addLogEntry("At time step value " & any2unistr(t_step.read) & ", sent the following APDU to the IUT: " & c_newLine & any2unistr(v_apduReceived));			
 		}		
     

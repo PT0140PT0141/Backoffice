@@ -90,6 +90,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				apduOriginator:=p_apduBeingRespondedTo.infoExchangeContent.apci.apduOriginator,
 				apduIdentifier:=p_apduBeingRespondedTo.infoExchangeContent.apci.apduIdentifier
 			},
+			// TODO PT140: Check whether the function is evaluated at run time. If not, time  has to be set within the test case
 		   	apduDate:=fx_getUtc()
 	   }
     	
@@ -132,7 +133,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		 */ 
 		template (value) InfoExchange m_apduDefaultAck(in InfoExchange p_apduToAck) := m_apduDefault(
     		p_apduToAck, 
-    		{m_aduDefaultAck}
+    		{m_aduDefaultAck(p_apduToAck)}
 	    );
 
     	//def event NAck_Apdu(zero or more sets of Param defined as {aduPosition, aduReasonCode}) "Default_Apdu containing one AckADU containing {apduAckCode= apduOK(2), issues containing one element for each Param set containing {issueADUStruct=aduPosition, issueCode = aduReasonCode }}"
@@ -192,7 +193,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
         	
         	template ProvideUserDetailsADU mw_aduProvideUserDetails := {
             	originaluserIdRequest := DEFINED_USER_ID,
-            	userId := ?,
+            	userId := ?, // TODO PT140: Consider putting DEFINED_USER_ID value here
             	statusFlag := * ,
             	listOfUserParameters := *
         	}
