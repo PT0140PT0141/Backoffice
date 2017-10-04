@@ -90,7 +90,7 @@ module EfcInfoExchange_TestCasesTsp {
                 alt {
                 	[] mtcPort.receive(mw_apduProvideUserDetails) -> value v_apduReceived{
                 		                    		
- 						// Log what we recevived
+ 						// Log what we received
  						f_logApduReceivedAndTStep();
 
 						//Check minumum time and stop timer
@@ -179,5 +179,53 @@ module EfcInfoExchange_TestCasesTsp {
 			
             } // End of TP_TSP_USERDETAILS_BV_02
         } // End of group Valid_Behaviour
+        
+        group Invalid_Behaviour {
+          testcase TP_TSP_USERDETAILS_BI_01() runs on IutComp system TestAdapter {
+             
+              /**
+              * @desc    TP_TSP_USERDETAILS_BI_01: Verify that the TSP correctly responds to an incorrect RequestADUs of type userDetailsRequest 
+              * @remark  [16986:2016], Clause 6.4 and Table A.1/2 AND Table A.7/1  
+              */
+                // Initialisation
+                var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+             
+				// Step 1: Send two incorrect ADUs with 2 incorrect ADUs
+				// TODO PT140: The two incorrect ADUs are identical, because there is no way to send an empty structure as requested by the Test Purpose
+				f_sendAndLogApdu(
+					m_apduNoSecInit(
+						{m_aduRequestProvideUserDetails(omit), m_aduRequestProvideUserDetails(omit)}
+					)
+				);                               
+
+				// Step 2: wait for a Semantic Error code Nack 
+
+                t_UserDetails_Time1.start;
+
+				// Either we receive an APDU containing Nack with semantic error as error code or the timeout expires
+				// timeout expiration handling is in the altstep branch				
+				// TODO PT140: Do not know yet how to specify that we want to receive an Ack pointing to the APDU identifier of the just sent APDU
+				// TODO PT140: See the syntax of the receive method and the question marks in the parameters
+                alt {
+                    [] mtcPort.receive(m_apduDefault(??p_apduToRespondTo??, {mw_aduDefaultAck(apduIdentifier := ?, apduAckCode := c_semanticError)})) -> value v_apduReceived {
+ 						// Log what we received
+ 						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+                        t_step.stop;
+						
+						// TODO PT140: Check the ADU record and find the one we are expecting. Either function or template
+ 
+ 						//Set verdict
+ 						setverdict(pass);
+                    }
+                }  End of alt statement
+                f_closeDownMtc();  
+
+             }  End of TP_TSP_USERDETAILS_BI_01
+//          
+        }
     } 
 } // End of module Toll_Service_Provider

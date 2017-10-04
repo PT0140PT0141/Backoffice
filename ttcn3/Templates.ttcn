@@ -116,7 +116,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 
     	/**
     	 * 
-    	 * @desc Corresponds to the event Default_Apdu desribed in test purposes.
+    	 * @desc Corresponds to the event Default_Apdu described in test purposes.
 		 * @desc Definition: "An APDU with the APCI-fields set to informationRecipientId = Tester identifier, 
 		 * @desc inResponseToApduId = the apduId of the APDU carrying the ADU that is being responded to and 
 		 * @desc apduDate = valid date, other optional fields on all levels not present" 
