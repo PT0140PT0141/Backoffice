@@ -624,7 +624,7 @@ module Common_ParametrisedAsn1Data language "TTCN-3:2010 Advanced Parameterizati
     }
 
 	//T-APDUs ::= T-APDUs-Generic{EfcContainer}
-	//PT140: Replaced PT141 the dummy type of octetstring with EfcContainer in the parametrisation to be more true to the ASN.1 definition
+	//PT140: Replaced PT141 definition of the dummy type of octetstring with EfcContainer in the parametrisation to be more true to the ASN.1 definition
     type T_APDUs_Generic<EfcContainer> T_APDUs; 
 
 
@@ -895,7 +895,7 @@ module Common_ParametrisedAsn1Data language "TTCN-3:2010 Advanced Parameterizati
     }
 
 //EfcAutonomousCharging
-//PT140: Updated PT141 definition to one truer to the ASN.1
+//PT140: Replaced the PT141 definition to one truer to the ASN.1
 //ListOfDsrcUsageData ::= SEQUENCE OF CHOICE {
 //	data14906				AttributeList{EfcContainer},		-- EN ISO 14906
 //	data12813				AttributeList{CccContainer},		-- EN ISO 12813

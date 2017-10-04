@@ -132,7 +132,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		 */ 
 		template (value) InfoExchange m_apduDefaultAck(in InfoExchange p_apduToAck) := m_apduDefault(
     		p_apduToAck, 
-    		{m_aduDefaultAck}
+    		{m_aduDefaultAck(p_apduToAck)}
 	    );
 
     	//def event NAck_Apdu(zero or more sets of Param defined as {aduPosition, aduReasonCode}) "Default_Apdu containing one AckADU containing {apduAckCode= apduOK(2), issues containing one element for each Param set containing {issueADUStruct=aduPosition, issueCode = aduReasonCode }}"
@@ -155,9 +155,10 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
             apduAckText := omit,
             issues := omit
     	}
+    	
     }
     
-	group TransactionTemplates{
+	group AduTemplates{
 		
 		
 		group USERDETAILS {
@@ -199,7 +200,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
         	
     	
         	template Adus mw_recordOfAduProvideUserDetails := {
-				provideUserDetailsADUs:=? length(1..infinity)
+				provideUserDetailsADUs:=? 
         	}
         	
 			template InfoExchange mw_apduProvideUserDetails := m_apduNoSec(mw_apci, mw_recordOfAduProvideUserDetails);

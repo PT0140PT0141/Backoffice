@@ -6,7 +6,7 @@
 module EfcInfoExchange_LibUpperTester {
 
 	import from EfcInfoExchange_Interfaces {type MainTestComponent;};
-	import from EfcInfoExchange_Functions all;
+	import from EfcInfoExchange_Functions {function f_addLogEntry;};
 
 	type enumerated Iso16986Trigger {
 		USERDETAILS_TR_TC_1, 
