@@ -90,6 +90,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				apduOriginator:=p_apduBeingRespondedTo.infoExchangeContent.apci.apduOriginator,
 				apduIdentifier:=p_apduBeingRespondedTo.infoExchangeContent.apci.apduIdentifier
 			},
+			// TODO PT140: Check whether the function is evaluated at run time. If not, time  has to be set within the test case
 		   	apduDate:=fx_getUtc()
 	   }
     	
@@ -115,7 +116,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 
     	/**
     	 * 
-    	 * @desc Corresponds to the event Default_Apdu desribed in test purposes.
+    	 * @desc Corresponds to the event Default_Apdu described in test purposes.
 		 * @desc Definition: "An APDU with the APCI-fields set to informationRecipientId = Tester identifier, 
 		 * @desc inResponseToApduId = the apduId of the APDU carrying the ADU that is being responded to and 
 		 * @desc apduDate = valid date, other optional fields on all levels not present" 
@@ -193,7 +194,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
         	
         	template ProvideUserDetailsADU mw_aduProvideUserDetails := {
             	originaluserIdRequest := DEFINED_USER_ID,
-            	userId := ?,
+            	userId := ?, // TODO PT140: Consider putting DEFINED_USER_ID value here
             	statusFlag := * ,
             	listOfUserParameters := *
         	}
