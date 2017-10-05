@@ -33,7 +33,7 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
     	altstep a_defaults() runs on MainTestComponent {
     		[] mtcPort.receive(InfoExchange:?) -> value v_apduReceived {
                 f_addLogEntry("Unexpected APDU received");
-				f_addLogEntryApduReceived();
+				f_logApduReceivedAndTStep();
                 repeat; // Ignore unexpected ADUs, but log them
             }
     

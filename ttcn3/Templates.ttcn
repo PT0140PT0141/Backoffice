@@ -129,13 +129,29 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		/**
 		 * 
 		 * @desc Corresponds to the event Default_Ack_Apdu desribed in test purposes.
-    	 * @desc Definition: "Default_Apdu containing one AckADU containing {apduAckCode =: apduOK(2)}, with issues being not present" 
+		 * @desc Definition: "Default_Apdu containing one AckADU containing {apduAckCode =: apduOK(2)}, with issues being not present" 
 		 */ 
 		template (value) InfoExchange m_apduDefaultAck(in InfoExchange p_apduToAck) := m_apduDefault(
-    		p_apduToAck, 
-    		{m_aduDefaultAck(p_apduToAck)}
+			p_apduToAck, 
+			{m_aduDefaultAck(p_apduToAck)}
+		);
+
+		/**
+		 * 
+		 * @desc Corresponds to the event NAck_Apdu desribed in test purposes.
+    	 * @desc Definition: "NAck_Apdu(zero or more sets of Param defined as {aduPosition, aduReasonCode}) "Default_Apdu containing one AckADU containing {apduAckCode= apduOK(2), issues containing one element for each Param set containing {issueADUStruct=aduPosition, issueCode = aduReasonCode }}"
+		 */ 
+		template (value) InfoExchange m_apduNAck(in InfoExchange p_apduToAck, in NAckParams p_nAckParams) := m_apduDefault(
+			//PT140 TODO Write the template definition Ulrik
 	    );
 
+		type record of record {
+    		NumberOfADUStruct issueADUStruct,
+    		AduReasonCode issueCode
+	  	}  NAckParams;
+			
+
+			
     	//def event NAck_Apdu(zero or more sets of Param defined as {aduPosition, aduReasonCode}) "Default_Apdu containing one AckADU containing {apduAckCode= apduOK(2), issues containing one element for each Param set containing {issueADUStruct=aduPosition, issueCode = aduReasonCode }}"
     	//NOTE	the NAck_Apdu definition assumes that there are some valid ADUs in the APDU it is responding to (otherwise an apduAckCode  = apduNotOK(3) might have been a feasible answer
     	//def event NAck_requestSentTooOften "Default_Apdu containing one AckADU containing {apduAckCode= requestSentTooOften(10)}"
@@ -176,7 +192,8 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
         		}
         	}
         	
-        	template (value) RequestADU m_aduRequestProvideUserDetails(UserParameterRequests p_userParameterRequests) modifies mw_aduRequestProvideUserDetails := {
+        	template (value) RequestADU m_aduRequestProvideUserDetails(UserParameterRequests p_userParameterRequests) 
+        	modifies mw_aduRequestProvideUserDetails := {
         		userDetailsRequest:={	
 					listOfParametersRequested := p_userParameterRequests
         		}

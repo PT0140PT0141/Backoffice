@@ -126,7 +126,7 @@ module EfcInfoExchange_TestCasesTsp {
                 var UserParameterRequests v_userParameterRequests;   
                 // Check if there are parameters that are privacy bound
                 // If not, exit test
-				if (sizeof (v_userParameterRequests) = 0) {
+				if (sizeof (v_userParameterRequests) == 0) {
         			setverdict(inconclusive);
         			f_addLogEntry("Privacy bound parameters missing. Test cannot be executed");
         			stop
@@ -151,11 +151,11 @@ module EfcInfoExchange_TestCasesTsp {
 				// TODO PT140: Check whether the parameterisation of the mw_apduProvideUserDetails template is correct
 
                 alt {
-                	[] mtcPort.receive(mw_apduProvideUserDetails{userId := DEFINED_USERID, statusFlag := 2, listOfUserParameters := omit}) -> value v_apduReceived{
-                		                    		
- 						// Log what we recevived 					
- 						f_addLogEntry("The following InfoExchange received. Timer value = " & int2char(t_step.read));
- 						f_addLogEntry(any2unistr(v_apduReceived)); //PT140 TODO I would like to include this in the statement above but with a linebreak. Does "\n" work?
+                	//PT140 TODO fill in apdURespondedTo
+                	[] mtcPort.receive(mw_apduProvideUserDetails(apduRespondedTo)) -> value v_apduReceived{
+
+						// Log what we recevived 					
+						f_logApduReceivedAndTStep();
 
                         // Check whether the ADU arrived too soon: the function will set failure and stop the test if so
 						f_checkMinimumTime(t_step, USERDETAILS_TIME1_MIN_TSP); // 
@@ -166,11 +166,21 @@ module EfcInfoExchange_TestCasesTsp {
 						// TODO PT140: Check the ADU record and find the one we are expecting. Either function or template
                         
  						//Set verdict
- 						setverdict(pass);
+						if match(
+							v_apduReceived.adus.provideUserDetailsADUs,
+							
+							ProvideUserDetailsADU:{
+								statusFlag:=2,
+								listOfUserParameters := omit
+							}
+						) {
+							setverdict(pass);
+                            // Step3: Send DefaultAck with correct identifier
+                            f_wait(USERDETAILS_TIME2_MIN_TSP);
+    						f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+						}
+						else {setverdict(fail);}
  					                              
-                         // Step3: Send DefaultAck with correct identifier and set verdict
-                        f_wait(USERDETAILS_TIME2_MIN_TSP);
-						f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
 
                 	}
                 } // End of alt statement
@@ -193,22 +203,34 @@ module EfcInfoExchange_TestCasesTsp {
              
 				// Step 1: Send two incorrect ADUs with 2 incorrect ADUs
 				// TODO PT140: The two incorrect ADUs are identical, because there is no way to send an empty structure as requested by the Test Purpose
-				f_sendAndLogApdu(
-					m_apduNoSecInit(
-						{m_aduRequestProvideUserDetails(omit), m_aduRequestProvideUserDetails(omit)}
-					)
-				);                               
+				var InfoExchange v_apduToSend := m_apduNoSecInit({m_aduRequestProvideUserDetails(omit), m_aduRequestProvideUserDetails({})});
+				f_sendAndLogApdu(v_apduToSend);                               
 
 				// Step 2: wait for a Semantic Error code Nack 
 
-                t_UserDetails_Time1.start;
+				t_step.start(USERDETAILS_TIME1_MAX_TSP)
 
 				// Either we receive an APDU containing Nack with semantic error as error code or the timeout expires
 				// timeout expiration handling is in the altstep branch				
-				// TODO PT140: Do not know yet how to specify that we want to receive an Ack pointing to the APDU identifier of the just sent APDU
-				// TODO PT140: See the syntax of the receive method and the question marks in the parameters
+
+				//Create parameters for the m_apduNAck			
+				var NAckParams v_nAckParams1 :={{0, AduReasonCode_invalidADU_}}
+				var NAckParams v_nAckParams2 :={{1, AduReasonCode_invalidADU_},{2,AduReasonCode_invalidADU_}}
+				
                 alt {
-                    [] mtcPort.receive(m_apduDefault(??p_apduToRespondTo??, {mw_aduDefaultAck(apduIdentifier := ?, apduAckCode := c_semanticError)})) -> value v_apduReceived {
+                	//PT140 TODO Can the repetion in the two alts be reduced?
+					[] mtcPort.receive(m_apduNAck(v_apduToSend, v_nAckParams1)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+						
+						//Set verdict
+						setverdict(pass);
+					}
+                    [] mtcPort.receive(m_apduNAck(v_apduToSend, v_nAckParams2)) -> value v_apduReceived {
  						// Log what we received
  						f_logApduReceivedAndTStep();
 
@@ -216,16 +238,13 @@ module EfcInfoExchange_TestCasesTsp {
 						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
                         t_step.stop;
 						
-						// TODO PT140: Check the ADU record and find the one we are expecting. Either function or template
- 
  						//Set verdict
  						setverdict(pass);
                     }
-                }  End of alt statement
+                } 
                 f_closeDownMtc();  
 
-             }  End of TP_TSP_USERDETAILS_BI_01
-//          
-        }
-    } 
+             } // End of testcase TP_TSP_USERDETAILS_BI_01
+        } // End of group Ivalid Behaviour
+    } // End of group USERDETAILS
 } // End of module Toll_Service_Provider
