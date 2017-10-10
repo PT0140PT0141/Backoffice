@@ -135,6 +135,7 @@ module EfcInfoExchange_TestCasesTsp {
                 // Step1: send RequestADU
 				// f_SendAPDU does all necessary filling of fields (if not already done in the template), sends the APDU, logs it together with time
 				
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit({m_aduRequestProvideUserDetails(omit), m_aduRequestProvideUserDetails({})});
 				f_sendAndLogApdu(
 					m_apduNoSecInit(
 						{m_aduRequestProvideUserDetails(v_userParameterRequests)}
@@ -151,10 +152,9 @@ module EfcInfoExchange_TestCasesTsp {
 				// TODO PT140: Check whether the parameterisation of the mw_apduProvideUserDetails template is correct
 
                 alt {
-                	//PT140 TODO fill in apdURespondedTo
-                	[] mtcPort.receive(mw_apduProvideUserDetails(apduRespondedTo)) -> value v_apduReceived{
+                	[] mtcPort.receive(mw_apduProvideUserDetails(v_apduRespondedTo)) -> value v_apduReceived{
 
-						// Log what we recevived 					
+						// Log what we received 					
 						f_logApduReceivedAndTStep();
 
                         // Check whether the ADU arrived too soon: the function will set failure and stop the test if so
@@ -166,22 +166,23 @@ module EfcInfoExchange_TestCasesTsp {
 						// TODO PT140: Check the ADU record and find the one we are expecting. Either function or template
                         
  						//Set verdict
-						if match(
-							v_apduReceived.adus.provideUserDetailsADUs,
-							
-							ProvideUserDetailsADU:{
+ 						setverdict(pass);
+						if sizeof(v_apduReceived.adus.provideUserDetailsADUs) > 1 {
+						  setverdict (fail);
+						  stop;
+						}
+						if (not match(
+							v_apduReceived.adus.provideUserDetailsADUs[0],						
+							ProvideUserDetailsADU: modifies mw_aduProvideUserDetails := {
 								statusFlag:=2,
 								listOfUserParameters := omit
 							}
-						) {
-							setverdict(pass);
-                            // Step3: Send DefaultAck with correct identifier
-                            f_wait(USERDETAILS_TIME2_MIN_TSP);
-    						f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
-						}
-						else {setverdict(fail);}
- 					                              
-
+						)) setverdict(fail);
+							
+                        // Step3: Send DefaultAck with correct identifier
+                        f_wait(USERDETAILS_TIME2_MIN_TSP);
+    					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+						
                 	}
                 } // End of alt statement
 				
@@ -191,7 +192,7 @@ module EfcInfoExchange_TestCasesTsp {
         } // End of group Valid_Behaviour
         
         group Invalid_Behaviour {
-          testcase TP_TSP_USERDETAILS_BI_01() runs on IutComp system TestAdapter {
+          testcase TP_TSP_USERDETAILS_BI_01() runs on MainTestComponent system TestAdapter {
              
               /**
               * @desc    TP_TSP_USERDETAILS_BI_01: Verify that the TSP correctly responds to an incorrect RequestADUs of type userDetailsRequest 
@@ -245,6 +246,104 @@ module EfcInfoExchange_TestCasesTsp {
                 f_closeDownMtc();  
 
              } // End of testcase TP_TSP_USERDETAILS_BI_01
-        } // End of group Ivalid Behaviour
+            
+            testcase TP_TSP_USERDETAILS_BI_02() runs on MainTestComponent system TestAdapter {
+            
+              /**
+              * @desc    TP_TSP_USERDETAILS_BI_02: Verify that the TSP correctly handles a RequestADUs of type userDetailsRequest with listOfUsersParametersRequested containing non-supported user details
+              * @remark  [16986:2016], Clause 6.4 and Table A.1/2 AND Table A.7/1  
+              */          
+                // Initialisation
+                var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+             
+
+				// Front End shall initially receive a Request named as Transaction sequence #1
+				// Find a parameter whose value  is not supported by the IUT
+				v_SupportedParameters := SUPPORTED_LIST_OF_PARAMETERS;
+				// Prepare the list of requested parameters with one element which is unsupported
+				found := false;
+				for (var integer v_Support :=0;  v_Support:=v_Support+1, found := false)
+					for (var integer v_ind := 0, v_ind < sizeof(SUPPORTED_LIST_OF_PARAMETERS), v_ind := v_ind + 1)
+						if NOT( v_SupportedParameters[v_IND]  := v_Support) v_unsupported := v_Support; found := true; break;
+						continue;
+					continue;				
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit({m_aduRequestProvideUserDetails(omit), m_aduRequestProvideUserDetails({})});
+				f_sendAndLogApdu(
+					m_apduNoSecInit(
+						{m_aduRequestProvideUserDetails(v_unsupported)}
+					)
+				);                              
+                                
+				//Set timer
+                t_step.start(USERDETAILS_TIME1_MAX_TSP);
+                
+				// Step2: Wait for ProvideUserDetailsADU 
+				// Either we receive an APDU containing Provide User Details ADU or the timeout expires
+				// timeout expiration is handled in the altstep branch
+				// The received Provide Use Details ADU shall have status flag = 1, and no  list of user details
+
+                alt {
+                	[] mtcPort.receive(mw_apduProvideUserDetails(v_apduRespondedTo)) -> value v_apduReceived{
+
+						// Log what we received 					
+						f_logApduReceivedAndTStep();
+
+                        // Check whether the ADU arrived too soon: the function will set failure and stop the test if so
+						f_checkMinimumTime(t_step, USERDETAILS_TIME1_MIN_TSP); // 
+ 
+						// User Details ADU correctly arrived. Stop timer
+                        t_step.stop;
+						
+                        
+ 						//Set verdict
+ 						setverdict(pass);
+						if (sizeof(v_apduReceived.adus.provideUserDetailsADUs) > 1 )
+						  {
+						    setverdict (fail);
+						    stop;
+						  }
+						if (not match(
+							v_apduReceived.adus.provideUserDetailsADUs[0],						
+							ProvideUserDetailsADU: modifies mw_aduProvideUserDetails := {
+								statusFlag:=1,
+								listOfUserParameters := omit,
+								userInfoValidityPeriod := omit
+							}
+						)) 
+						{
+						  setverdict(fail);
+						  stop;
+						  }
+							
+                        // Step3: Send DefaultAck with correct identifier
+                        f_wait(USERDETAILS_TIME2_MIN_TSP);
+    					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+						
+                		}
+                	} // End of alt statement
+                
+                f_closeDownMtc();  
+                			
+				} // End of testcase TP_TSP_USERDETAILS_BI_02 
+
+			testcase TP_TSP_USERDETAILS_BI_03() runs on MainTestComponent system TestAdapter {
+
+              /**
+              * @desc    TP_TSP_USERDETAILS_BI_03: Verify that the TSP correctly handles a RequestADUs of type userDetailsRequest with listOfUsersParametersRequested containing user details that cannot be provided because of missing agreement
+              * @remark  [16986:2016], Clause 6.4 and Table A.1/2 AND Table A.7/1  
+              */ 
+// TODO PT104: Insert code for BI_03              
+              } End of testcase  TP_TSP_USERDETAILS_BI_03
+			testcase TP_TSP_USERDETAILS_BI_04() runs on MainTestComponent system TestAdapter {
+
+              /**
+              * @desc    TP_TSP_USERDETAILS_BI_03: Verify that a TSP responds correctly to a RequestADU sent earlier than allowed
+              * @remark  [16986:2016], Clause 6.4 and Table A.1/2 AND Table A.7/1  
+              */ 
+// TODO PT104: Insert code for BI_04              
+              } End of testcase  TP_TSP_USERDETAILS_BI_04 
+ 
+        } // End of group Invalid Behaviour
     } // End of group USERDETAILS
 } // End of module Toll_Service_Provider
