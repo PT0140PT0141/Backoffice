@@ -128,7 +128,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 
 		/**
 		 * 
-		 * @desc Corresponds to the event Default_Ack_Apdu desribed in test purposes.
+		 * @desc Corresponds to the event Default_Ack_Apdu described in test purposes.
 		 * @desc Definition: "Default_Apdu containing one AckADU containing {apduAckCode =: apduOK(2)}, with issues being not present" 
 		 */ 
 		template (value) InfoExchange m_apduDefaultAck(in InfoExchange p_apduToAck) := m_apduDefault(

@@ -19,7 +19,7 @@
 //    import from EfcInfoExchange_ParameterisedAsn1Data all;
 //    import from Common_ParametrisedAsn1Data all;
 //    
-//    
+//    //PT140 TODO redefine these as USER_PARAMETER_RESPONSE_DUMMY_VALUES record of
 //    modulepar UserPostalAddress TESTERUSERPOSTALADDRESS1 := {"UserName1","Company1","Street1","999999","Town1","Country1","CompanyTaxIdentifier1"};
 //    modulepar EfcDsrcApplication.ContractSerialNumber CONTRACT_SERIAL_NUMBER_1 := 1234567890; //INT4 in ISO14906
 //    modulepar EfcDsrcApplication.ContractValidity CONTRACT_VALIDITY_1 := {'ABCD'O, {2030, 12, 31}};

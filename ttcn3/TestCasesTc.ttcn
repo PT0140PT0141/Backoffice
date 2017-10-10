@@ -47,7 +47,9 @@ module EfcInfoExchange_TestCasesTc {
 
 				//Step 1: wait for user details request
 				mtcAccessPort.send(USERDETAILS_TR_TC_1);
-				
+
+				var integer v_noParamsToUse ;
+				var RecordOfUserParameterRequest listOfParameterReq;
 				alt {
 					[] mtcPort.receive(mw_apduRequest) -> value v_apduReceived{
                 		                    		
@@ -61,14 +63,14 @@ module EfcInfoExchange_TestCasesTc {
 						//Set default verdict
 						setverdict(pass);
 
-						var integer v_noParamsToUse := sizeof(v_apduReceived.infoExchangeContent.adus.requestAdus);
+						v_noParamsToUse := sizeof(v_apduReceived.infoExchangeContent.adus.requestAdus);
 						//Set verdict to fail in case it fails
 						
-						for (var integer v_ct :=0; v_ct<v_noParamsToUse;v_ct:=v_ct+1) {	
- 							if ( match(v_apduReceived.infoExchangeContent.adus.requestAdus[v_ct], mw_aduRequestProvideUserDetails)) {
-								var RecordOfUsrParameterRequest listOfParameterReq := v_apduReceived.infoExchangeContent.adus.requestAdus[v_ct].userDetailsRequest.listOfParametersRequested;
-								for (var integer v_num :=0; v_num<sizeof(listOfParameterReq);v_num:=v_num+1) {
-									if (not (match(listOfParameterReq[v_num], mw_userDetailsSupportedListOfParameters ))) {
+						for (var integer v_loop1 :=0; v_loop1<v_noParamsToUse;v_loop1:=v_loop1+1) {	
+ 							if ( match(v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1], mw_aduRequestProvideUserDetails)) {
+								listOfParameterReq := v_apduReceived.infoExchangeContent.adus.requestAdus[v_ct].userDetailsRequest.listOfParametersRequested;
+								for (var integer v_loop2 :=0; v_num<sizeof(listOfParameterReq);v_loop2:=v_loop2+1) {
+									if (not (match(listOfParameterReq[v_loop2], mw_userDetailsSupportedListOfParameters ))) {
 										setverdict(fail);
 										stop;
 									}
@@ -83,9 +85,26 @@ module EfcInfoExchange_TestCasesTc {
 				
 				//Step 2 send ProvideUserDetails within TIME1
 				f_wait(USERDETAILS_TIME1_MIN_TC);
-				var InfoExchange v_apduProvideUserDetailsSend:=m_apduProvideUserDetails(v_apduReceived);
+				var Adus v_adus[v_noParamsToUse];
+				
+				for (var integer v_loop1 :=0; v_loop1<v_noParamsToUse;v_loop1:=v_loop1+1) {
+					var ProvideUserDetailsADU v_theAdu :=v_adus.provideUserDetailsADUs[v_loop1];
+					v_theAdu.originaluserIdRequest := v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1].userId;
+					v_theAdu.userId := v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1].userId;
+					v_theAdu.statusFlag := UserStatus_standardCommercialUserContract_;
+					for (var integer v_loop2 :=0; v_loop2<sizeof(listOfParameterReq);v_loop2:=v_loop2+1) {
+						v_theAdu.listOfUserParameters[v_loop2].requestedUserParameter:=omit;
+						v_theAdu.listOfUserParameters[v_loop2].userParameterResponse:= USER_PARAMETER_RESPONSE_DUMMY_VALUES[listOfParameterReq[v_loop2]];					
+						v_theAdu.listOfUserParameters[v_loop2].userParameterStatus:= UserParameterStatus_userParameterAvailable_;					
+						v_theAdu.listOfUserParameters[v_loop2].userInfoValidityPeriod:=omit;
+					}
+				}								                   
+				
+				var InfoExchange v_apduProvideUserDetailsSend:=m_apduNoSec( m_apciSendResponse(v_apduReceived), v_adus);
 				f_sendAndLogApdu(v_apduProvideUserDetailsSend);
 
+				//Set timer
+				t_step.start(USERDETAILS_TIME2_MAX_TC);
 				
 				//step 3 wait for AckADU
 				alt {
@@ -95,14 +114,14 @@ module EfcInfoExchange_TestCasesTc {
 						f_logApduReceivedAndTStep();
 
 						//Check minumum time and stop timer
-						f_checkMinimumTStep(USERDETAILS_TIME2_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						f_checkMinimumTStep(USERDETAILS_TIME2_MIN_TC); //t_step is an implicit argument and what we will compare against
 						t_step.stop;
 					}
 				} // End of alt statement
 				
 				f_closeDownMtc();  
 			
-			} // End of TP_TSP_USERDETAILS_BV_01
+			} // End of TP_TC_USERDETAILS_BV_01
             
 	
          } // End group Valid Behaviour
