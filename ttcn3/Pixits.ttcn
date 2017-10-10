@@ -21,10 +21,13 @@ module EfcInfoExchange_Pixits {
     modulepar Provider APDU_ORIGINATOR_FOR_IUT; //value of the InfoExchange.infoExchangeContent.apci.apduOriginator
     modulepar Provider INFORMATION_SENDER_ID_FOR_IUT;	//value of the InfoExchange.infoExchangeContent.apci.informationSenderID
 
-    modulepar UserId DEFINED_USER_ID;
+    modulepar UserId EXISTING_USER_ID;
+    
+    type record of UserParameterRequest RecordOfUserParameterRequest;
     
  	type record of integer RecordOfInteger;
     modulepar RecordOfInteger USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS;
+    template integer mw_userDetailsSupportedListOfParameters :=(all from USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS);
     modulepar RecordOfInteger USERDETAILS_PRIVACYBOUND_LIST_OF_PARAMETERS;  
     modulepar RecordOfInteger USERDETAILS_NOT_AGREED_LIST;
         

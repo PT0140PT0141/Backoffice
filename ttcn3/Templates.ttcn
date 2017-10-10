@@ -156,6 +156,11 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
     	//NOTE	the NAck_Apdu definition assumes that there are some valid ADUs in the APDU it is responding to (otherwise an apduAckCode  = apduNotOK(3) might have been a feasible answer
     	//def event NAck_requestSentTooOften "Default_Apdu containing one AckADU containing {apduAckCode= requestSentTooOften(10)}"
     	
+    	template Adus mw_recordOfAduRequest:= {
+			requestAdus:=? 
+    	}
+    	
+		template InfoExchange mw_apduRequest := m_apduNoSec(mw_apci, mw_recordOfAduRequest);
       
 		template AckADU mw_aduDefaultAck := {
 			apduIdentifier := ?,
@@ -185,17 +190,20 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
     		template RequestADU mw_aduRequestProvideUserDetails := {
         		userDetailsRequest:={	
             	  	requestedADUType := AduType_provideUserDetailsADU_,
-            	  	userId := DEFINED_USER_ID,
+            	  	userId := ?,
             		listOfParametersRequested := ?,
-            		userDetailsRequestReason := omit,
-            		userInfoValidityPeriod := omit
+            		userDetailsRequestReason := *,
+            		userInfoValidityPeriod := *
         		}
         	}
         	
         	template (value) RequestADU m_aduRequestProvideUserDetails(UserParameterRequests p_userParameterRequests) 
         	modifies mw_aduRequestProvideUserDetails := {
         		userDetailsRequest:={	
+            	  	userId := EXISTING_USER_ID,
 					listOfParametersRequested := p_userParameterRequests
+            		userDetailsRequestReason := omit,
+            		userInfoValidityPeriod := omit
         		}
         	}
         	       			
@@ -217,12 +225,11 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
         	}
         	
     	
-        	template Adus mw_recordOfAduProvideUserDetails := {
+			template Adus mw_recordOfAduProvideUserDetails := {
 				provideUserDetailsADUs:=? 
-        	}
-        	
+			}
+        				
 			template InfoExchange mw_apduProvideUserDetails := m_apduNoSec(mw_apci, mw_recordOfAduProvideUserDetails);
-        		
 		}
 
 		group LISTOFUSERS {}
