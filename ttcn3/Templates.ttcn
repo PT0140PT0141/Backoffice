@@ -138,7 +138,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 
 		/**
 		 * 
-		 * @desc Corresponds to the event NAck_Apdu desribed in test purposes.
+		 * @desc Corresponds to the event NAck_Apdu described in test purposes.
     	 * @desc Definition: "NAck_Apdu(zero or more sets of Param defined as {aduPosition, aduReasonCode}) "Default_Apdu containing one AckADU containing {apduAckCode= apduOK(2), issues containing one element for each Param set containing {issueADUStruct=aduPosition, issueCode = aduReasonCode }}"
 		 */ 
 		template (value) InfoExchange m_apduNAck(in InfoExchange p_apduToAck, in NAckParams p_nAckParams) := m_apduDefault(
@@ -150,6 +150,14 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
     		AduReasonCode issueCode
 	  	}  NAckParams;
 			
+		/**
+		 * 
+		 * @desc Corresponds to the event NAck_requestSentTooOften described in test purposes.
+		 * @desc Definition: "Default_Apdu containing one AckADU containing {apduAckCode= requestSentTooOften(10)}" 
+		 */ 
+		template (value) InfoExchange m_apduNAck_requestSentTooOften(in InfoExchange p_apduToAck) := m_apduDefault(
+			// PT140 TODO Write the template definition Ulrik
+		);
 
 			
     	//def event NAck_Apdu(zero or more sets of Param defined as {aduPosition, aduReasonCode}) "Default_Apdu containing one AckADU containing {apduAckCode= apduOK(2), issues containing one element for each Param set containing {issueADUStruct=aduPosition, issueCode = aduReasonCode }}"
@@ -234,7 +242,36 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			template InfoExchange mw_apduProvideUserDetails := m_apduNoSec(mw_apci, mw_recordOfAduProvideUserDetails);
 		}
 
-		group LISTOFUSERS {}
+		group LISTOFUSERS {
+			type record of userId userIdList;
+		  	
+		  	template RequestADU mw_aduRequestListOfUsers := {
+		  		userListRequest :={
+		  			requestedADUType	:= AduType_provideUserIdListADU_,
+      				userIdRequestType	:= ?,
+      				userId				:= ?,
+					userIdRequestTime	:= ?
+				}
+			}
+		  	
+		  	template RequestADU m_aduRequestListOfUsers := {
+		  		modifies mw_aduRequestListOfUsers :={
+		  			userListRequest :={
+		  				requestedADUType	:= AduType_provideUserIdListADU_,
+      					userIdRequestType	:= 0,
+      					userId				:= DEFINED_USER_ID,
+						userIdRequestTime	:= now() // TODO PT140: check whether the now function exixts
+					}
+				}
+			}
+
+			template ProvideUserIdListADU mw_aduProvideUserDetails := {
+            	UserIdRequestType := 0,
+            	UserId := ?, // TODO PT140: Consider putting DEFINED_USER_ID value here
+            	userIdList := *
+        	}
+			
+		}
 
 		group EXCEPTIONLIST {}
 

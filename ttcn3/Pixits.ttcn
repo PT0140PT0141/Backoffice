@@ -21,7 +21,10 @@ module EfcInfoExchange_Pixits {
     modulepar Provider APDU_ORIGINATOR_FOR_IUT; //value of the InfoExchange.infoExchangeContent.apci.apduOriginator
     modulepar Provider INFORMATION_SENDER_ID_FOR_IUT;	//value of the InfoExchange.infoExchangeContent.apci.informationSenderID
 
-    modulepar UserId EXISTING_USER_ID;
+    modulepar UserId EXISTING_USER_ID; // Valid user, associated with other UserIds for LISTOFUSERS transactions
+    modulepar UserId EMPTYLIST_USER_ID; // Valid user, with no other associated UserIds for LISTOFUSERS transactions
+    modulepar UserId WRONG_USER_ID; // Wrong (not existing) user
+  
     
     type record of UserParameterRequest RecordOfUserParameterRequest;
     
