@@ -188,20 +188,22 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			type record of UserParameterRequest UserParameterRequests;
 
     		template RequestADU mw_aduRequestProvideUserDetails := {
-        		userDetailsRequest:={	
-            	  	requestedADUType := AduType_provideUserDetailsADU_,
-            	  	userId := ?,
-            		listOfParametersRequested := ?,
-            		userDetailsRequestReason := *,
-            		userInfoValidityPeriod := *
+        		userDetailsRequest :={	
+            	  	requestedADUType                := AduType_provideUserDetailsADU_,
+            	  	userId                          := ?,
+            		listOfParametersRequested       := ?,
+            		userDetailsRequestReason        := *,
+            		userInfoValidityPeriod          := *
         		}
         	}
         	
-        	template (value) RequestADU m_aduRequestProvideUserDetails(UserParameterRequests p_userParameterRequests) 
-        	modifies mw_aduRequestProvideUserDetails := {
-        		userDetailsRequest:={	
+        	template (value) RequestADU m_aduRequestProvideUserDetails(
+        	                                                           in template (value) UserParameterRequests p_userParameterRequests
+        	) modifies mw_aduRequestProvideUserDetails := {
+        		userDetailsRequest:={
+        			requestedADUType := AduType_provideUserDetailsADU_,	
             	  	userId := EXISTING_USER_ID,
-					listOfParametersRequested := p_userParameterRequests
+					listOfParametersRequested := p_userParameterRequests,
             		userDetailsRequestReason := omit,
             		userInfoValidityPeriod := omit
         		}
