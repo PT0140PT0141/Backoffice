@@ -351,9 +351,9 @@ module EfcInfoExchange_TestCasesTspOld {
 				//Set timer
 				t_step.start(USERDETAILS_TIME1_MAX_TSP);
 
-}               // Step #2: Wait for empty User Details
-// Either we receive an APDU containing empty User Details or the timeout expires
-// timeout expiration handling is in the altstep branch	
+               // Step #2: Wait for empty User Details
+				// Either we receive an APDU containing empty User Details or the timeout expires
+				// timeout expiration handling is in the altstep branch	
                 alt {
 					[] mtcPort.receive(mw_apduProvideUserDetails(v_apduRespondedTo)) -> value v_apduReceived{
 
@@ -935,18 +935,130 @@ module EfcInfoExchange_TestCasesTspOld {
     
     group EXCEPTIONLIST {
          group Valid_Behaviour {
+           testcase TP_TSP_EXCEPTIONLIST_BV_01() IutComp system TestAdapter {
+             
+              /**
+              * @desc    TP_TSP_EXCEPTIONLIST_BV_01: Verify that the TSP correctly performs an EXCEPTIONLIST transaction for blacklist and whitelist 
+              * @remark  [16986:2016], Clause 6.6 and Table A.1/2 AND Table A.7/3 
+              */
+				// Initialisation
+             
+           } // End of TP_TSP_EXCEPTIONLIST_BV_01
+           testcase TP_TSP_EXCEPTIONLIST_BV_01() IutComp system TestAdapter {
+             
+              /**
+              * @desc    TP_TSP_EXCEPTIONLIST_BV_02: Verify that the TSP correctly performs an EXCEPTIONLIST transaction for discounted users 
+              * @remark  [16986:2016], Clause 6.6 and Table A.1/2 AND Table A.7/3 
+              */
+				// Initialisation
+             
+           } // End of TP_TSP_EXCEPTIONLIST_BV_02
+ 		
+ 		
  		} // End of group Valid_Behaviour
          
-         group Invalid_Behaviour {		
+         group Invalid_Behaviour {	
+           // No Invalid Behaviour Test Cases defined	
         } // End of group Invalid_Behaviour
 
     } // End of group EXCEPTIONLIST
     
     group TRUSTOBJECTS {
          group Valid_Behaviour {
+           testcase TP_TSP_TRUSTOBJECTS_BV_01() IutComp system TestAdapter {
+             
+              /**
+              * @desc    TP_TSP_TRUSTOBJECTS_BV_01: Verify that the TSP correctly provides a TrustObjectADU without TC request 
+              * @remark  [16986:2016], Clause 6.6 and Table A.1/2 
+              */
+				// Initialisation
+             
+           } // End of TP_TSP_TRUSTOBJECTS_BV_01
+
+           testcase TP_TSP_TRUSTOBJECTS_BV_02() IutComp system TestAdapter {
+             
+              /**
+              * @desc    TP_TSP_TRUSTOBJECTS_BV_02: Verify that the TSP correctly responds to a TrustObjectADU received from a TC without having issued a request 
+              * @remark  [16986:2016], Clause 6.6 and Table A.1/2 
+              */
+				// Initialisation
+             
+           } // End of TP_TSP_TRUSTOBJECTS_BV_02
+
+           testcase TP_TSP_TRUSTOBJECTS_BV_03() IutComp system TestAdapter {
+             
+              /**
+              * @desc    TP_TSP_TRUSTOBJECTS_BV_03: Verify that the TSP correctly provides a TrustObjectADU following a TC request 
+              * @remark  [16986:2016], Clause 6.6 and Table A.1/2 
+              */
+				// Initialisation
+             
+           } // End of TP_TSP_TRUSTOBJECTS_BV_03
+
+           testcase TP_TSP_TRUSTOBJECTS_BV_04() IutComp system TestAdapter {
+             
+              /**
+              * @desc    TP_TSP_TRUSTOBJECTS_BV_04: Verify that the TSP correctly requests and responds to a TrustObjectADU
+              * @remark  [16986:2016], Clause 6.6 and Table A.1/2 
+              */
+				// Initialisation
+             
+           } // End of TP_TSP_TRUSTOBJECTS_BV_04
+           
  		} // End of group Valid_Behaviour
          
-         group Invalid_Behaviour {		
+         group Invalid_Behaviour {
+
+           testcase TP_TSP_TRUSTOBJECTS_BI_01() IutComp system TestAdapter {
+             
+              /**
+              * @desc    TP_TSP_TRUSTOBJECTS_BI_01: Verify that the TSP correctly responds to a TrustObjectADU received without having issued a request and containing incorrect ADU parameters
+              * @remark  [16986:2016], Clause 6.6 and Table A.1/2 
+              */
+				// Initialisation
+             
+           } // End of TP_TSP_TRUSTOBJECTS_BI_01
+
+           testcase TP_TSP_TRUSTOBJECTS_BI_02() IutComp system TestAdapter {
+             
+              /**
+              * @desc    TP_TSP_TRUSTOBJECTS_BI_02: Verify that the TSP correctly responds to more than one correct Trust Object ADUs in the same APDU without having issued a request
+              * @remark  [16986:2016], Clause 6.6 and Table A.1/2 
+              */
+				// Initialisation
+             
+           } // End of TP_TSP_TRUSTOBJECTS_BI_02
+
+           testcase TP_TSP_TRUSTOBJECTS_BI_03() IutComp system TestAdapter {
+             
+              /**
+              * @desc    TP_TSP_TRUSTOBJECTS_BI_03: Verify that the TSP correctly responds to a not supported Trust Object
+              * @remark  [16986:2016], Clause 6.6 and Table A.1/2 
+              */
+				// Initialisation
+             
+           } // End of TP_TSP_TRUSTOBJECTS_BI_03
+
+           testcase TP_TSP_TRUSTOBJECTS_BI_04() IutComp system TestAdapter {
+             
+              /**
+              * @desc    TP_TSP_TRUSTOBJECTS_BI_04: Verify that the TSP correctly responds to a RequestADU sent earlier than allowed
+              * @remark  [16986:2016], Clause 6.6 and Table A.1/2 
+              */
+				// Initialisation
+             
+           } // End of TP_TSP_TRUSTOBJECTS_BI_04
+
+           testcase TP_TSP_TRUSTOBJECTS_BI_05() IutComp system TestAdapter {
+             
+              /**
+              * @desc    TP_TSP_TRUSTOBJECTS_BI_05: Verify that the TSP correctly responds to a TrustObjectADU sent earlier than allowed
+              * @remark  [16986:2016], Clause 6.6 and Table A.1/2 
+              */
+				// Initialisation
+             
+           } // End of TP_TSP_TRUSTOBJECTS_BI_05
+           		
         } // End of group Invalid_Behaviour
 
     } // End of group TRUSTOBJECTS
@@ -958,11 +1070,7 @@ module EfcInfoExchange_TestCasesTspOld {
 				  * @desc	TP_TSP_PAYMENTCLAIM_BV_01: Verify that a TSP performs the PAYMENTCLAIM transaction correctly when using the actionCode=send 
                   * @remark  [16986:2016], Clause 6.8 and Table A.1/2 AND Table A.7/5 
                   */
-                 // Local variables
-                var InfoExchangeContent v_infoExchangeContent;
-                var InfoExchange v_infoExchange;
-                var requestAdus v_Request;
-                var ackAdus v_Ack; 
+                 // Initialisation
                 
                 } // End of TP_TSP_PAYMENTCLAIM_BV_01
                 
@@ -973,11 +1081,7 @@ module EfcInfoExchange_TestCasesTspOld {
                   * @remark  [16986:2016], Clause 6.8 and Table A.1/2 AND Table A.7/5 
                   */
                   
-                 // Local variables
-                var InfoExchangeContent v_infoExchangeContent;
-                var InfoExchange v_infoExchange;
-                var requestAdus v_Request;
-                var ackAdus v_Ack; 
+                 // Initialisation 
                 
                 } // End of TP_TSP_PAYMENTCLAIM_BV_02
                 
@@ -993,11 +1097,7 @@ module EfcInfoExchange_TestCasesTspOld {
                   * @remark  [16986:2016], Clause 6.8 and Table A.1/2 AND Table A.7/5  
                   */
                   
-                 // Local variables
-                var InfoExchangeContent v_infoExchangeContent;
-                var InfoExchange v_infoExchange;
-                var requestAdus v_Request;
-                var ackAdus v_Ack; 
+                 // Initialisation 
                 
                 } // End of TP_TSP_PAYMENTCLAIM_BI_01           		
 
@@ -1008,11 +1108,7 @@ module EfcInfoExchange_TestCasesTspOld {
                   * @remark  [16986:2016], Clause 6.8 and Table A.1/2 AND Table A.7/5  
                   */
                   
-                 // Local variables
-                var InfoExchangeContent v_infoExchangeContent;
-                var InfoExchange v_infoExchange;
-                var requestAdus v_Request;
-                var ackAdus v_Ack; 
+                 // Initialisation 
                 
                 } // End of TP_TSP_PAYMENTCLAIM_BI_02           		
 
@@ -1023,11 +1119,7 @@ module EfcInfoExchange_TestCasesTspOld {
                   * @remark  [16986:2016], Clause 6.8 and Table A.1/2 AND Table A.7/5  
                   */
                   
-                 // Local variables
-                var InfoExchangeContent v_infoExchangeContent;
-                var InfoExchange v_infoExchange;
-                var requestAdus v_Request;
-                var ackAdus v_Ack; 
+                 // Initialisation 
                 
                 } // End of TP_TSP_PAYMENTCLAIM_BI_03           		
 
@@ -1038,11 +1130,7 @@ module EfcInfoExchange_TestCasesTspOld {
                   * @remark  [16986:2016], Clause 6.8 and Table A.1/2 AND Table A.7/5  
                   */
                   
-                 // Local variables
-                var InfoExchangeContent v_infoExchangeContent;
-                var InfoExchange v_infoExchange;
-                var requestAdus v_Request;
-                var ackAdus v_Ack; 
+                 // Initialisation 
                 
                 } // End of TP_TSP_PAYMENTCLAIM_BI_04   
 
@@ -1053,11 +1141,7 @@ module EfcInfoExchange_TestCasesTspOld {
                   * @remark  [16986:2016], Clause 6.8 and Table A.1/2 AND Table A.7/5  
                   */
                   
-                 // Local variables
-                var InfoExchangeContent v_infoExchangeContent;
-                var InfoExchange v_infoExchange;
-                var requestAdus v_Request;
-                var ackAdus v_Ack; 
+                 // Iitialisation 
                 
                 } // End of TP_TSP_PAYMENTCLAIM_BI_05   
 
@@ -1068,11 +1152,7 @@ module EfcInfoExchange_TestCasesTspOld {
                   * @remark  [16986:2016], Clause 6.8 and Table A.1/2 AND Table A.7/5  
                   */
                   
-                 // Local variables
-                var InfoExchangeContent v_infoExchangeContent;
-                var InfoExchange v_infoExchange;
-                var requestAdus v_Request;
-                var ackAdus v_Ack; 
+                 // Initialisation
                 
                 } // End of TP_TSP_PAYMENTCLAIM_BI_06  
         } // End of group Invalid_Behaviour
@@ -1084,82 +1164,655 @@ module EfcInfoExchange_TestCasesTspOld {
            testcase TP_TSP_CONTRACTISSUERLIST_BV_01() runs on IutComp system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_CONTRACTISSUERLIST_BV_01: Verify that a TSP performs the PAYMENTCLAIM transaction correctly when using the actionCode=revoke or adjust 
-                  * @remark  [16986:2016], Clause 6.5 and Table A.1/2 AND Table A.7/2  
+                  * @desc    TP_TSP_CONTRACTISSUERLIST_BV_01: Verify that the TSP correctly performs the DSRC.CONTRACTISSUERLIST transaction with three manufacturerIDs 
+                  * @remark  [16986:2016], Clause 7.1 and Table A.1/2 AND Table A.2/1 AND Table A.26/1 
                   */
                   
-                 // Local variables
-                var InfoExchangeContent v_infoExchangeContent;
-                var InfoExchange v_infoExchange;
-                var requestAdus v_Request;
-                var ackAdus v_Ack; 
+                 // Initialisation 
                 
                 } // End of TP_TSP_CONTRACTISSUERLIST_BV_01
  		} // End of group Valid_Behaviour
          
-         group Invalid_Behaviour {		
+         group Invalid_Behaviour {
+           // No Invalid Behaviour Test cases defined		
         } // End of group Invalid_Behaviour
 
     } // End of group DSRC.CONTRACTISSUERLIST
     
     group DSRC_EFCCONTEXTDATA {
          group Valid_Behaviour {
+           testcase TP_TSP_DSRC.EFCCONTEXTDATA_BV_01() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_DSRC.EFCCONTEXTDATA_BV_01: Verify that the TSP correctly performs the DSRC.EFCCONTEXTDATA transaction with an EFCContextDataADU containing only mandatory context data for a domain type = dsrcContext 
+                  * @remark  [16986:2016], Clause 7.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/2
+                  */
+                  
+                 // Initialisation 
+                
+                } // End of TP_TSP_DSRC.EFCCONTEXTDATA_BV_01
+
+           testcase TP_TSP_DSRC.EFCCONTEXTDATA_BV_02() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_DSRC.EFCCONTEXTDATA_BV_02: Verify that the TSP correctly performs the DSRC.EFCCONTEXTDATA transaction with an EFCContextDataADU containing only mandatory context data for a domain type = dsrcClosedContext 
+                  * @remark  [16986:2016], Clause 7.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/2
+                  */
+                  
+                 // Initialisation 
+                
+                } // End of TP_TSP_DSRC.EFCCONTEXTDATA_BV_02
+
+           testcase TP_TSP_DSRC.EFCCONTEXTDATA_BV_03() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_DSRC.EFCCONTEXTDATA_BV_03: Verify that the TSP correctly performs the DSRC.EFCCONTEXTDATA transaction with an EFCContextDataADU containing mandatory context data plus tariffClassDefinition for a domain type = dsrcClosedContext 
+                  * @remark  [16986:2016], Clause 7.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/2
+                  */
+                  
+                 // Initialisation 
+                
+                } // End of TP_TSP_DSRC.EFCCONTEXTDATA_BV_03
+
+           testcase TP_TSP_DSRC.EFCCONTEXTDATA_BV_04() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_DSRC.EFCCONTEXTDATA_BV_04: Verify that the TSP correctly performs the DSRC.EFCCONTEXTDATA transaction with an EFCContextDataADU containing mandatory context data plus localVehicleClassDefinition for a domain type = dsrcClosedContext 
+                  * @remark  [16986:2016], Clause 7.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/2
+                  */
+                  
+                 // Initialisation 
+                
+                } // End of TP_TSP_DSRC.EFCCONTEXTDATA_BV_04
+
+           testcase TP_TSP_DSRC.EFCCONTEXTDATA_BV_05() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_DSRC.EFCCONTEXTDATA_BV_05: Verify that the TSP correctly performs the DSRC.EFCCONTEXTDATA transaction with an EFCContextDataADU containing mandatory context data plus timeClassDefinition for a domain type = dsrcClosedContext 
+                  * @remark  [16986:2016], Clause 7.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/2
+                  */
+                  
+                 // Initialisation 
+                
+                } // End of TP_TSP_DSRC.EFCCONTEXTDATA_BV_05
+
+           testcase TP_TSP_DSRC.EFCCONTEXTDATA_BV_06() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_DSRC.EFCCONTEXTDATA_BV_06: Verify that the TSP correctly performs the DSRC.EFCCONTEXTDATA transaction with an EFCContextDataADU containing mandatory context data plus userClassDefinition for a domain type = dsrcClosedContext 
+                  * @remark  [16986:2016], Clause 7.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/2
+                  */
+                  
+                 // Initialisation 
+                
+                } // End of TP_TSP_DSRC.EFCCONTEXTDATA_BV_06
+
+           testcase TP_TSP_DSRC.EFCCONTEXTDATA_BV_07() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_DSRC.EFCCONTEXTDATA_BV_07: Verify that the TSP correctly performs the DSRC.EFCCONTEXTDATA transaction with an EFCContextDataADU containing mandatory context data plus feeDefinition for a domain type = dsrcClosedContext 
+                  * @remark  [16986:2016], Clause 7.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/2
+                  */
+                  
+                 // Initialisation 
+                
+                } // End of TP_TSP_DSRC.EFCCONTEXTDATA_BV_07
+           
  		} // End of group Valid_Behaviour
          
-         group Invalid_Behaviour {		
+         group Invalid_Behaviour {
+
+           testcase TP_TSP_DSRC.EFCCONTEXTDATA_BI_01() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_DSRC.EFCCONTEXTDATA_BI_01: Verify that the TSP correctly responds to an EFCContextDataADU containing only mandatory context data for a domain type = dsrcContext with a wrong data field 
+                  * @remark  [16986:2016], Clause 7.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/2
+                  */
+                  
+                 // Initialisation 
+                
+                } // End of TP_TSP_DSRC.EFCCONTEXTDATA_BI_01
+
+           testcase TP_TSP_DSRC.EFCCONTEXTDATA_BI_02() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_DSRC.EFCCONTEXTDATA_BI_02: Verify that the TSP correctly responds to an EFCContextDataADU containing only mandatory context data for a domain type = dsrcClosedContext with a wrong data field 
+                  * @remark  [16986:2016], Clause 7.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/2
+                  */
+                  
+                 // Initialisation 
+                
+                } // End of TP_TSP_DSRC.EFCCONTEXTDATA_BI_02
+
+           testcase TP_TSP_DSRC.EFCCONTEXTDATA_BI_03() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_DSRC.EFCCONTEXTDATA_BI_03: Verify that the TSP responds correctly to an EfcContextDataADU sent earlier than allowed 
+                  * @remark  [16986:2016], Clause 7.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/2
+                  */
+                  
+                 // Initialisation 
+                
+                } // End of TP_TSP_DSRC.EFCCONTEXTDATA_BI_03
+           		
         } // End of group Invalid_Behaviour
 
     } // End of group DSRC.EFCCONTEXTDATA
     
     group DSRC_BILLINGDETAILS {
          group Valid_Behaviour {
+
+           testcase TP_TSP_DSRC.BILLINGDETAILS_BV_01() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_DSRC.BILLINGDETAILS_BV_01: Verify that the TSP correctly performs a DSRC.BILLINGDETAILS transaction and responds to a single BillingDetailsADU with mandatory and optional fields 
+                  * @remark  [16986:2016], Clause 7.3.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/3
+                  */
+                  
+                 // Initialisation 
+                
+                } // End of TP_TSP_DSRC.BILLINGDETAILS_BV_01
+
+           testcase TP_TSP_DSRC.BILLINGDETAILS_BV_02() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_DSRC.BILLINGDETAILS_BV_02: Verify that the TSP correctly perfoms a DSRC.BILLINGDETAILS transaction and responds to multiple BillingDetailsADUs containing only mandatory fields  
+                  * @remark  [16986:2016], Clause 7.3.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/3
+                  */
+                  
+                 // Initialisation 
+                
+                } // End of TP_TSP_DSRC.BILLINGDETAILS_BV_02
+
+           testcase TP_TSP_DSRC.BILLINGDETAILS_BV_03() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_DSRC.BILLINGDETAILS_BV_03: Verify that the TSP correctly perfoms a DSRC.BILLINGDETAILS transaction and responds to multiple BillingDetailsADUs with mandatory and optional fields 
+                  * @remark  [16986:2016], Clause 7.3.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/3
+                  */
+                  
+                 // Initialisation 
+                
+                } // End of TP_TSP_DSRC.BILLINGDETAILS_BV_03
+
+           testcase TP_TSP_DSRC.BILLINGDETAILS_BV_04() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_DSRC.BILLINGDETAILS_BV_04: Verify that the TSP correctly perfoms a DSRC.BILLINGDETAILS transaction and responds to a single BillingDetailsADU containing only mandatory fields and adjusting the fee 
+                  * @remark  [16986:2016], Clause 7.3.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/3
+                  */
+                  
+                 // Initialisation 
+                
+                } // End of TP_TSP_DSRC.BILLINGDETAILS_BV_04
+
+           testcase TP_TSP_DSRC.BILLINGDETAILS_BV_05() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_DSRC.BILLINGDETAILS_BV_05: Verify that the TSP correctly perfoms a DSRC.BILLINGDETAILS transaction and responds to a single BillingDetailsADU revoking a previously sent BillingDetails 
+                  * @remark  [16986:2016], Clause 7.3.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/3
+                  */
+                  
+                 // Initialisation 
+                
+                } // End of TP_TSP_DSRC.BILLINGDETAILS_BV_05
+           
  		} // End of group Valid_Behaviour
          
-         group Invalid_Behaviour {		
+         group Invalid_Behaviour {
+
+           testcase TP_TSP_DSRC.BILLINGDETAILS_BI_01() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_DSRC.BILLINGDETAILS_BI_01: Verify that the TSP correctly responds to a single BillingDetailsADU with only mandatory fields, and then correctly responds to a a second BillingDetailsADU issued before TIMEA expires 
+                  * @remark  [16986:2016], Clause 7.3.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/3
+                  */
+                  
+                 // Initialisation 
+                
+                } // End of TP_TSP_DSRC.BILLINGDETAILS_BI_01
+
+           testcase TP_TSP_DSRC.BILLINGDETAILS_BI_02() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_DSRC.BILLINGDETAILS_BI_02: Verify that the TSP correctly responds to a series of BillingDetailsADUs bearing only mandatory field, each BillingDetailsADU having one mandatory field bearing an incorrect value 
+                  * @remark  [16986:2016], Clause 7.3.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/3
+                  */
+                  
+                 // Initialisation 
+                
+                } // End of TP_TSP_DSRC.BILLINGDETAILS_BI_02
+
+           testcase TP_TSP_DSRC.BILLINGDETAILS_BI_03() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_DSRC.BILLINGDETAILS_BI_03: Verify that the TSP correctly responds to a BillingDetailsADU adjusting the fee of a not previously issued BillingDetailsADU 
+                  * @remark  [16986:2016], Clause 7.3.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/3
+                  */
+                  
+                 // Initialisation 
+                
+                } // End of TP_TSP_DSRC.BILLINGDETAILS_BI_03
+
+           testcase TP_TSP_DSRC.BILLINGDETAILS_BI_04() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_DSRC.BILLINGDETAILS_BI_04: Verify that the TSP correctly responds to a BillingDetailsADU revoking a not previously issued BillingDetailsADU 
+                  * @remark  [16986:2016], Clause 7.3.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/3
+                  */
+                  
+                 // Initialisation 
+                
+                } // End of TP_TSP_DSRC.BILLINGDETAILS_BI_04
+
+           testcase TP_TSP_DSRC.BILLINGDETAILS_BI_05() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_DSRC.BILLINGDETAILS_BI_05: Verify that the TSP responds correctly to a BillingDetailsADU sent earlier than allowed 
+                  * @remark  [16986:2016], Clause 7.3.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/3
+                  */
+                  
+                 // Initialisation 
+                
+                } // End of TP_TSP_DSRC.BILLINGDETAILS_BI_05
+		
         } // End of group Invalid_Behaviour
 
     } // End of group DSRC.BILLINGDETAILS
     
     group DSRC_REPORTABNORMALOBE {
          group Valid_Behaviour {
+
+           testcase TP_TSP_DSRC.REPORTABNORMALOBE_BV_01() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_DSRC.REPORTABNORMALOBE_BV_01: Verify that the TSP correctly performs a DSRC.REPORTABNORMALOBE transaction in response to an APDU containing valid ReportAbnormalOBEADUs 
+                  * @remark  [16986:2016], Clause 7.4 and Table A.1/2 AND Table A.2/1 AND Table A.26/4
+                  */
+                  
+                 // Initialisation 
+                
+                } // End of TP_TSP_DSRC.REPORTABNORMALOBE_BV_01
+
+
  		} // End of group Valid_Behaviour
          
          group Invalid_Behaviour {		
+
+           testcase TP_TSP_DSRC.REPORTABNORMALOBE_BI_01() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_DSRC.REPORTABNORMALOBE_BI_01: Verify that the TSP correctly responds to an APDU containing one ReportAbnormalOBEADU with no userId field present 
+                  * @remark  [16986:2016], Clause 7.4 and Table A.1/2 AND Table A.2/1 AND Table A.26/4
+                  */
+                  
+                 // Initialisation 
+                
+                } // End of TP_TSP_DSRC.REPORTABNORMALOBE_BI_01
+
+           testcase TP_TSP_DSRC.REPORTABNORMALOBE_BI_02() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_DSRC.REPORTABNORMALOBE_BI_02: Verify that the TSP correctly responds to an APDU containing one ReportAbnormalOBEADU with no value or invalid values in the field userId 
+                  * @remark  [16986:2016], Clause 7.4 and Table A.1/2 AND Table A.2/1 AND Table A.26/4
+                  */
+                  
+                 // Initialisation 
+                
+                } // End of TP_TSP_DSRC.REPORTABNORMALOBE_BI_02
+
+           testcase TP_TSP_DSRC.REPORTABNORMALOBE_BI_03() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_DSRC.REPORTABNORMALOBE_BI_03: Verify that the TSP correctly responds to an APDU containing one ReportAbnormalOBEADU with no dateAndTime field 
+                  * @remark  [16986:2016], Clause 7.4 and Table A.1/2 AND Table A.2/1 AND Table A.26/4
+                  */
+                  
+                 // Initialisation 
+                
+                } // End of TP_TSP_DSRC.REPORTABNORMALOBE_BI_03
+
+           testcase TP_TSP_DSRC.REPORTABNORMALOBE_BI_04() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_DSRC.REPORTABNORMALOBE_BI_04: Verify that the TSP correctly responds to an APDU containing ReportAbnormalOBEADU with no value or invalid values in field dateAndTime 
+                  * @remark  [16986:2016], Clause 7.4 and Table A.1/2 AND Table A.2/1 AND Table A.26/4
+                  */
+                  
+                 // Initialisation 
+                
+                } // End of TP_TSP_DSRC.REPORTABNORMALOBE_BI_04
+
+           testcase TP_TSP_DSRC.REPORTABNORMALOBE_BI_05() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_DSRC.REPORTABNORMALOBE_BI_05: Verify that the TSP correctly responds to an APDU containing one ReportAbnormalOBEADU with no efcContextMark field 
+                  * @remark  [16986:2016], Clause 7.4 and Table A.1/2 AND Table A.2/1 AND Table A.26/4
+                  */
+                  
+                 // Initialisation 
+                
+                } // End of TP_TSP_DSRC.REPORTABNORMALOBE_BI_05
+
+           testcase TP_TSP_DSRC.REPORTABNORMALOBE_BI_06() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_DSRC.REPORTABNORMALOBE_BI_06: Verify that the TSP correctly responds to an APDU containing one ReportAbnormalOBEADU with no value or invalid values in the field efcContextMark 
+                  * @remark  [16986:2016], Clause 7.4 and Table A.1/2 AND Table A.2/1 AND Table A.26/4
+                  */
+                  
+                 // Initialisation 
+                
+                } // End of TP_TSP_DSRC.REPORTABNORMALOBE_BI_06
+
+           testcase TP_TSP_DSRC.REPORTABNORMALOBE_BI_07() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_DSRC.REPORTABNORMALOBE_BI_07: Verify that the TSP correctly responds to an APDU containing ReportAbnormalOBEADU not containing the abnormalOBEReason field 
+                  * @remark  [16986:2016], Clause 7.4 and Table A.1/2 AND Table A.2/1 AND Table A.26/4
+                  */
+                  
+                 // Initialisation 
+                
+                } // End of TP_TSP_DSRC.REPORTABNORMALOBE_BI_07
+
+           testcase TP_TSP_DSRC.REPORTABNORMALOBE_BI_08() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_DSRC.REPORTABNORMALOBE_BI_08: Verify that the TSP correctly responds to an APDU containing one ReportAbnormalOBEADU with no value or invalid values in the field abnormalOBEReason 
+                  * @remark  [16986:2016], Clause 7.4 and Table A.1/2 AND Table A.2/1 AND Table A.26/4
+                  */
+                  
+                 // Initialisation 
+                
+                } // End of TP_TSP_DSRC.REPORTABNORMALOBE_BI_08
+
+           testcase TP_TSP_DSRC.REPORTABNORMALOBE_BI_09() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_DSRC.REPORTABNORMALOBE_BI_09: Verify that the TSP responds correctly to a ReportAbnormalOBEADU sent earlier than allowed 
+                  * @remark  [16986:2016], Clause 7.4 and Table A.1/2 AND Table A.2/1 AND Table A.26/4
+                  */
+                  
+                 // Initialisation 
+                
+                } // End of TP_TSP_DSRC.REPORTABNORMALOBE_BI_09
+
+
         } // End of group Invalid_Behaviour
 
     } // End of group DSRC.REPORTABNORMALOBE
     
     group GNSS_TOLLDECLARATION {
          group Valid_Behaviour {
+
+           testcase TP_TSP_GNSS_TOLLDECLARATION_BV_01() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_GNSS_TOLLDECLARATION_BV_01: Verify that the TSP correctly performs a GNSS.TOLLDECLARATION transaction with actionCodes = send, revoke and adjust 
+                  * @remark  [16986:2016], Clause 8.1 and Table A.1/2 AND Table A.2/2 AND Table A.52/3
+                  */
+                  
+                 // Initialisation 
+                
+                } // End of TP_TSP_GNSS_TOLLDECLARATION_BV_01
+           
  		} // End of group Valid_Behaviour
          
-         group Invalid_Behaviour {		
+         group Invalid_Behaviour {
+           // No Test Cases are defined for invalid behaviour.		
         } // End of group Invalid_Behaviour
 
     } // End of group GNSS.TOLLDECLARATION
     group GNSS_BILLINGDETAILS_TSP {
          group Valid_Behaviour {
+
+           testcase TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_01() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_01: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TSP transaction with a single BillingDetailsADU with all mandatory plus optional includedDiscounts field 
+                  * @remark  [16986:2016], Clause 8.2.2 AND 8.2.4 and Table A.1/2 AND Table A.2/1 AND Table A.52/1 AND Table A.56/6
+                  */
+                  
+                 // Initialisation 
+                
+                } // End of TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_01           
+
+           testcase TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_02() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_02: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TSP transaction with a single BillingDetailsADU with all mandatory fields and areaDisplayName field 
+                  * @remark  [16986:2016], Clause 8.2.2 AND 8.2.4 and Table A.1/2 AND Table A.2/1 AND Table A.52/1 AND Table A.56/6
+                  */
+                  
+                 // Initialisation 
+                
+                } // End of TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_02           
+
+           testcase TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_03() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_03: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TSP transaction with a single BillingDetailsADU with all mandatory fields and qualifier field in forCordonCross selection 
+                  * @remark  [16986:2016], Clause 8.2.2 AND 8.2.4 and Table A.1/2 AND Table A.2/1 AND Table A.52/1 AND Table A.56/6
+                  */
+                  
+                 // Initialisation 
+                
+                } // End of TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_03           
+
+           testcase TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_04() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_04: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TSP transaction with a single BillingDetailsADU with all mandatory fields and entranceChargeObjectName field in forCordonCross selection 
+                  * @remark  [16986:2016], Clause 8.2.2 AND 8.2.4 and Table A.1/2 AND Table A.2/1 AND Table A.52/1 AND Table A.56/6
+                  */
+                  
+                 // Initialisation 
+                
+                } // End of TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_04           
+
+           testcase TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_05() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_05: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TSP transaction with multiple BillingDetailsADUs with only mandatory fields in the same APDU 
+                  * @remark  [16986:2016], Clause 8.2.2 AND 8.2.4 and Table A.1/2 AND Table A.2/1 AND Table A.52/1 AND Table A.56/6
+                  */
+                  
+                 // Initialisation 
+                
+                } // End of TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_05           
+
+           testcase TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_06() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_06: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TSP transaction with adjusting the fee on a single BillingDetailsADU containing only mandatory fields 
+                  * @remark  [16986:2016], Clause 8.2.2 AND 8.2.4 and Table A.1/2 AND Table A.2/1 AND Table A.52/1 AND Table A.56/6
+                  */
+                  
+                 // Initialisation 
+                
+                } // End of TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_06           
+
+           testcase TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_07() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_07: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TSP transaction with revoking a single BillingDetailsADU containing only mandatory fields 
+                  * @remark  [16986:2016], Clause 8.2.2 AND 8.2.4 and Table A.1/2 AND Table A.2/1 AND Table A.52/1 AND Table A.56/6
+                  */
+                  
+                 // Initialisation 
+                
+                } // End of TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_07           
+
+
  		} // End of group Valid_Behaviour
          
-         group Invalid_Behaviour {		
+         group Invalid_Behaviour {
+           // No Test Cases are defined for invalid behaviour.		
         } // End of group Invalid_Behaviour
 
     } // End of group GNSS.BILLINGDETAILS_TSP
     
     group GNSS_BILLINGDETAILS_TC {
          group Valid_Behaviour {
+
+           testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BV_01() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BV_01: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TC transaction with a response to a single BillingDetailsADU with all mandatory plus optional includedDiscounts field 
+                  * @remark  [16986:2016], Clause 8.2.3 AND 8.2.4 and Table A.1/2 AND Table A.2/2 AND Table A.52/2 AND Table A.56/6
+                  */
+                  
+                 // Initialisation 
+                
+                } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BV_01           
+
+           testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BV_02() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BV_02: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TC transaction with a response to a single BillingDetailsADU with all mandatory fields and areaDisplayName field 
+                  * @remark  [16986:2016], Clause 8.2.3 AND 8.2.4 and Table A.1/2 AND Table A.2/2 AND Table A.52/2 AND Table A.56/6
+                  */
+                  
+                 // Initialisation 
+                
+                } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BV_02           
+
+           testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BV_03() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BV_03: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TC transaction with a response to a single BillingDetailsADU with all mandatory fields and qualifier field in forCordonCross selection 
+                  * @remark  [16986:2016], Clause 8.2.3 AND 8.2.4 and Table A.1/2 AND Table A.2/2 AND Table A.52/2 AND Table A.56/6
+                  */
+                  
+                 // Initialisation 
+                
+                } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BV_03           
+
+           testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BV_04() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BV_04: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TC transaction with a response to multiple BillingDetailsADUs with only mandatory fields in the same APDU 
+                  * @remark  [16986:2016], Clause 8.2.3 AND 8.2.4 and Table A.1/2 AND Table A.2/2 AND Table A.52/2 AND Table A.56/6
+                  */
+                  
+                 // Initialisation 
+                
+                } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BV_04           
+
+           testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BV_05() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BV_05: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TC transaction with a response to a single BillingDetailsADU containing only mandatory fields and adjusting the fee 
+                  * @remark  [16986:2016], Clause 8.2.3 AND 8.2.4 and Table A.1/2 AND Table A.2/2 AND Table A.52/2 AND Table A.56/6
+                  */
+                  
+                 // Initialisation 
+                
+                } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BV_05           
+
+           testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BV_06() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BV_06: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TC transaction with a response to a single BillingDetailsADU containing only mandatory fields and revoking a previously issued BillingDetailsADU 
+                  * @remark  [16986:2016], Clause 8.2.3 AND 8.2.4 and Table A.1/2 AND Table A.2/2 AND Table A.52/2 AND Table A.56/6
+                  */
+                  
+                 // Initialisation 
+                
+                } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BV_06                    
  		} // End of group Valid_Behaviour
          
-         group Invalid_Behaviour {		
+         group Invalid_Behaviour {
+
+           testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BI_01() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BI_01: Verify that the TSP correctly responds to a series of BillingDetailsADUs bearing only mandatory fields, each BillingDetailsADU having one mandatory field bearing an incorrect value 
+                  * @remark  [16986:2016], Clause 8.2.3 AND 8.2.4 and Table A.1/2 AND Table A.2/2 AND Table A.52/2
+                  */
+                  
+                 // Initialisation 
+                
+                } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BI_01           
+
+           testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BI_02() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BI_02: Verify that the TSP correctly responds to a single BillingDetailsADU with only mandatory fields, followed by a second valid BillingDetailsADU issued before TIMEA_MIN expires 
+                  * @remark  [16986:2016], Clause 8.2.3 AND 8.2.4 and Table A.1/2 AND Table A.2/2 AND Table A.52/2
+                  */
+                  
+                 // Initialisation 
+                
+                } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BI_02           
+
+           testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BI_03() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BI_03: Verify that the TSP correctly responds to a BillingDetailsADU adjusting the fee for a BillingDetailsADU that does not exist 
+                  * @remark  [16986:2016], Clause 8.2.3 AND 8.2.4 and Table A.1/2 AND Table A.2/2 AND Table A.52/2
+                  */
+                  
+                 // Initialisation 
+                
+                } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BI_03           
+
+           testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BI_04() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BI_04: Verify that the TSP correctly responds to a BillingDetailsADU revoking a BillingDetailsADU that does not exist at the TSP 
+                  * @remark  [16986:2016], Clause 8.2.3 AND 8.2.4 and Table A.1/2 AND Table A.2/2 AND Table A.52/2
+                  */
+                  
+                 // Initialisation 
+                
+                } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BI_04           
+
+           testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BI_05() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BI_05: Verify that the TSP correctly responds to a BillingDetailsADU sent earlier than allowed 
+                  * @remark  [16986:2016], Clause 8.2.3 AND 8.2.4 and Table A.1/2 AND Table A.2/2 AND Table A.52/2
+                  */
+                  
+                 // Initialisation 
+                
+                } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BI_05           
+		
         } // End of group Invalid_Behaviour
 
     } // End of group GNSS.BILLINGDETAILS.TC
     
     group GNSS_PAYMENTANNOUNCEMENT {
          group Valid_Behaviour {
+
+           testcase TP_TSP_GNSS_PAYMENTANNOUNCEMENT_BV_01() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BV_01: Verify that the TSP correctly performs the GNSS.PAYMENTANNOUNCEMENT transaction with actionCode=send 
+                  * @remark  [16986:2016], Clause 6.8 and Table A.1/2 AND Table A.2/2 AND Table A.52/4 
+                  */
+                  
+                 // Initialisation 
+                
+                } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BV_01                    
+
+           testcase TP_TSP_GNSS_PAYMENTANNOUNCEMENT_BV_02() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BV_02: Verify that the TSP correctly performs the GNSS.PAYMENTANNOUCEMENT transaction with actionCode=revoke and adjust 
+                  * @remark  [16986:2016], Clause 6.8 and Table A.1/2 AND Table A.2/2 AND Table A.52/4 
+                  */
+                  
+                 // Initialisation 
+                
+                } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BV_02                    
+
  		} // End of group Valid_Behaviour
          
-         group Invalid_Behaviour {		
+         group Invalid_Behaviour {
+           // No Test Cases are defined for invalid behaviour.		           		
         } // End of group Invalid_Behaviour
 
     } // End of group GNSS.PAYMENTANNOUNCEMENT
