@@ -942,6 +942,21 @@ module EfcInfoExchange_TestCasesTspOld {
               * @remark  [16986:2016], Clause 6.6 and Table A.1/2 AND Table A.7/3 
               */
 				// Initialisation
+				
+				// Start by setting test failure
+				// Step 1a: Trigger IUT with EXCEPTIONLIST.TR_TSP_1 LIST_TYPE=BLACK
+				
+				//  Wait for EXCEPTIONLIST with LIST_TYPE=BLACK
+				
+					// Send Ack within time constraints
+					
+					// Step 1b: Trigger IUT with EXCEPTIONLIST.TR_TSP_1 LIST_TYPE=WHITE within time constraints
+					
+					// Wait for EXCEPTIONLIST with LIST_TYPE=WHITE
+					
+						// Send Ack within time constraints
+						
+						// Set test success
              
            } // End of TP_TSP_EXCEPTIONLIST_BV_01
            testcase TP_TSP_EXCEPTIONLIST_BV_01() IutComp system TestAdapter {
@@ -951,6 +966,15 @@ module EfcInfoExchange_TestCasesTspOld {
               * @remark  [16986:2016], Clause 6.6 and Table A.1/2 AND Table A.7/3 
               */
 				// Initialisation
+				
+				// Start by setting test failure
+				// Step 1: Trigger IUT with EXCEPTIONLIST.TR_TSP_1 LIST_TYPE=DISCOUNT
+				
+				//  Wait for EXCEPTIONLIST with LIST_TYPE=DISCOUNT
+				
+					// Send Ack within time constraints
+					// Set test success
+				
              
            } // End of TP_TSP_EXCEPTIONLIST_BV_02
  		
@@ -1070,7 +1094,21 @@ module EfcInfoExchange_TestCasesTspOld {
 				  * @desc	TP_TSP_PAYMENTCLAIM_BV_01: Verify that a TSP performs the PAYMENTCLAIM transaction correctly when using the actionCode=send 
                   * @remark  [16986:2016], Clause 6.8 and Table A.1/2 AND Table A.7/5 
                   */
-                 // Initialisation
+ 				// Initialisation
+                 
+                // PT 140: TODO Probably there is no need to have an initial PAYMENTCLAIM for this test case as stated in the TSS&TP
+				// Start by setting test success
+				
+                // Step 1: Loop
+                	// Send one preset Billing Details
+                	// Wait for Ack
+                	// Send PAYMENTCLAIM with ActionCode=SEND and changing:
+                		// UserId within declared valid values
+                		// vatRate present and not present
+                		// valid values of TypeOfFee
+                		// paymentReference valid and not present
+              		// Wait for Ack (if negative Ack or not received set test failure)
+              		
                 
                 } // End of TP_TSP_PAYMENTCLAIM_BV_01
                 
@@ -1082,6 +1120,18 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+                // PT 140: TODO It is not possible to send two PAYMENTCLAM Adus in the same APDU as stated in the TSS&TP
+				// Start by setting test success
+                // Send one preset Billing Details
+                // Wait for positive Ack
+				// Send one PAYMENTCLAIM related to the sent BILLINGDETAILS within allowed time constraints
+				// Wait for positive Ack
+
+                // Step 1:
+                	// Send PAYMENTCLAIM with ActionCode=ADJUST referring to the previoulsy sent PAYMENTCLAIM and changing the charged value
+              		// Wait for Ack (if negative Ack or not received set test failure)
+                	// Send PAYMENTCLAIM with ActionCode=REVOKE referring to the previoulsy sent PAYMENTCLAIM
+              		// Wait for Ack (if negative Ack or not received set test failure)
                 
                 } // End of TP_TSP_PAYMENTCLAIM_BV_02
                 
@@ -1097,7 +1147,19 @@ module EfcInfoExchange_TestCasesTspOld {
                   * @remark  [16986:2016], Clause 6.8 and Table A.1/2 AND Table A.7/5  
                   */
                   
-                 // Initialisation 
+                 // Initialisation
+					// Start by setting test success
+	                // Send one preset Billing Details
+	                // Wait for positive Ack
+					// Send one PAYMENTCLAIM related to the sent BILLINGDETAILS within allowed time constraints
+					// Wait for positive Ack
+
+                // Step 1:
+                	// Send PAYMENTCLAIM with:
+                		// ActionCode=REVOKE
+                		// wrong PaymentClaimId value
+              		// Wait for negative Ack (if positive Ack or not received set test failure)
+                  
                 
                 } // End of TP_TSP_PAYMENTCLAIM_BI_01           		
 
@@ -1108,8 +1170,18 @@ module EfcInfoExchange_TestCasesTspOld {
                   * @remark  [16986:2016], Clause 6.8 and Table A.1/2 AND Table A.7/5  
                   */
                   
-                 // Initialisation 
-                
+                 // Initialisation
+				// Start by setting test success
+                // Send one preset Billing Details
+                // Wait for positive Ack
+            
+            	// Step 1: 
+                	// Send PAYMENTCLAIM with:
+                		// actionCode= adjust
+						// paymentClaimStatus=firstversion(0)
+              		// Wait for negative Ack (if positive Ack or not received set test failure)
+            	      
+			                
                 } // End of TP_TSP_PAYMENTCLAIM_BI_02           		
 
             testcase TP_TSP_PaymentClaim_BI_03() runs on IutComp system TestAdapter {
@@ -1119,7 +1191,17 @@ module EfcInfoExchange_TestCasesTspOld {
                   * @remark  [16986:2016], Clause 6.8 and Table A.1/2 AND Table A.7/5  
                   */
                   
-                 // Initialisation 
+                 // Initialisation
+                // PT 140: TODO Probably there is no need to have an initial PAYMENTCLAIM for this test case as stated in the TSS&TP
+				// Start by setting test success
+                // Send one preset Billing Details
+                // Wait for positive Ack
+ 
+            	// Step 1: 
+                	// Send PAYMENTCLAIM with:
+                		// actionCode= adjust
+						// referenceDetailsList=tollDeclarationList
+              		// Wait for negative Ack (if positive Ack or not received set test failure)
                 
                 } // End of TP_TSP_PAYMENTCLAIM_BI_03           		
 
@@ -1131,6 +1213,15 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+                // PT 140: TODO Probably there is no need to have an initial PAYMENTCLAIM for this test case as stated in the TSS&TP
+				// Start by setting test success
+                // Send one preset Billing Details
+                // Wait for positive Ack
+ 
+            	// Step 1: 
+                	// Send PAYMENTCLAIM with:
+                		// actionCode= credit
+              		// Wait for negative Ack (if positive Ack or not received set test failure)
                 
                 } // End of TP_TSP_PAYMENTCLAIM_BI_04   
 
@@ -1141,7 +1232,8 @@ module EfcInfoExchange_TestCasesTspOld {
                   * @remark  [16986:2016], Clause 6.8 and Table A.1/2 AND Table A.7/5  
                   */
                   
-                 // Iitialisation 
+                 // Initialisation
+                 // PT140: TODO TSS&TP to be reviewed/agreed 
                 
                 } // End of TP_TSP_PAYMENTCLAIM_BI_05   
 
@@ -1153,6 +1245,15 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation
+				// Start by setting test success
+                // Send one preset Billing Details
+                // Wait for positive Ack
+				// Send one PAYMENTCLAIM related to the sent BILLINGDETAILS within allowed time constraints
+				// Wait for positive Ack
+
+                // Step 1:
+                	// Send PAYMENTCLAIM with ActionCode=REVOKE before TIMEA_MIN
+              		// Wait for negative Ack (if positive Ack or not received set test failure)                	
                 
                 } // End of TP_TSP_PAYMENTCLAIM_BI_06  
         } // End of group Invalid_Behaviour
@@ -1168,7 +1269,15 @@ module EfcInfoExchange_TestCasesTspOld {
                   * @remark  [16986:2016], Clause 7.1 and Table A.1/2 AND Table A.2/1 AND Table A.26/1 
                   */
                   
-                 // Initialisation 
+                 // Initialisation
+				// Start by setting test failure
+				// Step 1: Trigger IUT with DSRC.CONTRACTISSUERLIST.TR_TSP_1 to send an APDU containing three ContractIssuerListADUs with differing manufacturerID values
+				
+				//  Wait for APDU containing three ContractIssuerListADUs
+				
+					// Send Ack within time constraints
+					// Set test success
+ 
                 
                 } // End of TP_TSP_CONTRACTISSUERLIST_BV_01
  		} // End of group Valid_Behaviour
@@ -1188,7 +1297,13 @@ module EfcInfoExchange_TestCasesTspOld {
                   * @remark  [16986:2016], Clause 7.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/2
                   */
                   
-                 // Initialisation 
+                 // Initialisation
+                 
+                 // Step 1: Send EFCCONTEXTDATA with:
+                 	// domainType = dsrcContext 
+                 	// iso17573ADU containing only mandatory field with valid values
+                 	// feeModifiers set to null
+                 // Step 2: Wait for positive Ack within DSRC.EFCCONTEXTDATA.TIME1
                 
                 } // End of TP_TSP_DSRC.EFCCONTEXTDATA_BV_01
 
@@ -1199,7 +1314,13 @@ module EfcInfoExchange_TestCasesTspOld {
                   * @remark  [16986:2016], Clause 7.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/2
                   */
                   
-                 // Initialisation 
+                 // Initialisation
+                  
+                 // Step 1: Send EFCCONTEXTDATA with:
+                 	// domainType = dsrcClosedContext 
+                 	// dsrcClosedContext with valid values and feeModifiers set to null
+                 	// closedSystem with valid values and all other fields set to null
+                 // Step 2: Wait for positive Ack within DSRC.EFCCONTEXTDATA.TIME1
                 
                 } // End of TP_TSP_DSRC.EFCCONTEXTDATA_BV_02
 
@@ -1210,7 +1331,13 @@ module EfcInfoExchange_TestCasesTspOld {
                   * @remark  [16986:2016], Clause 7.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/2
                   */
                   
-                 // Initialisation 
+                 // Initialisation
+                  
+                 // Step 1: Send EFCCONTEXTDATA with:
+                 	// domainType = dsrcClosedContext 
+                 	// dsrcClosedContext with valid values and feeModifiers set to null
+                 	// closedSystem with tariffClassDefinition = {valid contents} and all other fields set to null
+                 // Step 2: Wait for positive Ack within DSRC.EFCCONTEXTDATA.TIME1
                 
                 } // End of TP_TSP_DSRC.EFCCONTEXTDATA_BV_03
 
@@ -1221,7 +1348,13 @@ module EfcInfoExchange_TestCasesTspOld {
                   * @remark  [16986:2016], Clause 7.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/2
                   */
                   
-                 // Initialisation 
+                 // Initialisation
+                  
+                 // Step 1: Send EFCCONTEXTDATA with:
+                 	// domainType = dsrcClosedContext 
+                 	// dsrcClosedContext with valid values and feeModifiers set to null
+                 	// closedSystem with localVehicleClassDefinition  = {valid contents} and all other fields set to null
+                 // Step 2: Wait for positive Ack within DSRC.EFCCONTEXTDATA.TIME1
                 
                 } // End of TP_TSP_DSRC.EFCCONTEXTDATA_BV_04
 
@@ -1233,6 +1366,12 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+
+                 // Step 1: Send EFCCONTEXTDATA with:
+                 	// domainType = dsrcClosedContext 
+                 	// dsrcClosedContext with valid values and feeModifiers set to null
+                 	// closedSystem with timeClassDefinition  = {valid contents} and all other fields set to null
+                 // Step 2: Wait for positive Ack within DSRC.EFCCONTEXTDATA.TIME1
                 
                 } // End of TP_TSP_DSRC.EFCCONTEXTDATA_BV_05
 
@@ -1244,7 +1383,13 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
-                
+
+                 // Step 1: Send EFCCONTEXTDATA with:
+                 	// domainType = dsrcClosedContext 
+                 	// dsrcClosedContext with valid values and feeModifiers set to null
+                 	// closedSystem with userClassDefinition  = {valid contents} and all other fields set to null
+                 // Step 2: Wait for positive Ack within DSRC.EFCCONTEXTDATA.TIME1
+                                
                 } // End of TP_TSP_DSRC.EFCCONTEXTDATA_BV_06
 
            testcase TP_TSP_DSRC.EFCCONTEXTDATA_BV_07() runs on IutComp system TestAdapter {
@@ -1255,6 +1400,12 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+
+                 // Step 1: Send EFCCONTEXTDATA with:
+                 	// domainType = dsrcClosedContext 
+                 	// dsrcClosedContext with valid values and feeModifiers set to null
+                 	// closedSystem with feeDefinition  = {valid contents} and all other fields set to null
+                 // Step 2: Wait for positive Ack within DSRC.EFCCONTEXTDATA.TIME1
                 
                 } // End of TP_TSP_DSRC.EFCCONTEXTDATA_BV_07
            
@@ -1270,6 +1421,11 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+                 // Step 1: Send EFCCONTEXTDATA with:
+                 	// domainType = dsrcContext 
+                 	// iso17573ADU containing only mandatory field with one invalid value
+                 	// feeModifiers set to null
+                 // Step 2: Wait for negative Ack within DSRC.EFCCONTEXTDATA.TIME1
                 
                 } // End of TP_TSP_DSRC.EFCCONTEXTDATA_BI_01
 
@@ -1281,6 +1437,13 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+
+                 // Step 1: Send EFCCONTEXTDATA with:
+                 	// domainType = dsrcContext 
+                 	// dsrcClosedContext containing invalid values
+                 	// feeModifiers set to null
+                 	// all other mandatory fields set to valid values
+                 // Step 2: Wait for negative Ack within DSRC.EFCCONTEXTDATA.TIME1
                 
                 } // End of TP_TSP_DSRC.EFCCONTEXTDATA_BI_02
 
@@ -1292,6 +1455,14 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+
+				// Start by setting test success
+				// Send one valid DSRC.EFCCONTEXTDATA
+				// Wait for positive Ack
+
+                // Step 1:
+                	// Send one valid DSRC.EFCCONTEXTDATA before TIME1
+              		// Wait for negative Ack (if positive Ack or not received set test failure)                	
                 
                 } // End of TP_TSP_DSRC.EFCCONTEXTDATA_BI_03
            		
@@ -1310,6 +1481,9 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+
+                 // Step 1: Send one valid APDU containing one valid BillingDetailsADU
+                 // Step 2: Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
                 
                 } // End of TP_TSP_DSRC.BILLINGDETAILS_BV_01
 
@@ -1321,6 +1495,9 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+
+                 // Step 1: Send one valid APDU containing 10 valid BillingDetailsADU with actionCode = SEND numbered from 3 to 12 
+                 // Step 2: Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
                 
                 } // End of TP_TSP_DSRC.BILLINGDETAILS_BV_02
 
@@ -1332,6 +1509,12 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+
+                 // Step 1: Send one valid APDU containing 10 valid BillingDetailsADU with actionCode = SEND numbered from 13 to 22 with:
+                 	// BillingDetailsADUs with numbers (13 .. 21) containing only mandatory fields
+                 	// BillingDetailsADU numbered 22 containing one valid optional field
+                 	
+                 // Step 2: Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
                 
                 } // End of TP_TSP_DSRC.BILLINGDETAILS_BV_03
 
@@ -1343,6 +1526,15 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+                 // Send one valid APDU containing one valid BillingDetailsADU numbered 1 with only mandatory field
+                 // Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
+
+                 // Step 1: Send one valid APDU containing one valid BillingDetailsADU with only mandatory fields and with
+                 	// actionCode = adjust
+                 	// billingDetailsNum = 1
+                 	// paymentFeeAmount = 45
+                 // Step 2: Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
+                 
                 
                 } // End of TP_TSP_DSRC.BILLINGDETAILS_BV_04
 
@@ -1354,6 +1546,14 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+
+                 // Send one valid APDU containing one valid BillingDetailsADU numbered 1 with only mandatory field
+                 // Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
+
+                 // Step 1: Send one valid APDU containing one valid BillingDetailsADU with only mandatory fields and with
+                 	// actionCode = revoke
+                 	// billingDetailsNum = 1
+                 // Step 2: Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
                 
                 } // End of TP_TSP_DSRC.BILLINGDETAILS_BV_05
            
@@ -1369,6 +1569,12 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+
+                 // Send one valid APDU containing one valid BillingDetailsADU numbered 13 with only mandatory field
+                 // Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
+
+                 // Step 1: Send one valid APDU containing one valid BillingDetailsADU numbered 14 with only mandatory fields before TIMEA_MIN expired
+                 // Step 2: Wait for negative Ack within DSRC.BILLINGDETAILS.TIME1 identifying the APDU containing the BillingDetailsADU numbered 14
                 
                 } // End of TP_TSP_DSRC.BILLINGDETAILS_BI_01
 
@@ -1379,7 +1585,16 @@ module EfcInfoExchange_TestCasesTspOld {
                   * @remark  [16986:2016], Clause 7.3.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/3
                   */
                   
-                 // Initialisation 
+                 // Initialisation
+                 //  Send one valid APDU containing one BillingDetailsADU numbered 3 with actionCode = SEND and only mandatory fields
+                 // Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
+
+                 // Step 1: Send one valid APDU containing 10  BillingDetailsADUs with actionCode = SEND numbered from 4 to 13, each one with the following parameters respectively set to one incorrect value:
+                 	// billingDetailsId.issuerId, tollContext, userId, billingDetailsAmount, usageDetails.contextName, usageDetails.appliedUserClass, usageDetails.perDeclaredVehicleClasses, usageDetails.appliedTimeClass, usageDetails.entranceTime, usageList.ListofSections.chargeObjectId
+                 	
+                 // Step 2: Wait for negative Ack within DSRC.BILLINGDETAILS.TIME1 with issue list present and the following issue codes:
+                 	// billingDetailsIssuerIdRejected, billingDetailsContextIdRejected, billingDetailsUserIdRejected, billingDetailsAmountRejected, billingDetailsContextNameRejected, billingDetailsAppliedUserClassRejected, billingDetailsDeclaredVehicleClassRejected, billingDetailsAppliedTimeClassRejected, billingDetailsEntranceTimeRejected, billingDetailsIntermediateSectionRejected
+                 	
                 
                 } // End of TP_TSP_DSRC.BILLINGDETAILS_BI_02
 
@@ -1391,6 +1606,14 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+
+                 //  Send one valid APDU containing one BillingDetailsADU numbered 3 with actionCode = SEND and only mandatory fields
+                 // Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
+
+                 // Step 1: Send one valid APDU containing one valid BillingDetailsADU numbered 14 with only mandatory fields before TIMEA_MIN expired with the following values:
+                 	// actionCode = adjust
+                 	// paymentFeeAmount = 45
+                 // Step 2: Wait for negative Ack within DSRC.BILLINGDETAILS.TIME1 identifying the APDU containing the BillingDetailsADU numbered 14 and with issueCode= semanticError 
                 
                 } // End of TP_TSP_DSRC.BILLINGDETAILS_BI_03
 
@@ -1402,6 +1625,13 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+                 //  Send one valid APDU containing one BillingDetailsADU numbered 3 with actionCode = SEND and only mandatory fields
+                 // Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
+
+                 // Step 1: Send one valid APDU containing one valid BillingDetailsADU numbered 14 with only mandatory fields before TIMEA_MIN expired with the following values:
+                 	// actionCode = revoke
+                 	// paymentFeeAmount = 45
+                 // Step 2: Wait for negative Ack within DSRC.BILLINGDETAILS.TIME1 identifying the APDU containing the BillingDetailsADU numbered 14 and with issueCode= semanticError 
                 
                 } // End of TP_TSP_DSRC.BILLINGDETAILS_BI_04
 
@@ -1413,6 +1643,14 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+
+				// Start by setting test success
+				// Send one valid DSRC.BILLINGDETAILS numbered 3
+				// Wait for positive Ack
+
+                // Step 1:
+                	// Send one valid DSRC.BILLINGDETAILS numbered 4  before TIME1
+              		// Wait for negative Ack with ADUReasonCode field = requestSentTooOften (if positive Ack or not received set test failure)                	
                 
                 } // End of TP_TSP_DSRC.BILLINGDETAILS_BI_05
 		
@@ -1431,6 +1669,10 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+
+                // Step 1:
+                	// Send one valid DSRC.REPORTABNORMALOBE
+              		// Wait for positive Ack (if negative Ack or not received set test failure)                	
                 
                 } // End of TP_TSP_DSRC.REPORTABNORMALOBE_BV_01
 
@@ -1447,6 +1689,10 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+
+                // Step 1:
+                	// Send one  DSRC.REPORTABNORMALOBE with userId field missing
+              		// Wait for negative Ack with issueCode = semanticError (if positive Ack or not received set test failure)                	
                 
                 } // End of TP_TSP_DSRC.REPORTABNORMALOBE_BI_01
 
@@ -1458,6 +1704,13 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+
+                // Step 1:
+                	// Send one  APDU containg 2 ReportAbnormalOBEADUs, first one with missing and second one with userID set to an invalid value
+              		// Wait for negative Ack with the following issues:
+              			// 1, invalidADU (0)
+              			// 2, abnormalObeUserIdRejected
+              			                	
                 
                 } // End of TP_TSP_DSRC.REPORTABNORMALOBE_BI_02
 
@@ -1469,6 +1722,10 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+
+                // Step 1:
+                	// Send one  DSRC.REPORTABNORMALOBE with dateAndTime field missing
+              		// Wait for negative Ack with issueCode = semanticError (if positive Ack or not received set test failure)                	
                 
                 } // End of TP_TSP_DSRC.REPORTABNORMALOBE_BI_03
 
@@ -1480,6 +1737,12 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+
+                // Step 1:
+                	// Send one  APDU containg 2 ReportAbnormalOBEADUs, first one with dateAndTime missing and second one with dateAndTime set to a future value
+              		// Wait for negative Ack with the following issues:
+              			// 1, invalidADU (0)
+              			// 2, abnormalObeDateAndTimeRejected
                 
                 } // End of TP_TSP_DSRC.REPORTABNORMALOBE_BI_04
 
@@ -1491,6 +1754,10 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+
+                // Step 1:
+                	// Send one  DSRC.REPORTABNORMALOBE with efcContextMark field missing
+              		// Wait for negative Ack with issueCode = semanticError (if positive Ack or not received set test failure)                	
                 
                 } // End of TP_TSP_DSRC.REPORTABNORMALOBE_BI_05
 
@@ -1502,6 +1769,12 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+
+                // Step 1:
+                	// Send one  APDU containg 2 ReportAbnormalOBEADUs, first one with efcContextMark missing and second one with efcContextMark set to an invalid value
+              		// Wait for negative Ack with the following issues:
+              			// 1, invalidADU (0)
+              			// 2, abnormalObeDateAndTimeRejected
                 
                 } // End of TP_TSP_DSRC.REPORTABNORMALOBE_BI_06
 
@@ -1513,6 +1786,10 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+
+                // Step 1:
+                	// Send one  DSRC.REPORTABNORMALOBE with efcContextMark and abnormalOBEReason fields missing
+              		// Wait for negative Ack with issueCode = semanticError (if positive Ack or not received set test failure)                	
                 
                 } // End of TP_TSP_DSRC.REPORTABNORMALOBE_BI_07
 
@@ -1524,6 +1801,12 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+
+                // Step 1:
+                	// Send one  APDU containg 2 ReportAbnormalOBEADUs, first one with abnormalOBEReason missing and second one with abnormalOBEReason set to an invalid value
+              		// Wait for negative Ack with the following issues:
+              			// 1, invalidADU (0)
+              			// 2, abnormalObeReasonCodeRejected
                 
                 } // End of TP_TSP_DSRC.REPORTABNORMALOBE_BI_08
 
@@ -1534,7 +1817,13 @@ module EfcInfoExchange_TestCasesTspOld {
                   * @remark  [16986:2016], Clause 7.4 and Table A.1/2 AND Table A.2/1 AND Table A.26/4
                   */
                   
-                 // Initialisation 
+                 // Initialisation
+                 // Send one  APDU containg one valid ReportAbnormalOBEADU
+              	 // Wait for positive Ack
+                // Step 1:
+                	// Send one one  APDU containg one valid ReportAbnormalOBEADU before TIMEA_MIN
+              		// Wait for negative Ack with ADUReasonCode = requestSentTooOften (if positive Ack or not received set test failure)                	
+                  
                 
                 } // End of TP_TSP_DSRC.REPORTABNORMALOBE_BI_09
 
@@ -1554,6 +1843,12 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+				// Step 1: Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send three valid TollDeclarationADUs with actionCode = send, revoke, and adjust, respectively
+				
+				//  Wait for GNSS.TOLLDECLARATION
+				
+					// Send Ack within time constraints
+					// Set test success
                 
                 } // End of TP_TSP_GNSS_TOLLDECLARATION_BV_01
            
@@ -1575,7 +1870,16 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
-                
+
+				// Step 1: Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with:
+					// actionCode = send
+					// includedDiscounts in usageList with textDetail field being set according to values specified in Table A.54 of CEN/TS 16986:2016
+				
+				//  Wait for GNSS.TOLLDECLARATION
+				
+					// Send Ack within time constraints
+					// Set test success
+                                
                 } // End of TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_01           
 
            testcase TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_02() runs on IutComp system TestAdapter {
@@ -1586,6 +1890,15 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+
+				// Step 1: Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with:
+					// actionCode = send
+					// areaDisplayName forTravellingInArea with textDetail field being a correct character string
+				
+				//  Wait for GNSS.TOLLDECLARATION
+				
+					// Send Ack within time constraints
+					// Set test success
                 
                 } // End of TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_02           
 
@@ -1597,6 +1910,15 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+
+				// Step 1: Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with:
+					// actionCode = send
+					// valid usageList qualifier field set to forCordonCrossing
+				
+				//  Wait for GNSS.TOLLDECLARATION
+				
+					// Send Ack within time constraints
+					// Set test success
                 
                 } // End of TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_03           
 
@@ -1608,7 +1930,16 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
-                
+
+				// Step 1: Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with:
+					// actionCode = send
+					// valid usageList entranceChargeObjectName field set to forCordonCrossing
+				
+				//  Wait for GNSS.TOLLDECLARATION
+				
+					// Send Ack within time constraints
+					// Set test success
+                                
                 } // End of TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_04           
 
            testcase TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_05() runs on IutComp system TestAdapter {
@@ -1619,7 +1950,17 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
-                
+
+				// Step 1: Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one APDU containing 10 valid TollDeclarationADUs with:
+					// actionCode = send
+					// only mandatory fields present with valid values
+					// billingDetailsNum field values ranging from 3 to 12
+				
+				//  Wait for GNSS.TOLLDECLARATION
+				
+					// Send Ack within time constraints
+					// Set test success
+                                                
                 } // End of TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_05           
 
            testcase TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_06() runs on IutComp system TestAdapter {
@@ -1630,6 +1971,17 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+
+				// Step 1: Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one APDU containing one valid TollDeclarationADU with:
+					// actionCode = adjust
+					// only mandatory fields present with valid values
+					// paymentFeeAmount field value = 45
+					// billingDetailsNum field value = 1
+				
+				//  Wait for GNSS.TOLLDECLARATION
+				
+					// Send Ack within time constraints
+					// Set test success
                 
                 } // End of TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_06           
 
@@ -1641,6 +1993,16 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+
+				// Step 1: Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one APDU containing one valid TollDeclarationADU with:
+					// actionCode = revoke
+					// only mandatory fields present with valid values
+					// billingDetailsNum field value = 1
+				
+				//  Wait for GNSS.TOLLDECLARATION
+				
+					// Send Ack within time constraints
+					// Set test success
                 
                 } // End of TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_07           
 
@@ -1664,7 +2026,17 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
-                
+					// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
+					//  Wait for GNSS.TOLLDECLARATION
+					// Send Ack within time constraints
+					// PT140: TODO TSS&TP says one BillingDetails transaction to be executed before the test. Why?
+				
+                 // Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
+                 	// action code = send
+                 	// includedDiscounts in usageList with textDetail field being set according to values specified in Table A.54 of CEN/TS 16986:2016
+                 // Step 2: Wait for positive Ack within TSP_GNSS_BILLINGDETAILS.TIME1
+				
+					// Set test success                
                 } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BV_01           
 
            testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BV_02() runs on IutComp system TestAdapter {
@@ -1675,6 +2047,17 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+					// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
+					//  Wait for GNSS.TOLLDECLARATION
+					// Send Ack within time constraints
+					// PT140: TODO TSS&TP says one BillingDetails transaction to be executed before the test. Why?
+				
+                 // Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
+                 	// action code = send
+                 	// areaDisplayName in forTravellingInArea with textDetail field being a correct character string
+                 // Step 2: Wait for positive Ack within TSP_GNSS_BILLINGDETAILS.TIME1
+				
+					// Set test success                
                 
                 } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BV_02           
 
@@ -1686,6 +2069,18 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+					// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
+					//  Wait for GNSS.TOLLDECLARATION
+					// Send Ack within time constraints
+					// PT140: TODO TSS&TP says one BillingDetails transaction to be executed before the test. Why?
+				
+                 // Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
+                 	// action code = send
+                 	// value of qualifier in forCordonCrossing being correct according to EN ISO 12855 Clause 6.12
+                 	// value of entranceChargeObjectName in forCordonCrossing being a correct UTF8String
+                 // Step 2: Wait for positive Ack within TSP_GNSS_BILLINGDETAILS.TIME1
+				
+					// Set test success                
                 
                 } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BV_03           
 
@@ -1697,6 +2092,17 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+					// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
+					//  Wait for GNSS.TOLLDECLARATION
+					// Send Ack within time constraints
+					// PT140: TODO TSS&TP says one BillingDetails transaction to be executed before the test. Why?
+				
+                 // Step 1: Send one valid APDU containing 10 valid BillingDetailsADUs with:
+                 	// action code = send
+                 	// value of billingDetailsNum ranging from 3 to 12
+                 // Step 2: Wait for positive Ack within TSP_GNSS_BILLINGDETAILS.TIME1
+				
+					// Set test success                
                 
                 } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BV_04           
 
@@ -1708,6 +2114,22 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+					// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
+					//  Wait for GNSS.TOLLDECLARATION
+					// Send Ack within time constraints
+					// Send one valid APDU containing one valid BillingDetailsADU with:
+                 		// action code = send
+                  		// value of billingDetailsNum = 1
+					//  Wait Ack within time constraints
+                 		
+				
+                 // Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
+                 	// action code = adjust 
+                 	// billingDetailsNum = 1
+                 	// paymentFeeAmount = 45
+                 // Step 2: Wait for positive Ack within TSP_GNSS_BILLINGDETAILS.TIME1
+				
+					// Set test success                
                 
                 } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BV_05           
 
@@ -1719,6 +2141,21 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+					// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
+					//  Wait for GNSS.TOLLDECLARATION
+					// Send Ack within time constraints
+					// Send one valid APDU containing one valid BillingDetailsADU with:
+                 		// action code = send
+                  		// value of billingDetailsNum = 1
+					//  Wait Ack within time constraints
+                 		
+				
+                 // Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
+                 	// action code = revoke 
+                 	// billingDetailsNum = 1
+                 // Step 2: Wait for positive Ack within TSP_GNSS_BILLINGDETAILS.TIME1
+				
+					// Set test success                
                 
                 } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BV_06                    
  		} // End of group Valid_Behaviour
@@ -1733,6 +2170,17 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+					// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
+					//  Wait for GNSS.TOLLDECLARATION
+					// Send Ack within time constraints
+					// PT140: TODO TSS&TP says one BillingDetails transaction to be executed before the test. Why?
+				
+                 // Step 1: Send one valid APDU containing 13 valid BillingDetailsADUs, each one with the following parameters respectively set to one incorrect value:
+                 	// billingDetailsId.issuerId, tollContext, userId, Period, billingDetailsAmount, usageDetails.contextName, usageDetails.appliedUserClass, usageDetails.perDeclaredVehicleClasses, usageDetails.appliedTimeClass, usageDetails.entranceTime, usageList.ListofSections.chargeObjectId, exitChargeObject, exitTime
+
+                 	
+                 // Step 2: Wait for negative Ack within DSRC.BILLINGDETAILS.TIME1 with issue list present and the following issue codes:
+                 	// billingDetailsIssuerIdRejected, billingDetailsContextIdRejected, billingDetailsUserIdRejected, billingDetailsPeriodRejected, billingDetailsAmountRejected, billingDetailsContextNameRejected, billingDetailsAppliedUserClassRejected, billingDetailsDeclaredVehicleClassRejected, billingDetailsAppliedTimeClassRejected, billingDetailsEntranceTimeRejected, billingDetailsIntermediateSectionRejected, billingDetailsExitChargeObjectRejected, billingDetailsExitTimeRejected
                 
                 } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BI_01           
 
@@ -1744,6 +2192,19 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+					// PT140: TODO TSS&TP does not require GNSS.TOLLDECLARATION
+					// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
+					//  Wait for GNSS.TOLLDECLARATION
+					// Send Ack within time constraints
+					// Send one valid APDU containing one valid BillingDetailsADU with:
+                 		// action code = send
+                  		// value of billingDetailsNum = 13
+					//  Wait Ack within time constraints
+
+                 // Step 1: Send one valid APDU before TIMEA_MIN containing one valid BillingDetailsADU with:
+                 	// action code = send 
+                 	// billingDetailsNum = 14
+                 // Step 2: Wait for NAck_requestSentTooOften within TSP_GNSS_BILLINGDETAILS.TIME1
                 
                 } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BI_02           
 
@@ -1755,6 +2216,20 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+
+					// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
+					//  Wait for GNSS.TOLLDECLARATION
+					// Send Ack within time constraints
+					// Send one valid APDU containing one valid BillingDetailsADU with:
+                 		// action code = send
+                  		// value of billingDetailsNum = 13
+					//  Wait Ack within time constraints
+
+                 // Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
+                 	// action code = adjust 
+                 	// billingDetailsNum = 14
+                 	// paymentFeeAmount = 45
+                 // Step 2: Wait for NAck with issueCode = actionCodeNotSupported within TSP_GNSS_BILLINGDETAILS.TIME1
                 
                 } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BI_03           
 
@@ -1766,11 +2241,25 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+
+					// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
+					//  Wait for GNSS.TOLLDECLARATION
+					// Send Ack within time constraints
+					// Send one valid APDU containing one valid BillingDetailsADU with:
+                 		// action code = send
+                  		// value of billingDetailsNum = 13
+					//  Wait Ack within time constraints
+
+                 // Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
+                 	// action code = revoke 
+                 	// billingDetailsNum = 14
+                 	// paymentFeeAmount = 45
+                 // Step 2: Wait for NAck with issueCode = actionCodeNotSupported within TSP_GNSS_BILLINGDETAILS.TIME1
                 
                 } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BI_04           
 
            testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BI_05() runs on IutComp system TestAdapter {
-             
+// PT140: TODO seems the same as TP_TSP_GNSS.BILLINGDETAILS.TC_BI_02             
                   /**
                   * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BI_05: Verify that the TSP correctly responds to a BillingDetailsADU sent earlier than allowed 
                   * @remark  [16986:2016], Clause 8.2.3 AND 8.2.4 and Table A.1/2 AND Table A.2/2 AND Table A.52/2
@@ -1790,24 +2279,38 @@ module EfcInfoExchange_TestCasesTspOld {
            testcase TP_TSP_GNSS_PAYMENTANNOUNCEMENT_BV_01() runs on IutComp system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BV_01: Verify that the TSP correctly performs the GNSS.PAYMENTANNOUNCEMENT transaction with actionCode=send 
+                  * @desc    TP_TSP_GNSS_PAYMENTANNOUNCEMENT_BV_01: Verify that the TSP correctly performs the GNSS.PAYMENTANNOUNCEMENT transaction with actionCode=send 
                   * @remark  [16986:2016], Clause 6.8 and Table A.1/2 AND Table A.2/2 AND Table A.52/4 
                   */
                   
                  // Initialisation 
+
+					// Start by setting test success
+					// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
+					// Wait for TollDeclarationADU
+					// Send one positive Ack within allowed time constraints
+	                // Send one correct BillingDetailsADU related to the received Toll Declaration within allowed timeconstraints
+	                // Wait for positive Ack
+					// Send one PAYMENTCLAIM related to the sent BILLINGDETAILS within allowed time constraints
+					// Wait for positive Ack
+					
+				// Step 1: Trigger IUT with GNSS.PAYMENTANNOUNCEMENT.TR_TC_TSP_1 to send one valid PaymentAnnouncementADU with actionCode = send
+					// Wait for PaymentAnnouncementADU within allowed time constraints
+					// Send positive Ack within time constraints
+					// Set test success
                 
-                } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BV_01                    
+                } // End of TP_TSP_GNSS_PAYMENTANNOUNCEMENT_BV_01                    
 
            testcase TP_TSP_GNSS_PAYMENTANNOUNCEMENT_BV_02() runs on IutComp system TestAdapter {
-             
+ // PT140: TODO TSS&TP text to be corrected            
                   /**
-                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BV_02: Verify that the TSP correctly performs the GNSS.PAYMENTANNOUCEMENT transaction with actionCode=revoke and adjust 
+                  * @desc    TP_TSP_GNSS_PAYMENTANNOUNCEMENT_BV_02: Verify that the TSP correctly performs the GNSS.PAYMENTANNOUCEMENT transaction with actionCode=revoke and adjust 
                   * @remark  [16986:2016], Clause 6.8 and Table A.1/2 AND Table A.2/2 AND Table A.52/4 
                   */
                   
                  // Initialisation 
                 
-                } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BV_02                    
+                } // End of TP_TSP_GNSS_PAYMENTANNOUNCEMENT_BV_02                    
 
  		} // End of group Valid_Behaviour
          
