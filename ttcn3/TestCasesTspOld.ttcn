@@ -971,7 +971,7 @@ module EfcInfoExchange_TestCasesTspOld {
 							// Log what we received
 							f_logApduReceivedAndTStep();					
 							}
-					
+							
 						// Send Ack within time constraints
 						f_wait(EXCEPTIONLIST_TIME1_TC);
 						f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
