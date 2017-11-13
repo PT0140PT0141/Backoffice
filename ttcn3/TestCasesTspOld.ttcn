@@ -25,7 +25,6 @@ module EfcInfoExchange_TestCasesTspOld {
     import from EfcInfoExchange_Ics all;
     import from EfcInfoExchange_Templates all;
     
-	
     /**
      /**
       * @desc    These Test Cases apply to Toll Service Provider claiming conformance to [16986:2016] and applying Test Purposes as from TS xxxxx:2018 Annex B
