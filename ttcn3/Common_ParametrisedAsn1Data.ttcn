@@ -16,9 +16,8 @@ module Common_ParametrisedAsn1Data language "TTCN-3:2010 Advanced Parameterizati
     import from EfcCcc language "ASN.1:1997" all;
 	import from AVIAEINumberingAndDataStructures language "ASN.1:1997" all;
 
-// EfcLac
+// Parametrisations of module EfcLac
 
-//PT140: Replaced PT141 definition with one truer to the ASN.1 
 //LAC-T-APDUs ::= CHOICE {
 //    action-request          [0] Action-Request{LacContainer},
 //    action-response         [1] Action-Response{LacContainer},
@@ -31,20 +30,19 @@ module Common_ParametrisedAsn1Data language "TTCN-3:2010 Advanced Parameterizati
 //    initialisation-request  [8] Initialisation-Request,
 //    initialisation-response [9] Initialisation-Response
 //}
-    type union LAC_T_APDUs<in type Container> {
-		Action_Request<Container>       action_request,
-		Action_Response<Container>      action_response,
-		Event_Report_Request<Container> event_report_request,
+    type union LAC_T_APDUs {
+		Action_Request<LacContainer>       action_request,
+		Action_Response<LacContainer>      action_response,
+		Event_Report_Request<LacContainer> event_report_request,
 		Event_Report_Response           event_report_response,
-		Set_Request<Container>          set_request,
+		Set_Request<LacContainer>          set_request,
 		Set_Response                    set_response,
-		anytype 				reserved4,
-		anytype 				reserved5,
+		ASNAUX.TYPENULL 				reserved4,
+		ASNAUX.TYPENULL 				reserved5,
 		Initialisation_Request          initialisation_request,
 		Initialisation_Response         initialisation_response
     }
 
-//	PT140: Replaced PT141 definition with defintion truer to the ASN1.   
 //LacContainer ::= CHOICE {
 //    integer                         [0]     INTEGER,
 //    reserved1                       [1]     NULL,
@@ -172,124 +170,124 @@ module Common_ParametrisedAsn1Data language "TTCN-3:2010 Advanced Parameterizati
 //    reservedForFutureISOCENuse112   [112]   NULL,
 //    ...
 //}
-  type union LacContainer<in type Container> {
+  type union LacContainer {
 	integer integer_,
-	anytype reserved1,
+	ASNAUX.TYPENULL reserved1,
 	octetstring octetstring_ length (0 .. 127,?),
 	universal charstring universalString,
 	EfcDsrcGeneric.BeaconID beaconId,
-    LAC_T_APDUs<Container> t_apdu,
+    LAC_T_APDUs t_apdu,
 	EfcDsrcGeneric.DSRCApplicationEntityID dsrcApplicationEntityId,
 	EfcDsrcGeneric.Dsrc_EID dsrc_Ase_Id,
 	EfcDsrcGeneric.AttributeIdList attrIdList,
-    AttributeList<Container> attrList,
-	anytype reserved10,
-	anytype reserved11,
-	anytype reserved12,
-	anytype reserved13,
-	anytype reserved14,
+    AttributeList<LacContainer> attrList,
+	ASNAUX.TYPENULL reserved10,
+	ASNAUX.TYPENULL reserved11,
+	ASNAUX.TYPENULL reserved12,
+	ASNAUX.TYPENULL reserved13,
+	ASNAUX.TYPENULL reserved14,
 	EfcDsrcGeneric.Time time,
 	record length (0 .. 255) of integer vector,
-	anytype reserved17,
-	anytype reserved18,
-	anytype reserved19,
-	anytype reserved20,
-	anytype reserved21,
-	anytype reserved22,
-	anytype reserved23,
-	anytype reserved24,
-	anytype reserved25,
-	anytype reserved26,
-	anytype reserved27,
-	anytype reserved28,
-	anytype reserved29,
-	anytype reserved30,
-	anytype reserved31,
-	anytype reserved32,
-	anytype reserved33,
-	anytype reserved34,
-	anytype reserved35,
-	anytype reserved36,
-	anytype reserved37,
-	anytype reserved38,
-	anytype reserved39,
-	anytype reserved40,
-	anytype reserved41,
-	anytype reserved42,
-	anytype reserved43,
-	anytype reserved44,
-	anytype reserved45,
-	anytype reserved46,
-	anytype reserved47,
-	anytype reserved48,
-	anytype reserved49,
-	anytype reserved50,
-	anytype reserved51,
-	anytype reserved52,
-	anytype reserved53,
-	anytype reserved54,
-	anytype reserved55,
-	anytype reserved56,
-	anytype reserved57,
-	anytype reserved58,
-	anytype reserved59,
-	anytype reserved60,
-	anytype reserved61,
-	anytype reserved62,
-	anytype reserved63,
-	anytype reserved64,
-	anytype reserved65,
-	anytype reserved66,
-	anytype reserved67,
-	anytype reserved68,
-	anytype reserved69,
-	anytype reserved70,
-	anytype reserved71,
-	anytype reserved72,
-	anytype reserved73,
-	anytype reserved74,
-	anytype reserved75,
-	anytype reserved76,
-	anytype reserved77,
-	anytype reserved78,
-	anytype reserved79,
-	anytype reservedForFutureISOCENuse80,
-	anytype reservedForFutureISOCENuse81,
-	anytype reservedForFutureISOCENuse82,
-	anytype reservedForFutureISOCENuse83,
-	anytype reservedForFutureISOCENuse84,
-	anytype reservedForFutureISOCENuse85,
-	anytype reservedForFutureISOCENuse86,
+	ASNAUX.TYPENULL reserved17,
+	ASNAUX.TYPENULL reserved18,
+	ASNAUX.TYPENULL reserved19,
+	ASNAUX.TYPENULL reserved20,
+	ASNAUX.TYPENULL reserved21,
+	ASNAUX.TYPENULL reserved22,
+	ASNAUX.TYPENULL reserved23,
+	ASNAUX.TYPENULL reserved24,
+	ASNAUX.TYPENULL reserved25,
+	ASNAUX.TYPENULL reserved26,
+	ASNAUX.TYPENULL reserved27,
+	ASNAUX.TYPENULL reserved28,
+	ASNAUX.TYPENULL reserved29,
+	ASNAUX.TYPENULL reserved30,
+	ASNAUX.TYPENULL reserved31,
+	ASNAUX.TYPENULL reserved32,
+	ASNAUX.TYPENULL reserved33,
+	ASNAUX.TYPENULL reserved34,
+	ASNAUX.TYPENULL reserved35,
+	ASNAUX.TYPENULL reserved36,
+	ASNAUX.TYPENULL reserved37,
+	ASNAUX.TYPENULL reserved38,
+	ASNAUX.TYPENULL reserved39,
+	ASNAUX.TYPENULL reserved40,
+	ASNAUX.TYPENULL reserved41,
+	ASNAUX.TYPENULL reserved42,
+	ASNAUX.TYPENULL reserved43,
+	ASNAUX.TYPENULL reserved44,
+	ASNAUX.TYPENULL reserved45,
+	ASNAUX.TYPENULL reserved46,
+	ASNAUX.TYPENULL reserved47,
+	ASNAUX.TYPENULL reserved48,
+	ASNAUX.TYPENULL reserved49,
+	ASNAUX.TYPENULL reserved50,
+	ASNAUX.TYPENULL reserved51,
+	ASNAUX.TYPENULL reserved52,
+	ASNAUX.TYPENULL reserved53,
+	ASNAUX.TYPENULL reserved54,
+	ASNAUX.TYPENULL reserved55,
+	ASNAUX.TYPENULL reserved56,
+	ASNAUX.TYPENULL reserved57,
+	ASNAUX.TYPENULL reserved58,
+	ASNAUX.TYPENULL reserved59,
+	ASNAUX.TYPENULL reserved60,
+	ASNAUX.TYPENULL reserved61,
+	ASNAUX.TYPENULL reserved62,
+	ASNAUX.TYPENULL reserved63,
+	ASNAUX.TYPENULL reserved64,
+	ASNAUX.TYPENULL reserved65,
+	ASNAUX.TYPENULL reserved66,
+	ASNAUX.TYPENULL reserved67,
+	ASNAUX.TYPENULL reserved68,
+	ASNAUX.TYPENULL reserved69,
+	ASNAUX.TYPENULL reserved70,
+	ASNAUX.TYPENULL reserved71,
+	ASNAUX.TYPENULL reserved72,
+	ASNAUX.TYPENULL reserved73,
+	ASNAUX.TYPENULL reserved74,
+	ASNAUX.TYPENULL reserved75,
+	ASNAUX.TYPENULL reserved76,
+	ASNAUX.TYPENULL reserved77,
+	ASNAUX.TYPENULL reserved78,
+	ASNAUX.TYPENULL reserved79,
+	ASNAUX.TYPENULL reservedForFutureISOCENuse80,
+	ASNAUX.TYPENULL reservedForFutureISOCENuse81,
+	ASNAUX.TYPENULL reservedForFutureISOCENuse82,
+	ASNAUX.TYPENULL reservedForFutureISOCENuse83,
+	ASNAUX.TYPENULL reservedForFutureISOCENuse84,
+	ASNAUX.TYPENULL reservedForFutureISOCENuse85,
+	ASNAUX.TYPENULL reservedForFutureISOCENuse86,
 	LACData contLAC,
-	anytype reservedForFutureISOCENuse88,
-	anytype reservedForFutureISOCENuse89,
-	anytype reservedForFutureISOCENuse90,
-	anytype reservedForFutureISOCENuse91,
-	anytype reservedForFutureISOCENuse92,
-	anytype reservedForFutureISOCENuse93,
-	anytype reservedForFutureISOCENuse94,
-	anytype reservedForFutureISOCENuse95,
-	anytype reservedForFutureISOCENuse96,
-	anytype reservedForFutureISOCENuse97,
-	anytype reservedForFutureISOCENuse98,
-	anytype reservedForFutureISOCENuse99,
-	anytype reservedForFutureISOCENuse100,
-	anytype reservedForFutureISOCENuse101,
-	anytype reservedForFutureISOCENuse102,
-	anytype reservedForFutureISOCENuse103,
-	anytype reservedForFutureISOCENuse104,
-	anytype reservedForFutureISOCENuse105,
-	anytype reservedForFutureISOCENuse106,
-	anytype reservedForFutureISOCENuse107,
-	anytype reservedForFutureISOCENuse108,
-	anytype reservedForFutureISOCENuse109,
-	anytype reservedForFutureISOCENuse110,
-	anytype reservedForFutureISOCENuse111,
-	anytype reservedForFutureISOCENuse112
+	ASNAUX.TYPENULL reservedForFutureISOCENuse88,
+	ASNAUX.TYPENULL reservedForFutureISOCENuse89,
+	ASNAUX.TYPENULL reservedForFutureISOCENuse90,
+	ASNAUX.TYPENULL reservedForFutureISOCENuse91,
+	ASNAUX.TYPENULL reservedForFutureISOCENuse92,
+	ASNAUX.TYPENULL reservedForFutureISOCENuse93,
+	ASNAUX.TYPENULL reservedForFutureISOCENuse94,
+	ASNAUX.TYPENULL reservedForFutureISOCENuse95,
+	ASNAUX.TYPENULL reservedForFutureISOCENuse96,
+	ASNAUX.TYPENULL reservedForFutureISOCENuse97,
+	ASNAUX.TYPENULL reservedForFutureISOCENuse98,
+	ASNAUX.TYPENULL reservedForFutureISOCENuse99,
+	ASNAUX.TYPENULL reservedForFutureISOCENuse100,
+	ASNAUX.TYPENULL reservedForFutureISOCENuse101,
+	ASNAUX.TYPENULL reservedForFutureISOCENuse102,
+	ASNAUX.TYPENULL reservedForFutureISOCENuse103,
+	ASNAUX.TYPENULL reservedForFutureISOCENuse104,
+	ASNAUX.TYPENULL reservedForFutureISOCENuse105,
+	ASNAUX.TYPENULL reservedForFutureISOCENuse106,
+	ASNAUX.TYPENULL reservedForFutureISOCENuse107,
+	ASNAUX.TYPENULL reservedForFutureISOCENuse108,
+	ASNAUX.TYPENULL reservedForFutureISOCENuse109,
+	ASNAUX.TYPENULL reservedForFutureISOCENuse110,
+	ASNAUX.TYPENULL reservedForFutureISOCENuse111,
+	ASNAUX.TYPENULL reservedForFutureISOCENuse112
   }
   
-// EfcCcc
-//PT140: Replaced PT141 definition with defintion truer to the ASN1. There should be no parameter for the CCC_T_APDUs 
+// Parametrisations of module EfcCcc
+
 //CCC-T-APDUs ::= CHOICE {
 //    action-request          [0] Action-Request{CccContainer},
 //    action-response         [1] Action-Response{CccContainer},
@@ -307,14 +305,13 @@ module Common_ParametrisedAsn1Data language "TTCN-3:2010 Advanced Parameterizati
         Action_Response<CccContainer>      action_response,
         Event_Report_Request<CccContainer> event_report_request,
         Event_Report_Response 		       event_report_response,
-		anytype		 			reserved4,
-		anytype 				reserved5,
+		ASNAUX.TYPENULL		 			reserved4,
+		ASNAUX.TYPENULL 				reserved5,
 	    Get_Request                     get_request,
         Get_Response<CccContainer>      get_response,
         Initialisation_Request          initialisation_request,
         Initialisation_Response         initialisation_response
     }
-
 
 //CccContainer ::= CHOICE {
 //    integer                         [0]     INTEGER,
@@ -444,10 +441,9 @@ module Common_ParametrisedAsn1Data language "TTCN-3:2010 Advanced Parameterizati
 //    ...
 //    }
 
-//	PT140: Replaced PT141 definition with defintion truer to the ASN1. 
 	type union CccContainer {
 	  integer integer_,
-	  anytype reserved1,
+	  ASNAUX.TYPENULL reserved1,
 	  octetstring octetstring_ length (0 .. 127,? ),
 	  universal charstring universalString,
 	  EfcDsrcGeneric.BeaconID beaconId,
@@ -456,110 +452,111 @@ module Common_ParametrisedAsn1Data language "TTCN-3:2010 Advanced Parameterizati
 	  EfcDsrcGeneric.Dsrc_EID dsrc_Ase_Id,
 	  EfcDsrcGeneric.AttributeIdList attrIdList,
 	  AttributeList<CccContainer> attrList,     
-	  anytype reserved10,
-	  anytype reserved11,
-	  anytype reserved12,
-	  anytype reserved13,
-	  anytype reserved14,
+	  ASNAUX.TYPENULL reserved10,
+	  ASNAUX.TYPENULL reserved11,
+	  ASNAUX.TYPENULL reserved12,
+	  ASNAUX.TYPENULL reserved13,
+	  ASNAUX.TYPENULL reserved14,
 	  EfcDsrcGeneric.Time time,
-	  anytype reserved16,
+	  ASNAUX.TYPENULL reserved16,
 	  GetStampedRq gstrq,
 	  GetStampedRs<CccContainer> gstrs,  
-	  anytype reserved19,
-	  anytype reserved20,
-	  anytype reserved21,
-	  anytype reserved22,
-	  anytype reserved23,
-	  anytype reserved24,
-	  anytype reserved25,
-	  anytype reserved26,
-	  anytype reserved27,
-	  anytype reserved28,
-	  anytype reserved29,
-	  anytype reserved30,
-	  anytype reserved31,
+	  ASNAUX.TYPENULL reserved19,
+	  ASNAUX.TYPENULL reserved20,
+	  ASNAUX.TYPENULL reserved21,
+	  ASNAUX.TYPENULL reserved22,
+	  ASNAUX.TYPENULL reserved23,
+	  ASNAUX.TYPENULL reserved24,
+	  ASNAUX.TYPENULL reserved25,
+	  ASNAUX.TYPENULL reserved26,
+	  ASNAUX.TYPENULL reserved27,
+	  ASNAUX.TYPENULL reserved28,
+	  ASNAUX.TYPENULL reserved29,
+	  ASNAUX.TYPENULL reserved30,
+	  ASNAUX.TYPENULL reserved31,
 	  EfcDsrcApplication.EFC_ContextMark efccontext,
-	  anytype reserved33,
-	  anytype reserved34,
-	  anytype reserved35,
-	  anytype reserved36,
-	  anytype reserved37,
-	  anytype reserved38,
-	  anytype reserved39,
-	  anytype reserved40,
-	  anytype reserved41,
-	  anytype reserved42,
-	  anytype reserved43,
-	  anytype reserved44,
-	  anytype reserved45,
-	  anytype reserved46,
+	  ASNAUX.TYPENULL reserved33,
+	  ASNAUX.TYPENULL reserved34,
+	  ASNAUX.TYPENULL reserved35,
+	  ASNAUX.TYPENULL reserved36,
+	  ASNAUX.TYPENULL reserved37,
+	  ASNAUX.TYPENULL reserved38,
+	  ASNAUX.TYPENULL reserved39,
+	  ASNAUX.TYPENULL reserved40,
+	  ASNAUX.TYPENULL reserved41,
+	  ASNAUX.TYPENULL reserved42,
+	  ASNAUX.TYPENULL reserved43,
+	  ASNAUX.TYPENULL reserved44,
+	  ASNAUX.TYPENULL reserved45,
+	  ASNAUX.TYPENULL reserved46,
 	  EfcDsrcApplication.LPN vehlpn,
-	  anytype reserved48,
+	  ASNAUX.TYPENULL reserved48,
 	  VehicleClass vehclass,
       VehicleDimensions vehdims,
 	  EfcDsrcApplication.VehicleAxles vehaxles,
       VehicleWeightLimits vehwtlims,
-	  anytype reserved53,
+	  ASNAUX.TYPENULL reserved53,
 	  EfcDsrcApplication.VehicleSpecificCharacteristics vehspchars,
-	  anytype reserved55,
+	  ASNAUX.TYPENULL reserved55,
 	  EfcDsrcApplication.EquipmentOBUId equOBUId,
-	  anytype reserved57,
-	  anytype reserved58,
-	  anytype reserved59,
-	  anytype reserved60,
-	  anytype reserved61,
-	  anytype reserved62,
-	  anytype reserved63,
+	  ASNAUX.TYPENULL reserved57,
+	  ASNAUX.TYPENULL reserved58,
+	  ASNAUX.TYPENULL reserved59,
+	  ASNAUX.TYPENULL reserved60,
+	  ASNAUX.TYPENULL reserved61,
+	  ASNAUX.TYPENULL reserved62,
+	  ASNAUX.TYPENULL reserved63,
 	  EfcDsrcApplication.PaymentMeans paymeans,
-	  anytype reserved65,
-	  anytype reserved66,
-	  anytype reserved67,
-	  anytype reserved68,
-	  anytype reserved70,
-	  anytype reserved71,
-	  anytype reserved72,
-	  anytype reserved73,
-	  anytype reserved74,
-	  anytype reserved75,
-	  anytype reserved76,
-	  anytype reserved77,
-	  anytype reserved78,
+	  ASNAUX.TYPENULL reserved65,
+	  ASNAUX.TYPENULL reserved66,
+	  ASNAUX.TYPENULL reserved67,
+	  ASNAUX.TYPENULL reserved68,
+	  ASNAUX.TYPENULL reserved70,
+	  ASNAUX.TYPENULL reserved71,
+	  ASNAUX.TYPENULL reserved72,
+	  ASNAUX.TYPENULL reserved73,
+	  ASNAUX.TYPENULL reserved74,
+	  ASNAUX.TYPENULL reserved75,
+	  ASNAUX.TYPENULL reserved76,
+	  ASNAUX.TYPENULL reserved77,
+	  ASNAUX.TYPENULL reserved78,
 	  TrailerCharacteristics tch,	  
-	  anytype reserved80,
+	  ASNAUX.TYPENULL reserved80,
 	  VehicleAxlesHistory vehicleAxlesHistory,
 	  CommunicationStatus communicationStatus,
 	  GnssStatus gnssStatus,
 	  DistanceRecordingStatus distanceRecordingStatus,
 	  ActiveContexts activeContexts,
 	  OBEStatusHistory oBEStatusHistory,
-	  anytype reservedForFutureISOCENuse87,
-	  anytype reservedForFutureISOCENuse88,
-	  anytype reservedForFutureISOCENuse89,
-	  anytype reservedForFutureISOCENuse90,
-	  anytype reservedForFutureISOCENuse91,
-	  anytype reservedForFutureISOCENuse92,
+	  ASNAUX.TYPENULL reservedForFutureISOCENuse87,
+	  ASNAUX.TYPENULL reservedForFutureISOCENuse88,
+	  ASNAUX.TYPENULL reservedForFutureISOCENuse89,
+	  ASNAUX.TYPENULL reservedForFutureISOCENuse90,
+	  ASNAUX.TYPENULL reservedForFutureISOCENuse91,
+	  ASNAUX.TYPENULL reservedForFutureISOCENuse92,
 	  VehicleWeightHistory vehicleWeightHistory,
 	  ExtendedOBEStatusHistory extendedOBEStatusHistory,
 	  ExtendedVehicleAxlesHistory extendedVehicleAxlesHistory,
 	  EfcAutonomousContextData.LocalVehicleClassId localVehicleClassId,
 	  EfcDsrcApplication.VehicleCurrentMaxTrainWeight vehicleCurrentMaxTrainWeight,
 	  AttributeUpdateInterval attributeUpdateInterval,
-	  anytype reservedForFutureISOCENuse99,
-	  anytype reservedForFutureISOCENuse100,
-	  anytype reservedForFutureISOCENuse101,
-	  anytype reservedForFutureISOCENuse102,
-	  anytype reservedForFutureISOCENuse103,
-	  anytype reservedForFutureISOCENuse104,
-	  anytype reservedForFutureISOCENuse105,
-	  anytype reservedForFutureISOCENuse106,
-	  anytype reservedForFutureISOCENuse107,
-	  anytype reservedForFutureISOCENuse108,
-	  anytype reservedForFutureISOCENuse109,
-	  anytype reservedForFutureISOCENuse110,
-	  anytype reservedForFutureISOCENuse111,
-	  anytype reservedForFutureISOCENuse112
+	  ASNAUX.TYPENULL reservedForFutureISOCENuse99,
+	  ASNAUX.TYPENULL reservedForFutureISOCENuse100,
+	  ASNAUX.TYPENULL reservedForFutureISOCENuse101,
+	  ASNAUX.TYPENULL reservedForFutureISOCENuse102,
+	  ASNAUX.TYPENULL reservedForFutureISOCENuse103,
+	  ASNAUX.TYPENULL reservedForFutureISOCENuse104,
+	  ASNAUX.TYPENULL reservedForFutureISOCENuse105,
+	  ASNAUX.TYPENULL reservedForFutureISOCENuse106,
+	  ASNAUX.TYPENULL reservedForFutureISOCENuse107,
+	  ASNAUX.TYPENULL reservedForFutureISOCENuse108,
+	  ASNAUX.TYPENULL reservedForFutureISOCENuse109,
+	  ASNAUX.TYPENULL reservedForFutureISOCENuse110,
+	  ASNAUX.TYPENULL reservedForFutureISOCENuse111,
+	  ASNAUX.TYPENULL reservedForFutureISOCENuse112
 	}
-// EfcDsrcGeneric
+
+// Parametrisations of module EfcDsrcGeneric
    type record Action_Request <in type Container> {
         boolean     mode_,
         Dsrc_EID    eid,
@@ -624,7 +621,6 @@ module Common_ParametrisedAsn1Data language "TTCN-3:2010 Advanced Parameterizati
     }
 
 	//T-APDUs ::= T-APDUs-Generic{EfcContainer}
-	//PT140: Replaced PT141 definition of the dummy type of octetstring with EfcContainer in the parametrisation to be more true to the ASN.1 definition
     type T_APDUs_Generic<EfcContainer> T_APDUs; 
 
 
@@ -734,7 +730,7 @@ module Common_ParametrisedAsn1Data language "TTCN-3:2010 Advanced Parameterizati
 //-- SECOND NOTE for upcoming revisions of these definitions:
 //-- All container types should be OCTET aligned
 //}
-//PT140: replaced the PT141 defintion with a definition that is truer to the ASN.1 - no parametrisation of the type , and some ither stuff - check with Yann and the guys
+
   type union EfcContainer {
     integer integer_,
     bitstring bitstring_,
@@ -775,7 +771,7 @@ module Common_ParametrisedAsn1Data language "TTCN-3:2010 Advanced Parameterizati
     EfcDsrcApplication.ReceiptServicePart recspt,
     EfcDsrcApplication.SessionClass sessioncls,
     EfcDsrcApplication.ReceiptServiceSerialNumber recservserialno,
-    anytype recfinptENV,
+    ASNAUX.TYPENULL recfinptENV,
     EfcDsrcApplication.ReceiptContract reccont,
     EfcDsrcApplication.ReceiptOBUId recOBUId,
     EfcDsrcApplication.ReceiptICC_Id recICCId,
@@ -795,7 +791,7 @@ module Common_ParametrisedAsn1Data language "TTCN-3:2010 Advanced Parameterizati
     EfcDsrcApplication.ICC_Id equICCId,
     EfcDsrcApplication.EquipmentStatus equstat,
     EfcDsrcApplication.DriverCharacteristics dvrchars,
-    anytype paymeansENV,
+    ASNAUX.TYPENULL paymeansENV,
     EfcDsrcApplication.PaymentMeansBalance paymbal,
     EfcDsrcApplication.PaymentMeansUnit paymunit,
     EfcDsrcApplication.PaymentSecurityData paysecdata,
@@ -816,18 +812,16 @@ module Common_ParametrisedAsn1Data language "TTCN-3:2010 Advanced Parameterizati
     EfcDsrcApplication.TrailerLicencePlateNumber tlpn,
     EfcDsrcApplication.TrailerCharacteristics tch,
     EfcDsrcApplication.ActualNumberOfPassengers anp,
-    anytype rfuCenISO48,
-    anytype rfuCenISO49,
-    anytype rfuCenISO50,
-    anytype rfuCenISO51,
-    anytype rfuCenISO52,
-    anytype rfuCenISO53
+    ASNAUX.TYPENULL rfuCenISO48,
+    ASNAUX.TYPENULL rfuCenISO49,
+    ASNAUX.TYPENULL rfuCenISO50,
+    ASNAUX.TYPENULL rfuCenISO51,
+    ASNAUX.TYPENULL rfuCenISO52,
+    ASNAUX.TYPENULL rfuCenISO53
   }
     //ApplicationContextMark ::= EfcContainer 
-	//	PT140: Replaced PT141 definition with defintion truer to the ASN1. 
 	type EfcContainer ApplicationContextMark; 
 
-//	PT140: exchanged the PT141 defintion for one truer to the ASN.1
 //    ApplicationList ::= SEQUENCE (SIZE (0..127,...)) OF SEQUENCE {
 //        aid DSRCApplicationEntityID,
 //        eid Dsrc-EID OPTIONAL,
@@ -838,7 +832,16 @@ module Common_ParametrisedAsn1Data language "TTCN-3:2010 Advanced Parameterizati
         Dsrc_EID                eid optional,
         ApplicationContextMark  parameter optional
    } ApplicationList; 
-
+   
+//TODO consider optimised coding for better addressing capapbility
+//   type record ApplicationList_ {
+//	   DSRCApplicationEntityID aid,
+//	   Dsrc_EID                eid optional,
+//	   ApplicationContextMark  parameter optional
+//   }
+//    
+//   type record length (0 .. 127, ?) of ApplicationList_ ApplicationList;
+   
     type record BST {
         BeaconID              rsu,
         EfcDsrcGeneric.Time   time,
@@ -872,6 +875,8 @@ module Common_ParametrisedAsn1Data language "TTCN-3:2010 Advanced Parameterizati
 //       -- of octets as specified for a top-level type in
 //       -- ISO/IEC 8825-2
 //   }
+
+//	TODO consider addressing optimisation also here   
    type record length (0 .. 127, ?) of record {
 	 integer attributeId (0 .. 127, ?),
 	 Container attributeValues
@@ -895,7 +900,7 @@ module Common_ParametrisedAsn1Data language "TTCN-3:2010 Advanced Parameterizati
     }
 
 //EfcAutonomousCharging
-//PT140: Replaced the PT141 definition to one truer to the ASN.1
+//PT140: Updated PT141 definition to one truer to the ASN.1
 //ListOfDsrcUsageData ::= SEQUENCE OF CHOICE {
 //	data14906				AttributeList{EfcContainer},		-- EN ISO 14906
 //	data12813				AttributeList{CccContainer},		-- EN ISO 12813
@@ -909,7 +914,6 @@ module Common_ParametrisedAsn1Data language "TTCN-3:2010 Advanced Parameterizati
         AttributeList<LacContainer>   data13141
     }
 
-//PT140: Updated PT141 definition to be truer to the ASN.1
 //UsageStatement ::= SEQUENCE {
 //	usageStatementId			Int2 OPTIONAL,
 //	tollContext				Provider OPTIONAL,
@@ -942,7 +946,6 @@ module Common_ParametrisedAsn1Data language "TTCN-3:2010 Advanced Parameterizati
     * @desc
      * @see     ISO 17575-1:2016 Clause 6.3 Charge report
      */
-//PT140: Updated PT141 definition to be truer to the ASN.1
 //ChargeReport ::= SEQUENCE {
 //	protocolVersion			AidIdentifier,
 //	obeId				ObeId OPTIONAL,
@@ -988,7 +991,7 @@ module Common_ParametrisedAsn1Data language "TTCN-3:2010 Advanced Parameterizati
     }
     
 
-//EfcAutonomousContextData
+//Parametrisation of module EfcAutonomousContextData
     type union Optionally_Signed <in type Payload> {
         Payload         unsigned_data,
         Signed<Payload> signed_data
@@ -1056,7 +1059,3 @@ module Common_ParametrisedAsn1Data language "TTCN-3:2010 Advanced Parameterizati
     }
 
 } 
-//PT140: Removed the following which is not applicable for the backoffice (which uses XER encoding)
-//with { 
-//    encode "UPER:1997" // FIXME This is a work-around because of TTCN-3 does not support ASN.1 Parameterised definitions
-//} // End of module Common_Parameterised_Asn1_Data
