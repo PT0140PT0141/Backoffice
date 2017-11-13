@@ -97,6 +97,11 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
         	mtcPort.send(p_apduToSend);   	  
 			f_addLogEntry("Sent the following APDU to the IUT: " & any2unistr(p_apduToSend));
 		}
+		
+		function f_sendAndLogTrigger(in Iso16986Trigger iut_Trigger) runs on MainTestComponent {
+		  	mtcAccessPort.send(iut_Trigger);
+		  	f_addLogEntry("Sent the following Trigger to the IUT: " & any2unistr(iut_Trigger));
+		}
            
     	function f_addLogEntry(in charstring p_text){
     		log("*** " & testcasename() & ":" & p_text);

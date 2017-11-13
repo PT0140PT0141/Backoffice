@@ -158,7 +158,6 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		template (value) InfoExchange m_apduNAck_requestSentTooOften(in InfoExchange p_apduToAck) := m_apduDefault(
 			// PT140 TODO Write the template definition Ulrik
 		);
-
 			
     	//def event NAck_Apdu(zero or more sets of Param defined as {aduPosition, aduReasonCode}) "Default_Apdu containing one AckADU containing {apduAckCode= apduOK(2), issues containing one element for each Param set containing {issueADUStruct=aduPosition, issueCode = aduReasonCode }}"
     	//NOTE	the NAck_Apdu definition assumes that there are some valid ADUs in the APDU it is responding to (otherwise an apduAckCode  = apduNotOK(3) might have been a feasible answer
@@ -273,7 +272,27 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			
 		}
 
-		group EXCEPTIONLIST {}
+		group EXCEPTIONLIST {
+		  	template ExceptionListADU mw_aduExceptionList := {
+		  	  	exceptionListVersion := any,
+		  	  	exceptionListType := {ExceptionListType_blackList_, ExceptionListType_whiteList_, ExceptionListType_discountedList_},
+		  	  	exceptionValidityStart := any,
+		  	  	exceptionValidityEnd := omit,
+		  	  	exceptionListEntries := any
+		  	}
+		  	template ExceptionListEntry mw_exceptionListEntry := {
+		  	  	userId := any,
+		  	  	statusType := any,
+		  	  	reasonCode := any,
+		  	  	entryValidityStart := any,
+		  	  	entryValidityEnd := omit,
+		  	  	vehicleParameters := optional,
+		  	  	actionRequested := any,
+		  	  	efcContextMark := omit,
+		  	  	vatId := optional
+		  	}
+		}
+		
 
 		group TRUSTOBJECTS {}
 

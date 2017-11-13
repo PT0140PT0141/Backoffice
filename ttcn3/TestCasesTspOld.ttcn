@@ -168,7 +168,7 @@ module EfcInfoExchange_TestCasesTspOld {
 						}
 						if (not match(
 							v_apduReceived.adus.provideUserDetailsADUs[0],						
-							ProvideUserDetailsADU: modifies mw_aduProvideUserDetails := {
+							ProvideUserDetailsADU modifies mw_aduProvideUserDetails := {
 								statusFlag:=2,
 								listOfUserParameters := omit
 							}
@@ -210,8 +210,8 @@ module EfcInfoExchange_TestCasesTspOld {
 				// timeout expiration handling is in the altstep branch				
 
 				//Create parameters for the m_apduNAck			
-				var NAckParams v_nAckParams1 :={{0, AduReasonCode_invalidADU_}}
-				var NAckParams v_nAckParams2 :={{1, AduReasonCode_invalidADU_},{2,AduReasonCode_invalidADU_}}
+				var NAckParams v_nAckParams1 :={{0, AduReasonCode_invalidADU_}};
+				var NAckParams v_nAckParams2 :={{1, AduReasonCode_invalidADU_},{2,AduReasonCode_invalidADU_}};
 				
 				alt {
 					//PT140 TODO Can the repetion in the two alts be reduced?
@@ -942,40 +942,84 @@ module EfcInfoExchange_TestCasesTspOld {
               * @remark  [16986:2016], Clause 6.6 and Table A.1/2 AND Table A.7/3 
               */
 				// Initialisation
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_3_implementedEXCEPTIONLIST;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				
 				// Start by setting test failure
+				setverdict(fail);
 				// Step 1a: Trigger IUT with EXCEPTIONLIST.TR_TSP_1 LIST_TYPE=BLACK
-				
+				// PT140 TODO: Need a way to specify a Black list
+				f_sendAndLogTrigger(EXCEPTIONLIST_TR_TSP_1);
 				//  Wait for EXCEPTIONLIST with LIST_TYPE=BLACK
-				
+				alt {
+					[] mtcPort.receive(mw_apduExceptionList modifies mw_aduExceptionList := {exceptionListType := ExceptionListType_blackList_}) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();					
+						}
+               		
 					// Send Ack within time constraints
+					f_wait(EXCEPTIONLIST_TIME1_TC);
+					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+					} // End of first alt statement
 					
 					// Step 1b: Trigger IUT with EXCEPTIONLIST.TR_TSP_1 LIST_TYPE=WHITE within time constraints
-					
-					// Wait for EXCEPTIONLIST with LIST_TYPE=WHITE
+					// PT140 TODO: Need a way to specify a White list
+					f_sendAndLogTrigger(EXCEPTIONLIST_TR_TSP_1);
+					//  Wait for EXCEPTIONLIST with LIST_TYPE=WHITE
+					alt {
+						[] mtcPort.receive(mw_apduExceptionList modifies mw_aduExceptionList := {exceptionListType := ExceptionListType_whiteList_}) -> value v_apduReceived {
+							// Log what we received
+							f_logApduReceivedAndTStep();					
+							}
 					
 						// Send Ack within time constraints
+						f_wait(EXCEPTIONLIST_TIME1_TC);
+						f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
 						
 						// Set test success
-             
+						setverdict(pass);						
+ 						} // End of second alt statement
+				f_closeDownMtc();   						           
            } // End of TP_TSP_EXCEPTIONLIST_BV_01
-           testcase TP_TSP_EXCEPTIONLIST_BV_01() IutComp system TestAdapter {
+           
+           testcase TP_TSP_EXCEPTIONLIST_BV_02() IutComp system TestAdapter {
              
               /**
               * @desc    TP_TSP_EXCEPTIONLIST_BV_02: Verify that the TSP correctly performs an EXCEPTIONLIST transaction for discounted users 
               * @remark  [16986:2016], Clause 6.6 and Table A.1/2 AND Table A.7/3 
               */
 				// Initialisation
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_3_implementedEXCEPTIONLIST;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				
 				// Start by setting test failure
+				setverdict(fail);
 				// Step 1: Trigger IUT with EXCEPTIONLIST.TR_TSP_1 LIST_TYPE=DISCOUNT
-				
+				// PT140 TODO: Need a way to specify a Discount list
+				f_sendAndLogTrigger(EXCEPTIONLIST_TR_TSP_1);
 				//  Wait for EXCEPTIONLIST with LIST_TYPE=DISCOUNT
+				alt {
+					[] mtcPort.receive(mw_apduExceptionList modifies mw_aduExceptionList := {exceptionListType := ExceptionListType_discountList_}) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();					
+						}
+               			if (not ispresent(v_apduReceived.adus.ExceptionListADU.exceptionListEntries.ExceptionListEntry.vatId)) {
+               				// Send NAck within time constraints
+							var NAckParams v_nAckParams1 :={{0, AduReasonCode_invalidADU_}};
+							f_wait(EXCEPTIONLIST_TIME1_TC);
+							f_sendAndLogApdu(m_apduNAck(v_apduReceived, v_nAckParams1));   
+               				}
+               			else {
+							// Send Ack within time constraints
+							f_wait(EXCEPTIONLIST_TIME1_TC);
+							f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived)); 			
+							// Set test success
+							setverdict(pass);
+               				};
+					} // End of alt statement
 				
-					// Send Ack within time constraints
-					// Set test success
-				
-             
+				f_closeDownMtc(); 
+				              
            } // End of TP_TSP_EXCEPTIONLIST_BV_02
  		
  		
