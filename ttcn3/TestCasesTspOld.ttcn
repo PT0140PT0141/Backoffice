@@ -36,16 +36,665 @@ module EfcInfoExchange_TestCasesTspOld {
           * - to test IUT with respect to the correctness of base and general functionalities that are required in many or all transaction types;
           */
      	group Valid_Behaviour {
+			testcase TP_TSP_Base_BV_01() runs on IutComp system TestAdapter {
              /**
               * @desc    TP_TSP_Base_BV_01: Verify that a TC validates correct infoExchanceAuthenticators in received APDUs and generates correct infoExchangeAuthenticators 
               * @remark  [16986:2016], Clause 6.2.2 and Table A.1/2 
               */
-             testcase TP_TSP_Base_BV_01() runs on IutComp system TestAdapter {
-                 
+               
+               
+               // Initialisation
+               
+               // Set conditions in order to use authenticated connection
+               
+               // Step 1: Send Initiating APDU containing a valid RequestADU with requestedADUType=provideUserDetailsADU
+               // and in addition an infoExchangeAuthenticator = value calculated according to clause 7.3 of EN ISO 12855
+               
+               // PT140 TODO: Template m_apduSecInit for authenticated APDU to be defined
+				f_sendAndLogApdu(
+					m_apduSecInit(
+						{m_aduRequestProvideUserDetails(v_userParameterRequests)}
+					)
+				);                             
+               
+               //Set timer
+				t_step.start(USERDETAILS_TIME1_MAX_TSP);
+                
+				// Step2: Wait for ProvideUserDetailsADU 
+				// Either we receive an authenticated APDU containing Provide User Details ADU(s) or the timeout expires
+				// timeout expiration is handled in the altstep branch
+				alt {
+					// PT140 TODO: Template for authenticated APDU to be defined
+					[]	mtcPort.receive(mw_apduAuthenticatedProvideUserDetails) -> value v_apduReceived{    		                    		
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+						
+						// TODO PT140: Check the ADU record and find the one we are expecting. Either function or template
+ 
+						//Set verdict
+						setverdict(pass);
+ 					    			                              
+						// Step3: Send DefaultAck with correct identifier and set verdict
+						f_wait(USERDETAILS_TIME2_MIN_TSP);
+						f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+						}
+					} // End of alt statement
+				
+				f_closeDownMtc();    
              } // TP_TSP_Base_BV_01
         } // End of group Valid_Behaviour
          
-        group Invalid_Behaviour {		
+        group Invalid_Behaviour {
+			Testcase TP_TSP_Base_BI_01() runs on IutComp system TestAdapter {
+				/**
+				 * @desc    TP_TSP_Base_BI_01: Verify that the TSP correctly responds to invalid aidIdentifier in the APCI field received inside an APDU 
+				 * @remark  [16986:2016], Clause 6.2.1 and Table A.1/2 
+				 */
+                   
+				// Initialisation
+				
+				// Step 1: Send Initiating APDU containing a valid RequestADU with requestedADUType=provideUserDetailsADU
+				// and in addition containing APCI parameter field containing aidIdentifier ≠ “0” and valid RequestADU with requestedADUType=provideUserDetailsADU
+
+               // PT140 TODO: Template m_apduInvalidIdInit to be defined
+				f_sendAndLogApdu(
+					m_apduInvalidIdInit(
+						{m_aduRequestProvideUserDetails(v_userParameterRequests)}
+					)
+				);  				
+               
+               //Set timer
+				t_step.start(USERDETAILS_TIME1_MAX_TSP);
+				
+				// Step2: Wait for NAck_Apdu containing ackADU with apduAckCode = protocolVersionError (6)
+				// Timeout expiration is handled in the altstep branch
+				
+				//Create parameters for the m_apduNAck			
+				var NAckParams v_nAckParams1 :={{0, AduReasonCode_invalidADU_}}
+				var NAckParams v_nAckParams2 :={{1, AduReasonCode_invalidADU_},{2,AduReasonCode_invalidADU_}}
+				
+				// PT140: TODO m_apduNAck_protocolVersionError template to be defined				
+				alt {
+					[] mtcPort.receive(m_apduNAck_protocolVersionError(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+						
+						//Set verdict
+						setverdict(pass);
+					}
+					[] mtcPort.receive(m_apduNAck_protocolVersionError(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+						
+						//Set verdict
+						setverdict(pass);
+					}
+				} 
+				f_closeDownMtc(); 		
+			}  // End of Testcase TP_TSP_Base_BI_01
+			
+			Testcase TP_TSP_Base_BI_02() runs on IutComp system TestAdapter {
+				/**
+				 * @desc    TP_TSP_Base_BI_02: Verify that the TSP correctly responds to invalid apduOriginator in APCI field received inside an APDU 
+				 * @remark  [16986:2016], Clause 6.2.1 and Table A.1/2 
+				 */
+                   
+				// Initialisation
+				
+				// Step 1: Send Initiating APDU containing a valid RequestADU with requestedADUType=provideUserDetailsADU
+				// containing apduOriginator ≠ value declared in the PIXIT
+               // PT140 TODO: Template m_apduInvalidOriginatorInit to be defined
+				f_sendAndLogApdu(
+					m_apduInvalidOriginatorInit(
+						{m_aduRequestProvideUserDetails(v_userParameterRequests)}
+					)
+				);  				
+               
+               //Set timer
+				t_step.start(USERDETAILS_TIME1_MAX_TSP);
+				
+				// Step2: Wait for NAck_Apdu containing ackADU with apduAckCode = originatorRejected (7)
+				// Timeout expiration is handled in the altstep branch
+				
+				//Create parameters for the m_apduNAck			
+				var NAckParams v_nAckParams1 :={{0, AduReasonCode_invalidADU_}}
+				var NAckParams v_nAckParams2 :={{1, AduReasonCode_invalidADU_},{2,AduReasonCode_invalidADU_}}
+				
+				// PT140: TODO m_apduNAck_originatorRejected template to be defined				
+				alt {
+					[] mtcPort.receive(m_apduNAck_originatorRejected(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+						
+						//Set verdict
+						setverdict(pass);
+					}
+					[] mtcPort.receive(m_apduNAck_originatorRejected(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+						
+						//Set verdict
+						setverdict(pass);
+					}
+				} 
+				f_closeDownMtc(); 		
+				
+			} //End of TP_TSP_Base_BI_02
+
+			Testcase TP_TSP_Base_BI_03() runs on IutComp system TestAdapter {
+				/**
+				 * @desc    TP_TSP_Base_BI_03: Verify that the TSP correctly responds to invalid or unknown informationSenderID in APCI field received inside an APDU 
+				 * @remark  [16986:2016], Clause 6.2.1 and Table A.1/2 
+				 */
+                   
+				// Initialisation
+				
+				// Step 1: Send Initiating APDU containing a valid RequestADU with requestedADUType=provideUserDetailsADU
+				// containing informationSenderID ≠ value declared in the PIXIT
+               // PT140 TODO: Template m_apduInvalidInformationSenderID to be defined
+				f_sendAndLogApdu(
+					m_apduInvalidInformationSenderID(
+						{m_aduRequestProvideUserDetails(v_userParameterRequests)}
+					)
+				);  				
+               
+               //Set timer
+				t_step.start(USERDETAILS_TIME1_MAX_TSP);
+				
+				// Step2: Wait for NAck_Apdu containing ackADU with apduAckCode = originatorRejected (7)
+				// Timeout expiration is handled in the altstep branch
+				
+				//Create parameters for the m_apduNAck			
+				var NAckParams v_nAckParams1 :={{0, AduReasonCode_invalidADU_}}
+				var NAckParams v_nAckParams2 :={{1, AduReasonCode_invalidADU_},{2,AduReasonCode_invalidADU_}}
+				
+				// PT140: TODO m_apduNAck_originatorRejected template to be defined				
+				alt {
+					[] mtcPort.receive(m_apduNAck_originatorRejected(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+						
+						//Set verdict
+						setverdict(pass);
+					}
+					[] mtcPort.receive(m_apduNAck_originatorRejected(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+						
+						//Set verdict
+						setverdict(pass);
+					}
+				} 
+				f_closeDownMtc(); 		
+				
+			} //End of TP_TSP_Base_BI_03
+			
+			Testcase TP_TSP_Base_BI_04() runs on IutComp system TestAdapter {
+				/**
+				 * @desc    TP_TSP_Base_BI_04: Verify that the TSP correctly responds to an informationRecipientID in APCI field which does not address the TSP itself 
+				 * @remark  [16986:2016], Clause 6.2.1 and Table A.1/2 
+				 */
+                   
+				// Initialisation
+				
+				// Step 1: Send Initiating APDU containing a valid RequestADU with requestedADUType=provideUserDetailsADU
+				// containing informationRecipientID  ≠ value declared in the PIXIT
+               // PT140 TODO: Template m_apduInvalidInformationRecipientID to be defined
+				f_sendAndLogApdu(
+					m_apduInvalidInformationRecipientID(
+						{m_aduRequestProvideUserDetails(v_userParameterRequests)}
+					)
+				);  				
+               
+               //Set timer
+				t_step.start(USERDETAILS_TIME1_MAX_TSP);
+				
+				// Step2: Wait for NAck_Apdu containing ackADU with apduAckCode = recipientUnknown (8)
+				// Timeout expiration is handled in the altstep branch
+				
+				//Create parameters for the m_apduNAck			
+				var NAckParams v_nAckParams1 :={{0, AduReasonCode_invalidADU_}}
+				var NAckParams v_nAckParams2 :={{1, AduReasonCode_invalidADU_},{2,AduReasonCode_invalidADU_}}
+				
+				// PT140: TODO m_apduNAck_recipientUnknown template to be defined				
+				alt {
+					[] mtcPort.receive(m_apduNAck_recipientUnknown(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+						
+						//Set verdict
+						setverdict(pass);
+					}
+					[] mtcPort.receive(m_apduNAck_recipientUnknown(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+						
+						//Set verdict
+						setverdict(pass);
+					}
+				} 
+				f_closeDownMtc(); 		
+				
+			} //End of TP_TSP_Base_BI_04
+
+			Testcase TP_TSP_Base_BI_05() runs on IutComp system TestAdapter {
+				/**
+				 * @desc    TP_TSP_Base_BI_05: Verify that the TSP correctly responds to invalid apduIdentifier in APCI field received inside an APDU 
+				 * @remark  [16986:2016], Clause 6.2.1 and Table A.1/2 
+				 */
+                   
+				// Initialisation
+				// PT140 TODO Send one initial APDU with requestedADUType=provideUserDetailsADU and complete its transaction
+				
+				// Step 1: PT140 TODO Send an Initiating_Apdu containing APCI parameter field with apduIdentifier = same as already sent
+				// and valid RequestADU with requestedADUType=provideUserDetailsADU
+
+               //Set timer
+				t_step.start(USERDETAILS_TIME1_MAX_TSP);
+				
+				// Step2: Wait for NAck_Apdu containing ackADU with apduAckCode = apduNotOk (3)
+				// Timeout expiration is handled in the altstep branch
+				
+				//Create parameters for the m_apduNAck			
+				var NAckParams v_nAckParams1 :={{0, AduReasonCode_invalidADU_}}
+				var NAckParams v_nAckParams2 :={{1, AduReasonCode_invalidADU_},{2,AduReasonCode_invalidADU_}}
+				
+				// PT140: TODO m_apduNAck_apduNotOk template to be defined				
+				alt {
+					[] mtcPort.receive(m_apduNAck_apduNotOk(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+						
+						//Set verdict
+						setverdict(pass);
+					}
+					[] mtcPort.receive(m_apduNAck_apduNotOk(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+						
+						//Set verdict
+						setverdict(pass);
+					}
+				} 
+				f_closeDownMtc(); 												
+			}	End of 	TP_TSP_Base_BI_05
+
+			Testcase TP_TSP_Base_BI_06() runs on IutComp system TestAdapter {
+				/**
+				 * @desc    TP_TSP_Base_BI_06: Verify that the TSP correctly responds to an APDU which contains the nextAPDUId field  inside the APCI field 
+				 * @remark  [16986:2016], Clause 6.2.1 and Table A.1/2 
+				 */
+                   
+				// Initialisation
+				
+				// Step 1: Send Initiating APDU containing a valid RequestADU with APCI parameter field containing nextApduId
+				
+               // PT140 TODO: Template m_apduInvalidnextApduId to be defined
+				f_sendAndLogApdu(
+					m_apduInvalidnextApduId(
+						{m_aduRequestProvideUserDetails(v_userParameterRequests)}
+					)
+				);  				
+               
+               //Set timer
+				t_step.start(USERDETAILS_TIME1_MAX_TSP);
+				
+				// Step2: Wait for NAck_Apdu containing ackADU with apduAckCode = apduNotOk (3)
+				// Timeout expiration is handled in the altstep branch
+				
+				//Create parameters for the m_apduNAck			
+				var NAckParams v_nAckParams1 :={{0, AduReasonCode_invalidADU_}}
+				var NAckParams v_nAckParams2 :={{1, AduReasonCode_invalidADU_},{2,AduReasonCode_invalidADU_}}
+				
+				// PT140: TODO m_apduNAck_apduNotOk template to be defined				
+				alt {
+					[] mtcPort.receive(m_apduNAck_apduNotOk(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+						
+						//Set verdict
+						setverdict(pass);
+					}
+					[] mtcPort.receive(m_apduNAck_apduNotOk(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+						
+						//Set verdict
+						setverdict(pass);
+					}
+				} 
+				f_closeDownMtc(); 		
+				
+			} //End of TP_TSP_Base_BI_06
+			
+			Testcase TP_TSP_Base_BI_07() runs on IutComp system TestAdapter {
+				/**
+				 * @desc    TP_TSP_Base_BI_07: Verify that the TSP correctly responds to an APDU which contains the inResponseToApduId inside the APCI field but the received APDU is not in response to a previous APDU 
+				 * @remark  [16986:2016], Clause 6.2.1 and Table A.1/2 
+				 */
+                   
+				// Initialisation
+				
+				// Step 1: Send Initiating APDU containing a valid RequestADU with APCI parameter field containing inResponseToApduId
+				
+               // PT140 TODO: Template m_apduInvalidInResponseToApduId to be defined
+				f_sendAndLogApdu(
+					m_apduInvalidInResponseToApduId(
+						{m_aduRequestProvideUserDetails(v_userParameterRequests)}
+					)
+				);  				
+               
+               //Set timer
+				t_step.start(USERDETAILS_TIME1_MAX_TSP);
+				
+				// Step2: Wait for NAck_Apdu containing ackADU with apduAckCode = sequenceError (4) or apduNotOk (3)
+				// Timeout expiration is handled in the altstep branch
+				
+				//Create parameters for the m_apduNAck			
+				var NAckParams v_nAckParams1 :={{0, AduReasonCode_invalidADU_}}
+				var NAckParams v_nAckParams2 :={{1, AduReasonCode_invalidADU_},{2,AduReasonCode_invalidADU_}}
+				
+				// PT140: TODO m_apduNAck_sequenceError and m_apduNAck_apduNotOk template to be defined				
+
+				// Either apduNotOk or sequenceError error codes may be sent by the IUT
+				
+				alt {
+					[] mtcPort.receive(m_apduNAck_sequenceError(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+						
+						//Set verdict
+						setverdict(pass);
+					}
+					[] mtcPort.receive(m_apduNAck_sequenceError(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+						
+						//Set verdict
+						setverdict(pass);
+						
+						}
+					[] mtcPort.receive(m_apduNAck_apduNotOk(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+						
+						//Set verdict
+						setverdict(pass);
+					}
+					[] mtcPort.receive(m_apduNAck_apduNotOk(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+						
+						//Set verdict
+						setverdict(pass);					
+					}
+				} // End of Alt statement 
+				f_closeDownMtc(); 		
+				
+			} //End of TP_TSP_Base_BI_07				
+
+			Testcase TP_TSP_Base_BI_08() runs on IutComp system TestAdapter {
+				/**
+				 * @desc    TP_TSP_Base_BI_08: Verify that the TSP correctly responds to an APDU which contains an invalid inResponseToApduId value inside  the APCI field 
+				 * @remark  [16986:2016], Clause 6.2.1 and Table A.1/2 
+				 */
+                   
+				// Initialisation
+				// PT140 TODO Send one initial APDU with requestedADUType=trustObjectRequestADU and complete its transaction
+				// PT140 TODO remember the whole APDU sent
+				
+				// Step 1: PT140 TODO Send Initiating APDU containing a valid RequestADU with inResponseToApduId  = to the value of the previously sent APDU
+				
+
+               //Set timer
+				t_step.start(TRUSTOBJECT_TIME1_MAX_TSP);
+				
+				// Step2: Wait for NAck_Apdu containing ackADU with apduAckCode = sequenceError (4) or apduNotOk (3)
+				// Timeout expiration is handled in the altstep branch
+				
+				//Create parameters for the m_apduNAck			
+				var NAckParams v_nAckParams1 :={{0, AduReasonCode_invalidADU_}}
+				var NAckParams v_nAckParams2 :={{1, AduReasonCode_invalidADU_},{2,AduReasonCode_invalidADU_}}
+				
+				// PT140: TODO m_apduNAck_sequenceError and m_apduNAck_apduNotOk template to be defined				
+
+				// Either apduNotOk or sequenceError error codes may be sent by the IUT
+				
+				alt {
+					[] mtcPort.receive(m_apduNAck_sequenceError(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+						
+						//Set verdict
+						setverdict(pass);
+					}
+					[] mtcPort.receive(m_apduNAck_sequenceError(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+						
+						//Set verdict
+						setverdict(pass);
+						
+						}
+					[] mtcPort.receive(m_apduNAck_apduNotOk(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+						
+						//Set verdict
+						setverdict(pass);
+					}
+					[] mtcPort.receive(m_apduNAck_apduNotOk(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+						
+						//Set verdict
+						setverdict(pass);					
+					}
+				} // End of Alt statement 
+				f_closeDownMtc(); 		
+				
+			} //End of TP_TSP_Base_BI_08
+			
+			Testcase TP_TSP_Base_BI_09() runs on IutComp system TestAdapter {
+				/**
+				 * @desc    TP_TSP_Base_BI_09: Verify that the TSP correctly responds to an invalid apduDate inside the APCI field of a received APDU
+				 * @remark  [16986:2016], Clause 6.2.1 and Table A.1/2 
+				 */
+                   
+				// Initialisation
+				
+				// Step 1: Send an Initiating_Apdu containing APCI parameter field with apduDate = invalid
+				// and valid RequestADU with requestedADUType=provideUserDetailsADU
+
+               // PT140 TODO: Template m_apduInvalidApduDate to be defined
+				f_sendAndLogApdu(
+					m_apduInvalidApduDate(
+						{m_aduRequestProvideUserDetails(v_userParameterRequests)}
+					)
+				);  				
+               
+               //Set timer
+				t_step.start(USERDETAILS_TIME1_MAX_TSP);
+
+               //Set timer
+				t_step.start(USERDETAILS_TIME1_MAX_TSP);
+				
+				// Step2: Wait for NAck_Apdu containing ackADU with apduAckCode = apduNotOk (3)
+				// Timeout expiration is handled in the altstep branch
+				
+				//Create parameters for the m_apduNAck			
+				var NAckParams v_nAckParams1 :={{0, AduReasonCode_invalidADU_}}
+				var NAckParams v_nAckParams2 :={{1, AduReasonCode_invalidADU_},{2,AduReasonCode_invalidADU_}}
+				
+				// PT140: TODO m_apduNAck_apduNotOk template to be defined				
+				alt {
+					[] mtcPort.receive(m_apduNAck_apduNotOk(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+						
+						//Set verdict
+						setverdict(pass);
+					}
+					[] mtcPort.receive(m_apduNAck_apduNotOk(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+						
+						//Set verdict
+						setverdict(pass);
+					}
+				} 
+				f_closeDownMtc(); 												
+			}	End of 	TP_TSP_Base_BI_09
+
+			testcase TP_TSP_Base_BI_10() runs on IutComp system TestAdapter {
+             /**
+              * @desc    TP_TSP_Base_BI_10: Verify that the TSP correctly responds to an APDU bearing an incorrect infoExchangeAuthenticator 
+              * @remark  [16986:2016], Clause 6.2.2 and 6.3.2 and Table A.1/2 
+              */
+               
+               // Initialisation
+               
+               // PT140 TODO: Set conditions in order to use authenticated connection
+               
+               // Step 1: Send Initiating APDU containing a valid RequestADU with requestedADUType=provideUserDetailsADU
+               // and in addition an infoExchangeAuthenticator ≠ value calculated according to clause 7.3 of EN ISO 12855
+               
+               // PT140 TODO: Template m_apduInvalidSecInit for authenticated APDU to be defined
+				f_sendAndLogApdu(
+					m_apduInvalidSecInit(
+						{m_aduRequestProvideUserDetails(v_userParameterRequests)}
+					)
+				);                             
+               
+               //Set timer
+				t_step.start(USERDETAILS_TIME1_MAX_TSP);
+                
+				// Step2: Wait for NAck_Apdu containing ackADU with apduAckCode = apduNotOk (3)
+				// Timeout expiration is handled in the altstep branch
+				
+				//Create parameters for the m_apduNAck			
+				var NAckParams v_nAckParams1 :={{0, AduReasonCode_invalidADU_}}
+				var NAckParams v_nAckParams2 :={{1, AduReasonCode_invalidADU_},{2,AduReasonCode_invalidADU_}}
+				
+				// PT140: TODO m_apduNAck_apduNotOk template to be defined				
+				alt {
+					[] mtcPort.receive(m_apduNAck_apduNotOk(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+						
+						//Set verdict
+						setverdict(pass);
+					}
+					[] mtcPort.receive(m_apduNAck_apduNotOk(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+						
+						//Set verdict
+						setverdict(pass);
+					}
+				} 
+				f_closeDownMtc();    
+             } // TP_TSP_Base_BI_10					
         } // End of group Invalid_Behaviour
         
     } // End of group Base
