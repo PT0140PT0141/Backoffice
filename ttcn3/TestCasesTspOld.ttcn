@@ -1685,8 +1685,9 @@ module EfcInfoExchange_TestCasesTspOld {
            testcase TP_TSP_TRUSTOBJECTS_BV_01() IutComp system TestAdapter {
              
               /**
-              * @desc    TP_TSP_TRUSTOBJECTS_BV_01: Verify that the TSP correctly provides a TrustObjectADU without TC request 
-              * @remark  [16986:2016], Clause 6.6 and Table A.1/2 
+              * @desc    TP_TSP_TRUSTOBJECTS_BV_01: Verify that the TSP correctly provides a TrustObjectADU without TC request
+              * @remark  [16986:2016], Clause 6.6 and Table A.1/2
+              * @remark  Same as  TP_TC_TRUSTOBJECTS_BV_01
               */
 				// Initialisation
              
@@ -1697,6 +1698,7 @@ module EfcInfoExchange_TestCasesTspOld {
               /**
               * @desc    TP_TSP_TRUSTOBJECTS_BV_02: Verify that the TSP correctly responds to a TrustObjectADU received from a TC without having issued a request 
               * @remark  [16986:2016], Clause 6.6 and Table A.1/2 
+              * @remark  Same as TP_TC_TRUSTOBJECTS_BV_02
               */
 				// Initialisation
              
@@ -1707,6 +1709,7 @@ module EfcInfoExchange_TestCasesTspOld {
               /**
               * @desc    TP_TSP_TRUSTOBJECTS_BV_03: Verify that the TSP correctly provides a TrustObjectADU following a TC request 
               * @remark  [16986:2016], Clause 6.6 and Table A.1/2 
+              * @remark  Same as TP_TC_TRUSTOBJECTS_BV_03
               */
 				// Initialisation
              
@@ -1717,6 +1720,7 @@ module EfcInfoExchange_TestCasesTspOld {
               /**
               * @desc    TP_TSP_TRUSTOBJECTS_BV_04: Verify that the TSP correctly requests and responds to a TrustObjectADU
               * @remark  [16986:2016], Clause 6.6 and Table A.1/2 
+              * @remark  Same as TP_TC_TRUSTOBJECTS_BV_04
               */
 				// Initialisation
              
@@ -1731,6 +1735,7 @@ module EfcInfoExchange_TestCasesTspOld {
               /**
               * @desc    TP_TSP_TRUSTOBJECTS_BI_01: Verify that the TSP correctly responds to a TrustObjectADU received without having issued a request and containing incorrect ADU parameters
               * @remark  [16986:2016], Clause 6.6 and Table A.1/2 
+              * @remark  Same as TP_TC_TRUSTOBJECTS_BI_01
               */
 				// Initialisation
              
@@ -1741,6 +1746,7 @@ module EfcInfoExchange_TestCasesTspOld {
               /**
               * @desc    TP_TSP_TRUSTOBJECTS_BI_02: Verify that the TSP correctly responds to more than one correct Trust Object ADUs in the same APDU without having issued a request
               * @remark  [16986:2016], Clause 6.6 and Table A.1/2 
+              * @remark  Same as TP_TC_TRUSTOBJECTS_BI_02
               */
 				// Initialisation
              
@@ -1751,6 +1757,7 @@ module EfcInfoExchange_TestCasesTspOld {
               /**
               * @desc    TP_TSP_TRUSTOBJECTS_BI_03: Verify that the TSP correctly responds to a not supported Trust Object
               * @remark  [16986:2016], Clause 6.6 and Table A.1/2 
+              * @remark  Same as TP_TC_TRUSTOBJECTS_BI_03
               */
 				// Initialisation
              
@@ -1761,6 +1768,7 @@ module EfcInfoExchange_TestCasesTspOld {
               /**
               * @desc    TP_TSP_TRUSTOBJECTS_BI_04: Verify that the TSP correctly responds to a RequestADU sent earlier than allowed
               * @remark  [16986:2016], Clause 6.6 and Table A.1/2 
+              * @remark  Same as TP_TC_TRUSTOBJECTS_BI_04
               */
 				// Initialisation
              
@@ -1771,6 +1779,7 @@ module EfcInfoExchange_TestCasesTspOld {
               /**
               * @desc    TP_TSP_TRUSTOBJECTS_BI_05: Verify that the TSP correctly responds to a TrustObjectADU sent earlier than allowed
               * @remark  [16986:2016], Clause 6.6 and Table A.1/2 
+              * @remark  Same as TP_TC_TRUSTOBJECTS_BI_05
               */
 				// Initialisation
              
@@ -1926,7 +1935,21 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation
-                 // PT140: TODO TSS&TP to be reviewed/agreed 
+                 // PT140: IUT has performed two BILLINGDETAILS transactions identified by billingDetailsId=B_Id_1 and B_Id_2 respectively
+                 // AND billingDetailsAmount.paymentFeeAmount = 400 AND 500 respectively
+                 
+                 // Step 1: 
+                 	// Tester sends an Initiating_Apdu containing the following five valid PaymentClaimADUs:
+					// the first PaymentClaimADU referencing the two performed BillingDetails transactions, and with endDateTime = Ø,
+					// the second PaymentClaimADU referencing the two performed BillingDetails transactions, and containing userId unknown to the IUT,
+					// the third PaymentClaimADU referencing the two performed BillingDetails transactions, and containing paymentClaimAmount = 1000,
+					// the fourth PaymentClaimADU referencing the two performed BillingDetails transactions, and containing paymentClaimStatus = 2,
+					// the fifth PaymentClaimADU referencing the two performed BillingDetails transactions, and containing typeOfFee = Ø
+                 	 
+                // Step 2:
+                // Wait for a NAck_Apdu containing one AckADU with issues containing five elements containing:
+				// issueADUStruct=1 to 5 respectively
+				// issueCode = paymentClaimEndDateTimeRejected (804), paymentClaimUserIdRejected (805), paymentClaimAmountRejected (806), paymentClaimStatusRejected (807), paymentClaimTypeOfFeeRejected	(808)
                 
                 } // End of TP_TSP_PAYMENTCLAIM_BI_05   
 
@@ -2169,13 +2192,13 @@ module EfcInfoExchange_TestCasesTspOld {
            testcase TP_TSP_DSRC.BILLINGDETAILS_BV_01() runs on IutComp system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_DSRC.BILLINGDETAILS_BV_01: Verify that the TSP correctly performs a DSRC.BILLINGDETAILS transaction and responds to a single BillingDetailsADU with mandatory and optional fields 
+                  * @desc    TP_TSP_DSRC.BILLINGDETAILS_BV_01: Verify that the TSP correctly performs a DSRC.BILLINGDETAILS transaction when a TC sends a single BillingDetailsADU with no optional fields except includedDiscounts and actionCode=send 
                   * @remark  [16986:2016], Clause 7.3.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/3
                   */
                   
                  // Initialisation 
 
-                 // Step 1: Send one valid APDU containing one valid BillingDetailsADU
+                 // Step 1: Send one valid APDU containing one valid BillingDetailsADU with no optional fields except includedDiscounts
                  // Step 2: Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
                 
                 } // End of TP_TSP_DSRC.BILLINGDETAILS_BV_01
@@ -2183,13 +2206,13 @@ module EfcInfoExchange_TestCasesTspOld {
            testcase TP_TSP_DSRC.BILLINGDETAILS_BV_02() runs on IutComp system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_DSRC.BILLINGDETAILS_BV_02: Verify that the TSP correctly perfoms a DSRC.BILLINGDETAILS transaction and responds to multiple BillingDetailsADUs containing only mandatory fields  
+                  * @desc    TP_TSP_DSRC.BILLINGDETAILS_BV_02: Verify that the TSP correctly performs a DSRC.BILLINGDETAILS transaction when the TC provides multiple BillingDetailsADUs with no optional fields  
                   * @remark  [16986:2016], Clause 7.3.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/3
                   */
                   
                  // Initialisation 
 
-                 // Step 1: Send one valid APDU containing 10 valid BillingDetailsADU with actionCode = SEND numbered from 3 to 12 
+                 // Step 1: Send one valid APDU containing 10 valid BillingDetailsADU with actionCode = SEND 
                  // Step 2: Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
                 
                 } // End of TP_TSP_DSRC.BILLINGDETAILS_BV_02
@@ -2197,30 +2220,13 @@ module EfcInfoExchange_TestCasesTspOld {
            testcase TP_TSP_DSRC.BILLINGDETAILS_BV_03() runs on IutComp system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_DSRC.BILLINGDETAILS_BV_03: Verify that the TSP correctly perfoms a DSRC.BILLINGDETAILS transaction and responds to multiple BillingDetailsADUs with mandatory and optional fields 
-                  * @remark  [16986:2016], Clause 7.3.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/3
-                  */
-                  
-                 // Initialisation 
-
-                 // Step 1: Send one valid APDU containing 10 valid BillingDetailsADU with actionCode = SEND numbered from 13 to 22 with:
-                 	// BillingDetailsADUs with numbers (13 .. 21) containing only mandatory fields
-                 	// BillingDetailsADU numbered 22 containing one valid optional field
-                 	
-                 // Step 2: Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
-                
-                } // End of TP_TSP_DSRC.BILLINGDETAILS_BV_03
-
-           testcase TP_TSP_DSRC.BILLINGDETAILS_BV_04() runs on IutComp system TestAdapter {
-             
-                  /**
-                  * @desc    TP_TSP_DSRC.BILLINGDETAILS_BV_04: Verify that the TSP correctly perfoms a DSRC.BILLINGDETAILS transaction and responds to a single BillingDetailsADU containing only mandatory fields and adjusting the fee 
+                  * @desc    TP_TSP_DSRC.BILLINGDETAILS_BV_03: Verify that the TSP correctly performs a DSRC.BILLINGDETAILS transaction when the TC sends a single BillingDetailsADU with actionCode = adjust and no optional fields 
                   * @remark  [16986:2016], Clause 7.3.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/3
                   */
                   
                  // Initialisation 
                  // Send one valid APDU containing one valid BillingDetailsADU numbered 1 with only mandatory field
-                 // Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
+                 // Wait for negative Ack within DSRC.BILLINGDETAILS.TIME1
 
                  // Step 1: Send one valid APDU containing one valid BillingDetailsADU with only mandatory fields and with
                  	// actionCode = adjust
@@ -2229,12 +2235,12 @@ module EfcInfoExchange_TestCasesTspOld {
                  // Step 2: Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
                  
                 
-                } // End of TP_TSP_DSRC.BILLINGDETAILS_BV_04
+                } // End of TP_TSP_DSRC.BILLINGDETAILS_BV_03
 
-           testcase TP_TSP_DSRC.BILLINGDETAILS_BV_05() runs on IutComp system TestAdapter {
+           testcase TP_TSP_DSRC.BILLINGDETAILS_BV_04() runs on IutComp system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_DSRC.BILLINGDETAILS_BV_05: Verify that the TSP correctly perfoms a DSRC.BILLINGDETAILS transaction and responds to a single BillingDetailsADU revoking a previously sent BillingDetails 
+                  * @desc    TP_TSP_DSRC.BILLINGDETAILS_BV_05: Verify that the TSP correctly performs a DSRC.BILLINGDETAILS transaction when the TC sends a single BillingDetailsADU with actionCode = revoke and no optional fields 
                   * @remark  [16986:2016], Clause 7.3.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/3
                   */
                   
@@ -2248,7 +2254,7 @@ module EfcInfoExchange_TestCasesTspOld {
                  	// billingDetailsNum = 1
                  // Step 2: Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
                 
-                } // End of TP_TSP_DSRC.BILLINGDETAILS_BV_05
+                } // End of TP_TSP_DSRC.BILLINGDETAILS_BV_04
            
  		} // End of group Valid_Behaviour
          
@@ -2465,6 +2471,7 @@ module EfcInfoExchange_TestCasesTspOld {
 
                 // Step 1:
                 	// Send one  APDU containg 2 ReportAbnormalOBEADUs, first one with efcContextMark missing and second one with efcContextMark set to an invalid value
+              	// Step 2:
               		// Wait for negative Ack with the following issues:
               			// 1, invalidADU (0)
               			// 2, abnormalObeDateAndTimeRejected
@@ -2482,6 +2489,7 @@ module EfcInfoExchange_TestCasesTspOld {
 
                 // Step 1:
                 	// Send one  DSRC.REPORTABNORMALOBE with efcContextMark and abnormalOBEReason fields missing
+              	// Step 2:
               		// Wait for negative Ack with issueCode = semanticError (if positive Ack or not received set test failure)                	
                 
                 } // End of TP_TSP_DSRC.REPORTABNORMALOBE_BI_07
@@ -2497,6 +2505,7 @@ module EfcInfoExchange_TestCasesTspOld {
 
                 // Step 1:
                 	// Send one  APDU containg 2 ReportAbnormalOBEADUs, first one with abnormalOBEReason missing and second one with abnormalOBEReason set to an invalid value
+              	// Step 2:
               		// Wait for negative Ack with the following issues:
               			// 1, invalidADU (0)
               			// 2, abnormalObeReasonCodeRejected
@@ -2515,6 +2524,7 @@ module EfcInfoExchange_TestCasesTspOld {
               	 // Wait for positive Ack
                 // Step 1:
                 	// Send one one  APDU containg one valid ReportAbnormalOBEADU before TIMEA_MIN
+              	// Step 2:
               		// Wait for negative Ack with ADUReasonCode = requestSentTooOften (if positive Ack or not received set test failure)                	
                   
                 
@@ -2558,37 +2568,44 @@ module EfcInfoExchange_TestCasesTspOld {
            testcase TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_01() runs on IutComp system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_01: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TSP transaction with a single BillingDetailsADU with all mandatory plus optional includedDiscounts field 
+                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_01: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TSP transaction with BillingDetailsADUs
+				  * @desc 	 containing all permutations of present and not present optional fields that vary in the IUT implementation, all with actionCode=send 
                   * @remark  [16986:2016], Clause 8.2.2 AND 8.2.4 and Table A.1/2 AND Table A.2/1 AND Table A.52/1 AND Table A.56/6
                   */
                   
                  // Initialisation 
 
-				// Step 1: Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with:
+				// Step 1: Trigger IUT with GNSS.BILLINGDETAILS_TSP_1 to send  valid BillingDetailsADUs with:
 					// actionCode = send
-					// includedDiscounts in usageList with textDetail field being set according to values specified in Table A.54 of CEN/TS 16986:2016
+					// all permutations of present and not present optional fields that vary in the IUT implementation
 				
-				//  Wait for GNSS.TOLLDECLARATION
+				//  Wait for GNSS.BILLINGDETAILS
 				
 					// Send Ack within time constraints
 					// Set test success
                                 
                 } // End of TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_01           
-
+          
            testcase TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_02() runs on IutComp system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_02: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TSP transaction with a single BillingDetailsADU with all mandatory fields and areaDisplayName field 
+                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_06: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TSP transaction with single BillingDetailsADU with actionCode = adjust and no optional fields 
                   * @remark  [16986:2016], Clause 8.2.2 AND 8.2.4 and Table A.1/2 AND Table A.2/1 AND Table A.52/1 AND Table A.56/6
                   */
                   
-                 // Initialisation 
+                 // Initialisation
+                 	// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one APDU containing one valid TollDeclarationADU
+                 	// Send a positive Ack to conclude the TOLLDECLARATION transaction
+                 	// Trigger IUT with GNSS.BILLINGDETAILS.TR_TSP_1 to send a valid BillingDetails ADU with billingDetailsNum field value = 1
+                 	// Send a positive Ack to conclude the BILLINGDETAILS ADU
 
-				// Step 1: Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with:
-					// actionCode = send
-					// areaDisplayName forTravellingInArea with textDetail field being a correct character string
+				// Step 1: Trigger IUT with GNSS.BILLINGDETAILS.TR_TSP_1 to send one APDU containing one valid BillingDetailsADU with:
+					// actionCode = adjust
+					// only mandatory fields present with valid values
+					// paymentFeeAmount field value = 45
+					// billingDetailsNum field value = 1
 				
-				//  Wait for GNSS.TOLLDECLARATION
+				//  Wait for BillingDetails
 				
 					// Send Ack within time constraints
 					// Set test success
@@ -2598,101 +2615,22 @@ module EfcInfoExchange_TestCasesTspOld {
            testcase TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_03() runs on IutComp system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_03: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TSP transaction with a single BillingDetailsADU with all mandatory fields and qualifier field in forCordonCross selection 
+                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_03: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TSP transaction with revoking a single BillingDetailsADU containing only mandatory fields 
                   * @remark  [16986:2016], Clause 8.2.2 AND 8.2.4 and Table A.1/2 AND Table A.2/1 AND Table A.52/1 AND Table A.56/6
                   */
                   
                  // Initialisation 
+                 	// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one APDU containing one valid TollDeclarationADU
+                 	// Send a positive Ack to conclude the TOLLDECLARATION transaction
+                 	// Trigger IUT with GNSS.BILLINGDETAILS.TR_TSP_1 to send a valid BillingDetails ADU with billingDetailsNum field value = 1
+                 	// Send a positive Ack to conclude the BILLINGDETAILS ADU
 
-				// Step 1: Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with:
-					// actionCode = send
-					// valid usageList qualifier field set to forCordonCrossing
-				
-				//  Wait for GNSS.TOLLDECLARATION
-				
-					// Send Ack within time constraints
-					// Set test success
-                
-                } // End of TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_03           
-
-           testcase TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_04() runs on IutComp system TestAdapter {
-             
-                  /**
-                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_04: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TSP transaction with a single BillingDetailsADU with all mandatory fields and entranceChargeObjectName field in forCordonCross selection 
-                  * @remark  [16986:2016], Clause 8.2.2 AND 8.2.4 and Table A.1/2 AND Table A.2/1 AND Table A.52/1 AND Table A.56/6
-                  */
-                  
-                 // Initialisation 
-
-				// Step 1: Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with:
-					// actionCode = send
-					// valid usageList entranceChargeObjectName field set to forCordonCrossing
-				
-				//  Wait for GNSS.TOLLDECLARATION
-				
-					// Send Ack within time constraints
-					// Set test success
-                                
-                } // End of TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_04           
-
-           testcase TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_05() runs on IutComp system TestAdapter {
-             
-                  /**
-                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_05: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TSP transaction with multiple BillingDetailsADUs with only mandatory fields in the same APDU 
-                  * @remark  [16986:2016], Clause 8.2.2 AND 8.2.4 and Table A.1/2 AND Table A.2/1 AND Table A.52/1 AND Table A.56/6
-                  */
-                  
-                 // Initialisation 
-
-				// Step 1: Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one APDU containing 10 valid TollDeclarationADUs with:
-					// actionCode = send
-					// only mandatory fields present with valid values
-					// billingDetailsNum field values ranging from 3 to 12
-				
-				//  Wait for GNSS.TOLLDECLARATION
-				
-					// Send Ack within time constraints
-					// Set test success
-                                                
-                } // End of TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_05           
-
-           testcase TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_06() runs on IutComp system TestAdapter {
-             
-                  /**
-                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_06: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TSP transaction with adjusting the fee on a single BillingDetailsADU containing only mandatory fields 
-                  * @remark  [16986:2016], Clause 8.2.2 AND 8.2.4 and Table A.1/2 AND Table A.2/1 AND Table A.52/1 AND Table A.56/6
-                  */
-                  
-                 // Initialisation 
-
-				// Step 1: Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one APDU containing one valid TollDeclarationADU with:
-					// actionCode = adjust
-					// only mandatory fields present with valid values
-					// paymentFeeAmount field value = 45
-					// billingDetailsNum field value = 1
-				
-				//  Wait for GNSS.TOLLDECLARATION
-				
-					// Send Ack within time constraints
-					// Set test success
-                
-                } // End of TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_06           
-
-           testcase TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_07() runs on IutComp system TestAdapter {
-             
-                  /**
-                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_07: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TSP transaction with revoking a single BillingDetailsADU containing only mandatory fields 
-                  * @remark  [16986:2016], Clause 8.2.2 AND 8.2.4 and Table A.1/2 AND Table A.2/1 AND Table A.52/1 AND Table A.56/6
-                  */
-                  
-                 // Initialisation 
-
-				// Step 1: Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one APDU containing one valid TollDeclarationADU with:
+				// Step 1: Trigger IUT with GNSS.BILLINGDETAILS.TR_TSP_1 to send one APDU containing one valid BillingDetailsADU with:
 					// actionCode = revoke
 					// only mandatory fields present with valid values
 					// billingDetailsNum field value = 1
 				
-				//  Wait for GNSS.TOLLDECLARATION
+				//  Wait for BillingDetailsADU
 				
 					// Send Ack within time constraints
 					// Set test success
@@ -2709,20 +2647,20 @@ module EfcInfoExchange_TestCasesTspOld {
     } // End of group GNSS.BILLINGDETAILS_TSP
     
     group GNSS_BILLINGDETAILS_TC {
+         // Base TCs shall be carried out in addition and prior to the TCs listed below.
          group Valid_Behaviour {
 
            testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BV_01() runs on IutComp system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BV_01: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TC transaction with a response to a single BillingDetailsADU with all mandatory plus optional includedDiscounts field 
+                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BV_01: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TC transaction with a single BillingDetailsADU with no optional fields except includedDiscounts field and actionCode=send 
                   * @remark  [16986:2016], Clause 8.2.3 AND 8.2.4 and Table A.1/2 AND Table A.2/2 AND Table A.52/2 AND Table A.56/6
                   */
                   
                  // Initialisation 
 					// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
 					//  Wait for GNSS.TOLLDECLARATION
-					// Send Ack within time constraints
-					// PT140: TODO TSS&TP says one BillingDetails transaction to be executed before the test. Why?
+					// Send positive Ack within time constraints
 				
                  // Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
                  	// action code = send
@@ -2735,19 +2673,19 @@ module EfcInfoExchange_TestCasesTspOld {
            testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BV_02() runs on IutComp system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BV_02: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TC transaction with a response to a single BillingDetailsADU with all mandatory fields and areaDisplayName field 
+                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BV_02: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TC transaction with a single BillingDetailsADU
+				  * @desc    with no optional fields, actionCode = send and having selected forSectionedRoads 
                   * @remark  [16986:2016], Clause 8.2.3 AND 8.2.4 and Table A.1/2 AND Table A.2/2 AND Table A.52/2 AND Table A.56/6
                   */
                   
                  // Initialisation 
 					// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
 					//  Wait for GNSS.TOLLDECLARATION
-					// Send Ack within time constraints
-					// PT140: TODO TSS&TP says one BillingDetails transaction to be executed before the test. Why?
+					// Send positive Ack within time constraints
 				
                  // Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
                  	// action code = send
-                 	// areaDisplayName in forTravellingInArea with textDetail field being a correct character string
+                 	// CHOICE forSectionedRoads
                  // Step 2: Wait for positive Ack within TSP_GNSS_BILLINGDETAILS.TIME1
 				
 					// Set test success                
@@ -2757,20 +2695,21 @@ module EfcInfoExchange_TestCasesTspOld {
            testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BV_03() runs on IutComp system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BV_03: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TC transaction with a response to a single BillingDetailsADU with all mandatory fields and qualifier field in forCordonCross selection 
+                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BV_03: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TC transaction with a single BillingDetailsADU
+				  * @desc    with no optional fields, actionCode = send and having selected forTravellingInArea 
                   * @remark  [16986:2016], Clause 8.2.3 AND 8.2.4 and Table A.1/2 AND Table A.2/2 AND Table A.52/2 AND Table A.56/6
                   */
                   
                  // Initialisation 
 					// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
 					//  Wait for GNSS.TOLLDECLARATION
-					// Send Ack within time constraints
-					// PT140: TODO TSS&TP says one BillingDetails transaction to be executed before the test. Why?
+					// Send positive Ack within time constraints
 				
                  // Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
                  	// action code = send
-                 	// value of qualifier in forCordonCrossing being correct according to EN ISO 12855 Clause 6.12
-                 	// value of entranceChargeObjectName in forCordonCrossing being a correct UTF8String
+                 	// CHOICE forTravellingInArea
+                 	// the values of all fields in BillingDetailsADU being within the range specified by the IUT
+                
                  // Step 2: Wait for positive Ack within TSP_GNSS_BILLINGDETAILS.TIME1
 				
 					// Set test success                
@@ -2780,7 +2719,8 @@ module EfcInfoExchange_TestCasesTspOld {
            testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BV_04() runs on IutComp system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BV_04: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TC transaction with a response to multiple BillingDetailsADUs with only mandatory fields in the same APDU 
+                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BV_04:  Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TC transaction with a single BillingDetailsADU
+				  * @desc    with no optional fields, actionCode = send and having selected forStayingInArea 
                   * @remark  [16986:2016], Clause 8.2.3 AND 8.2.4 and Table A.1/2 AND Table A.2/2 AND Table A.52/2 AND Table A.56/6
                   */
                   
@@ -2788,11 +2728,12 @@ module EfcInfoExchange_TestCasesTspOld {
 					// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
 					//  Wait for GNSS.TOLLDECLARATION
 					// Send Ack within time constraints
-					// PT140: TODO TSS&TP says one BillingDetails transaction to be executed before the test. Why?
 				
                  // Step 1: Send one valid APDU containing 10 valid BillingDetailsADUs with:
                  	// action code = send
-                 	// value of billingDetailsNum ranging from 3 to 12
+                 	// CHOICE forStayingInArea
+                 	// the values of all fields in BillingDetailsADU being within the range specified by the IUT
+                 
                  // Step 2: Wait for positive Ack within TSP_GNSS_BILLINGDETAILS.TIME1
 				
 					// Set test success                
@@ -2802,24 +2743,21 @@ module EfcInfoExchange_TestCasesTspOld {
            testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BV_05() runs on IutComp system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BV_05: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TC transaction with a response to a single BillingDetailsADU containing only mandatory fields and adjusting the fee 
+                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BV_05: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TC transaction with a single BillingDetailsADU
+				  * @desc    with no optional fields, actionCode = send and having selected forCordonCrossings 
                   * @remark  [16986:2016], Clause 8.2.3 AND 8.2.4 and Table A.1/2 AND Table A.2/2 AND Table A.52/2 AND Table A.56/6
                   */
                   
                  // Initialisation 
 					// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
 					//  Wait for GNSS.TOLLDECLARATION
-					// Send Ack within time constraints
-					// Send one valid APDU containing one valid BillingDetailsADU with:
-                 		// action code = send
-                  		// value of billingDetailsNum = 1
-					//  Wait Ack within time constraints
-                 		
-				
-                 // Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
-                 	// action code = adjust 
-                 	// billingDetailsNum = 1
-                 	// paymentFeeAmount = 45
+					// Send positive Ack within time constraints
+					
+                 // Step 1: Send one valid APDU containing 10 valid BillingDetailsADUs with:
+                 	// action code = send
+                 	// CHOICE forCordonCrossings
+                 	// the values of all fields in BillingDetailsADU being within the range specified by the IUT
+                 
                  // Step 2: Wait for positive Ack within TSP_GNSS_BILLINGDETAILS.TIME1
 				
 					// Set test success                
@@ -2829,28 +2767,80 @@ module EfcInfoExchange_TestCasesTspOld {
            testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BV_06() runs on IutComp system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BV_06: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TC transaction with a response to a single BillingDetailsADU containing only mandatory fields and revoking a previously issued BillingDetailsADU 
+                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BV_06: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TC transaction
+				  * @desc    with multiple BillingDetailsADUs with no optional fields 
                   * @remark  [16986:2016], Clause 8.2.3 AND 8.2.4 and Table A.1/2 AND Table A.2/2 AND Table A.52/2 AND Table A.56/6
                   */
                   
                  // Initialisation 
 					// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
 					//  Wait for GNSS.TOLLDECLARATION
-					// Send Ack within time constraints
-					// Send one valid APDU containing one valid BillingDetailsADU with:
-                 		// action code = send
-                  		// value of billingDetailsNum = 1
-					//  Wait Ack within time constraints
-                 		
+					// Send positive Ack within time constraints                 		
 				
-                 // Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
-                 	// action code = revoke 
-                 	// billingDetailsNum = 1
+                 // Step 1: Send one valid APDU containing a number of valid BillingDetailsADU equal to GNSS.BILLINGDETAILS.TSP.PARAM1_MAX, with
+                 	// action code = send 
+                 	// no optional fields
+                 
                  // Step 2: Wait for positive Ack within TSP_GNSS_BILLINGDETAILS.TIME1
 				
 					// Set test success                
                 
-                } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BV_06                    
+                } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BV_06
+                
+           testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BV_07() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BV_07: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TC transaction with a single BillingDetailsADU
+				  * @desc    with actionCode = adjust and no optional fields
+                  * @remark  [16986:2016], Clause 8.2.3 AND 8.2.4 and Table A.1/2 AND Table A.2/2 AND Table A.52/2 AND Table A.56/6
+                  */
+                  
+                 // Initialisation 
+					// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
+					//  Wait for GNSS.TOLLDECLARATION
+					// Send positive Ack within time constraints
+					// Send one valid APDU containing one valid BillingDetailsADU with action code = send and a value for the fee which will be refused by the IUT
+					// Wait for a negative acknowledgement
+					
+                 // Step 1: Send one valid APDU containing BillingDetailsADU as the only ADU, where:
+                 	// the values of all fields in BillingDetailsADU being valid and within the range specified by the IUT
+                 	// no optional fields are specified
+                 	// billingDetailsNum referencing the previously sent BillingDetailsADU
+                 	// action code = adjust
+                 	// value of the fee being in an acceptable range
+                 
+                 // Step 2: Wait for positive Ack within TSP_GNSS_BILLINGDETAILS.TIME1
+				
+					// Set test success                
+                
+                } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BV_07                 
+
+           testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BV_08() runs on IutComp system TestAdapter {
+             
+                  /**
+                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BV_08: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TC transaction with a single BillingDetailsADU
+				  * @desc    with actionCode = revoke and no optional fields
+                  * @remark  [16986:2016], Clause 8.2.3 AND 8.2.4 and Table A.1/2 AND Table A.2/2 AND Table A.52/2 AND Table A.56/6
+                  */
+                  
+                 // Initialisation 
+					// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
+					//  Wait for GNSS.TOLLDECLARATION
+					// Send positive Ack within time constraints
+					// Send one valid APDU containing one valid BillingDetailsADU with action code = send and no optional parameters
+					// Wait for positive Ack
+					
+                 // Step 1: Send one valid APDU containing BillingDetailsADU as the only ADU, where:
+                 	// the values of all fields in BillingDetailsADU being valid and within the range specified by the IUT
+                 	// no optional fields are specified
+                 	// billingDetailsNum referencing the previously sent BillingDetailsADU
+                 	// action code = revoke
+                 
+                 // Step 2: Wait for positive Ack within TSP_GNSS_BILLINGDETAILS.TIME1
+				
+					// Set test success                
+                
+                } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BV_08                                     
  		} // End of group Valid_Behaviour
          
          group Invalid_Behaviour {
@@ -2858,15 +2848,15 @@ module EfcInfoExchange_TestCasesTspOld {
            testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BI_01() runs on IutComp system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BI_01: Verify that the TSP correctly responds to a series of BillingDetailsADUs bearing only mandatory fields, each BillingDetailsADU having one mandatory field bearing an incorrect value 
+                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BI_01: Verify that the TSP correctly responds to a series of BillingDetailsADUs bearing only mandatory fields,
+				  * @desc    each BillingDetailsADU having one mandatory field bearing an incorrect value 
                   * @remark  [16986:2016], Clause 8.2.3 AND 8.2.4 and Table A.1/2 AND Table A.2/2 AND Table A.52/2
                   */
                   
                  // Initialisation 
 					// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
 					//  Wait for GNSS.TOLLDECLARATION
-					// Send Ack within time constraints
-					// PT140: TODO TSS&TP says one BillingDetails transaction to be executed before the test. Why?
+					// Send positive Ack within time constraints
 				
                  // Step 1: Send one valid APDU containing 13 valid BillingDetailsADUs, each one with the following parameters respectively set to one incorrect value:
                  	// billingDetailsId.issuerId, tollContext, userId, Period, billingDetailsAmount, usageDetails.contextName, usageDetails.appliedUserClass, usageDetails.perDeclaredVehicleClasses, usageDetails.appliedTimeClass, usageDetails.entranceTime, usageList.ListofSections.chargeObjectId, exitChargeObject, exitTime
@@ -2875,36 +2865,35 @@ module EfcInfoExchange_TestCasesTspOld {
                  // Step 2: Wait for negative Ack within DSRC.BILLINGDETAILS.TIME1 with issue list present and the following issue codes:
                  	// billingDetailsIssuerIdRejected, billingDetailsContextIdRejected, billingDetailsUserIdRejected, billingDetailsPeriodRejected, billingDetailsAmountRejected, billingDetailsContextNameRejected, billingDetailsAppliedUserClassRejected, billingDetailsDeclaredVehicleClassRejected, billingDetailsAppliedTimeClassRejected, billingDetailsEntranceTimeRejected, billingDetailsIntermediateSectionRejected, billingDetailsExitChargeObjectRejected, billingDetailsExitTimeRejected
                 
-                } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BI_01           
+                } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BI_01                     
 
            testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BI_02() runs on IutComp system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BI_02: Verify that the TSP correctly responds to a single BillingDetailsADU with only mandatory fields, followed by a second valid BillingDetailsADU issued before TIMEA_MIN expires 
+                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BI_02: Verify that the TSP correctly responds to a BillingDetailsADU adjusting the fee for a BillingDetailsADU that does not exist 
                   * @remark  [16986:2016], Clause 8.2.3 AND 8.2.4 and Table A.1/2 AND Table A.2/2 AND Table A.52/2
                   */
                   
                  // Initialisation 
-					// PT140: TODO TSS&TP does not require GNSS.TOLLDECLARATION
+
 					// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
 					//  Wait for GNSS.TOLLDECLARATION
-					// Send Ack within time constraints
-					// Send one valid APDU containing one valid BillingDetailsADU with:
-                 		// action code = send
-                  		// value of billingDetailsNum = 13
-					//  Wait Ack within time constraints
+					// Send positive Ack within time constraints
 
-                 // Step 1: Send one valid APDU before TIMEA_MIN containing one valid BillingDetailsADU with:
-                 	// action code = send 
-                 	// billingDetailsNum = 14
-                 // Step 2: Wait for NAck_requestSentTooOften within TSP_GNSS_BILLINGDETAILS.TIME1
+                 // Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
+                 	// action code = adjust 
+                 	// billingDetailsNum corresponding to a BillingDetails not sent previously
+                 	// valid value for paymentFeeAmount
+                 
+                 // Step 2: Wait for NAck with issueCode = actionCodeNotSupported within TSP_GNSS_BILLINGDETAILS.TIME1
                 
                 } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BI_02           
 
            testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BI_03() runs on IutComp system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BI_03: Verify that the TSP correctly responds to a BillingDetailsADU adjusting the fee for a BillingDetailsADU that does not exist 
+                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BI_03: Verify that the TSP correctly responds to a BillingDetailsADU
+				  * @desc    revoking a BillingDetailsADU that does not exist at the TSP 
                   * @remark  [16986:2016], Clause 8.2.3 AND 8.2.4 and Table A.1/2 AND Table A.2/2 AND Table A.52/2
                   */
                   
@@ -2913,54 +2902,35 @@ module EfcInfoExchange_TestCasesTspOld {
 					// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
 					//  Wait for GNSS.TOLLDECLARATION
 					// Send Ack within time constraints
-					// Send one valid APDU containing one valid BillingDetailsADU with:
-                 		// action code = send
-                  		// value of billingDetailsNum = 13
-					//  Wait Ack within time constraints
 
                  // Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
-                 	// action code = adjust 
-                 	// billingDetailsNum = 14
-                 	// paymentFeeAmount = 45
+                 	// action code = revoke 
+                 	// billingDetailsNum corresponding to a BillingDetails not sent previously
+
                  // Step 2: Wait for NAck with issueCode = actionCodeNotSupported within TSP_GNSS_BILLINGDETAILS.TIME1
                 
                 } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BI_03           
 
            testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BI_04() runs on IutComp system TestAdapter {
-             
                   /**
-                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BI_04: Verify that the TSP correctly responds to a BillingDetailsADU revoking a BillingDetailsADU that does not exist at the TSP 
+                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BI_04: Verify that the TSP correctly responds to a BillingDetailsADU sent earlier than allowed 
                   * @remark  [16986:2016], Clause 8.2.3 AND 8.2.4 and Table A.1/2 AND Table A.2/2 AND Table A.52/2
                   */
                   
                  // Initialisation 
-
 					// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
 					//  Wait for GNSS.TOLLDECLARATION
-					// Send Ack within time constraints
-					// Send one valid APDU containing one valid BillingDetailsADU with:
-                 		// action code = send
-                  		// value of billingDetailsNum = 13
-					//  Wait Ack within time constraints
+					// Send positive Ack within time constraints
+					// Send one valid APDU containing one valid BillingDetailsADU with action code = send and no optional parameters
+					// Wait for positive Ack
+					
+                 // Step 1: Send one valid APDU containing one valid BillingDetailsADU before TIMEA_MIN expires with
+                 	// action code = send 
+                 	// no optional parameters
 
-                 // Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
-                 	// action code = revoke 
-                 	// billingDetailsNum = 14
-                 	// paymentFeeAmount = 45
-                 // Step 2: Wait for NAck with issueCode = actionCodeNotSupported within TSP_GNSS_BILLINGDETAILS.TIME1
-                
+                 // Step 2: Wait for NAck_requestSentTooOften within TSP_GNSS_BILLINGDETAILS.TIME1 
+                                
                 } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BI_04           
-
-           testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BI_05() runs on IutComp system TestAdapter {
-// PT140: TODO seems the same as TP_TSP_GNSS.BILLINGDETAILS.TC_BI_02             
-                  /**
-                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BI_05: Verify that the TSP correctly responds to a BillingDetailsADU sent earlier than allowed 
-                  * @remark  [16986:2016], Clause 8.2.3 AND 8.2.4 and Table A.1/2 AND Table A.2/2 AND Table A.52/2
-                  */
-                  
-                 // Initialisation 
-                
-                } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BI_05           
 		
         } // End of group Invalid_Behaviour
 
@@ -2982,10 +2952,9 @@ module EfcInfoExchange_TestCasesTspOld {
 					// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
 					// Wait for TollDeclarationADU
 					// Send one positive Ack within allowed time constraints
+					// PT140 TODO: Who is sending Billing Details in this case?
 	                // Send one correct BillingDetailsADU related to the received Toll Declaration within allowed timeconstraints
 	                // Wait for positive Ack
-					// Send one PAYMENTCLAIM related to the sent BILLINGDETAILS within allowed time constraints
-					// Wait for positive Ack
 					
 				// Step 1: Trigger IUT with GNSS.PAYMENTANNOUNCEMENT.TR_TC_TSP_1 to send one valid PaymentAnnouncementADU with actionCode = send
 					// Wait for PaymentAnnouncementADU within allowed time constraints
@@ -2995,15 +2964,59 @@ module EfcInfoExchange_TestCasesTspOld {
                 } // End of TP_TSP_GNSS_PAYMENTANNOUNCEMENT_BV_01                    
 
            testcase TP_TSP_GNSS_PAYMENTANNOUNCEMENT_BV_02() runs on IutComp system TestAdapter {
- // PT140: TODO TSS&TP text to be corrected            
                   /**
-                  * @desc    TP_TSP_GNSS_PAYMENTANNOUNCEMENT_BV_02: Verify that the TSP correctly performs the GNSS.PAYMENTANNOUCEMENT transaction with actionCode=revoke and adjust 
+                  * @desc    TP_TSP_GNSS_PAYMENTANNOUNCEMENT_BV_02: Verify that the TSP correctly performs the GNSS.PAYMENTANNOUCEMENT transaction with actionCode=adjust 
                   * @remark  [16986:2016], Clause 6.8 and Table A.1/2 AND Table A.2/2 AND Table A.52/4 
                   */
                   
                  // Initialisation 
+					// Start by setting test success
+					// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
+					// Wait for TollDeclarationADU
+					// Send one positive Ack within allowed time constraints
+					// PT140 TODO: Who is sending Billing Details in this case?
+	                // Send one correct BillingDetailsADU related to the received Toll Declaration within allowed timeconstraints
+	                // Wait for positive Ack
+					// Trigger IUT with GNSS.PAYMENTANNOUNCEMENT.TR_TSP_1 to send one valid PaymentAnnouncementADU with actionCode=send
+					// Send negative Ack
+					
+				// Step 1: Trigger IUT with GNSS.PAYMENTANNOUNCEMENT.TR_TC_TSP_1 to send one valid PaymentAnnouncementADU with:
+					// actionCode = adjust
+					// paymentAnnoucementId = same value as a previously sent PaymentAnnouncementId
+					// Wait for PaymentAnnouncementADU within allowed time constraints
+					// Send positive Ack within time constraints
+					// Set test success
+					
                 
                 } // End of TP_TSP_GNSS_PAYMENTANNOUNCEMENT_BV_02                    
+
+           testcase TP_TSP_GNSS_PAYMENTANNOUNCEMENT_BV_03() runs on IutComp system TestAdapter {
+                  /**
+                  * @desc    TP_TSP_GNSS_PAYMENTANNOUNCEMENT_BV_03: Verify that the TSP correctly performs the GNSS.PAYMENTANNOUCEMENT transaction with actionCode=revoke 
+                  * @remark  [16986:2016], Clause 6.8 and Table A.1/2 AND Table A.2/2 AND Table A.52/4 
+                  */
+                  
+                 // Initialisation 
+					// Start by setting test success
+					// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
+					// Wait for TollDeclarationADU
+					// Send one positive Ack within allowed time constraints
+					// PT140 TODO: Who is sending Billing Details in this case?
+	                // Send one correct BillingDetailsADU related to the received Toll Declaration within allowed timeconstraints
+	                // Wait for positive Ack
+					// Trigger IUT with GNSS.PAYMENTANNOUNCEMENT.TR_TSP_1 to send one valid PaymentAnnouncementADU with actionCode=send
+					// Send positive Ack
+					
+				// Step 1: Trigger IUT with GNSS.PAYMENTANNOUNCEMENT.TR_TC_TSP_1 to send one valid PaymentAnnouncementADU with:
+					// actionCode = revoke
+					// paymentAnnoucementId = same value as a previously sent PaymentAnnouncementId
+					
+					// Wait for PaymentAnnouncementADU within allowed time constraints
+					// Send positive Ack within time constraints
+					// Set test success
+					
+                
+                } // End of TP_TSP_GNSS_PAYMENTANNOUNCEMENT_BV_03                    
 
  		} // End of group Valid_Behaviour
          
