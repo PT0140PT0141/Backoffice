@@ -2346,18 +2346,232 @@ module EfcInfoExchange_TestCasesTc {
 		} // End group Invalid_Behaviour		
 		
 	} // End group GNSS_BILLINGDETAILS_TC
+	
+	group GNSS_PAYMENTANNOUNCEMENT {
+	
+		group Valid_Behaviour {
+		
+			testcase Testcase_TP_TC_GNSS_PAYMENTANNOUNCEMENT_BV_01() runs on MainTestComponent system TestAdapter {
+							
+               /**
+                * @desc    TP_TC_GNSS_PAYMENTANNOUNCEMENT_BV_01: Verify that the TC correctly performs
+                *			a GNSS.PAYMENTANNOUNCEMENT transaction
+                * @remark  [16986:2016], Clauses 8.3 and Table A.1/1 AND Table A.2/2 AND Table A.52/4
+                */
+ 
+  				// Initialisation
+
+				// Start by setting test success
+
+				// Perform at least one GNSS_BILLINGDETAILS trasnaction with positive Acknowledgement	
+				// Wait until respective time constraints for starting next transaction are passed
+                 				
+                // Step 1:
+                // Send Initiating_Apdu containing only three or more valid PaymentAnnouncementADU with
+                //		- actionCode = send
+                  
+                // Step 2:  
+                // Wait for Default_Ack_Apdu within time specified by GNSS.PAYMENTANNOUNCEMENT.TIME1
+                // if not received or received outside specification or time constraints set test fail
+                
+			} // End testcase TP_TC_GNSS_PAYMENTANNOUNCEMENT_BV_01
+			
+		} // End Valid_Behaviour
+		
+		group Invalid_Behaviour {
+		
+			testcase Testcase_TP_TC_GNSS_PAYMENTANNOUNCEMENT_BI_01() runs on MainTestComponent system TestAdapter {
+							
+               /**
+                * @desc    TP_TC_GNSS_PAYMENTANNOUNCEMENT_BI_01: Verify that the TC correctly responds to
+                *			a PaymentAnnouncementADU with an incorrect actionCode
+                * @remark  [16986:2016], Clauses 8.3 and Table A.1/1 AND Table A.2/2 AND Table A.52/4
+                */
+ 
+  				// Initialisation
+
+				// Start by setting test success
+
+				// Perform one GNSS_BILLINGDETAILS transaction with positive Ack	
+				// Wait until respective time constraints for starting next transaction are passed
+				// Perform one GNSS_PAYMENTANNOUNCEMENT transaction with actionCode=send with positive Ack 
+				// Wait until respective time constraints for starting next transaction are passed
+								
+                // Step 1:
+                // Send Initiating_Apdu containing 
+				//		- exactly one PaymentAnnouncementADU with actionCode=credit, and
+				//		- exactly one PaymentAnnouncementADU with actionCode=resend
+				//		- both referencing to paymentAnnouncementIds previousely sent
+                  
+                // Step 2:  
+                // Wait for NAck_Apdu containing one AckADU containing
+				//		- {an "issues" SEQUENCE of length two with the issueCode=indicating invalidADU for all and
+				//			issueADUStruct indicating 1 and 2 respectively}, or
+				//		- {an "issues" SEQUENCE of length one with issueCode=invalidADU and issueADUStruct=0}
+                // within time specified by GNSS.PAYMENTANNOUNCEMENT.TIME1
+                // use a template for the NAck_Apdus
+                // if not received or received outside specification or time constraints set test fail
+                
+			} // End testcase TP_TC_GNSS_PAYMENTANNOUNCEMENT_BI_01
+
+			testcase Testcase_TP_TC_GNSS_PAYMENTANNOUNCEMENT_BI_02() runs on MainTestComponent system TestAdapter {
+							
+               /**
+                * @desc    TP_TC_GNSS_PAYMENTANNOUNCEMENT_BI_02: Verify that the TC correctly responds to
+                *			a PaymentAnnouncementADU with incorrect paymentAnnouncementID 
+                * @remark  [16986:2016], Clauses 8.3 and Table A.1/1 AND Table A.2/2 AND Table A.52/4
+                */
+ 
+  				// Initialisation
+
+				// Start by setting test success
+
+				// Perform one GNSS_BILLINGDETAILS transaction with positive Ack	
+				// Wait until respective time constraints for starting next transaction are passed
+				// Perform one GNSS_PAYMENTANNOUNCEMENT transaction with actionCode=send with positive Ack 
+				// Wait until respective time constraints for starting next transaction are passed
+								
+                // Step 1:
+                // Send Initiating_Apdu containing 
+				// 		- exactly one PaymentAnnouncementADU with actionCode=send containing
+				//			paymentAnnouncementId = value that has previously been used, and
+				//		- exactly one PaymentAnnouncementADU with actionCode=revoke containing
+				//			paymentAnnouncementId = value that has not previously been used
+                  
+                // Step 2:  
+                // Wait for NAck_Apdu containing one AckADU containing
+				//		- {an "issues" SEQUENCE of length two with the issueCode=indicating invalidADU for all and
+				//			issueADUStruct indicating 1 and 2 respectively}, or
+				//		- {an "issues" SEQUENCE of length one with issueCode=invalidADU and issueADUStruct=0}
+                // within time specified by GNSS.PAYMENTANNOUNCEMENT.TIME1
+                // use a template for the NAck_Apdus
+                // if not received or received outside specification or time constraints set test fail
+                
+			} // End testcase TP_TC_GNSS_PAYMENTANNOUNCEMENT_BI_02
+
+			testcase Testcase_TP_TC_GNSS_PAYMENTANNOUNCEMENT_BI_03() runs on MainTestComponent system TestAdapter {
+							
+               /**
+                * @desc    TP_TC_GNSS_PAYMENTANNOUNCEMENT_BI_03: Verify that the TC correctly responds
+                *			to PaymentAnnouncementADUs where details from referenceDetailsList are not present
+                * @remark  [16986:2016], Clauses 8.3 and Table A.1/1 AND Table A.2/2 AND Table A.52/4
+                */
+ 
+  				// Initialisation
+
+				// Start by setting test success
+
+				// Perform one GNSS_BILLINGDETAILS transaction with positive Ack	
+				// Wait until respective time constraints for starting next transaction are passed
+				// Make sure no GNSS_PAYMENTANNOUNCEMENT transaction is performed
+								
+                // Step 1:
+                // Send Initiating_Apdu containing
+                //		- exactly one valid PaymentAnnouncementADU, and
+                //		- exactly one PaymentAnnouncementADU with actionCode=send containing
+				//			- referenceDetailsList of the choice billingDetailsList containing
+				//				- exactly one BillingDetailsId that does not make reference
+				//					to the BillingDetailsADU of the previously performed BILLINGDETAILS transaction
+                  
+                // Step 2:  
+                // Wait for NAck_Apdu({2,invalidADU(0)} within time specified by GNSS.PAYMENTANNOUNCEMENT.TIME1
+                // use a template for the NAck_Apdu
+                
+                // if not received or received outside specification or time constraints set test fail
+                
+			} // End testcase TP_TC_GNSS_PAYMENTANNOUNCEMENT_BI_03
+
+			testcase Testcase_TP_TC_GNSS_PAYMENTANNOUNCEMENT_BI_04() runs on MainTestComponent system TestAdapter {
+							
+               /**
+                * @desc    TP_TC_GNSS_PAYMENTANNOUNCEMENT_BI_04: Verify that the TC correctly responds to
+                *			a PaymentAnnouncementADU where the length of the referenceDetailsList is too long
+                * @remark  [16986:2016], Clauses 8.3 and Table A.1/1 AND Table A.2/2 AND Table A.52/4
+                */
+ 
+  				// Initialisation
+
+				// Start by setting test success
+
+				// Perform GNSS_BILLINGDETAILS transaction with positive Ack in which the number of billingDetails
+				// shall be (1+GNSS.PAYMENTANNOUNCEMENT.PARAM2_MAX)	
+				// Wait until respective time constraints for starting next transaction are passed
+								
+                // Step 1:
+                // Send Initiating_Apdu containing
+                //		- one valid PaymentAnnouncementADU, and
+                //		- one PaymentAnnouncementADU with actionCode=send containing
+                //			- referenceDetailsList of the choice billingDetailsList containing
+                //				- exactly (1+GNSS.PAYMENTANNOUNCEMENT.PARAM2_MAX) BillingDetailsId that makes reference to
+                //					the BillingDetailsADUs of the previously performed BILLINGDETAILS transaction
+                  
+                // Step 2:  
+                // Wait for NAck_Apdu({2,invalidADU(0)} within time specified by GNSS.PAYMENTANNOUNCEMENT.TIME1
+                // use a template for the NAck_Apdu
+                
+                // if not received or received outside specification or time constraints set test fail
+                
+			} // End testcase TP_TC_GNSS_PAYMENTANNOUNCEMENT_BI_04
+
+			testcase Testcase_TP_TC_GNSS_PAYMENTANNOUNCEMENT_BI_05() runs on MainTestComponent system TestAdapter {
+							
+               /**
+                * @desc    TP_TC_GNSS_PAYMENTANNOUNCEMENT_BI_05: Verify that the TC correctly responds to
+                *			a PaymentAnnouncementADU where the attachement is too big
+                * @remark  [16986:2016], Clauses 8.3 and Table A.1/1 AND Table A.2/2 AND Table A.52/4
+                */
+ 
+  				// Initialisation
+
+				// Start by setting test success
+
+				// Perform one GNSS_BILLINGDETAILS transaction with positive Ack	
+				// Wait until respective time constraints for starting next transaction are passed
+				// Perform one GNSS_PAYMENTANNOUNCEMENT transaction with actionCode=send with positive Ack 
+				// Wait until respective time constraints for starting next transaction are passed
+								
+                // Step 1:
+                // Send Initiating_Apdu containing
+                //		- one valid PaymentAnnouncementADU, and
+                //		- one PaymentAnnouncementADU with actionCode=send containing an attachment larger than (2^31)–1 bytes
+                  
+                // Step 2:  
+                // Wait for NAck_Apdu({2,invalidADU(0)} within time specified by GNSS.PAYMENTANNOUNCEMENT.TIME1
+                // use a template for the NAck_Apdu
+                
+                // if not received or received outside specification or time constraints set test fail
+                
+			} // End testcase TP_TC_GNSS_PAYMENTANNOUNCEMENT_BI_05
+
+			testcase Testcase_TP_TC_GNSS_PAYMENTANNOUNCEMENT_BI_06() runs on MainTestComponent system TestAdapter {
+							
+               /**
+                * @desc    TP_TC_GNSS_PAYMENTANNOUNCEMENT_BI_06: Verify that the TC correctly responds to
+                *			an APDU containing too many PaymentAnnouncementADUs
+                * @remark  [16986:2016], Clauses 8.3 and Table A.1/1 AND Table A.2/2 AND Table A.52/4
+                */
+ 
+  				// Initialisation
+
+				// Start by setting test success
+
+				// Perform GNSS_BILLINGDETAILS transaction with positive Ack in which the number of billingDetails
+				// shall be (1+GNSS.PAYMENTANNOUNCEMENT.PARAM1_MAX)	
+				// Wait until respective time constraints for starting next transaction are passed
+								
+                // Step 1:
+                // Send Initiating_Apdu containing exactly (GNSS.PAYMENTANNOUNCEMENT.PARAM1_MAX+1) valid PaymentAnnouncementADUs 
+                  
+                // Step 2:  
+                // Wait for NAck_Apdu with apduReasonCode=apduNotOK(3) within time specified by GNSS.PAYMENTANNOUNCEMENT.TIME1
+                // use a template for the NAck_Apdu
+                
+                // if not received or received outside specification or time constraints set test fail
+                
+			} // End testcase TP_TC_GNSS_PAYMENTANNOUNCEMENT_BI_06
+			
+		} // End group Invalid_Behaviour
+		
+	} // End group GNSS_PAYMENTANNOUNCEMENT	
 	                		
 } // End of module EfcInfoExchange_TestCasesTc
-
-
-// start of remaining old part
-
-
-    group GNSS_PAYMENTANNOUNCEMENT {
-         group Valid_Behaviour {
- 		} // End of group Valid_Behaviour
-         
-         group Invalid_Behaviour {		
-        } // End of group Invalid_Behaviour
-
-    } // End of group GNSS.PAYMENTANNOUNCEMENT
