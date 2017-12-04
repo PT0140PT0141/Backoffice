@@ -2226,6 +2226,126 @@ module EfcInfoExchange_TestCasesTc {
 		} // End Invalid_Behaviour
 		
 	} // End GNSS_BILLINGDETAILS_TSP
+
+	group GNSS_BILLINGDETAILS_TC {
+	
+		group Valid_Behaviour {
+		
+			testcase Testcase_TP_TC_GNSS_BILLINGDETAILS_TC_BV_01() runs on MainTestComponent system TestAdapter {
+							
+               /**
+                * @desc    TP_TC_GNSS_BILLINGDETAILS_TC_BV_01: Verify that the TC correctly performs a GNSS.BILLINGDETAILS.TC transaction
+                *			with BillingDetailsADUs containing all permutations of present and
+                *			not present optional fields that vary in the IUT implementation, all with actionCode=send
+                * @remark  [16986:2016], Clauses 8.2.3 and 8.2.4 and Table A.1/1 AND Table A.2/2 AND Table A.52/2
+                */
+ 
+  				// Initialisation
+                 
+				// Loop: In case GNSS.BILLINGDETAILS.TSP. PARAM1_MAX < the number of needed BilligDetailsADUs then insert iterations
+				
+				// Start by setting test success
+				// Perform a full GNSS.TOLLDECLARATION transaction with positive Ack
+				// wait respective time constraints until next transaction 	
+								
+                // Step 1:
+                // Trigger IUT to send send BillingDetailsADUs containing
+                //		- all valid permutations of present and not present optional fields and choices that are used in the IUT implementation
+                
+                  
+                // Wait for Initiating_Apdu containing BillingDetailsADUs containing
+                //		- all permutations of present and not present optional fields that vary in the IUT implementation,
+                //		- all with actionCode=send
+                // within specified time constraints
+                
+                // if not received or received outside specification or time constraints set test fail
+                
+                // Step 2:
+                // Send AckADU to conclude the transaction
+                
+			} // End testcase TP_TC_GNSS_BILLINGDETAILS_TC_BV_01
+
+			testcase Testcase_TP_TC_GNSS_BILLINGDETAILS_TC_BV_02() runs on MainTestComponent system TestAdapter {
+							
+               /**
+                * @desc    TP_TC_GNSS_BILLINGDETAILS_TC_BV_02: Verify that the TC correctly performs
+                *			a GNSS.BILLINGDETAILS.TC transaction when it sends a single BillingDetailsADU
+                *			with actionCode = adjust and no optional fields
+                * @remark  [16986:2016], Clauses 8.2.3 and 8.2.4 and Table A.1/1 AND Table A.2/2 AND Table A.52/2
+                */
+ 
+  				// Initialisation
+                 		
+				// Start by setting test success
+				// Perform a full GNSS.TOLLDECLARATION transaction and GNSS.BILLINGDETAILS.TC trasnaction with positive Ack
+				// wait respective time constraints until next transaction
+								
+                // Step 1:
+                // Trigger IUT to send send BillingDetailsADUs containing exactly one BillingDetailsADU with
+                //		- actionCode = adjust, and
+                //		- billingDetailsNum referencing the previously negatively acknowledged BillingDetailsADU
+                
+                // Wait for Initiating_Apdu containing exactly one BillingDetailsADU with
+                //		- actionCode = adjust, and
+                //		- no optional fields present, and
+                //		- billingDetailsNum referencing the previously negatively acknowledged BillingDetailsADU               
+                // within specified time constraints
+                
+                // if not received or received outside specification or time constraints set test fail
+                
+                // Step 2:
+                // Send AckADU to conclude the transaction
+                
+			} // End testcase TP_TC_GNSS_BILLINGDETAILS_TC_BV_02
+
+			testcase Testcase_TP_TC_GNSS_BILLINGDETAILS_TC_BV_03() runs on MainTestComponent system TestAdapter {
+							
+               /**
+                * @desc    TP_TC_GNSS_BILLINGDETAILS_TC_BV_03: Verify that the TC correctly performs
+                *			a GNSS.BILLINGDETAILS.TC transaction when it sends a single BillingDetailsADU
+                *			with actionCode = revoke and no optional fields
+                * @remark  [16986:2016], Clauses 8.2.3 and 8.2.4 and Table A.1/1 AND Table A.2/2 AND Table A.52/2
+                */
+ 
+  				// Initialisation
+                 		
+				// Start by setting test success
+				// Perform a full GNSS.TOLLDECLARATION transaction with positive Ack
+				// wait respective time constraints until next transaction
+				// At least one GNSS.BILLINGDETAILS.TSP transaction have been initiated
+				// with a negative acknowledgement due to wrong fee
+				// wait respective time constraints until next transaction
+								
+                // Step 1:
+                // Trigger IUT to send send BillingDetailsADUs containing exactly one BillingDetailsADU with
+                //		- optional fields present and not present, and
+                //		- actionCode = revoke, and
+                //		- billingDetailsNum referencing the previously sent BillingDetailsADU
+                
+                // Wait for Initiating_Apdu containing exactly one BillingDetailsADU with
+                //		- actionCode = revoke, and
+                //		- no optional fields present, and
+                //		- billingDetailsNum referencing the previously sent BillingDetailsADU               
+                // within specified time constraints
+                
+                // if not received or received outside specification or time constraints set test fail
+                
+                // Step 2:
+                // Send AckADU to conclude the transaction
+                
+			} // End testcase TP_TC_GNSS_BILLINGDETAILS_TC_BV_03
+			
+		} // End Valid_Behaviour
+
+		group Invalid_Bahaviour {
+
+               /**
+                 * @remark  No TPs have been defined
+                 */			
+			
+		} // End group Invalid_Behaviour		
+		
+	} // End group GNSS_BILLINGDETAILS_TC
 	                		
 } // End of module EfcInfoExchange_TestCasesTc
 
@@ -2233,14 +2353,6 @@ module EfcInfoExchange_TestCasesTc {
 // start of remaining old part
 
 
-    group GNSS_BILLINGDETAILS_TC {
-         group Valid_Behaviour {
- 		} // End of group Valid_Behaviour
-         
-         group Invalid_Behaviour {		
-        } // End of group Invalid_Behaviour
-
-    } // End of group GNSS.BILLINGDETAILS.TC
     group GNSS_PAYMENTANNOUNCEMENT {
          group Valid_Behaviour {
  		} // End of group Valid_Behaviour
