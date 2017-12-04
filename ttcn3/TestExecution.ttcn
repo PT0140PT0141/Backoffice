@@ -69,8 +69,6 @@ module Backoffice_TestExecution {
         execute(TP_TC_DSRC_BILLINGDETAILS_BV_01());
         execute(TP_TC_DSRC_BILLINGDETAILS_BV_02());
         execute(TP_TC_DSRC_BILLINGDETAILS_BV_03());
-        execute(TP_TC_DSRC_BILLINGDETAILS_BV_04());
-        execute(TP_TC_DSRC_BILLINGDETAILS_BV_05());
         execute(TP_TC_DSRC_REPORTABNORMALOBE_BV_01());
         execute(TP_TC_GNSS_TOLLDECLARATION_BV_01());
         execute(TP_TC_GNSS_TOLLDECLARATION_BV_02());
@@ -90,6 +88,8 @@ module Backoffice_TestExecution {
         execute(TP_TC_GNSS_BILLINGDETAILS_TSP_BV_04());
         execute(TP_TC_GNSS_BILLINGDETAILS_TSP_BV_05());
         execute(TP_TC_GNSS_BILLINGDETAILS_TSP_BV_06());
+        execute(TP_TC_GNSS_BILLINGDETAILS_TSP_BV_07());
+        execute(TP_TC_GNSS_BILLINGDETAILS_TSP_BV_07());
         execute(TP_TC_GNSS_BILLINGDETAILS_TSP_BI_01());
         execute(TP_TC_GNSS_BILLINGDETAILS_TSP_BI_02());
         execute(TP_TC_GNSS_BILLINGDETAILS_TSP_BI_03());
@@ -98,10 +98,6 @@ module Backoffice_TestExecution {
         execute(TP_TC_GNSS_BILLINGDETAILS_TC_BV_01());
         execute(TP_TC_GNSS_BILLINGDETAILS_TC_BV_02());
         execute(TP_TC_GNSS_BILLINGDETAILS_TC_BV_03());
-        execute(TP_TC_GNSS_BILLINGDETAILS_TC_BV_04());
-        execute(TP_TC_GNSS_BILLINGDETAILS_TC_BV_05());
-        execute(TP_TC_GNSS_BILLINGDETAILS_TC_BV_06());
-        execute(TP_TC_GNSS_BILLINGDETAILS_TC_BV_07());
         execute(TP_TC_GNSS_PAYMENTANNOUNCEMENT_BV_01());
         execute(TP_TC_GNSS_PAYMENTANNOUNCEMENT_BI_01());
         execute(TP_TC_GNSS_PAYMENTANNOUNCEMENT_BI_02());
@@ -110,7 +106,7 @@ module Backoffice_TestExecution {
         execute(TP_TC_GNSS_PAYMENTANNOUNCEMENT_BI_05());
         execute(TP_TC_GNSS_PAYMENTANNOUNCEMENT_BI_06());
 
-		//Testcases for when the TC is the IUT
+		//Testcases for when the TSP is the IUT
         execute(TP_TSP_Base_BV_01());
         execute(TP_TSP_Base_BI_01());
         execute(TP_TSP_Base_BI_02());
@@ -169,7 +165,6 @@ module Backoffice_TestExecution {
         execute(TP_TSP_DSRC_BILLINGDETAILS_BV_02());
         execute(TP_TSP_DSRC_BILLINGDETAILS_BV_03());
         execute(TP_TSP_DSRC_BILLINGDETAILS_BV_04());
-        execute(TP_TSP_DSRC_BILLINGDETAILS_BV_05());
         execute(TP_TSP_DSRC_BILLINGDETAILS_BI_01());
         execute(TP_TSP_DSRC_BILLINGDETAILS_BI_02());
         execute(TP_TSP_DSRC_BILLINGDETAILS_BI_03());
@@ -189,22 +184,21 @@ module Backoffice_TestExecution {
         execute(TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_01());
         execute(TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_02());
         execute(TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_03());
-        execute(TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_04());
-        execute(TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_05());
-        execute(TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_06());
-        execute(TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_07());
         execute(TP_TSP_GNSS_BILLINGDETAILS_TC_BV_01());
         execute(TP_TSP_GNSS_BILLINGDETAILS_TC_BV_02());
         execute(TP_TSP_GNSS_BILLINGDETAILS_TC_BV_03());
         execute(TP_TSP_GNSS_BILLINGDETAILS_TC_BV_04());
         execute(TP_TSP_GNSS_BILLINGDETAILS_TC_BV_05());
         execute(TP_TSP_GNSS_BILLINGDETAILS_TC_BV_06());
+        execute(TP_TSP_GNSS_BILLINGDETAILS_TC_BV_07());
+        execute(TP_TSP_GNSS_BILLINGDETAILS_TC_BV_08());
         execute(TP_TSP_GNSS_BILLINGDETAILS_TC_BI_01());
         execute(TP_TSP_GNSS_BILLINGDETAILS_TC_BI_02());
         execute(TP_TSP_GNSS_BILLINGDETAILS_TC_BI_03());
         execute(TP_TSP_GNSS_BILLINGDETAILS_TC_BI_04());
-        execute(TP_TSP_GNSS_BILLINGDETAILS_TC_BI_05());
         execute(TP_TSP_GNSS_PAYMENTANNOUNCEMENT_BV_01());
-        execute(TP_TSP_GNSS_PAYMENTANNOUNCEMENT_BV_02());			            
+        execute(TP_TSP_GNSS_PAYMENTANNOUNCEMENT_BV_02());
+        execute(TP_TSP_GNSS_PAYMENTANNOUNCEMENT_BV_03());			            
+        			            
     } 
 } 
