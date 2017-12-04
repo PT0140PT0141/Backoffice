@@ -45,7 +45,7 @@ module EfcInfoExchange_TestCasesTc {
 	group USERDETAILS {
          group Valid_Behaviour {
               
-         	testcase Testcase_TP_TC_USERDETAILS_BV_01() runs on MainTestComponent system TestAdapter {
+         	testcase TP_TC_USERDETAILS_BV_01() runs on MainTestComponent system TestAdapter {
 				/**
 				 * @desc    TP_TC_USERDETAILS_BV_01: Verify that the TC correctly sends an APDU containing valid RequestADUs
 				 * and provides valid ProvideUserDetailsADUs 
@@ -136,7 +136,7 @@ module EfcInfoExchange_TestCasesTc {
 		} //end group valid behaviour         
          
 		group Invalid_Behaviour { 	
-			testcase Testcase_TP_TC_USERDETAILS_BI_01() runs on MainTestComponent system TestAdapter {             
+			testcase TP_TC_USERDETAILS_BI_01() runs on MainTestComponent system TestAdapter {             
 /**
 				 * @desc    TP_TC_USERDETAILS_BI_01: Verify that the TC correctly responds to an incorrect ProvideUserDetailsADUs 
 				 * @remark  [16986:2016], Clause 6.4 and Table A.1/2 AND Table A.7/1  
@@ -216,7 +216,7 @@ module EfcInfoExchange_TestCasesTc {
 			
 			} // End of TP_TC_USERDETAILS_BI_01				
 				
-			testcase Testcase_TP_TC_USERDETAILS_BI_02() runs on MainTestComponent system TestAdapter {             
+			testcase TP_TC_USERDETAILS_BI_02() runs on MainTestComponent system TestAdapter {             
 /**
 				 * @desc    TP_TC_USERDETAILS_BI_02: Verify that the TC correctly responds to a provideUserDetailsADU
 				 * 			with no statusFlag being present 
@@ -296,7 +296,7 @@ module EfcInfoExchange_TestCasesTc {
 			
 			} // End of TP_TC_USERDETAILS_BI_02				
 				
-			testcase Testcase_TP_TC_USERDETAILS_BI_03() runs on MainTestComponent system TestAdapter {             
+			testcase TP_TC_USERDETAILS_BI_03() runs on MainTestComponent system TestAdapter {             
 /**
 				 * @desc    TP_TC_USERDETAILS_BI_03: Verify that the TC correctly responds to a ProvideUserDetailsADU
 				 *			with statusFlag ranging from 1 to 5 and no listOfUserParameters being present
@@ -376,7 +376,7 @@ module EfcInfoExchange_TestCasesTc {
 			
 			} // End of TP_TC_USERDETAILS_BI_03				
 
-			testcase Testcase_TP_TC_USERDETAILS_BI_04() runs on MainTestComponent system TestAdapter {             
+			testcase TP_TC_USERDETAILS_BI_04() runs on MainTestComponent system TestAdapter {             
 /**
 				 * @desc    TP_TC_USERDETAILS_BI_04: Verify that the TC correctly responds to a provideUserDetailsADU with statusFlag value
 				 *			not included in the interval from 1 to 5 and listOfUserParameters being present
@@ -456,7 +456,7 @@ module EfcInfoExchange_TestCasesTc {
 			
 			} // End of TP_TC_USERDETAILS_BI_04				
 
-			testcase Testcase_TP_TC_USERDETAILS_BI_05() runs on MainTestComponent system TestAdapter {             
+			testcase TP_TC_USERDETAILS_BI_05() runs on MainTestComponent system TestAdapter {             
 /**
 				 * @desc    TP_TC_USERDETAILS_BI_05: Verify that the TC correctly responds to a provideUserDetailsADU
 				 *			with invalid parameters in the UserParameterResponse field
@@ -544,7 +544,7 @@ module EfcInfoExchange_TestCasesTc {
 	
 		group Valid_Behaviour {
 		
-			testcase Testcase_TP_TC_LISTOFUSERS_BV_01() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_LISTOFUSERS_BV_01() runs on MainTestComponent system TestAdapter {
 							
                 /**
                  * @desc    TP_TC_LISTOFUSERS_BV_01: Verify that the TC correctly performs a LISTOFUSERS transaction 
@@ -571,7 +571,7 @@ module EfcInfoExchange_TestCasesTc {
 		
 		group Invalid_Behaviour {
 		
-			testcase Testcase_TP_TC_LISTOFUSERS_BI_01() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_LISTOFUSERS_BI_01() runs on MainTestComponent system TestAdapter {
 						
                 /**
                  * @desc    TP_TC_LISTOFUSERS_BI_01: Verify that the TC correctly responds to a ProvideUserIdListADU with originalUserId not present
@@ -594,7 +594,7 @@ module EfcInfoExchange_TestCasesTc {
 			
 			} // End of TP_TC_LISTOFUSERS_BI_01
 
-			testcase Testcase_TP_TC_LISTOFUSERS_BI_02() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_LISTOFUSERS_BI_02() runs on MainTestComponent system TestAdapter {
 						
                 /**
                  * @desc    TP_TC_LISTOFUSERS_BI_02: Verify that the TC correctly responds to a ProvideUserIdListADU with userIds
@@ -621,7 +621,7 @@ module EfcInfoExchange_TestCasesTc {
 			
 			} // End of TP_TC_LISTOFUSERS_BI_02
 			
-			testcase Testcase_TP_TC_LISTOFUSERS_BI_03() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_LISTOFUSERS_BI_03() runs on MainTestComponent system TestAdapter {
 						
                 /**
                  * @desc    TP_TC_LISTOFUSERS_BI_03: Verify that the TC correctly responds to a ProvideUserIdListADU
@@ -657,7 +657,7 @@ module EfcInfoExchange_TestCasesTc {
 		
 		group Valid_Behaviour {
 		
-			testcase Testcase_TP_TC_EXCEPTIONLIST_BV_01() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_EXCEPTIONLIST_BV_01() runs on MainTestComponent system TestAdapter {
 										
                 /**
                  * @desc    TP_TC_EXCEPTIONLIST_BV_01: Verify that the TC correctly responds to an ExceptionListADU for blacklist and whitelist
@@ -677,7 +677,7 @@ module EfcInfoExchange_TestCasesTc {
                 
                 } // End of TP_TC_EXCEPTIONLIST_BV_01
 
-			testcase Testcase_TP_TC_EXCEPTIONLIST_BV_02() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_EXCEPTIONLIST_BV_02() runs on MainTestComponent system TestAdapter {
 										
                 /**
                  * @desc    TP_TC_EXCEPTIONLIST_BV_02: Verify that the TC correctly responds to an ExceptionListADU
@@ -702,7 +702,7 @@ module EfcInfoExchange_TestCasesTc {
 			
 			group Invalid_Behaviour {
 			
-				testcase Testcase_TP_TC_EXCEPTIONLIST_BI_01() runs on MainTestComponent system TestAdapter {
+				testcase TP_TC_EXCEPTIONLIST_BI_01() runs on MainTestComponent system TestAdapter {
 														
                 /**
                  * @desc    TP_TC_EXCEPTIONLIST_BI_01: Verify that the TC correctly responds to an ExceptionListADU for blacklist containing
@@ -723,7 +723,7 @@ module EfcInfoExchange_TestCasesTc {
 
 				} // End of TP_TC_EXCEPTIONLIST_BI_01
 
-				testcase Testcase_TP_TC_EXCEPTIONLIST_BI_02() runs on MainTestComponent system TestAdapter {
+				testcase TP_TC_EXCEPTIONLIST_BI_02() runs on MainTestComponent system TestAdapter {
 														
                 /**
                  * @desc    TP_TC_EXCEPTIONLIST_BI_02: Verify that the TC correctly responds to an ExceptionListADU for blacklist
@@ -743,7 +743,7 @@ module EfcInfoExchange_TestCasesTc {
 
 				} // End of TP_TC_EXCEPTIONLIST_BI_02
 
-				testcase Testcase_TP_TC_EXCEPTIONLIST_BI_03() runs on MainTestComponent system TestAdapter {
+				testcase TP_TC_EXCEPTIONLIST_BI_03() runs on MainTestComponent system TestAdapter {
 														
                 /**
                  * @desc    TP_TC_EXCEPTIONLIST_BI_03: Verify that the TC correctly responds to one APDU
@@ -762,7 +762,7 @@ module EfcInfoExchange_TestCasesTc {
 
 				} // End of TP_TC_EXCEPTIONLIST_BI_03
 
-				testcase Testcase_TP_TC_EXCEPTIONLIST_BI_04() runs on MainTestComponent system TestAdapter {
+				testcase TP_TC_EXCEPTIONLIST_BI_04() runs on MainTestComponent system TestAdapter {
 														
                 /**
                  * @desc    TP_TC_EXCEPTIONLIST_BI_04: Verify that the TC correctly responds to an ExceptionListADU
@@ -782,7 +782,7 @@ module EfcInfoExchange_TestCasesTc {
 
 				} // End of TP_TC_EXCEPTIONLIST_BI_04
 
-				testcase Testcase_TP_TC_EXCEPTIONLIST_BI_05() runs on MainTestComponent system TestAdapter {
+				testcase TP_TC_EXCEPTIONLIST_BI_05() runs on MainTestComponent system TestAdapter {
 														
                 /**
                  * @desc    TP_TC_EXCEPTIONLIST_BI_05: Verify that the TC correctly responds to an ExceptionListADU
@@ -801,7 +801,7 @@ module EfcInfoExchange_TestCasesTc {
 
 				} // End of TP_TC_EXCEPTIONLIST_BI_05
 
-				testcase Testcase_TP_TC_EXCEPTIONLIST_BI_06() runs on MainTestComponent system TestAdapter {
+				testcase TP_TC_EXCEPTIONLIST_BI_06() runs on MainTestComponent system TestAdapter {
 														
                 /**
                  * @desc    TP_TC_EXCEPTIONLIST_BI_06: Verify that the TC correctly responds to an ExceptionListADU
@@ -821,7 +821,7 @@ module EfcInfoExchange_TestCasesTc {
 
 				} // End of TP_TC_EXCEPTIONLIST_BI_06
 
-				testcase Testcase_TP_TC_EXCEPTIONLIST_BI_07() runs on MainTestComponent system TestAdapter {
+				testcase TP_TC_EXCEPTIONLIST_BI_07() runs on MainTestComponent system TestAdapter {
 														
                 /**
                  * @desc    TP_TC_EXCEPTIONLIST_BI_07: Verify that the TC correctly responds
@@ -841,7 +841,7 @@ module EfcInfoExchange_TestCasesTc {
 
 				} // End of TP_TC_EXCEPTIONLIST_BI_07
 
-				testcase Testcase_TP_TC_EXCEPTIONLIST_BI_08() runs on MainTestComponent system TestAdapter {
+				testcase TP_TC_EXCEPTIONLIST_BI_08() runs on MainTestComponent system TestAdapter {
 														
                 /**
                  * @desc    TP_TC_EXCEPTIONLIST_BI_08: Verify that the TC responds correctly
@@ -871,7 +871,7 @@ module EfcInfoExchange_TestCasesTc {
          
 		group Valid_Behaviour {
            
-			testcase Testcase_TP_TC_TRUSTOBJECTS_BV_01() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_TRUSTOBJECTS_BV_01() runs on MainTestComponent system TestAdapter {
 						
                 /**
                  * @desc    TP_TC_TRUSTOBJECTS_BV_01: Verify that the TC correctly provides a TrustObjectADU without TSP request
@@ -891,7 +891,7 @@ module EfcInfoExchange_TestCasesTc {
              
 			} // End of TP_TC_TRUSTOBJECTS_BV_01
 
-			testcase Testcase_TP_TC_TRUSTOBJECTS_BV_02() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_TRUSTOBJECTS_BV_02() runs on MainTestComponent system TestAdapter {
 						
                 /**
                  * @desc    TP_TC_TRUSTOBJECTS_BV_02: Verify that the TC correctly responds to a Trust Object received
@@ -913,7 +913,7 @@ module EfcInfoExchange_TestCasesTc {
              
 			} // End of TP_TC_TRUSTOBJECTS_BV_02
 
-			testcase Testcase_TP_TC_TRUSTOBJECTS_BV_03() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_TRUSTOBJECTS_BV_03() runs on MainTestComponent system TestAdapter {
 						
                 /**
                  * @desc    TP_TC_TRUSTOBJECTS_BV_03: Verify that the TC correctly provides a TrustObjectADU
@@ -934,7 +934,7 @@ module EfcInfoExchange_TestCasesTc {
              
 			} // End of TP_TC_TRUSTOBJECTS_BV_03
 
-			testcase Testcase_TP_TC_TRUSTOBJECTS_BV_04() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_TRUSTOBJECTS_BV_04() runs on MainTestComponent system TestAdapter {
 						
                 /**
                  * @desc    TP_TC_TRUSTOBJECTS_BV_04: Verify that the TC correctly requests and responds to a TrustObjectADU
@@ -1088,7 +1088,7 @@ module EfcInfoExchange_TestCasesTc {
 	
 		group Valid_Behaviour {
 		
-			testcase Testcase_TP_TC_PAYMENTCLAIM_BV_01() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_PAYMENTCLAIM_BV_01() runs on MainTestComponent system TestAdapter {
 							
                 /**
                  * @desc    TP_TC_LISTOFUSERS_BV_01: Verify that the TC correctly performs the PAYMENTCLAIM transaction with
@@ -1109,7 +1109,7 @@ module EfcInfoExchange_TestCasesTc {
 		
 			} // End of TP_TC_LISTOFUSERS_BV_01
 					
-			testcase Testcase_TP_TC_PAYMENTCLAIM_BV_02() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_PAYMENTCLAIM_BV_02() runs on MainTestComponent system TestAdapter {
 							
                 /**
                  * @desc    TP_TC_LISTOFUSERS_BV_02: Verify that the TC correctly performs the PAYMENTCLAIM transaction with
@@ -1229,7 +1229,7 @@ module EfcInfoExchange_TestCasesTc {
 	
 		group Valid_Behaviour {
 		
-			testcase Testcase_TP_TC_DSRC_EFCCONTEXTDATA_BV_01() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_DSRC_EFCCONTEXTDATA_BV_01() runs on MainTestComponent system TestAdapter {
 							
                 /**
                  * @desc    TP_TC_DSRC_EFCCONTEXTDATA_BV_01: Verify that the TC correctly performs a DSRC.EFCCONTEXTDATA transaction
@@ -1256,7 +1256,7 @@ module EfcInfoExchange_TestCasesTc {
               	
 			} // End testcase TP_TC_DSRC_EFCCONTEXTDATA_BV_01
 			
-			testcase Testcase_TP_TC_DSRC_EFCCONTEXTDATA_BV_02() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_DSRC_EFCCONTEXTDATA_BV_02() runs on MainTestComponent system TestAdapter {
 							
                 /**
                  * @desc    TP_TC_DSRC_EFCCONTEXTDATA_BV_02: Verify that the TC correctly performs a DSRC.EFCCONTEXTDATA transaction
@@ -1298,7 +1298,7 @@ module EfcInfoExchange_TestCasesTc {
 	
 		group Valid_Behaviour {
 		
-			testcase Testcase_TP_TC_DSRC_BILLINGDETAILS_BV_01() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_DSRC_BILLINGDETAILS_BV_01() runs on MainTestComponent system TestAdapter {
 							
                /**
                 * @desc    TP_TC_DSRC_EFCCONTEXTDATA_BV_01: Verify that the TC correctly performs a DSRC.BILLINGDETAILS transaction
@@ -1323,7 +1323,7 @@ module EfcInfoExchange_TestCasesTc {
 
 			} // End testcase TP_TC_DSRC_BILLINGDETAILS_BV_01
 			
-			testcase Testcase_TP_TC_DSRC_BILLINGDETAILS_BV_02() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_DSRC_BILLINGDETAILS_BV_02() runs on MainTestComponent system TestAdapter {
 							
                /**
                 * @desc    TP_TC_DSRC_EFCCONTEXTDATA_BV_02: Verify that the TC correctly performs a DSRC.BILLINGDETAILS transaction
@@ -1354,7 +1354,7 @@ module EfcInfoExchange_TestCasesTc {
 
 			} // End testcase TP_TC_DSRC_BILLINGDETAILS_BV_02
 						
-			testcase Testcase_TP_TC_DSRC_BILLINGDETAILS_BI_03() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_DSRC_BILLINGDETAILS_BI_03() runs on MainTestComponent system TestAdapter {
 							
                /**
                 * @desc    TP_TC_DSRC_EFCCONTEXTDATA_BV_03: Verify that the TC correctly performs a DSRC.BILLINGDETAILS transaction
@@ -1401,7 +1401,7 @@ module EfcInfoExchange_TestCasesTc {
 	
 		group Valid_Behaviour {
 		
-			testcase Testcase_TP_TC_DSRC_REPORTABNORMALOBE_BV_01() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_DSRC_REPORTABNORMALOBE_BV_01() runs on MainTestComponent system TestAdapter {
 							
                /**
                 * @desc    TP_TC_DSRC_REPORTABNORMALOBE_BV_01: Verify that the TC correctly performs a DSRC.REPORTABNORMALOBE transaction
@@ -1445,7 +1445,7 @@ module EfcInfoExchange_TestCasesTc {
 	
 		group Valid_Behaviour {
 		
-			testcase Testcase_TP_TC_GNSS_TOLLDECLARATION_BV_01() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_GNSS_TOLLDECLARATION_BV_01() runs on MainTestComponent system TestAdapter {
 							
                /**
                 * @desc    TP_TC_GNSS_TOLLDECLARATION_BV_01: Verify that the TC correctly performs a GNSS.TOLLDECLARATION transaction
@@ -1472,7 +1472,7 @@ module EfcInfoExchange_TestCasesTc {
 
 			} // End testcase TP_TC_GNSS_TOLLDECLARATION_BV_01
 
-			testcase Testcase_TP_TC_GNSS_TOLLDECLARATION_BV_02() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_GNSS_TOLLDECLARATION_BV_02() runs on MainTestComponent system TestAdapter {
 							
                /**
                 * @desc    TP_TC_GNSS_TOLLDECLARATION_BV_02: Verify that the TC correctly performs a GNSS.TOLLDECLARATION transaction
@@ -1511,7 +1511,7 @@ module EfcInfoExchange_TestCasesTc {
 
 			} // End testcase TP_TC_GNSS_TOLLDECLARATION_BV_02
 
-			testcase Testcase_TP_TC_GNSS_TOLLDECLARATION_BV_03() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_GNSS_TOLLDECLARATION_BV_03() runs on MainTestComponent system TestAdapter {
 							
                /**
                 * @desc    TP_TC_GNSS_TOLLDECLARATION_BV_03: Verify that the TC correctly performs a GNSS.TOLLDECLARATION transaction
@@ -1554,7 +1554,7 @@ module EfcInfoExchange_TestCasesTc {
 		
 		group Invalid_Behaviour {
 
-			testcase Testcase_TP_TC_GNSS_TOLLDECLARATION_BI_01() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_GNSS_TOLLDECLARATION_BI_01() runs on MainTestComponent system TestAdapter {
 							
                /**
                 * @desc    TP_TC_GNSS_TOLLDECLARATION_BI_01: Verify that the TC correctly responds to an APDU containing
@@ -1581,7 +1581,7 @@ module EfcInfoExchange_TestCasesTc {
 
 			} // End testcase TP_TC_GNSS_TOLLDECLARATION_BI_01
 		
-			testcase Testcase_TP_TC_GNSS_TOLLDECLARATION_BI_02() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_GNSS_TOLLDECLARATION_BI_02() runs on MainTestComponent system TestAdapter {
 							
                /**
                 * @desc    TP_TC_GNSS_TOLLDECLARATION_BI_02: Verify that the TC correctly responds to an APDU containing
@@ -1624,7 +1624,7 @@ module EfcInfoExchange_TestCasesTc {
 
 			} // End testcase TP_TC_GNSS_TOLLDECLARATION_BI_02
 
-			testcase Testcase_TP_TC_GNSS_TOLLDECLARATION_BI_03() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_GNSS_TOLLDECLARATION_BI_03() runs on MainTestComponent system TestAdapter {
 							
                /**
                 * @desc    TP_TC_GNSS_TOLLDECLARATION_BI_03: Verify that the TC correctly responds to an APDU containing
@@ -1667,7 +1667,7 @@ module EfcInfoExchange_TestCasesTc {
 
 			} // End testcase TP_TC_GNSS_TOLLDECLARATION_BI_03
 
-			testcase Testcase_TP_TC_GNSS_TOLLDECLARATION_BI_04() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_GNSS_TOLLDECLARATION_BI_04() runs on MainTestComponent system TestAdapter {
 							
                /**
                 * @desc    TP_TC_GNSS_TOLLDECLARATION_BI_04: Verify that the TC correctly responds to an APDU
@@ -1693,7 +1693,7 @@ module EfcInfoExchange_TestCasesTc {
 
 			} // End testcase TP_TC_GNSS_TOLLDECLARATION_BI_04
                		
-			testcase Testcase_TP_TC_GNSS_TOLLDECLARATION_BI_05() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_GNSS_TOLLDECLARATION_BI_05() runs on MainTestComponent system TestAdapter {
 							
                /**
                 * @desc    TP_TC_GNSS_TOLLDECLARATION_BI_05: Verify that the TC correctly responds to an APDU containing
@@ -1718,7 +1718,7 @@ module EfcInfoExchange_TestCasesTc {
 
 			} // End testcase TP_TC_GNSS_TOLLDECLARATION_BI_05
 
-			testcase Testcase_TP_TC_GNSS_TOLLDECLARATION_BI_06() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_GNSS_TOLLDECLARATION_BI_06() runs on MainTestComponent system TestAdapter {
 							
                /**
                 * @desc    TP_TC_GNSS_TOLLDECLARATION_BI_06: Verify that the TC correctly responds to an APDU containing
@@ -1743,7 +1743,7 @@ module EfcInfoExchange_TestCasesTc {
 
 			} // End testcase TP_TC_GNSS_TOLLDECLARATION_BI_06
 
-			testcase Testcase_TP_TC_GNSS_TOLLDECLARATION_BI_07() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_GNSS_TOLLDECLARATION_BI_07() runs on MainTestComponent system TestAdapter {
 							
                /**
                 * @desc    TP_TC_GNSS_TOLLDECLARATION_BI_07: Verify that the TC correctly responds to an APDU containing
@@ -1770,7 +1770,7 @@ module EfcInfoExchange_TestCasesTc {
 
 			} // End testcase TP_TC_GNSS_TOLLDECLARATION_BI_07
 	                		
-			testcase Testcase_TP_TC_GNSS_TOLLDECLARATION_BI_08() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_GNSS_TOLLDECLARATION_BI_08() runs on MainTestComponent system TestAdapter {
 							
                /**
                 * @desc    TP_TC_GNSS_TOLLDECLARATION_BI_08: Verify that the TC correctly responds to an APDU containing
@@ -1797,7 +1797,7 @@ module EfcInfoExchange_TestCasesTc {
 
 			} // End testcase TP_TC_GNSS_TOLLDECLARATION_BI_08
 
-			testcase Testcase_TP_TC_GNSS_TOLLDECLARATION_BI_09() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_GNSS_TOLLDECLARATION_BI_09() runs on MainTestComponent system TestAdapter {
 							
                /**
                 * @desc    TP_TC_GNSS_TOLLDECLARATION_BI_09: Verify that the TC correctly responds to an APDU containing
@@ -1834,7 +1834,7 @@ module EfcInfoExchange_TestCasesTc {
 	
 		group Valid_Behaviour {
 		
-			testcase Testcase_TP_TC_GNSS_BILLINGDETAILS_TSP_BV_01() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_GNSS_BILLINGDETAILS_TSP_BV_01() runs on MainTestComponent system TestAdapter {
 							
                /**
                 * @desc    TP_TC_GNSS_BILLINGDETAILS_TSP_BV_01: Verify that the TC correctly performs
@@ -1862,7 +1862,7 @@ module EfcInfoExchange_TestCasesTc {
                 
 			} // End testcase TP_TC_GNSS_BILLINGDETAILS_TSP_BV_01
 
-			testcase Testcase_TP_TC_GNSS_BILLINGDETAILS_TSP_BV_02() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_GNSS_BILLINGDETAILS_TSP_BV_02() runs on MainTestComponent system TestAdapter {
 							
                /**
                 * @desc    TP_TC_GNSS_BILLINGDETAILS_TSP_BV_02: Verify that the TC correctly performs
@@ -1891,7 +1891,7 @@ module EfcInfoExchange_TestCasesTc {
 
 			} // End testcase TP_TC_GNSS_BILLINGDETAILS_TSP_BV_02
 
-			testcase Testcase_TP_TC_GNSS_BILLINGDETAILS_TSP_BV_03() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_GNSS_BILLINGDETAILS_TSP_BV_03() runs on MainTestComponent system TestAdapter {
 							
                /**
                 * @desc    TP_TC_GNSS_BILLINGDETAILS_TSP_BV_03: Verify that the TC correctly performs
@@ -1920,7 +1920,7 @@ module EfcInfoExchange_TestCasesTc {
 
 			} // End testcase TP_TC_GNSS_BILLINGDETAILS_TSP_BV_03
 
-			testcase Testcase_TP_TC_GNSS_BILLINGDETAILS_TSP_BV_04() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_GNSS_BILLINGDETAILS_TSP_BV_04() runs on MainTestComponent system TestAdapter {
 							
                /**
                 * @desc    TP_TC_GNSS_BILLINGDETAILS_TSP_BV_04: Verify that the TC correctly performs
@@ -1948,7 +1948,7 @@ module EfcInfoExchange_TestCasesTc {
 
 			} // End testcase TP_TC_GNSS_BILLINGDETAILS_TSP_BV_04
 
-			testcase Testcase_TP_TC_GNSS_BILLINGDETAILS_TSP_BV_05() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_GNSS_BILLINGDETAILS_TSP_BV_05() runs on MainTestComponent system TestAdapter {
 							
                /**
                 * @desc    TP_TC_GNSS_BILLINGDETAILS_TSP_BV_05: Verify that the TC correctly performs
@@ -1976,7 +1976,7 @@ module EfcInfoExchange_TestCasesTc {
 
 			} // End testcase TP_TC_GNSS_BILLINGDETAILS_TSP_BV_05
 
-			testcase Testcase_TP_TC_GNSS_BILLINGDETAILS_TSP_BV_06() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_GNSS_BILLINGDETAILS_TSP_BV_06() runs on MainTestComponent system TestAdapter {
 							
                /**
                 * @desc    TP_TC_GNSS_BILLINGDETAILS_TSP_BV_06: Verify that the TC correctly performs
@@ -2002,7 +2002,7 @@ module EfcInfoExchange_TestCasesTc {
 
 			} // End testcase TP_TC_GNSS_BILLINGDETAILS_TSP_BV_06
 
-			testcase Testcase_TP_TC_GNSS_BILLINGDETAILS_TSP_BV_07() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_GNSS_BILLINGDETAILS_TSP_BV_07() runs on MainTestComponent system TestAdapter {
 							
                /**
                 * @desc    TP_TC_GNSS_BILLINGDETAILS_TSP_BV_07: Verify that the TC correctly performs
@@ -2031,7 +2031,7 @@ module EfcInfoExchange_TestCasesTc {
 
 			} // End testcase TP_TC_GNSS_BILLINGDETAILS_TSP_BV_07
 
-			testcase Testcase_TP_TC_GNSS_BILLINGDETAILS_TSP_BV_08() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_GNSS_BILLINGDETAILS_TSP_BV_08() runs on MainTestComponent system TestAdapter {
 							
                /**
                 * @desc    TP_TC_GNSS_BILLINGDETAILS_TSP_BV_08: VVerify that the TC correctly performs
@@ -2066,7 +2066,7 @@ module EfcInfoExchange_TestCasesTc {
 
 		group Invalid_Behaviour {
 		
-			testcase Testcase_TP_TC_GNSS_BILLINGDETAILS_TSP_BI_01() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_GNSS_BILLINGDETAILS_TSP_BI_01() runs on MainTestComponent system TestAdapter {
 							
                /**
                 * @desc    TP_TC_GNSS_BILLINGDETAILS_TSP_BI_01: Verify that the TC correctly responds
@@ -2116,7 +2116,7 @@ module EfcInfoExchange_TestCasesTc {
                 
 			} // End testcase TP_TC_GNSS_BILLINGDETAILS_TSP_BI_01
 
-			testcase Testcase_TP_TC_GNSS_BILLINGDETAILS_TSP_BI_02() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_GNSS_BILLINGDETAILS_TSP_BI_02() runs on MainTestComponent system TestAdapter {
 							
                /**
                 * @desc    TP_TC_GNSS_BILLINGDETAILS_TSP_BI_02: Verify that the TC correctly responds
@@ -2142,7 +2142,7 @@ module EfcInfoExchange_TestCasesTc {
                 
 			} // End testcase TP_TC_GNSS_BILLINGDETAILS_TSP_BI_02
 
-			testcase Testcase_TP_TC_GNSS_BILLINGDETAILS_TSP_BI_03() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_GNSS_BILLINGDETAILS_TSP_BI_03() runs on MainTestComponent system TestAdapter {
 							
                /**
                 * @desc    TP_TC_GNSS_BILLINGDETAILS_TSP_BI_03: Verify that the TC correctly responds
@@ -2167,7 +2167,7 @@ module EfcInfoExchange_TestCasesTc {
                 
 			} // End testcase TP_TC_GNSS_BILLINGDETAILS_TSP_BI_03
 
-			testcase Testcase_TP_TC_GNSS_BILLINGDETAILS_TSP_BI_04() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_GNSS_BILLINGDETAILS_TSP_BI_04() runs on MainTestComponent system TestAdapter {
 							
                /**
                 * @desc    TP_TC_GNSS_BILLINGDETAILS_TSP_BI_04: Verify that the TC correctly reponds
@@ -2195,7 +2195,7 @@ module EfcInfoExchange_TestCasesTc {
                 
 			} // End testcase TP_TC_GNSS_BILLINGDETAILS_TSP_BI_04
 
-			testcase Testcase_TP_TC_GNSS_BILLINGDETAILS_TSP_BI_05() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_GNSS_BILLINGDETAILS_TSP_BI_05() runs on MainTestComponent system TestAdapter {
 							
                /**
                 * @desc    TP_TC_GNSS_BILLINGDETAILS_TSP_BI_05: Verify that the TC correctly reponds
@@ -2231,7 +2231,7 @@ module EfcInfoExchange_TestCasesTc {
 	
 		group Valid_Behaviour {
 		
-			testcase Testcase_TP_TC_GNSS_BILLINGDETAILS_TC_BV_01() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_GNSS_BILLINGDETAILS_TC_BV_01() runs on MainTestComponent system TestAdapter {
 							
                /**
                 * @desc    TP_TC_GNSS_BILLINGDETAILS_TC_BV_01: Verify that the TC correctly performs a GNSS.BILLINGDETAILS.TC transaction
@@ -2265,7 +2265,7 @@ module EfcInfoExchange_TestCasesTc {
                 
 			} // End testcase TP_TC_GNSS_BILLINGDETAILS_TC_BV_01
 
-			testcase Testcase_TP_TC_GNSS_BILLINGDETAILS_TC_BV_02() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_GNSS_BILLINGDETAILS_TC_BV_02() runs on MainTestComponent system TestAdapter {
 							
                /**
                 * @desc    TP_TC_GNSS_BILLINGDETAILS_TC_BV_02: Verify that the TC correctly performs
@@ -2298,7 +2298,7 @@ module EfcInfoExchange_TestCasesTc {
                 
 			} // End testcase TP_TC_GNSS_BILLINGDETAILS_TC_BV_02
 
-			testcase Testcase_TP_TC_GNSS_BILLINGDETAILS_TC_BV_03() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_GNSS_BILLINGDETAILS_TC_BV_03() runs on MainTestComponent system TestAdapter {
 							
                /**
                 * @desc    TP_TC_GNSS_BILLINGDETAILS_TC_BV_03: Verify that the TC correctly performs
@@ -2351,7 +2351,7 @@ module EfcInfoExchange_TestCasesTc {
 	
 		group Valid_Behaviour {
 		
-			testcase Testcase_TP_TC_GNSS_PAYMENTANNOUNCEMENT_BV_01() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_GNSS_PAYMENTANNOUNCEMENT_BV_01() runs on MainTestComponent system TestAdapter {
 							
                /**
                 * @desc    TP_TC_GNSS_PAYMENTANNOUNCEMENT_BV_01: Verify that the TC correctly performs
@@ -2380,7 +2380,7 @@ module EfcInfoExchange_TestCasesTc {
 		
 		group Invalid_Behaviour {
 		
-			testcase Testcase_TP_TC_GNSS_PAYMENTANNOUNCEMENT_BI_01() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_GNSS_PAYMENTANNOUNCEMENT_BI_01() runs on MainTestComponent system TestAdapter {
 							
                /**
                 * @desc    TP_TC_GNSS_PAYMENTANNOUNCEMENT_BI_01: Verify that the TC correctly responds to
@@ -2414,7 +2414,7 @@ module EfcInfoExchange_TestCasesTc {
                 
 			} // End testcase TP_TC_GNSS_PAYMENTANNOUNCEMENT_BI_01
 
-			testcase Testcase_TP_TC_GNSS_PAYMENTANNOUNCEMENT_BI_02() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_GNSS_PAYMENTANNOUNCEMENT_BI_02() runs on MainTestComponent system TestAdapter {
 							
                /**
                 * @desc    TP_TC_GNSS_PAYMENTANNOUNCEMENT_BI_02: Verify that the TC correctly responds to
@@ -2449,7 +2449,7 @@ module EfcInfoExchange_TestCasesTc {
                 
 			} // End testcase TP_TC_GNSS_PAYMENTANNOUNCEMENT_BI_02
 
-			testcase Testcase_TP_TC_GNSS_PAYMENTANNOUNCEMENT_BI_03() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_GNSS_PAYMENTANNOUNCEMENT_BI_03() runs on MainTestComponent system TestAdapter {
 							
                /**
                 * @desc    TP_TC_GNSS_PAYMENTANNOUNCEMENT_BI_03: Verify that the TC correctly responds
@@ -2481,7 +2481,7 @@ module EfcInfoExchange_TestCasesTc {
                 
 			} // End testcase TP_TC_GNSS_PAYMENTANNOUNCEMENT_BI_03
 
-			testcase Testcase_TP_TC_GNSS_PAYMENTANNOUNCEMENT_BI_04() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_GNSS_PAYMENTANNOUNCEMENT_BI_04() runs on MainTestComponent system TestAdapter {
 							
                /**
                 * @desc    TP_TC_GNSS_PAYMENTANNOUNCEMENT_BI_04: Verify that the TC correctly responds to
@@ -2513,7 +2513,7 @@ module EfcInfoExchange_TestCasesTc {
                 
 			} // End testcase TP_TC_GNSS_PAYMENTANNOUNCEMENT_BI_04
 
-			testcase Testcase_TP_TC_GNSS_PAYMENTANNOUNCEMENT_BI_05() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_GNSS_PAYMENTANNOUNCEMENT_BI_05() runs on MainTestComponent system TestAdapter {
 							
                /**
                 * @desc    TP_TC_GNSS_PAYMENTANNOUNCEMENT_BI_05: Verify that the TC correctly responds to
@@ -2543,7 +2543,7 @@ module EfcInfoExchange_TestCasesTc {
                 
 			} // End testcase TP_TC_GNSS_PAYMENTANNOUNCEMENT_BI_05
 
-			testcase Testcase_TP_TC_GNSS_PAYMENTANNOUNCEMENT_BI_06() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_GNSS_PAYMENTANNOUNCEMENT_BI_06() runs on MainTestComponent system TestAdapter {
 							
                /**
                 * @desc    TP_TC_GNSS_PAYMENTANNOUNCEMENT_BI_06: Verify that the TC correctly responds to
