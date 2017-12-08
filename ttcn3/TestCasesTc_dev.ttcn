@@ -580,7 +580,7 @@ module EfcInfoExchange_TestCasesTc {
                   
                 // Initialisation
                   
-                // Step 1: Tigger IUT with LISTOFUSERS_TR_TC_1 to send one valid RequestADU of type userListRequest with
+                // Step 1: Trigger IUT with LISTOFUSERS_TR_TC_1 to send one valid RequestADU of type userListRequest with
                 //		- userIdRequestType = 0,
                 //		- userId = at least one of {pan, licensePlateNumber, obeId, contractSerialNumber},
                 //		- userIdRequestTime; and
