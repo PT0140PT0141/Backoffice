@@ -44,26 +44,14 @@ module EfcInfoExchange_TestCasesTspOld {
                
                
                // Initialisation
-				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS;
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS and ICS_A3_3_useAuthenticator;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
-				// we want to ask for a random number of parameters randomly chosen among those supported
-				// the v_userParameterRequest array will be made of a random number of elements containing randomly picked up
-				// parameter identifiers from the list of supported parameters (PIXIT value)
-				const integer totNoParams := sizeof(USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS);
-				const integer noParamsToUse := float2int(rnd() * int2float(totNoParams));
-				var UserParameterRequest v_userParameterRequests[noParamsToUse];   
-				for (var integer v_ct :=0; v_ct<noParamsToUse;v_ct:=v_ct+1) {
-					//Note: float2int removes the fractional part and returns just the integer, it is NOT a rounding function. That is why this works
-					v_userParameterRequests[v_ct] := USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS[float2int(rnd()) * totNoParams];
-				};
-               
-               // PT140 TODO: Set conditions in order to use authenticated connection
-               
+				var UserParameterRequest v_userParameterRequests := f_userDetailsParameters();                
+                              
                // Step 1: Send Initiating APDU containing a valid RequestADU with requestedADUType=provideUserDetailsADU
                // and in addition an infoExchangeAuthenticator = value calculated according to clause 7.3 of EN ISO 12855
                
-               // PT140 TODO: Template m_apduSecInit for authenticated APDU to be defined
 				f_sendAndLogApdu(
 					m_apduSecInit(
 						{m_aduRequestProvideUserDetails(v_userParameterRequests)}
@@ -112,16 +100,7 @@ module EfcInfoExchange_TestCasesTspOld {
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
-				// we want to ask for a random number of parameters randomly chosen among those supported
-				// the v_userParameterRequest array will be made of a random number of elements containing randomly picked up
-				// parameter identifiers from the list of supported parameters (PIXIT value)
-				const integer totNoParams := sizeof(USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS);
-				const integer noParamsToUse := float2int(rnd() * int2float(totNoParams));
-				var UserParameterRequest v_userParameterRequests[noParamsToUse];   
-				for (var integer v_ct :=0; v_ct<noParamsToUse;v_ct:=v_ct+1) {
-					//Note: float2int removes the fractional part and returns just the integer, it is NOT a rounding function. That is why this works
-					v_userParameterRequests[v_ct] := USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS[float2int(rnd()) * totNoParams];
-				};
+				var UserParameterRequest v_userParameterRequests := f_userDetailsParameters();                
 				
 				// Step 1: Send Initiating APDU containing a valid RequestADU with requestedADUType=provideUserDetailsADU
 				// and in addition containing APCI parameter field containing aidIdentifier ≠ “0” and valid RequestADU with requestedADUType=provideUserDetailsADU
@@ -180,16 +159,7 @@ module EfcInfoExchange_TestCasesTspOld {
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
-				// we want to ask for a random number of parameters randomly chosen among those supported
-				// the v_userParameterRequest array will be made of a random number of elements containing randomly picked up
-				// parameter identifiers from the list of supported parameters (PIXIT value)
-				const integer totNoParams := sizeof(USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS);
-				const integer noParamsToUse := float2int(rnd() * int2float(totNoParams));
-				var UserParameterRequest v_userParameterRequests[noParamsToUse];   
-				for (var integer v_ct :=0; v_ct<noParamsToUse;v_ct:=v_ct+1) {
-					//Note: float2int removes the fractional part and returns just the integer, it is NOT a rounding function. That is why this works
-					v_userParameterRequests[v_ct] := USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS[float2int(rnd()) * totNoParams];
-				};
+				var UserParameterRequest v_userParameterRequests := f_userDetailsParameters();                
 				
 				// Step 1: Send Initiating APDU containing a valid RequestADU with requestedADUType=provideUserDetailsADU
 				// containing apduOriginator ≠ value declared in the PIXIT
@@ -251,16 +221,7 @@ module EfcInfoExchange_TestCasesTspOld {
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
-				// we want to ask for a random number of parameters randomly chosen among those supported
-				// the v_userParameterRequest array will be made of a random number of elements containing randomly picked up
-				// parameter identifiers from the list of supported parameters (PIXIT value)
-				const integer totNoParams := sizeof(USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS);
-				const integer noParamsToUse := float2int(rnd() * int2float(totNoParams));
-				var UserParameterRequest v_userParameterRequests[noParamsToUse];   
-				for (var integer v_ct :=0; v_ct<noParamsToUse;v_ct:=v_ct+1) {
-					//Note: float2int removes the fractional part and returns just the integer, it is NOT a rounding function. That is why this works
-					v_userParameterRequests[v_ct] := USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS[float2int(rnd()) * totNoParams];
-				};
+				var UserParameterRequest v_userParameterRequests := f_userDetailsParameters();                
 				
 				// Step 1: Send Initiating APDU containing a valid RequestADU with requestedADUType=provideUserDetailsADU
 				// containing informationSenderID ≠ value declared in the PIXIT
@@ -322,16 +283,7 @@ module EfcInfoExchange_TestCasesTspOld {
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
-				// we want to ask for a random number of parameters randomly chosen among those supported
-				// the v_userParameterRequest array will be made of a random number of elements containing randomly picked up
-				// parameter identifiers from the list of supported parameters (PIXIT value)
-				const integer totNoParams := sizeof(USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS);
-				const integer noParamsToUse := float2int(rnd() * int2float(totNoParams));
-				var UserParameterRequest v_userParameterRequests[noParamsToUse];   
-				for (var integer v_ct :=0; v_ct<noParamsToUse;v_ct:=v_ct+1) {
-					//Note: float2int removes the fractional part and returns just the integer, it is NOT a rounding function. That is why this works
-					v_userParameterRequests[v_ct] := USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS[float2int(rnd()) * totNoParams];
-				};
+				var UserParameterRequest v_userParameterRequests := f_userDetailsParameters();                
 				
 				// Step 1: Send Initiating APDU containing a valid RequestADU with requestedADUType=provideUserDetailsADU
 				// containing informationrecipientID  ≠ value declared in the PIXIT
@@ -393,16 +345,8 @@ module EfcInfoExchange_TestCasesTspOld {
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
-				// we want to ask for a random number of parameters randomly chosen among those supported
-				// the v_userParameterRequest array will be made of a random number of elements containing randomly picked up
-				// parameter identifiers from the list of supported parameters (PIXIT value)
-				const integer totNoParams := sizeof(USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS);
-				const integer noParamsToUse := float2int(rnd() * int2float(totNoParams));
-				var UserParameterRequest v_userParameterRequests[noParamsToUse];   
-				for (var integer v_ct :=0; v_ct<noParamsToUse;v_ct:=v_ct+1) {
-					//Note: float2int removes the fractional part and returns just the integer, it is NOT a rounding function. That is why this works
-					v_userParameterRequests[v_ct] := USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS[float2int(rnd()) * totNoParams];
-				};
+				var UserParameterRequest v_userParameterRequests := f_userDetailsParameters();                
+
 				// First, get the apdu to be sent in a variable to avoid apduIdentifier to be re-generated, then send the Apdu
 				var InfoExchange apduToBeSent := m_apduNoSecInit(
 						{m_aduRequestProvideUserDetails(v_userParameterRequests)}
@@ -491,16 +435,7 @@ module EfcInfoExchange_TestCasesTspOld {
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
-				// we want to ask for a random number of parameters randomly chosen among those supported
-				// the v_userParameterRequest array will be made of a random number of elements containing randomly picked up
-				// parameter identifiers from the list of supported parameters (PIXIT value)
-				const integer totNoParams := sizeof(USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS);
-				const integer noParamsToUse := float2int(rnd() * int2float(totNoParams));
-				var UserParameterRequest v_userParameterRequests[noParamsToUse];   
-				for (var integer v_ct :=0; v_ct<noParamsToUse;v_ct:=v_ct+1) {
-					//Note: float2int removes the fractional part and returns just the integer, it is NOT a rounding function. That is why this works
-					v_userParameterRequests[v_ct] := USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS[float2int(rnd()) * totNoParams];
-				};
+				var UserParameterRequest v_userParameterRequests := f_userDetailsParameters();                
 				
 				// Step 1: Send Initiating APDU containing a valid RequestADU with APCI parameter field containing nextApduId
 				template (value) ApciFields m_apciSendFirstInvalidAid modifies m_apciSendFirst:= {nextApduId := 1};
@@ -559,16 +494,7 @@ module EfcInfoExchange_TestCasesTspOld {
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
-				// we want to ask for a random number of parameters randomly chosen among those supported
-				// the v_userParameterRequest array will be made of a random number of elements containing randomly picked up
-				// parameter identifiers from the list of supported parameters (PIXIT value)
-				const integer totNoParams := sizeof(USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS);
-				const integer noParamsToUse := float2int(rnd() * int2float(totNoParams));
-				var UserParameterRequest v_userParameterRequests[noParamsToUse];   
-				for (var integer v_ct :=0; v_ct<noParamsToUse;v_ct:=v_ct+1) {
-					//Note: float2int removes the fractional part and returns just the integer, it is NOT a rounding function. That is why this works
-					v_userParameterRequests[v_ct] := USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS[float2int(rnd()) * totNoParams];
-				};
+				var UserParameterRequest v_userParameterRequests := f_userDetailsParameters();                
 				
 				// Step 1: Send Initiating APDU containing a valid RequestADU with APCI parameter field containing inResponseToApduId
 				template (value) ApciFields m_apciSendFirstInvalidAid modifies m_apciSendFirst:= {inResponseToApduId := 1};
@@ -743,16 +669,7 @@ module EfcInfoExchange_TestCasesTspOld {
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
-				// we want to ask for a random number of parameters randomly chosen among those supported
-				// the v_userParameterRequest array will be made of a random number of elements containing randomly picked up
-				// parameter identifiers from the list of supported parameters (PIXIT value)
-				const integer totNoParams := sizeof(USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS);
-				const integer noParamsToUse := float2int(rnd() * int2float(totNoParams));
-				var UserParameterRequest v_userParameterRequests[noParamsToUse];   
-				for (var integer v_ct :=0; v_ct<noParamsToUse;v_ct:=v_ct+1) {
-					//Note: float2int removes the fractional part and returns just the integer, it is NOT a rounding function. That is why this works
-					v_userParameterRequests[v_ct] := USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS[float2int(rnd()) * totNoParams];
-				};
+				var UserParameterRequest v_userParameterRequests := f_userDetailsParameters();                
 				
 				// Step 1: Send an Initiating_Apdu containing APCI parameter field with apduDate = invalid
 				// and valid RequestADU with requestedADUType=provideUserDetailsADU
@@ -797,22 +714,11 @@ module EfcInfoExchange_TestCasesTspOld {
               */
                
                // Initialisation
-               
-               // PT140 TODO: Set conditions in order to use authenticated connection
-               
-				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS;
+                              
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS and ICS_A3_3_useAuthenticator;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
-				// we want to ask for a random number of parameters randomly chosen among those supported
-				// the v_userParameterRequest array will be made of a random number of elements containing randomly picked up
-				// parameter identifiers from the list of supported parameters (PIXIT value)
-				const integer totNoParams := sizeof(USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS);
-				const integer noParamsToUse := float2int(rnd() * int2float(totNoParams));
-				var UserParameterRequest v_userParameterRequests[noParamsToUse];   
-				for (var integer v_ct :=0; v_ct<noParamsToUse;v_ct:=v_ct+1) {
-					//Note: float2int removes the fractional part and returns just the integer, it is NOT a rounding function. That is why this works
-					v_userParameterRequests[v_ct] := USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS[float2int(rnd()) * totNoParams];
-				};
+				var UserParameterRequest v_userParameterRequests := f_userDetailsParameters();                
 				
 				// Step 1: Send an Initiating_Apdu containing invalid authenticator
 				// and valid RequestADU with requestedADUType=provideUserDetailsADU
@@ -890,7 +796,7 @@ module EfcInfoExchange_TestCasesTspOld {
 					//Note: float2int removes the fractional part and returns just the integer, it is NOT a rounding function. That is why this works
 					v_userParameterRequests[v_ct] := USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS[float2int(rnd()) * totNoParams];
 				};
-                
+				var UserParameterRequest v_userParameterRequests := f_userDetailsParameters();                
 				// Step1: send RequestADU
 				f_sendAndLogApdu(
 					m_apduNoSecInit(
@@ -1229,16 +1135,7 @@ module EfcInfoExchange_TestCasesTspOld {
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
-				// we want to ask for a random number of parameters randomly chosen among those supported
-				// the v_userParameterRequest array will be made of a random number of elements containing randomly picked up
-				// parameter identifiers from the list of supported parameters (PIXIT value)
-				const integer totNoParams := sizeof(USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS);
-				const integer noParamsToUse := float2int(rnd() * int2float(totNoParams));
-				var UserParameterRequest v_userParameterRequests[noParamsToUse];   
-				for (var integer v_ct :=0; v_ct<noParamsToUse;v_ct:=v_ct+1) {
-					//Note: float2int removes the fractional part and returns just the integer, it is NOT a rounding function. That is why this works
-					v_userParameterRequests[v_ct] := USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS[float2int(rnd()) * totNoParams];
-				};
+				var UserParameterRequest v_userParameterRequests := f_userDetailsParameters();                
                 
 				// Step1: send RequestADU
 				f_sendAndLogApdu(
@@ -1941,6 +1838,8 @@ module EfcInfoExchange_TestCasesTspOld {
                   * @remark  [16986:2016], Clause 6.8 and Table A.1/2 AND Table A.7/5 
                   */
  				// Initialisation
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_5_implementedPAYMENTCLAIM;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
                  
                 // PT 140: TODO Probably there is no need to have an initial PAYMENTCLAIM for this test case as stated in the TSS&TP
 				// Start by setting test success
@@ -1965,7 +1864,10 @@ module EfcInfoExchange_TestCasesTspOld {
                   * @remark  [16986:2016], Clause 6.8 and Table A.1/2 AND Table A.7/5 
                   */
                   
-                 // Initialisation 
+                 // Initialisation
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_5_implementedPAYMENTCLAIM;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				                  
                 // PT 140: TODO It is not possible to send two PAYMENTCLAM Adus in the same APDU as stated in the TSS&TP
 				// Start by setting test success
                 // Send one preset Billing Details
@@ -1994,6 +1896,8 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_5_implementedPAYMENTCLAIM;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc                 
 					// Start by setting test success
 	                // Send one preset Billing Details
 	                // Wait for positive Ack
@@ -2017,6 +1921,8 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_5_implementedPAYMENTCLAIM;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc                 
 				// Start by setting test success
                 // Send one preset Billing Details
                 // Wait for positive Ack
@@ -2038,6 +1944,9 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_5_implementedPAYMENTCLAIM;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				
                 // PT 140: TODO Probably there is no need to have an initial PAYMENTCLAIM for this test case as stated in the TSS&TP
 				// Start by setting test success
                 // Send one preset Billing Details
@@ -2058,7 +1967,10 @@ module EfcInfoExchange_TestCasesTspOld {
                   * @remark  [16986:2016], Clause 6.8 and Table A.1/2 AND Table A.7/5  
                   */
                   
-                 // Initialisation 
+                 // Initialisation
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_5_implementedPAYMENTCLAIM;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				                  
                 // PT 140: TODO Probably there is no need to have an initial PAYMENTCLAIM for this test case as stated in the TSS&TP
 				// Start by setting test success
                 // Send one preset Billing Details
@@ -2079,6 +1991,9 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_5_implementedPAYMENTCLAIM;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				                 
                  // PT140: IUT has performed two BILLINGDETAILS transactions identified by billingDetailsId=B_Id_1 and B_Id_2 respectively
                  // AND billingDetailsAmount.paymentFeeAmount = 400 AND 500 respectively
                  
@@ -2105,6 +2020,9 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_5_implementedPAYMENTCLAIM;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				                 
 				// Start by setting test success
                 // Send one preset Billing Details
                 // Wait for positive Ack
@@ -2341,10 +2259,31 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_3_implementedDSRCBILLINGDETAILS;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
                  // Step 1: Send one valid APDU containing one valid BillingDetailsADU with no optional fields except includedDiscounts
+                 // PT140 TODO : mw_aduBillingDetailsDetails template to be defined
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+					{modifies mw_aduBillingDetailsDetails:= {
+					  	includedDiscounts := ??
+					  	}
+					});                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 
                  // Step 2: Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
-                
+				// Set timer
+                 t_step.start(BILLINGDETAILS_TIME1_MAX_TSP);                 
+				alt {
+					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
+					  
+						// Log what we received
+						f_logApduReceivedAndTStep();
+						t_step.stop;
+						//Set verdict
+						setverdict(pass);
+					}
+				} 
+				f_closeDownMtc();                  
                 } // End of TP_TSP_DSRC.BILLINGDETAILS_BV_01
 
            testcase TP_TSP_DSRC.BILLINGDETAILS_BV_02() runs on IutComp system TestAdapter {
@@ -2355,8 +2294,12 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_3_implementedDSRCBILLINGDETAILS;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
-                 // Step 1: Send one valid APDU containing 10 valid BillingDetailsADU with actionCode = SEND 
+
+                 // Step 1: Send one valid APDU containing 10 valid BillingDetailsADU with actionCode = SEND
+                  
                  // Step 2: Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
                 
                 } // End of TP_TSP_DSRC.BILLINGDETAILS_BV_02
@@ -2368,18 +2311,60 @@ module EfcInfoExchange_TestCasesTspOld {
                   * @remark  [16986:2016], Clause 7.3.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/3
                   */
                   
-                 // Initialisation 
-                 // Send one valid APDU containing one valid BillingDetailsADU numbered 1 with only mandatory field
-                 // Wait for negative Ack within DSRC.BILLINGDETAILS.TIME1
+                 // Initialisation
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_3_implementedDSRCBILLINGDETAILS;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
+ 
+                 // Send one valid APDU containing one valid BillingDetailsADU numbered 1 with only mandatory field
+
+                 // PT140 TODO : mw_aduBillingDetailsDetails template and related fields to be defined
+
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+					{modifies mw_aduBillingDetailsDetails:= {
+					  	billingDetailsId := 1, actionCode := Send ???
+					  	}
+					});                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 
+                 // Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
+				// Set timer
+                 t_step.start(BILLINGDETAILS_TIME1_MAX_TSP);                 
+				alt {
+					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+						t_step.stop;
+						//Set verdict
+						setverdict(pass);
+					}
+				} 
                  // Step 1: Send one valid APDU containing one valid BillingDetailsADU with only mandatory fields and with
                  	// actionCode = adjust
                  	// billingDetailsNum = 1
                  	// paymentFeeAmount = 45
+                 // PT140 TODO : mw_aduBillingDetailsDetails template and related fields to be defined
+
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+					{modifies mw_aduBillingDetailsDetails:= {
+					  	billingDetailsId := 1, actionCode := adjust, paymentFeeAmount := 45 ???
+					  	}
+					});                 
+				f_sendAndLogApdu(v_apduRespondedTo);
+				                 
                  // Step 2: Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
-                 
-                
-                } // End of TP_TSP_DSRC.BILLINGDETAILS_BV_03
+				// Set timer
+                 t_step.start(BILLINGDETAILS_TIME1_MAX_TSP);                 
+				alt {
+					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+						t_step.stop;
+						//Set verdict
+						setverdict(pass);
+					}
+				} 
+                          
+           } // End of TP_TSP_DSRC.BILLINGDETAILS_BV_03
 
            testcase TP_TSP_DSRC.BILLINGDETAILS_BV_04() runs on IutComp system TestAdapter {
              
@@ -2389,15 +2374,55 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_3_implementedDSRCBILLINGDETAILS;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+
 
                  // Send one valid APDU containing one valid BillingDetailsADU numbered 1 with only mandatory field
-                 // Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
+                 // PT140 TODO : mw_aduBillingDetailsDetails template and related fields to be defined
 
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+					{modifies mw_aduBillingDetailsDetails:= {
+					  	billingDetailsId := 1, actionCode := Send ???
+					  	}
+					});                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 
+                 // Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
+				// Set timer
+                 t_step.start(BILLINGDETAILS_TIME1_MAX_TSP);                 
+				alt {
+					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+						t_step.stop;
+						//Set verdict
+						setverdict(pass);
+					}
+				} 
                  // Step 1: Send one valid APDU containing one valid BillingDetailsADU with only mandatory fields and with
                  	// actionCode = revoke
                  	// billingDetailsNum = 1
+                 // PT140 TODO : mw_aduBillingDetailsDetails template and related fields to be defined
+
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+					{modifies mw_aduBillingDetailsDetails:= {
+					  	billingDetailsId := 1, actionCode := revoke ???
+					  	}
+					});                 
+				f_sendAndLogApdu(v_apduRespondedTo);
+				                 
                  // Step 2: Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
-                
+				// Set timer
+                 t_step.start(BILLINGDETAILS_TIME1_MAX_TSP);                 
+				alt {
+					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+						t_step.stop;
+						//Set verdict
+						setverdict(pass);
+					}
+				}                 
                 } // End of TP_TSP_DSRC.BILLINGDETAILS_BV_04
            
  		} // End of group Valid_Behaviour
@@ -2412,6 +2437,9 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_3_implementedDSRCBILLINGDETAILS;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+
 
                  // Send one valid APDU containing one valid BillingDetailsADU numbered 13 with only mandatory field
                  // Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
@@ -2429,6 +2457,10 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_3_implementedDSRCBILLINGDETAILS;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+
+
                  //  Send one valid APDU containing one BillingDetailsADU numbered 3 with actionCode = SEND and only mandatory fields
                  // Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
 
@@ -2449,6 +2481,9 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_3_implementedDSRCBILLINGDETAILS;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+
 
                  //  Send one valid APDU containing one BillingDetailsADU numbered 3 with actionCode = SEND and only mandatory fields
                  // Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
@@ -2467,7 +2502,11 @@ module EfcInfoExchange_TestCasesTspOld {
                   * @remark  [16986:2016], Clause 7.3.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/3
                   */
                   
-                 // Initialisation 
+                 // Initialisation
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_3_implementedDSRCBILLINGDETAILS;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+
+ 
                  //  Send one valid APDU containing one BillingDetailsADU numbered 3 with actionCode = SEND and only mandatory fields
                  // Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
 
@@ -2486,6 +2525,9 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_3_implementedDSRCBILLINGDETAILS;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+
 
 				// Start by setting test success
 				// Send one valid DSRC.BILLINGDETAILS numbered 3

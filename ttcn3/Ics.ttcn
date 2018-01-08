@@ -11,7 +11,8 @@ module EfcInfoExchange_Ics {
     modulepar boolean ICS_A1_1_isTc := true; 
     modulepar boolean ICS_A1_2_isTsp := true;
     modulepar boolean ICS_A2_1_isDsrc := true; 
-    modulepar boolean ICS_A2_2_isGnss := true; 
+    modulepar boolean ICS_A2_2_isGnss := true;
+    modulepar boolean ICS_A3_3_useAuthenticator := false; 
     modulepar boolean ICS_A7_1_implementedUSERDETAILS := true; 
     modulepar boolean ICS_A7_2_implementedLISTOFUSERS := true; 
     modulepar boolean ICS_A7_3_implementedEXCEPTIONLIST := true; 
