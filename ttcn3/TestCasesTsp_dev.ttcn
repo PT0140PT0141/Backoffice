@@ -3302,7 +3302,7 @@ module EfcInfoExchange_TestCasesTspOld {
 						f_logApduReceivedAndTStep();
 
 						//Check minumum time and stop timer
-						f_checkMinimumTStep(LISTOFUSERS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						f_checkMinimumTStep(BILLINGDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
 						t_step.stop;
 						setverdict(fail);
 						// Check the issue list presence and contents
@@ -3381,7 +3381,7 @@ module EfcInfoExchange_TestCasesTspOld {
 						f_logApduReceivedAndTStep();
 
 						//Check minumum time and stop timer
-						f_checkMinimumTStep(LISTOFUSERS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						f_checkMinimumTStep(BILLINGETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
 						t_step.stop;
 						
 						//Set verdict
@@ -3392,7 +3392,7 @@ module EfcInfoExchange_TestCasesTspOld {
 						f_logApduReceivedAndTStep();
 
 						//Check minumum time and stop timer
-						f_checkMinimumTStep(LISTOFUSERS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						f_checkMinimumTStep(BILLINGDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
 						t_step.stop;
 						
 						//Set verdict
@@ -3456,7 +3456,7 @@ module EfcInfoExchange_TestCasesTspOld {
 						f_logApduReceivedAndTStep();
 
 						//Check minumum time and stop timer
-						f_checkMinimumTStep(LISTOFUSERS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						f_checkMinimumTStep(BILLINGDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
 						t_step.stop;
 						
 						//Set verdict
@@ -3467,7 +3467,7 @@ module EfcInfoExchange_TestCasesTspOld {
 						f_logApduReceivedAndTStep();
 
 						//Check minumum time and stop timer
-						f_checkMinimumTStep(LISTOFUSERS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						f_checkMinimumTStep(BILLINGDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
 						t_step.stop;
 						
 						//Set verdict
@@ -3535,9 +3535,10 @@ module EfcInfoExchange_TestCasesTspOld {
 					}
                 } // End of alt statement
                 
+                f_closeDownMtc();  			
+                
                 } // End of TP_TSP_DSRC.BILLINGDETAILS_BI_05
 
-				f_closeDownMtc();  			
 		
         } // End of group Invalid_Behaviour
 
@@ -3554,10 +3555,33 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_3_implementedDSRCREPORTABNORMALOBE;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
-                // Step 1:
-                	// Send one valid DSRC.REPORTABNORMALOBE
-              		// Wait for positive Ack (if negative Ack or not received set test failure)                	
+                // Send one valid DSRC.REPORTABNORMALOBE
+                 // PT140 TODO : mw_aduReportAbnormalOBE template to be defined
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+					{modifies mw_aduReportAbnormalOBE:= {
+					  	userId := EXISTING_USER_ID,
+					  	dateAndTime := now;
+					  	abnormalOBEReasonCode := AbnormalOBEReasonCode_reasonNotToBeDisclosed_
+					  	}
+					});                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 
+                 // Step 2: Wait for positive Ack within DSRC_REPORTABNORMALOBE_TIME1
+				// Set timer
+                 t_step.start(DSRC_REPORTABNORMALOBE_TIME1_MAX_TSP);                 
+				alt {
+					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
+					  
+						// Log what we received
+						f_logApduReceivedAndTStep();
+						t_step.stop;
+						//Set verdict
+						setverdict(pass);
+					}
+				} 
+				f_closeDownMtc();                  
                 
                 } // End of TP_TSP_DSRC.REPORTABNORMALOBE_BV_01
 
@@ -3574,10 +3598,49 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_3_implementedDSRCREPORTABNORMALOBE;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				// Set verdict pass for the time being
+				setverdict(pass);
 
-                // Step 1:
-                	// Send one  DSRC.REPORTABNORMALOBE with userId field missing
-              		// Wait for negative Ack with issueCode = semanticError (if positive Ack or not received set test failure)                	
+                // Send one  DSRC.REPORTABNORMALOBE with userId field missing
+                // PT140 TODO : mw_aduReportAbnormalOBE template to be defined
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+					{modifies mw_aduReportAbnormalOBE:= {
+					  	userId := omit,
+					  	dateAndTime := now;
+					  	abnormalOBEReasonCode := AbnormalOBEReasonCode_reasonNotToBeDisclosed_
+					  	}
+					});                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 
+
+				// Set timer
+                 t_step.start(DSRC_REPORTABNORMALOBE_TIME1_MAX_TSP);                 
+              	// Wait for negative Ack with issueCode = semanticError (if positive Ack or not received set test failure)                	
+				//Create parameters for the m_apduNAck			
+				var NAckParams v_nAckParams1 :={{0, AduReasonCode_semanticError_}};
+				var NAckParams v_nAckParams2 :={{1, AduReasonCode_semanticError_},{2,AduReasonCode_semanticError_}};
+
+				alt {
+					//PT140 TODO Can the repetion in the two alts be reduced?
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(DSRC_REPORTABNORMALOBE_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+											}
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(DSRC_REPORTABNORMALOBE_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+											}
+				}				
+				f_closeDownMtc();  			
                 
                 } // End of TP_TSP_DSRC.REPORTABNORMALOBE_BI_01
 
@@ -3589,14 +3652,63 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_3_implementedDSRCREPORTABNORMALOBE;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				// Set verdict pass for the time being
+				setverdict(pass);
+
 
                 // Step 1:
-                	// Send one  APDU containg 2 ReportAbnormalOBEADUs, first one with missing and second one with userID set to an invalid value
-              		// Wait for negative Ack with the following issues:
+                // Send one  APDU containg 2 ReportAbnormalOBEADUs, first one with missing and second one with userID set to an invalid value
+
+                // PT140 TODO : mw_aduReportAbnormalOBE template to be defined
+				var InfoExchange v_apduRespondedTo := {
+					m_apduNoSecInit({modifies mw_aduReportAbnormalOBE:= {
+					  	userId := omit,
+					  	dateAndTime := now;
+					  	abnormalOBEReasonCode := AbnormalOBEReasonCode_reasonNotToBeDisclosed_
+					  	}
+					}),
+					m_apduNoSecInit({modifies mw_aduReportAbnormalOBE:= {
+					  	userId := WRONG_USER_ID,
+					  	dateAndTime := now;
+					  	abnormalOBEReasonCode := AbnormalOBEReasonCode_reasonNotToBeDisclosed_
+					  	}
+					})	
+           		};                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 
+
+				// Set timer
+                 t_step.start(DSRC_REPORTABNORMALOBE_TIME1_MAX_TSP);                 
+              	// Wait for negative Ack with the following issues:
               			// 1, invalidADU (0)
               			// 2, abnormalObeUserIdRejected
               			                	
-                
+				//Create parameters for the m_apduNAck			
+				var NAckParams v_nAckParams1 :={{0, AduReasonCode_invalidADU_}}
+				var NAckParams v_nAckParams2 :={{1, AduReasonCode_invalidADU_},{2,AduReasonCode_abnormalObeUserIdRejected_}}
+
+				alt {
+					//PT140 TODO Can the repetion in the two alts be reduced?
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(DSRC_REPORTABNORMALOBE_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+											}
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(DSRC_REPORTABNORMALOBE_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+											}
+				}				
+               	
+               	f_closeDownMtc();  			
                 } // End of TP_TSP_DSRC.REPORTABNORMALOBE_BI_02
 
            testcase TP_TSP_DSRC.REPORTABNORMALOBE_BI_03() runs on IutComp system TestAdapter {
@@ -3607,11 +3719,55 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_3_implementedDSRCREPORTABNORMALOBE;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				// Set verdict pass for the time being
+				setverdict(pass);
 
-                // Step 1:
-                	// Send one  DSRC.REPORTABNORMALOBE with dateAndTime field missing
-              		// Wait for negative Ack with issueCode = semanticError (if positive Ack or not received set test failure)                	
-                
+
+				// Step 1:
+                // Send one  DSRC.REPORTABNORMALOBE with dateAndTime field missing
+                // PT140 TODO : mw_aduReportAbnormalOBE template to be defined
+				var InfoExchange v_apduRespondedTo := {
+					m_apduNoSecInit({modifies mw_aduReportAbnormalOBE:= {
+					  	userId := EXISTING_USER_ID,
+					  	dateAndTime := omit;
+					  	abnormalOBEReasonCode := AbnormalOBEReasonCode_reasonNotToBeDisclosed_
+					  	}
+					})	
+           		};                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 
+
+				// Set timer
+                 t_step.start(DSRC_REPORTABNORMALOBE_TIME1_MAX_TSP);                 
+              	// Wait for negative Ack with issueCode = semanticError (if positive Ack or not received set test failure)                	
+              			                	
+				//Create parameters for the m_apduNAck			
+				var NAckParams v_nAckParams1 :={{0, AduReasonCode_semanticError_}};
+				var NAckParams v_nAckParams2 :={{1, AduReasonCode_semanticError_},{2,AduReasonCode_semanticError_}};
+
+				alt {
+					//PT140 TODO Can the repetion in the two alts be reduced?
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(DSRC_REPORTABNORMALOBE_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+											}
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(DSRC_REPORTABNORMALOBE_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+											}
+				}				
+               	
+               	f_closeDownMtc();  
+                                
                 } // End of TP_TSP_DSRC.REPORTABNORMALOBE_BI_03
 
            testcase TP_TSP_DSRC.REPORTABNORMALOBE_BI_04() runs on IutComp system TestAdapter {
@@ -3622,12 +3778,63 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_3_implementedDSRCREPORTABNORMALOBE;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				// Set verdict pass for the time being
+				setverdict(pass);
+
 
                 // Step 1:
                 	// Send one  APDU containg 2 ReportAbnormalOBEADUs, first one with dateAndTime missing and second one with dateAndTime set to a future value
+
+                // PT140 TODO : mw_aduReportAbnormalOBE template to be defined
+				var InfoExchange v_apduRespondedTo := {
+					m_apduNoSecInit({modifies mw_aduReportAbnormalOBE:= {
+					  	userId := EXISTING_USER_ID,
+					  	dateAndTime := omit;
+					  	abnormalOBEReasonCode := AbnormalOBEReasonCode_reasonNotToBeDisclosed_
+					  	}
+					}),
+					m_apduNoSecInit({modifies mw_aduReportAbnormalOBE:= {
+					  	userId := EXISTING_USER_ID,
+					  	dateAndTime := now + 1;
+					  	abnormalOBEReasonCode := AbnormalOBEReasonCode_reasonNotToBeDisclosed_
+					  	}
+					})	
+           		};                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 
+
+				// Set timer
+                 t_step.start(DSRC_REPORTABNORMALOBE_TIME1_MAX_TSP);                 
               		// Wait for negative Ack with the following issues:
               			// 1, invalidADU (0)
               			// 2, abnormalObeDateAndTimeRejected
+              			                	
+				//Create parameters for the m_apduNAck			
+				var NAckParams v_nAckParams1 :={{0, AduReasonCode_invalidADU_}}
+				var NAckParams v_nAckParams2 :={{1, AduReasonCode_invalidADU_},{2,abnormalObeDateAndTimeRejected_}}
+
+				alt {
+					//PT140 TODO Can the repetion in the two alts be reduced?
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(DSRC_REPORTABNORMALOBE_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+											}
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(DSRC_REPORTABNORMALOBE_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+											}
+				}				
+               	
+               	f_closeDownMtc(); 
                 
                 } // End of TP_TSP_DSRC.REPORTABNORMALOBE_BI_04
 
@@ -3639,10 +3846,55 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_3_implementedDSRCREPORTABNORMALOBE;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				// Set verdict pass for the time being
+				setverdict(pass);
 
                 // Step 1:
-                	// Send one  DSRC.REPORTABNORMALOBE with efcContextMark field missing
-              		// Wait for negative Ack with issueCode = semanticError (if positive Ack or not received set test failure)                	
+                // Send one  DSRC.REPORTABNORMALOBE with efcContextMark field missing
+                // PT140 TODO : mw_aduReportAbnormalOBE template to be defined
+				var InfoExchange v_apduRespondedTo := {
+					m_apduNoSecInit({modifies mw_aduReportAbnormalOBE:= {					  	
+					  	userId := EXISTING_USER_ID,
+					  	efcContextMark := omit,
+					  	dateAndTime := now;
+					  	abnormalOBEReasonCode := AbnormalOBEReasonCode_reasonNotToBeDisclosed_
+					  	}
+					})	
+           		};                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 
+
+				// Set timer
+                 t_step.start(DSRC_REPORTABNORMALOBE_TIME1_MAX_TSP);                 
+              	
+              	// Wait for negative Ack with issueCode = semanticError (if positive Ack or not received set test failure)                	
+              			                	
+				//Create parameters for the m_apduNAck			
+				var NAckParams v_nAckParams1 :={{0, AduReasonCode_semanticError_}};
+				var NAckParams v_nAckParams2 :={{1, AduReasonCode_semanticError_}};
+
+				alt {
+					//PT140 TODO Can the repetion in the two alts be reduced?
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(DSRC_REPORTABNORMALOBE_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+											}
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(DSRC_REPORTABNORMALOBE_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+											}
+				}				
+               	
+               	f_closeDownMtc();
                 
                 } // End of TP_TSP_DSRC.REPORTABNORMALOBE_BI_05
 
@@ -3654,13 +3906,66 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_3_implementedDSRCREPORTABNORMALOBE;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				// Set verdict pass for the time being
+				setverdict(pass);
+
 
                 // Step 1:
                 	// Send one  APDU containg 2 ReportAbnormalOBEADUs, first one with efcContextMark missing and second one with efcContextMark set to an invalid value
+
+                // PT140 TODO : mw_aduReportAbnormalOBE template to be defined
+				var InfoExchange v_apduRespondedTo := {
+					m_apduNoSecInit({modifies mw_aduReportAbnormalOBE:= {
+					  	userId := EXISTING_USER_ID,
+					  	efcContextMark := omit,
+					  	dateAndTime := now;
+					  	abnormalOBEReasonCode := AbnormalOBEReasonCode_reasonNotToBeDisclosed_
+					  	}
+					}),
+					m_apduNoSecInit({modifies mw_aduReportAbnormalOBE:= {
+					  	userId := EXISTING_USER_ID,
+					  	efcContextMark := 0,
+					  	dateAndTime := now + 1;
+					  	abnormalOBEReasonCode := AbnormalOBEReasonCode_reasonNotToBeDisclosed_
+					  	}
+					})	
+           		};                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 
+
+				// Set timer
+                 t_step.start(DSRC_REPORTABNORMALOBE_TIME1_MAX_TSP);                 
               	// Step 2:
               		// Wait for negative Ack with the following issues:
               			// 1, invalidADU (0)
               			// 2, abnormalObeDateAndTimeRejected
+              			                	
+				//Create parameters for the m_apduNAck			
+				var NAckParams v_nAckParams1 :={{0, AduReasonCode_invalidADU_}}
+				var NAckParams v_nAckParams2 :={{1, AduReasonCode_semanticError_},{2,AduReasonCode_semanticError_}}
+
+				alt {
+					//PT140 TODO Can the repetion in the two alts be reduced?
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(DSRC_REPORTABNORMALOBE_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+											}
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(DSRC_REPORTABNORMALOBE_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+											}
+				}				
+               	
+               	f_closeDownMtc(); 
                 
                 } // End of TP_TSP_DSRC.REPORTABNORMALOBE_BI_06
 
@@ -3672,11 +3977,54 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_3_implementedDSRCREPORTABNORMALOBE;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				// Set verdict pass for the time being
+				setverdict(pass);
 
                 // Step 1:
-                	// Send one  DSRC.REPORTABNORMALOBE with efcContextMark and abnormalOBEReason fields missing
-              	// Step 2:
-              		// Wait for negative Ack with issueCode = semanticError (if positive Ack or not received set test failure)                	
+                	// Send one  DSRC.REPORTABNORMALOBE with abnormalOBEReason field missing
+                // PT140 TODO : mw_aduReportAbnormalOBE template to be defined
+				var InfoExchange v_apduRespondedTo := {
+					m_apduNoSecInit({modifies mw_aduReportAbnormalOBE:= {					  	
+					  	userId := EXISTING_USER_ID,
+					  	dateAndTime := now;
+					  	abnormalOBEReasonCode := omit
+					  	}
+					})	
+           		};                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 
+
+				// Set timer
+                 t_step.start(DSRC_REPORTABNORMALOBE_TIME1_MAX_TSP);                 
+              	
+              	// Wait for negative Ack with issueCode = semanticError (if positive Ack or not received set test failure)                	
+              			                	
+				//Create parameters for the m_apduNAck			
+				var NAckParams v_nAckParams1 :={{0, AduReasonCode_semanticError_}};
+				var NAckParams v_nAckParams2 :={{1, AduReasonCode_semanticError_}};
+
+				alt {
+					//PT140 TODO Can the repetion in the two alts be reduced?
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(DSRC_REPORTABNORMALOBE_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+											}
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(DSRC_REPORTABNORMALOBE_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+											}
+				}				
+               	
+               	f_closeDownMtc();
                 
                 } // End of TP_TSP_DSRC.REPORTABNORMALOBE_BI_07
 
@@ -3688,13 +4036,64 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_3_implementedDSRCREPORTABNORMALOBE;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				// Set verdict pass for the time being
+				setverdict(pass);
 
                 // Step 1:
                 	// Send one  APDU containg 2 ReportAbnormalOBEADUs, first one with abnormalOBEReason missing and second one with abnormalOBEReason set to an invalid value
+
+                // PT140 TODO : mw_aduReportAbnormalOBE template to be defined
+				var InfoExchange v_apduRespondedTo := {
+					m_apduNoSecInit({modifies mw_aduReportAbnormalOBE:= {
+					  	userId := EXISTING_USER_ID,
+					  	dateAndTime := now;
+					  	abnormalOBEReasonCode := omit
+					  	}
+					}),
+					m_apduNoSecInit({modifies mw_aduReportAbnormalOBE:= {
+					  	userId := EXISTING_USER_ID,
+					  	dateAndTime := now;
+					  	abnormalOBEReasonCode := 700
+					  	}
+					})	
+           		};                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 
+
+				// Set timer
+                 t_step.start(DSRC_REPORTABNORMALOBE_TIME1_MAX_TSP);                 
+                
               	// Step 2:
               		// Wait for negative Ack with the following issues:
               			// 1, invalidADU (0)
-              			// 2, abnormalObeReasonCodeRejected
+              			// 2, abnormalObeReasonCodeRejected              			                	
+				//Create parameters for the m_apduNAck			
+				var NAckParams v_nAckParams1 :={{0, AduReasonCode_invalidADU_}}
+				var NAckParams v_nAckParams2 :={{1, abnormalObeReasonCodeRejected},{2,abnormalObeReasonCodeRejected}}
+
+				alt {
+					//PT140 TODO Can the repetion in the two alts be reduced?
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(DSRC_REPORTABNORMALOBE_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+											}
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(DSRC_REPORTABNORMALOBE_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+											}
+				}				
+               	
+               	f_closeDownMtc(); 
+
                 
                 } // End of TP_TSP_DSRC.REPORTABNORMALOBE_BI_08
 
@@ -3706,14 +4105,56 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation
-                 // Send one  APDU containg one valid ReportAbnormalOBEADU
-              	 // Wait for positive Ack
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_3_implementedDSRCREPORTABNORMALOBE;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				// Set verdict pass for the time being
+				setverdict(pass);
+				
+                // Send one valid DSRC.REPORTABNORMALOBE
+                 // PT140 TODO : mw_aduReportAbnormalOBE template to be defined
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+					{modifies mw_aduReportAbnormalOBE:= {
+					  	userId := EXISTING_USER_ID,
+					  	dateAndTime := now;
+					  	abnormalOBEReasonCode := AbnormalOBEReasonCode_reasonNotToBeDisclosed_
+					  	}
+					});                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 
+
+				// Do not wait for positive Ack
+
                 // Step 1:
-                	// Send one one  APDU containg one valid ReportAbnormalOBEADU before TIMEA_MIN
-              	// Step 2:
-              		// Wait for negative Ack with ADUReasonCode = requestSentTooOften (if positive Ack or not received set test failure)                	
-                  
+                // Send one one  APDU containg one valid ReportAbnormalOBEADU before TIMEA_MIN
+                 // PT140 TODO : mw_aduReportAbnormalOBE template to be defined
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+					{modifies mw_aduReportAbnormalOBE:= {
+					  	userId := EXISTING_USER_ID,
+					  	dateAndTime := now;
+					  	abnormalOBEReasonCode := AbnormalOBEReasonCode_obeIsNotWorkingProperly_
+					  	}
+					});                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 
+
+              	// Wait for negative Ack with ADUReasonCode field = requestSentTooOften (if positive Ack or not received set test failure)                	
+				// Set timer
+                 t_step.start((DSRC_REPORTABNORMALOBE_TIME1_MAX_TSP);
+				// Step #2: Wait for Nack ADU				 					
+				// Either we receive an APDU containing  Nack or the timeout expires
+				// timeout expiration is handled in the altstep branch
+
+				alt {
+					[] mtcPort.receive(m_apduNAck_requestSentTooOften(v_apduRespondedTo)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep((DSRC_REPORTABNORMALOBE_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+					}
+                } // End of alt statement
                 
+                f_closeDownMtc(); 
+                                
                 } // End of TP_TSP_DSRC.REPORTABNORMALOBE_BI_09
 
 
