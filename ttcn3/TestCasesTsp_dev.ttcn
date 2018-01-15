@@ -2069,20 +2069,106 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation
-				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_5_implementedPAYMENTCLAIM;
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc                 
-					// Start by setting test success
-	                // Send one preset Billing Details
-	                // Wait for positive Ack
-					// Send one PAYMENTCLAIM related to the sent BILLINGDETAILS within allowed time constraints
-					// Wait for positive Ack
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_5_implementedPAYMENTCLAIM and ICS_A26_3_implementedDSRCBILLINGDETAILS;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				                  
+				// Start by setting test success
+				//Set verdict
+				setverdict(pass); // For the time being
+				
+                 // Send one preset Billing Details
+                 // PT140 TODO : mw_aduBillingDetails template and related fields to be defined
+
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+					{modifies mw_aduBillingDetails:= {
+					  	billingDetailsId := 1, paymentFeeAmount := 45, actionCode := ActionCode_send_
+					  	}
+					});                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 
+                 // Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
+				// Set timer
+                 t_step.start(BILLINGDETAILS_TIME1_MAX_TSP);                 
+				alt {
+					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+						t_step.stop;
+					}
+				} 					
+
+                	// Send PAYMENTCLAIM with ActionCode=SEND
+                 // PT140 TODO : mw_aduPaymentClaim template and related fields to be defined
+
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+					{modifies mw_aduPaymentClaim:= {
+					  	userId := EXISTING_USER_ID,
+					  	paymentClaimId := 1,
+					  	startDateTime := now,
+					  	actionCode := ActionCode_send_,
+					  	paymentClaimStatus := PaymentClaimStatus_firstVersion_,
+					  	paymentClaimAmount := 45,
+					  	typeOfFee := TypeOfFee_toll_,
+					  	referenceDetailsList := {1}
+					  	}
+					});                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 
+                		
+              		// Wait for Ack (if negative Ack or not received set test failure)
+				// Set timer
+                 t_step.start(PAYMENTCLAIM_TIME1_MAX_TSP);                 
+				alt {
+					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
+					  
+						// Log what we received
+						f_logApduReceivedAndTStep();
+						t_step.stop;
+					}
+				}
 
                 // Step 1:
-                	// Send PAYMENTCLAIM with:
-                		// ActionCode=REVOKE
-                		// wrong PaymentClaimId value
-              		// Wait for negative Ack (if positive Ack or not received set test failure)
-                  
+                	// Send PAYMENTCLAIM with ActionCode=REVOKE not referring to the previoulsy sent PAYMENTCLAIM
+                 // PT140 TODO : mw_aduPaymentClaim template and related fields to be defined
+
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+					{modifies mw_aduPaymentClaim:= {
+					  	userId := EXISTING_USER_ID,
+					  	paymentClaimId := 2,
+					  	startDateTime := now,
+					  	actionCode := ActionCode_revoke_,
+					  	paymentClaimStatus := PaymentClaimStatus_firstVersion_,
+					  	paymentClaimAmount := 0,
+					  	typeOfFee := TypeOfFee_toll_,
+					  	referenceDetailsList := {1}
+					  	}
+					});                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 
+                		
+				//Create parameters for the m_apduNAck			
+				var NAckParams v_nAckParams1 :={{0, AduReasonCode_paymentClaimIdRejected_}};
+				var NAckParams v_nAckParams2 :={{1, AduReasonCode_paymentClaimIdRejected_}};
+				
+				alt {
+					//PT140 TODO Can the repetion in the two alts be reduced?
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(PAYMENTCLAIM_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;						
+					}
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(PAYMENTCLAIM_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+						
+						//Set verdict
+					}
+				} 
+				f_closeDownMtc();                   
                 
                 } // End of TP_TSP_PAYMENTCLAIM_BI_01           		
 
@@ -2094,17 +2180,77 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation
-				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_5_implementedPAYMENTCLAIM;
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc                 
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_5_implementedPAYMENTCLAIM and ICS_A26_3_implementedDSRCBILLINGDETAILS;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				                  
 				// Start by setting test success
-                // Send one preset Billing Details
-                // Wait for positive Ack
-            
-            	// Step 1: 
-                	// Send PAYMENTCLAIM with:
-                		// actionCode= adjust
-						// paymentClaimStatus=firstversion(0)
-              		// Wait for negative Ack (if positive Ack or not received set test failure)
+				//Set verdict
+				setverdict(pass); // For the time being
+				
+                 // Send one preset Billing Details
+                 // PT140 TODO : mw_aduBillingDetails template and related fields to be defined
+
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+					{modifies mw_aduBillingDetails:= {
+					  	billingDetailsId := 1, paymentFeeAmount := 45, actionCode := ActionCode_send_
+					  	}
+					});                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 
+                 // Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
+				// Set timer
+                 t_step.start(BILLINGDETAILS_TIME1_MAX_TSP);                 
+				alt {
+					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+						t_step.stop;
+					}
+				} 					
+
+                	// Send PAYMENTCLAIM with ActionCode=ADJUST
+                 // PT140 TODO : mw_aduPaymentClaim template and related fields to be defined
+
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+					{modifies mw_aduPaymentClaim:= {
+					  	userId := EXISTING_USER_ID,
+					  	paymentClaimId := 1,
+					  	startDateTime := now,
+					  	actionCode := ActionCode_adjust_,
+					  	paymentClaimStatus := PaymentClaimStatus_firstVersion_,
+					  	paymentClaimAmount := 45,
+					  	typeOfFee := TypeOfFee_toll_,
+					  	referenceDetailsList := {1}
+					  	}
+					});                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 
+
+				//Create parameters for the m_apduNAck			
+				var NAckParams v_nAckParams1 :={{0, AduReasonCode_paymentClaimIdRejected_}};
+				var NAckParams v_nAckParams2 :={{1, AduReasonCode_paymentClaimIdRejected_}};
+                 
+                // Wait for negative Ack (if positive Ack or not received set test failure)
+				
+				alt {
+					//PT140 TODO Can the repetion in the two alts be reduced?
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(PAYMENTCLAIM_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;						
+					}
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(PAYMENTCLAIM_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+						
+					}
+				} 
+				f_closeDownMtc();                 		
             	      
 			                
                 } // End of TP_TSP_PAYMENTCLAIM_BI_02           		
@@ -2117,19 +2263,77 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation
-				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_5_implementedPAYMENTCLAIM;
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_5_implementedPAYMENTCLAIM and ICS_A26_3_implementedDSRCBILLINGDETAILS;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
-				
-                // PT 140: TODO Probably there is no need to have an initial PAYMENTCLAIM for this test case as stated in the TSS&TP
+				                  
 				// Start by setting test success
-                // Send one preset Billing Details
-                // Wait for positive Ack
- 
-            	// Step 1: 
-                	// Send PAYMENTCLAIM with:
-                		// actionCode= adjust
-						// referenceDetailsList=tollDeclarationList
-              		// Wait for negative Ack (if positive Ack or not received set test failure)
+				//Set verdict
+				setverdict(pass); // For the time being
+				
+                 // Send one preset Billing Details
+                 // PT140 TODO : mw_aduBillingDetails template and related fields to be defined
+
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+					{modifies mw_aduBillingDetails:= {
+					  	billingDetailsId := 1, paymentFeeAmount := 45, actionCode := ActionCode_send_
+					  	}
+					});                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 
+                 // Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
+				// Set timer
+                 t_step.start(BILLINGDETAILS_TIME1_MAX_TSP);                 
+				alt {
+					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+						t_step.stop;
+					}
+				} 					
+
+                	// Send PAYMENTCLAIM with ActionCode=SEND and referring to a wrong reference details list
+                 // PT140 TODO : mw_aduPaymentClaim template and related fields to be defined
+
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+					{modifies mw_aduPaymentClaim:= {
+					  	userId := EXISTING_USER_ID,
+					  	paymentClaimId := 1,
+					  	startDateTime := now,
+					  	actionCode := ActionCode_send_,
+					  	paymentClaimStatus := PaymentClaimStatus_firstVersion_,
+					  	paymentClaimAmount := 45,
+					  	typeOfFee := TypeOfFee_toll_,
+					  	referenceDetailsList := {2}
+					  	}
+					});                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 
+
+				//Create parameters for the m_apduNAck			
+				var NAckParams v_nAckParams1 :={{0, AduReasonCode_paymentClaimIdRejected_}};
+				var NAckParams v_nAckParams2 :={{1, AduReasonCode_paymentClaimIdRejected_}};
+                 
+                // Wait for negative Ack (if positive Ack or not received set test failure)
+				
+				alt {
+					//PT140 TODO Can the repetion in the two alts be reduced?
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(PAYMENTCLAIM_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;						
+					}
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(PAYMENTCLAIM_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+						
+					}
+				} 
+				f_closeDownMtc();                 		
                 
                 } // End of TP_TSP_PAYMENTCLAIM_BI_03           		
 
@@ -2141,18 +2345,78 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation
-				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_5_implementedPAYMENTCLAIM;
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_5_implementedPAYMENTCLAIM and ICS_A26_3_implementedDSRCBILLINGDETAILS;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				                  
-                // PT 140: TODO Probably there is no need to have an initial PAYMENTCLAIM for this test case as stated in the TSS&TP
 				// Start by setting test success
-                // Send one preset Billing Details
-                // Wait for positive Ack
- 
-            	// Step 1: 
-                	// Send PAYMENTCLAIM with:
-                		// actionCode= credit
-              		// Wait for negative Ack (if positive Ack or not received set test failure)
+				//Set verdict
+				setverdict(pass); // For the time being
+				
+                 // Send one preset Billing Details
+                 // PT140 TODO : mw_aduBillingDetails template and related fields to be defined
+
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+					{modifies mw_aduBillingDetails:= {
+					  	billingDetailsId := 1, paymentFeeAmount := 45, actionCode := ActionCode_send_
+					  	}
+					});                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 
+                 // Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
+				// Set timer
+                 t_step.start(BILLINGDETAILS_TIME1_MAX_TSP);                 
+				alt {
+					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+						t_step.stop;
+					}
+				} 					
+                // PT 140: TODO Probably there is no need to have an initial PAYMENTCLAIM for this test case as stated in the TSS&TP
+
+                // Send PAYMENTCLAIM with ActionCode=SEND and with action code = credit (not allowed)
+                 // PT140 TODO : mw_aduPaymentClaim template and related fields to be defined
+
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+					{modifies mw_aduPaymentClaim:= {
+					  	userId := EXISTING_USER_ID,
+					  	paymentClaimId := 1,
+					  	startDateTime := now,
+					  	actionCode := ActionCode_credit_,
+					  	paymentClaimStatus := PaymentClaimStatus_firstVersion_,
+					  	paymentClaimAmount := 45,
+					  	typeOfFee := TypeOfFee_toll_,
+					  	referenceDetailsList := {1}
+					  	}
+					});                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 
+
+				//Create parameters for the m_apduNAck			
+				var NAckParams v_nAckParams1 :={{0, AduReasonCode_paymentClaimIdRejected_}};
+				var NAckParams v_nAckParams2 :={{1, AduReasonCode_paymentClaimIdRejected_}};
+                 
+                // Wait for negative Ack (if positive Ack or not received set test failure)
+				
+				alt {
+					//PT140 TODO Can the repetion in the two alts be reduced?
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(PAYMENTCLAIM_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;						
+					}
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(PAYMENTCLAIM_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+						
+					}
+				} 
+				f_closeDownMtc();                 						                  
                 
                 } // End of TP_TSP_PAYMENTCLAIM_BI_04   
 
@@ -2164,24 +2428,263 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation
-				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_5_implementedPAYMENTCLAIM;
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_5_implementedPAYMENTCLAIM and ICS_A26_3_implementedDSRCBILLINGDETAILS;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
-				                 
-                 // PT140: IUT has performed two BILLINGDETAILS transactions identified by billingDetailsId=B_Id_1 and B_Id_2 respectively
-                 // AND billingDetailsAmount.paymentFeeAmount = 400 AND 500 respectively
+				                  
+				// Start by setting test success
+				//Set verdict
+				setverdict(pass); // For the time being
+				
+                 // Send two preset Billing Details
+                 // PT140 TODO : mw_aduBillingDetails template and related fields to be defined
+
+				var InfoExchange v_apduRespondedTo :=
+					{m_apduNoSecInit({modifies mw_aduBillingDetails:= {
+					  	billingDetailsId := 1, paymentFeeAmount := 400, actionCode := ActionCode_send_
+					  	}
+					}),
+					m_apduNoSecInit({modifies mw_aduBillingDetails:= {
+					  	billingDetailsId := 2, paymentFeeAmount := 500, actionCode := ActionCode_send_
+					  	}
+					})
+            	};                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 
+                 // Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
+				// Set timer
+                 t_step.start(BILLINGDETAILS_TIME1_MAX_TSP);                 
+				alt {
+					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+						t_step.stop;
+					}
+				} 					
+
+                // Send PAYMENTCLAIM with ActionCode=SEND and referencing the two performed BillingDetails transactions, and with endDateTime = Ø
+                 // PT140 TODO : mw_aduPaymentClaim template and related fields to be defined
+
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+					{modifies mw_aduPaymentClaim:= {
+					  	userId := EXISTING_USER_ID,
+					  	paymentClaimId := 1,
+					  	startDateTime := now,
+					  	endDateTime := 0,
+					  	actionCode := ActionCode_send_,
+					  	paymentClaimStatus := PaymentClaimStatus_firstVersion_,
+					  	paymentClaimAmount := 900,
+					  	typeOfFee := TypeOfFee_toll_,
+					  	referenceDetailsList := {1, 2}
+					  	}
+					});                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 
+                // Wait for a NAck_Apdu containing one AckADU with issues containing issueCode = paymentClaimEndDateTimeRejected (804)
+
+				//Create parameters for the m_apduNAck			
+				var NAckParams v_nAckParams1 :={{0, AduReasonCode_paymentClaimEndDateTimeRejected_}};
+				var NAckParams v_nAckParams2 :={{1, AduReasonCode_paymentClaimEndDateTimeRejected_}};
                  
-                 // Step 1: 
-                 	// Tester sends an Initiating_Apdu containing the following five valid PaymentClaimADUs:
-					// the first PaymentClaimADU referencing the two performed BillingDetails transactions, and with endDateTime = Ø,
-					// the second PaymentClaimADU referencing the two performed BillingDetails transactions, and containing userId unknown to the IUT,
-					// the third PaymentClaimADU referencing the two performed BillingDetails transactions, and containing paymentClaimAmount = 1000,
-					// the fourth PaymentClaimADU referencing the two performed BillingDetails transactions, and containing paymentClaimStatus = 2,
-					// the fifth PaymentClaimADU referencing the two performed BillingDetails transactions, and containing typeOfFee = Ø
-                 	 
-                // Step 2:
-                // Wait for a NAck_Apdu containing one AckADU with issues containing five elements containing:
-				// issueADUStruct=1 to 5 respectively
-				// issueCode = paymentClaimEndDateTimeRejected (804), paymentClaimUserIdRejected (805), paymentClaimAmountRejected (806), paymentClaimStatusRejected (807), paymentClaimTypeOfFeeRejected	(808)
+                // Wait for negative Ack (if positive Ack or not received set test failure)
+				
+				alt {
+					//PT140 TODO Can the repetion in the two alts be reduced?
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(PAYMENTCLAIM_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;						
+					}
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(PAYMENTCLAIM_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+						
+					}
+				}
+
+                // Send PAYMENTCLAIM with ActionCode=SEND and referencing the two performed BillingDetails transactions, and containing userId unknown to the IUT
+                 // PT140 TODO : mw_aduPaymentClaim template and related fields to be defined
+
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+					{modifies mw_aduPaymentClaim:= {
+					  	userId := WRONG_USER_ID,
+					  	paymentClaimId := 1,
+					  	startDateTime := now,
+					  	actionCode := ActionCode_send_,
+					  	paymentClaimStatus := PaymentClaimStatus_firstVersion_,
+					  	paymentClaimAmount := 900,
+					  	typeOfFee := TypeOfFee_toll_,
+					  	referenceDetailsList := {1, 2}
+					  	}
+					});                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 
+                // Wait for a NAck_Apdu containing one AckADU with issues containing issueCode = paymentClaimUserIdRejected (805)
+
+				//Create parameters for the m_apduNAck			
+				var NAckParams v_nAckParams1 :={{0, AduReasonCode_paymentClaimUserIdRejected_}};
+				var NAckParams v_nAckParams2 :={{1, AduReasonCode_paymentClaimUserIdRejected_}};
+                 
+                // Wait for negative Ack (if positive Ack or not received set test failure)
+				
+				alt {
+					//PT140 TODO Can the repetion in the two alts be reduced?
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(PAYMENTCLAIM_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;						
+					}
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(PAYMENTCLAIM_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+						
+					}
+				}
+                // Send PAYMENTCLAIM with ActionCode=SEND and referencing the two performed BillingDetails transactions, and containing paymentClaimAmount = 1000
+                 // PT140 TODO : mw_aduPaymentClaim template and related fields to be defined
+
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+					{modifies mw_aduPaymentClaim:= {
+					  	userId := EXISTING_USER_ID,
+					  	paymentClaimId := 1,
+					  	startDateTime := now,
+					  	actionCode := ActionCode_send_,
+					  	paymentClaimStatus := PaymentClaimStatus_firstVersion_,
+					  	paymentClaimAmount := 1000,
+					  	typeOfFee := TypeOfFee_toll_,
+					  	referenceDetailsList := {1, 2}
+					  	}
+					});                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 
+                // Wait for a NAck_Apdu containing one AckADU with issues containing issueCode = paymentClaimAmountRejected (806)
+
+				//Create parameters for the m_apduNAck			
+				var NAckParams v_nAckParams1 :={{0, AduReasonCode_paymentClaimAmountRejected_}};
+				var NAckParams v_nAckParams2 :={{1, AduReasonCode_paymentClaimAmountRejected_}};
+                 
+                // Wait for negative Ack (if positive Ack or not received set test failure)
+				
+				alt {
+					//PT140 TODO Can the repetion in the two alts be reduced?
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(PAYMENTCLAIM_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;						
+					}
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(PAYMENTCLAIM_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+						
+					}
+				}
+
+                // Send PAYMENTCLAIM with ActionCode=SEND and referencing the two performed BillingDetails transactions, and containing paymentClaimStatus = 2
+                 // PT140 TODO : mw_aduPaymentClaim template and related fields to be defined
+
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+					{modifies mw_aduPaymentClaim:= {
+					  	userId := EXISTING_USER_ID,
+					  	paymentClaimId := 1,
+					  	startDateTime := now,
+					  	actionCode := ActionCode_send_,
+					  	paymentClaimStatus := 2,
+					  	paymentClaimAmount := 900,
+					  	typeOfFee := TypeOfFee_toll_,
+					  	referenceDetailsList := {1, 2}
+					  	}
+					});                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 
+                // Wait for a NAck_Apdu containing one AckADU with issues containing issueCode = paymentClaimStatusRejected (807)
+
+				//Create parameters for the m_apduNAck			
+				var NAckParams v_nAckParams1 :={{0, AduReasonCode_paymentClaimStatusRejected_}};
+				var NAckParams v_nAckParams2 :={{1, AduReasonCode_paymentClaimStatusRejected_}};
+                 
+                // Wait for negative Ack (if positive Ack or not received set test failure)
+				
+				alt {
+					//PT140 TODO Can the repetion in the two alts be reduced?
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(PAYMENTCLAIM_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;						
+					}
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(PAYMENTCLAIM_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+						
+					}
+				}
+
+                // Send PAYMENTCLAIM with ActionCode=SEND and referencing the two performed BillingDetails transactions, and containing typeOfFee omitted
+                 // PT140 TODO : mw_aduPaymentClaim template and related fields to be defined
+
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+					{modifies mw_aduPaymentClaim:= {
+					  	userId := EXISTING_USER_ID,
+					  	paymentClaimId := 1,
+					  	startDateTime := now,
+					  	actionCode := ActionCode_send_,
+					  	paymentClaimStatus := PaymentClaimStatus_firstVersion_,
+					  	paymentClaimAmount := 900,
+					  	typeOfFee := omit,
+					  	referenceDetailsList := {1, 2}
+					  	}
+					});                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 
+                // Wait for a NAck_Apdu containing one AckADU with issues containing issueCode = paymentClaimTypeOfFeeRejected	(808)
+
+				//Create parameters for the m_apduNAck			
+				var NAckParams v_nAckParams1 :={{0, AduReasonCode_paymentClaimTypeOfFeeRejected_}};
+				var NAckParams v_nAckParams2 :={{1, AduReasonCode_paymentClaimTypeOfFeeRejected_}};
+                 
+                // Wait for negative Ack (if positive Ack or not received set test failure)
+				
+				alt {
+					//PT140 TODO Can the repetion in the two alts be reduced?
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(PAYMENTCLAIM_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;						
+					}
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(PAYMENTCLAIM_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+						
+					}
+				}											 
+				f_closeDownMtc();				                 
                 
                 } // End of TP_TSP_PAYMENTCLAIM_BI_05   
 
@@ -2193,18 +2696,86 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation
-				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_5_implementedPAYMENTCLAIM;
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_5_implementedPAYMENTCLAIM and ICS_A26_3_implementedDSRCBILLINGDETAILS;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
-				                 
+				                  
 				// Start by setting test success
-                // Send one preset Billing Details
-                // Wait for positive Ack
+				//Set verdict
+				setverdict(pass); // For the time being
+				
+                 // Send one preset Billing Details
+                 // PT140 TODO : mw_aduBillingDetails template and related fields to be defined
+
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+					{modifies mw_aduBillingDetails:= {
+					  	billingDetailsId := 1, paymentFeeAmount := 45, actionCode := ActionCode_send_
+					  	}
+					});                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 
+                 // Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
+				// Set timer
+                 t_step.start(BILLINGDETAILS_TIME1_MAX_TSP);                 
+				alt {
+					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+						t_step.stop;
+					}
+				} 					
 				// Send one PAYMENTCLAIM related to the sent BILLINGDETAILS within allowed time constraints
-				// Wait for positive Ack
+                 // PT140 TODO : mw_aduPaymentClaim template and related fields to be defined
+
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+					{modifies mw_aduPaymentClaim:= {
+					  	userId := EXISTING_USER_ID,
+					  	paymentClaimId := 1,
+					  	startDateTime := now,
+					  	actionCode := ActionCode_send_,
+					  	paymentClaimStatus := PaymentClaimStatus_firstVersion_,
+					  	paymentClaimAmount := 45,
+					  	typeOfFee := TypeOfFee_toll_,
+					  	referenceDetailsList := {1}
+					  	}
+					});                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 
 
                 // Step 1:
                 	// Send PAYMENTCLAIM with ActionCode=REVOKE before TIMEA_MIN
-              		// Wait for negative Ack (if positive Ack or not received set test failure)                	
+              		// Wait for negative Ack (if positive Ack or not received set test failure) 
+              		// PT140 TODO : mw_aduPaymentClaim template and related fields to be defined
+
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+					{modifies mw_aduPaymentClaim:= {
+					  	userId := EXISTING_USER_ID,
+					  	paymentClaimId := 1,
+					  	startDateTime := now,
+					  	actionCode := ActionCode_revoke_,
+					  	paymentClaimStatus := PaymentClaimStatus_firstVersion_,
+					  	paymentClaimAmount := 0,
+					  	typeOfFee := TypeOfFee_toll_,
+					  	referenceDetailsList := {1}
+					  	}
+					});                 
+				f_sendAndLogApdu(v_apduRespondedTo); 
+                		
+              	// Wait for negative Ack  with NAck_requestSentTooOften code
+				// Set timer
+                 t_step.start(PAYMENTCLAIM_TIME1_MAX_TSP);                 
+				alt {
+					[] mtcPort.receive(m_apduNAck_requestSentTooOften(v_apduRespondedTo)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(PAYMENTCLAIM_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+						
+						//Set verdict
+						setverdict(pass);
+					}
+                } // End of alt statement
+                
+				f_closeDownMtc();  			
                 
                 } // End of TP_TSP_PAYMENTCLAIM_BI_06  
         } // End of group Invalid_Behaviour
