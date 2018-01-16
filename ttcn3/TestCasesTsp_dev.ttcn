@@ -3028,8 +3028,7 @@ module EfcInfoExchange_TestCasesTspOld {
                  // PT140 TODO : mw_aduBillingDetails template to be defined and includedDiscounts to be set
 				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
 					{modifies mw_aduBillingDetails:= {
-					  	billingDetailsId := 1, includedDiscounts := ??
-					  	}
+					  	billingDetailsId := 1, includedDiscounts.discounts := 10, includedDiscounts.discountQualifier := DiscountQualifier_userDiscount_ }}
 					});                 
 				f_sendAndLogApdu(v_apduRespondedTo);                 
                  // Step 2: Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
@@ -3563,7 +3562,7 @@ module EfcInfoExchange_TestCasesTspOld {
 				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
 					{modifies mw_aduReportAbnormalOBE:= {
 					  	userId := EXISTING_USER_ID,
-					  	dateAndTime := now;
+					  	dateAndTime := now,
 					  	abnormalOBEReasonCode := AbnormalOBEReasonCode_reasonNotToBeDisclosed_
 					  	}
 					});                 
@@ -3598,7 +3597,7 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
-				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_3_implementedDSRCREPORTABNORMALOBE;
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_4_implementedDSRCREPORTABNORMALOBE;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				// Set verdict pass for the time being
 				setverdict(pass);
@@ -3608,7 +3607,7 @@ module EfcInfoExchange_TestCasesTspOld {
 				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
 					{modifies mw_aduReportAbnormalOBE:= {
 					  	userId := omit,
-					  	dateAndTime := now;
+					  	dateAndTime := now,
 					  	abnormalOBEReasonCode := AbnormalOBEReasonCode_reasonNotToBeDisclosed_
 					  	}
 					});                 
@@ -3652,7 +3651,7 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
-				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_3_implementedDSRCREPORTABNORMALOBE;
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_4_implementedDSRCREPORTABNORMALOBE;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				// Set verdict pass for the time being
 				setverdict(pass);
@@ -3665,13 +3664,13 @@ module EfcInfoExchange_TestCasesTspOld {
 				var InfoExchange v_apduRespondedTo := {
 					m_apduNoSecInit({modifies mw_aduReportAbnormalOBE:= {
 					  	userId := omit,
-					  	dateAndTime := now;
+					  	dateAndTime := now,
 					  	abnormalOBEReasonCode := AbnormalOBEReasonCode_reasonNotToBeDisclosed_
 					  	}
 					}),
 					m_apduNoSecInit({modifies mw_aduReportAbnormalOBE:= {
 					  	userId := WRONG_USER_ID,
-					  	dateAndTime := now;
+					  	dateAndTime := now,
 					  	abnormalOBEReasonCode := AbnormalOBEReasonCode_reasonNotToBeDisclosed_
 					  	}
 					})	
@@ -3719,7 +3718,7 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
-				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_3_implementedDSRCREPORTABNORMALOBE;
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_4_implementedDSRCREPORTABNORMALOBE;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				// Set verdict pass for the time being
 				setverdict(pass);
@@ -3731,7 +3730,7 @@ module EfcInfoExchange_TestCasesTspOld {
 				var InfoExchange v_apduRespondedTo := {
 					m_apduNoSecInit({modifies mw_aduReportAbnormalOBE:= {
 					  	userId := EXISTING_USER_ID,
-					  	dateAndTime := omit;
+					  	dateAndTime := omit,
 					  	abnormalOBEReasonCode := AbnormalOBEReasonCode_reasonNotToBeDisclosed_
 					  	}
 					})	
@@ -3778,7 +3777,7 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
-				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_3_implementedDSRCREPORTABNORMALOBE;
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_4_implementedDSRCREPORTABNORMALOBE;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				// Set verdict pass for the time being
 				setverdict(pass);
@@ -3791,7 +3790,7 @@ module EfcInfoExchange_TestCasesTspOld {
 				var InfoExchange v_apduRespondedTo := {
 					m_apduNoSecInit({modifies mw_aduReportAbnormalOBE:= {
 					  	userId := EXISTING_USER_ID,
-					  	dateAndTime := omit;
+					  	dateAndTime := omit,
 					  	abnormalOBEReasonCode := AbnormalOBEReasonCode_reasonNotToBeDisclosed_
 					  	}
 					}),
@@ -3846,7 +3845,7 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
-				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_3_implementedDSRCREPORTABNORMALOBE;
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_4_implementedDSRCREPORTABNORMALOBE;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				// Set verdict pass for the time being
 				setverdict(pass);
@@ -3858,7 +3857,7 @@ module EfcInfoExchange_TestCasesTspOld {
 					m_apduNoSecInit({modifies mw_aduReportAbnormalOBE:= {					  	
 					  	userId := EXISTING_USER_ID,
 					  	efcContextMark := omit,
-					  	dateAndTime := now;
+					  	dateAndTime := now,
 					  	abnormalOBEReasonCode := AbnormalOBEReasonCode_reasonNotToBeDisclosed_
 					  	}
 					})	
@@ -3906,7 +3905,7 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
-				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_3_implementedDSRCREPORTABNORMALOBE;
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_4_implementedDSRCREPORTABNORMALOBE;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				// Set verdict pass for the time being
 				setverdict(pass);
@@ -3920,7 +3919,7 @@ module EfcInfoExchange_TestCasesTspOld {
 					m_apduNoSecInit({modifies mw_aduReportAbnormalOBE:= {
 					  	userId := EXISTING_USER_ID,
 					  	efcContextMark := omit,
-					  	dateAndTime := now;
+					  	dateAndTime := now,
 					  	abnormalOBEReasonCode := AbnormalOBEReasonCode_reasonNotToBeDisclosed_
 					  	}
 					}),
@@ -3977,7 +3976,7 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
-				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_3_implementedDSRCREPORTABNORMALOBE;
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_4_implementedDSRCREPORTABNORMALOBE;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				// Set verdict pass for the time being
 				setverdict(pass);
@@ -3988,7 +3987,7 @@ module EfcInfoExchange_TestCasesTspOld {
 				var InfoExchange v_apduRespondedTo := {
 					m_apduNoSecInit({modifies mw_aduReportAbnormalOBE:= {					  	
 					  	userId := EXISTING_USER_ID,
-					  	dateAndTime := now;
+					  	dateAndTime := now,
 					  	abnormalOBEReasonCode := omit
 					  	}
 					})	
@@ -4036,7 +4035,7 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
-				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_3_implementedDSRCREPORTABNORMALOBE;
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_4_implementedDSRCREPORTABNORMALOBE;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				// Set verdict pass for the time being
 				setverdict(pass);
@@ -4048,13 +4047,13 @@ module EfcInfoExchange_TestCasesTspOld {
 				var InfoExchange v_apduRespondedTo := {
 					m_apduNoSecInit({modifies mw_aduReportAbnormalOBE:= {
 					  	userId := EXISTING_USER_ID,
-					  	dateAndTime := now;
+					  	dateAndTime := now,
 					  	abnormalOBEReasonCode := omit
 					  	}
-					}),
-					m_apduNoSecInit({modifies mw_aduReportAbnormalOBE:= {
+					),
+					m_apduNoSecInit(modifies mw_aduReportAbnormalOBE:= {
 					  	userId := EXISTING_USER_ID,
-					  	dateAndTime := now;
+					  	dateAndTime := now,
 					  	abnormalOBEReasonCode := 700
 					  	}
 					})	
@@ -4081,7 +4080,7 @@ module EfcInfoExchange_TestCasesTspOld {
 						//Check minumum time and stop timer
 						f_checkMinimumTStep(DSRC_REPORTABNORMALOBE_MIN_TSP); //t_step is an implicit argument and what we will compare against
 						t_step.stop;
-											}
+						}
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
@@ -4089,23 +4088,19 @@ module EfcInfoExchange_TestCasesTspOld {
 						//Check minumum time and stop timer
 						f_checkMinimumTStep(DSRC_REPORTABNORMALOBE_MIN_TSP); //t_step is an implicit argument and what we will compare against
 						t_step.stop;
-											}
-				}				
-               	
-               	f_closeDownMtc(); 
-
-                
+						}
+					}		               	
+               	f_closeDownMtc();             
                 } // End of TP_TSP_DSRC.REPORTABNORMALOBE_BI_08
-
-           testcase TP_TSP_DSRC.REPORTABNORMALOBE_BI_09() runs on IutComp system TestAdapter {
-             
-                  /**
+               
+			testcase TP_TSP_DSRC.REPORTABNORMALOBE_BI_09() runs on IutComp system TestAdapter {
+                 /**
                   * @desc    TP_TSP_DSRC.REPORTABNORMALOBE_BI_09: Verify that the TSP responds correctly to a ReportAbnormalOBEADU sent earlier than allowed 
                   * @remark  [16986:2016], Clause 7.4 and Table A.1/2 AND Table A.2/1 AND Table A.26/4
                   */
                   
                  // Initialisation
-				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_3_implementedDSRCREPORTABNORMALOBE;
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_4_implementedDSRCREPORTABNORMALOBE;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				// Set verdict pass for the time being
 				setverdict(pass);
@@ -4115,29 +4110,27 @@ module EfcInfoExchange_TestCasesTspOld {
 				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
 					{modifies mw_aduReportAbnormalOBE:= {
 					  	userId := EXISTING_USER_ID,
-					  	dateAndTime := now;
+					  	dateAndTime := now,
 					  	abnormalOBEReasonCode := AbnormalOBEReasonCode_reasonNotToBeDisclosed_
 					  	}
-					});                 
-				f_sendAndLogApdu(v_apduRespondedTo);                 
+					}); 
+ 
+ 				f_sendAndLogApdu(v_apduRespondedTo);                 
 
 				// Do not wait for positive Ack
-
-                // Step 1:
                 // Send one one  APDU containg one valid ReportAbnormalOBEADU before TIMEA_MIN
                  // PT140 TODO : mw_aduReportAbnormalOBE template to be defined
 				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
 					{modifies mw_aduReportAbnormalOBE:= {
 					  	userId := EXISTING_USER_ID,
-					  	dateAndTime := now;
+					  	dateAndTime := now,
 					  	abnormalOBEReasonCode := AbnormalOBEReasonCode_obeIsNotWorkingProperly_
 					  	}
 					});                 
 				f_sendAndLogApdu(v_apduRespondedTo);                 
-
               	// Wait for negative Ack with ADUReasonCode field = requestSentTooOften (if positive Ack or not received set test failure)                	
 				// Set timer
-                 t_step.start((DSRC_REPORTABNORMALOBE_TIME1_MAX_TSP);
+                t_step.start(DSRC_REPORTABNORMALOBE_TIME1_MAX_TSP);
 				// Step #2: Wait for Nack ADU				 					
 				// Either we receive an APDU containing  Nack or the timeout expires
 				// timeout expiration is handled in the altstep branch
@@ -4148,43 +4141,79 @@ module EfcInfoExchange_TestCasesTspOld {
 						f_logApduReceivedAndTStep();
 
 						//Check minumum time and stop timer
-						f_checkMinimumTStep((DSRC_REPORTABNORMALOBE_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						f_checkMinimumTStep(DSRC_REPORTABNORMALOBE_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
 						t_step.stop;
 					}
                 } // End of alt statement
                 
                 f_closeDownMtc(); 
-                                
-                } // End of TP_TSP_DSRC.REPORTABNORMALOBE_BI_09
-
-
-        } // End of group Invalid_Behaviour
-
-    } // End of group DSRC.REPORTABNORMALOBE
+					
+				} // End of  TP_TSP_DSRC.REPORTABNORMALOBE_BI_09             		
+			
+		} // End of group Invalid_Behaviour 
+	} // End of group DSRC.REPORTABNORMALOBE
     
     group GNSS_TOLLDECLARATION {
          group Valid_Behaviour {
-
            testcase TP_TSP_GNSS_TOLLDECLARATION_BV_01() runs on IutComp system TestAdapter {
-             
                   /**
                   * @desc    TP_TSP_GNSS_TOLLDECLARATION_BV_01: Verify that the TSP correctly performs a GNSS.TOLLDECLARATION transaction with actionCodes = send, revoke and adjust 
                   * @remark  [16986:2016], Clause 8.1 and Table A.1/2 AND Table A.2/2 AND Table A.52/3
                   */
                   
                  // Initialisation 
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A52_3_implementedGNSSTOLLDECLARATION;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				// Set verdict pass for the time being
+				setverdict(pass);
+
 				// Step 1: Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send three valid TollDeclarationADUs with actionCode = send, revoke, and adjust, respectively
-				
+				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1);												
 				//  Wait for GNSS.TOLLDECLARATION
+				// PT140 TODO: mw_aduGnssTollDeclaration template to be defined
+				// PT140 TODO: way to set or change amount in the Charge report to be defined
+				var InfoExchange v_apduToBeReceived := m_apduNoSecInit(
+					{modifies mw_aduGnssTollDeclaration:= {
+					  	tollDeclarationId := 1,
+					  	amount := HOW TO SET?,
+					  	actionCode := ActionCode_send_,
+					  	}
+					},
+					{modifies mw_aduGnssTollDeclaration:= {
+					  	tollDeclarationId := 2,
+					  	actionCode := ActionCode_adjust_,
+					  	amount := HOW TO SET?,
+						}
+					},
+					{modifies mw_adGnssTollDeclaration := {
+						tollDeclarationId := 1, // PT 140 TODO: Suppose the tollDeclarationId refers to the one to be revoked
+						actionCode := ActionCode_revoke_  
+						}					  
+					});
 				
+				// Receive the correct adu, send positive ack
+				alt {
+					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();					
+						}
+							
 					// Send Ack within time constraints
+					f_wait(GNSSTOLLDECLARATION_TIME1_TC);
+					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+						
 					// Set test success
+					setverdict(pass);						
+ 					} // End of alt statement
+ 
+               	f_closeDownMtc();
                 
                 } // End of TP_TSP_GNSS_TOLLDECLARATION_BV_01
            
  		} // End of group Valid_Behaviour
          
          group Invalid_Behaviour {
+           
            // No Test Cases are defined for invalid behaviour.		
         } // End of group Invalid_Behaviour
 
@@ -4262,7 +4291,7 @@ module EfcInfoExchange_TestCasesTspOld {
 					// Send Ack within time constraints
 					// Set test success
                 
-                } // End of TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_07           
+                } // End of TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_03           
 
 
  		} // End of group Valid_Behaviour
