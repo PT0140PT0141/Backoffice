@@ -6,7 +6,7 @@
  * @see     [17154-1:2017], Clause 5.3.2 for TP namimg conventions
  * @version $id$
  */
-module EfcInfoExchange_TestCasesTc {
+module EfcInfoExchange_TestCasesTcDev {
  import from EfcInfoExchange_ParameterisedAsn1Data all;
 
     /**
@@ -615,7 +615,7 @@ module EfcInfoExchange_TestCasesTc {
                 // Step 2: Send ProvideUserIdListADU(s) with userIds which have not been requested
                 
                 // Step 3: Wait for NAck_Apdu with ({0, semanticError (3000)})
-                // or NAck_Apdu with ({1, semanticError (3000)}, …, {n, semanticError (3000)})
+                // or NAck_Apdu with ({1, semanticError (3000)}, ï¿½, {n, semanticError (3000)})
                 // where n is the number of ProvideUserIdListADUs
                 // within LISTOFUSERS.TIME2 
 			
@@ -643,7 +643,7 @@ module EfcInfoExchange_TestCasesTc {
                 // containing UserIds in the userIdList with all fields empty
                 
                 // Step 3: Wait for NAck_Apdu with ({0, invalidADU(0)})
-                // or NAck_Apdu with ({1, InvalidADU(0)}, …, {n, invalidADU(0)})
+                // or NAck_Apdu with ({1, InvalidADU(0)}, ï¿½, {n, invalidADU(0)})
                 // where n is the number of ProvideUserIdListADUs
                 // within LISTOFUSERS.TIME2 
 			
@@ -1736,7 +1736,7 @@ module EfcInfoExchange_TestCasesTc {
 				//		- actionCode = send
                 
                 // Step 2:
-                // Wait for NAck_Apdu with (with issues= Ø)
+                // Wait for NAck_Apdu with (with issues= ï¿½)
                 // within GNSS.TOLLDECLARARTION.TIME1             
                 // use template for NAck_Apdu
                 // if not received or received outside specification or time constraints set test fail
@@ -1758,7 +1758,7 @@ module EfcInfoExchange_TestCasesTc {
                 // Step 1:
                 // Send Initiating_Apdu containing exactly one TollDeclarationADU containing with
                 //		- with valid and IUT declared values, and
-                //		- actionCode = Ø
+                //		- actionCode = ï¿½
                 
                 // Step 2:
                 // Wait for NAck_Apdu with
@@ -2533,7 +2533,7 @@ module EfcInfoExchange_TestCasesTc {
                 // Step 1:
                 // Send Initiating_Apdu containing
                 //		- one valid PaymentAnnouncementADU, and
-                //		- one PaymentAnnouncementADU with actionCode=send containing an attachment larger than (2^31)–1 bytes
+                //		- one PaymentAnnouncementADU with actionCode=send containing an attachment larger than (2^31)ï¿½1 bytes
                   
                 // Step 2:  
                 // Wait for NAck_Apdu({2,invalidADU(0)} within time specified by GNSS.PAYMENTANNOUNCEMENT.TIME1

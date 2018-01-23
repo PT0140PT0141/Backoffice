@@ -15,7 +15,8 @@ module EfcInfoExchange_Ics {
     modulepar boolean ICS_A3_3_useAuthenticator := false; 
     modulepar boolean ICS_A7_1_implementedUSERDETAILS := true; 
     modulepar boolean ICS_A7_2_implementedLISTOFUSERS := true; 
-    modulepar boolean ICS_A7_3_implementedEXCEPTIONLIST := true; 
+    modulepar boolean ICS_A7_3_implementedEXCEPTIONLIST := true;
+	modulepar boolean ICS_A7_4_implementedTRUSTOBJECTSElectronicTransfer:=true; 
     modulepar boolean ICS_A7_5_implementedPAYMENTCLAIM := true;
     modulepar boolean ICS_A26_1_implementedDSRCCINTRACTISSUERLIST := true; 
     modulepar boolean ICS_A26_2_implementedDSRCEFCCONTEXTDATA := true; 

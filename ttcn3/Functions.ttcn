@@ -72,6 +72,7 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
             activate(a_upperTester());
             
             f_addLogEntry("Initialisations performed. Test case starting.");
+			
     	} 
         
     	function f_closeDownMtc() runs on MainTestComponent {

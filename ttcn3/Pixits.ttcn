@@ -37,5 +37,7 @@ module EfcInfoExchange_Pixits {
     template integer mw_userDetailsSupportedListOfParameters :=(all from USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS);
     modulepar RecordOfInteger USERDETAILS_PRIVACYBOUND_LIST_OF_PARAMETERS;  
     modulepar RecordOfInteger USERDETAILS_NOT_AGREED_LIST;
+    
+	modulepar integer NUMBER_OF_TRUSTOBJECT_TYPES_SUPPORTED;
         
 }

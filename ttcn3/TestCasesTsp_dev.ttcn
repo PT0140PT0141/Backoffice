@@ -36,7 +36,7 @@ module EfcInfoExchange_TestCasesTspOld {
           * - to test IUT with respect to the correctness of base and general functionalities that are required in many or all transaction types;
           */
      	group Valid_Behaviour {
-			testcase TP_TSP_Base_BV_01() runs on IutComp system TestAdapter {
+			testcase TP_TSP_Base_BV_01() runs on MainTestComponent system TestAdapter {
              /**
               * @desc    TP_TSP_Base_BV_01: Verify that a TC validates correct infoExchanceAuthenticators in received APDUs and generates correct infoExchangeAuthenticators 
               * @remark  [16986:2016], Clause 6.2.2 and Table A.1/2 
@@ -90,7 +90,7 @@ module EfcInfoExchange_TestCasesTspOld {
         } // End of group Valid_Behaviour
          
         group Invalid_Behaviour {
-			Testcase TP_TSP_Base_BI_01() runs on IutComp system TestAdapter {
+			Testcase TP_TSP_Base_BI_01() runs on MainTestComponent system TestAdapter {
 				/**
 				 * @desc    TP_TSP_Base_BI_01: Verify that the TSP correctly responds to invalid aidIdentifier in the APCI field received inside an APDU 
 				 * @remark  [16986:2016], Clause 6.2.1 and Table A.1/2 
@@ -149,7 +149,7 @@ module EfcInfoExchange_TestCasesTspOld {
 				f_closeDownMtc(); 		
 			}  // End of Testcase TP_TSP_Base_BI_01
 			
-			Testcase TP_TSP_Base_BI_02() runs on IutComp system TestAdapter {
+			Testcase TP_TSP_Base_BI_02() runs on MainTestComponent system TestAdapter {
 				/**
 				 * @desc    TP_TSP_Base_BI_02: Verify that the TSP correctly responds to invalid apduOriginator in APCI field received inside an APDU 
 				 * @remark  [16986:2016], Clause 6.2.1 and Table A.1/2 
@@ -211,7 +211,7 @@ module EfcInfoExchange_TestCasesTspOld {
 				
 			} //End of TP_TSP_Base_BI_02
 
-			Testcase TP_TSP_Base_BI_03() runs on IutComp system TestAdapter {
+			Testcase TP_TSP_Base_BI_03() runs on MainTestComponent system TestAdapter {
 				/**
 				 * @desc    TP_TSP_Base_BI_03: Verify that the TSP correctly responds to invalid or unknown informationSenderID in APCI field received inside an APDU 
 				 * @remark  [16986:2016], Clause 6.2.1 and Table A.1/2 
@@ -273,7 +273,7 @@ module EfcInfoExchange_TestCasesTspOld {
 				
 			} //End of TP_TSP_Base_BI_03
 			
-			Testcase TP_TSP_Base_BI_04() runs on IutComp system TestAdapter {
+			Testcase TP_TSP_Base_BI_04() runs on MainTestComponent system TestAdapter {
 				/**
 				 * @desc    TP_TSP_Base_BI_04: Verify that the TSP correctly responds to an informationRecipientID in APCI field which does not address the TSP itself 
 				 * @remark  [16986:2016], Clause 6.2.1 and Table A.1/2 
@@ -335,7 +335,7 @@ module EfcInfoExchange_TestCasesTspOld {
 				
 			} //End of TP_TSP_Base_BI_04
 
-			Testcase TP_TSP_Base_BI_05() runs on IutComp system TestAdapter {
+			Testcase TP_TSP_Base_BI_05() runs on MainTestComponent system TestAdapter {
 				/**
 				 * @desc    TP_TSP_Base_BI_05: Verify that the TSP correctly responds to invalid apduIdentifier in APCI field received inside an APDU 
 				 * @remark  [16986:2016], Clause 6.2.1 and Table A.1/2 
@@ -425,7 +425,7 @@ module EfcInfoExchange_TestCasesTspOld {
 				f_closeDownMtc(); 												
 			}	End of 	TP_TSP_Base_BI_05
 
-			Testcase TP_TSP_Base_BI_06() runs on IutComp system TestAdapter {
+			Testcase TP_TSP_Base_BI_06() runs on MainTestComponent system TestAdapter {
 				/**
 				 * @desc    TP_TSP_Base_BI_06: Verify that the TSP correctly responds to an APDU which contains the nextAPDUId field  inside the APCI field 
 				 * @remark  [16986:2016], Clause 6.2.1 and Table A.1/2 
@@ -484,7 +484,7 @@ module EfcInfoExchange_TestCasesTspOld {
 				
 			} //End of TP_TSP_Base_BI_06
 			
-			Testcase TP_TSP_Base_BI_07() runs on IutComp system TestAdapter {
+			Testcase TP_TSP_Base_BI_07() runs on MainTestComponent system TestAdapter {
 				/**
 				 * @desc    TP_TSP_Base_BI_07: Verify that the TSP correctly responds to an APDU which contains the inResponseToApduId inside the APCI field but the received APDU is not in response to a previous APDU 
 				 * @remark  [16986:2016], Clause 6.2.1 and Table A.1/2 
@@ -568,7 +568,7 @@ module EfcInfoExchange_TestCasesTspOld {
 				
 			} //End of TP_TSP_Base_BI_07				
 
-			Testcase TP_TSP_Base_BI_08() runs on IutComp system TestAdapter {
+			Testcase TP_TSP_Base_BI_08() runs on MainTestComponent system TestAdapter {
 				/**
 				 * @desc    TP_TSP_Base_BI_08: Verify that the TSP correctly responds to an APDU which contains an invalid inResponseToApduId value inside  the APCI field 
 				 * @remark  [16986:2016], Clause 6.2.1 and Table A.1/2 
@@ -659,7 +659,7 @@ module EfcInfoExchange_TestCasesTspOld {
 				
 			} //End of TP_TSP_Base_BI_08
 			
-			Testcase TP_TSP_Base_BI_09() runs on IutComp system TestAdapter {
+			Testcase TP_TSP_Base_BI_09() runs on MainTestComponent system TestAdapter {
 				/**
 				 * @desc    TP_TSP_Base_BI_09: Verify that the TSP correctly responds to an invalid apduDate inside the APCI field of a received APDU
 				 * @remark  [16986:2016], Clause 6.2.1 and Table A.1/2 
@@ -707,7 +707,7 @@ module EfcInfoExchange_TestCasesTspOld {
 				f_closeDownMtc(); 												
 			}	End of 	TP_TSP_Base_BI_09
 
-			testcase TP_TSP_Base_BI_10() runs on IutComp system TestAdapter {
+			testcase TP_TSP_Base_BI_10() runs on MainTestComponent system TestAdapter {
              /**
               * @desc    TP_TSP_Base_BI_10: Verify that the TSP correctly responds to an APDU bearing an incorrect infoExchangeAuthenticator 
               * @remark  [16986:2016], Clause 6.2.2 and 6.3.2 and Table A.1/2 
@@ -1038,7 +1038,7 @@ module EfcInfoExchange_TestCasesTspOld {
                 			
 				} // End of testcase TP_TSP_USERDETAILS_BI_02 
 
-            testcase TP_TSP_USERDETAILS_BI_03() runs on IutComp system TestAdapter {
+            testcase TP_TSP_USERDETAILS_BI_03() runs on MainTestComponent system TestAdapter {
              
               /**
               * @desc    TP_TSP_USERDETAILS_BI_03: Verify that the TSP correctly receives a RequestADUs of type userDetailsRequest with listOfUsersParametersRequested containing user details that cannot be provided because of missing agreement
@@ -1108,7 +1108,7 @@ module EfcInfoExchange_TestCasesTspOld {
  
             } // End of TP_TSP_USERDETAILS_BI_03
             
-            testcase TP_TSP_USERDETAILS_BI_04() runs on IutComp system TestAdapter {
+            testcase TP_TSP_USERDETAILS_BI_04() runs on MainTestComponent system TestAdapter {
 
              
               /**
@@ -1180,7 +1180,7 @@ module EfcInfoExchange_TestCasesTspOld {
     group LISTOFUSERS {
          group Valid_Behaviour {
 
-             testcase TP_TSP_LISTOFUSERS_BV_01() runs on IutComp system TestAdapter {
+             testcase TP_TSP_LISTOFUSERS_BV_01() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_LISTOFUSERS_BV_01: Verify that the TSP correctly receives an APDU containing valid RequestADUs and provides valid ProvideUserIdListADUs with available user Id data 
@@ -1244,7 +1244,7 @@ module EfcInfoExchange_TestCasesTspOld {
 
              } // End of TP_TSP_LISTOFUSERS_BV_01           
 
-             testcase TP_TSP_LISTOFUSERS_BV_02() runs on IutComp system TestAdapter {
+             testcase TP_TSP_LISTOFUSERS_BV_02() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_LISTOFUSERS_BV_02: Verify that the TSP correctly receives an APDU containing valid RequestADUs to user Id data not available and provides valid ProvideUserIdListADUs 
@@ -1315,7 +1315,7 @@ module EfcInfoExchange_TestCasesTspOld {
  		} // End of group Valid_Behaviour
          
          group Invalid_Behaviour {
-			  testcase TP_TSP_LISTOFUSERS_BI_01() runs on IutComp system TestAdapter {
+			  testcase TP_TSP_LISTOFUSERS_BI_01() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_LISTOFUSERS_BI_01: Verify that the TSP correctly receives an invalid requestADU with userIdRequestType ≠ 0 
@@ -1376,7 +1376,7 @@ module EfcInfoExchange_TestCasesTspOld {
 				f_closeDownMtc();  			
 			} // End of TP_TSP_LISTOFUSERS_BI_01
              
-			  testcase TP_TSP_LISTOFUSERS_BI_02() runs on IutComp system TestAdapter {
+			  testcase TP_TSP_LISTOFUSERS_BI_02() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_LISTOFUSERS_BI_02: Verify that the TSP correctly receives an invalid request ADU with no PAN, LicensePlateNumber, OBEID or ContractSerialNumber present in the userId field 
@@ -1436,7 +1436,7 @@ module EfcInfoExchange_TestCasesTspOld {
 				f_closeDownMtc();		
              } // End of TP_TSP_LISTOFUSERS_BI_02
              
-			  testcase TP_TSP_LISTOFUSERS_BI_03() runs on IutComp system TestAdapter {
+			  testcase TP_TSP_LISTOFUSERS_BI_03() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_LISTOFUSERS_BI_03: Verify that the TSP correctly receives an invalid request ADU with userIdRequestTime not present 
@@ -1497,7 +1497,7 @@ module EfcInfoExchange_TestCasesTspOld {
 				f_closeDownMtc();				
 			} // End of TP_TSP_LISTOFUSERS_BI_03
              
-			  testcase TP_TSP_LISTOFUSERS_BI_04() runs on IutComp system TestAdapter {
+			  testcase TP_TSP_LISTOFUSERS_BI_04() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_LISTOFUSERS_BI_04: Verify that the TSP correctly receives an invalid request ADU with invalid userIdRequestTime 
@@ -1559,7 +1559,7 @@ module EfcInfoExchange_TestCasesTspOld {
  
              } // End of TP_TSP_LISTOFUSERS_BI_04
              
-			  testcase TP_TSP_LISTOFUSERS_BI_05() runs on IutComp system TestAdapter {
+			  testcase TP_TSP_LISTOFUSERS_BI_05() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_LISTOFUSERS_BI_05: Verify that a TSP responds correctly to a RequestADU sent earlier than allowed 
@@ -1617,7 +1617,7 @@ module EfcInfoExchange_TestCasesTspOld {
     
     group EXCEPTIONLIST {
          group Valid_Behaviour {
-           testcase TP_TSP_EXCEPTIONLIST_BV_01() IutComp system TestAdapter {
+           testcase TP_TSP_EXCEPTIONLIST_BV_01() MainTestComponent system TestAdapter {
              
               /**
               * @desc    TP_TSP_EXCEPTIONLIST_BV_01: Verify that the TSP correctly performs an EXCEPTIONLIST transaction for blacklist and whitelist 
@@ -1628,7 +1628,9 @@ module EfcInfoExchange_TestCasesTspOld {
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				
 				// Start by setting test failure
-				setverdict(fail);
+				setverdict(fail); //TODO examine if this is a suitable candidate for refactoring, moving setverdict(fail) into f_intialiseMtc(v_runOrNot)
+
+
 				// Step 1a: Trigger IUT with EXCEPTIONLIST.TR_TSP_1 LIST_TYPE=BLACK
 				// PT140 TODO: Need a way to specify a Black list
 				f_sendAndLogTrigger(EXCEPTIONLIST_TR_TSP_1);
@@ -1664,7 +1666,7 @@ module EfcInfoExchange_TestCasesTspOld {
 				f_closeDownMtc();   						           
            } // End of TP_TSP_EXCEPTIONLIST_BV_01
            
-           testcase TP_TSP_EXCEPTIONLIST_BV_02() IutComp system TestAdapter {
+           testcase TP_TSP_EXCEPTIONLIST_BV_02() MainTestComponent system TestAdapter {
              
               /**
               * @desc    TP_TSP_EXCEPTIONLIST_BV_02: Verify that the TSP correctly performs an EXCEPTIONLIST transaction for discounted users 
@@ -1715,7 +1717,7 @@ module EfcInfoExchange_TestCasesTspOld {
     
     group TRUSTOBJECTS {
          group Valid_Behaviour {
-           testcase TP_TSP_TRUSTOBJECTS_BV_01() IutComp system TestAdapter {
+           testcase TP_TSP_TRUSTOBJECTS_BV_01() runs on MainTestComponent system TestAdapter {
              
               /**
               * @desc    TP_TSP_TRUSTOBJECTS_BV_01: Verify that the TSP correctly provides a TrustObjectADU without TC request
@@ -1723,10 +1725,52 @@ module EfcInfoExchange_TestCasesTspOld {
               * @remark  Same as  TP_TC_TRUSTOBJECTS_BV_01
               */
 				// Initialisation
-             
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_4_implementedTRUSTOBJECTSElectronicTransfer;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				
+				// Start by setting test failure
+				setverdict(fail);
+				var boolean isCertificateOrPublicKey:=false, isDsrcKeyRef := false, isMacMasterKey := false, isDsrcMasterKey := false;
+				
+				// Step 1: Trigger IUT with TRUSTOBJECTS_TR_2
+				f_sendAndLogTrigger(TRUSTOBJECTS_TR_2);
+				//  Wait for TRUSTOBJECTS
+				for (v_j:=1; v_j<=NUMBER_OF_TRUSTOBJECT_TYPES_SUPPORTED; v_j:= v_j+1){
+					alt {
+						[] mtcPort.receive(m_apduTrustObject) -> value v_apduReceived {
+							// Log what we received
+							f_logApduReceivedAndTStep();	
+							
+							//Read the trustObjectPurpose received and add to set 				
+							if ((match(v_apduReceived ,m_apduTrustObjectCertificateObject)) or 
+							    (match(v_apduReceived ,m_apduTrustObjectPublicKeyObject))) 
+								isCertificateOrPublicKey:=true;
+							if (match(v_apduReceived ,m_apduTrustObjectGenericTONotCrl) {
+								setverdict(fail)
+								stop;
+							}
+							if (match(v_apduReceived ,m_apduTrustObjectDsrcKeyRef)) 
+								isDsrcKeyRef:=true;
+							if (match(v_apduReceived ,m_apduTrustObjectMacMasterKey)) 
+								isMacMasterKey:=true;
+							if (match(v_apduReceived ,m_apduTrustObjectDsrcMasterKey)) 
+								isDsrcMasterKey:=true;
+						}
+					}
+					//send Ack
+					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived)); 			
+					
+				}
+					
+				if (ICS_A2_1_isDsrc and isCertificateOrPublicKey and isDsrcKeyRef and isMacMasterKey and isDsrcMasterKey) setverdict(pass);			 				
+				if (ICS_A2_2_isGnss and isCertificateOrPublicKey and isDsrcKeyRef) setverdict(pass);			 				
+					
+				f_closeDownMtc(); 
+          
+  
            } // End of TP_TSP_TRUSTOBJECTS_BV_01
 
-           testcase TP_TSP_TRUSTOBJECTS_BV_02() IutComp system TestAdapter {
+           testcase TP_TSP_TRUSTOBJECTS_BV_02() runs on MainTestComponent system TestAdapter {
              
               /**
               * @desc    TP_TSP_TRUSTOBJECTS_BV_02: Verify that the TSP correctly responds to a TrustObjectADU received from a TC without having issued a request 
@@ -1737,7 +1781,7 @@ module EfcInfoExchange_TestCasesTspOld {
              
            } // End of TP_TSP_TRUSTOBJECTS_BV_02
 
-           testcase TP_TSP_TRUSTOBJECTS_BV_03() IutComp system TestAdapter {
+           testcase TP_TSP_TRUSTOBJECTS_BV_03() runs onMainTestComponent system TestAdapter {
              
               /**
               * @desc    TP_TSP_TRUSTOBJECTS_BV_03: Verify that the TSP correctly provides a TrustObjectADU following a TC request 
@@ -1748,7 +1792,7 @@ module EfcInfoExchange_TestCasesTspOld {
              
            } // End of TP_TSP_TRUSTOBJECTS_BV_03
 
-           testcase TP_TSP_TRUSTOBJECTS_BV_04() IutComp system TestAdapter {
+           testcase TP_TSP_TRUSTOBJECTS_BV_04() runs onMainTestComponent system TestAdapter {
              
               /**
               * @desc    TP_TSP_TRUSTOBJECTS_BV_04: Verify that the TSP correctly requests and responds to a TrustObjectADU
@@ -1763,7 +1807,7 @@ module EfcInfoExchange_TestCasesTspOld {
          
          group Invalid_Behaviour {
 
-           testcase TP_TSP_TRUSTOBJECTS_BI_01() IutComp system TestAdapter {
+           testcase TP_TSP_TRUSTOBJECTS_BI_01() runs onMainTestComponent system TestAdapter {
              
               /**
               * @desc    TP_TSP_TRUSTOBJECTS_BI_01: Verify that the TSP correctly responds to a TrustObjectADU received without having issued a request and containing incorrect ADU parameters
@@ -1774,7 +1818,7 @@ module EfcInfoExchange_TestCasesTspOld {
              
            } // End of TP_TSP_TRUSTOBJECTS_BI_01
 
-           testcase TP_TSP_TRUSTOBJECTS_BI_02() IutComp system TestAdapter {
+           testcase TP_TSP_TRUSTOBJECTS_BI_02() runs onMainTestComponent system TestAdapter {
              
               /**
               * @desc    TP_TSP_TRUSTOBJECTS_BI_02: Verify that the TSP correctly responds to more than one correct Trust Object ADUs in the same APDU without having issued a request
@@ -1785,7 +1829,7 @@ module EfcInfoExchange_TestCasesTspOld {
              
            } // End of TP_TSP_TRUSTOBJECTS_BI_02
 
-           testcase TP_TSP_TRUSTOBJECTS_BI_03() IutComp system TestAdapter {
+           testcase TP_TSP_TRUSTOBJECTS_BI_03() runs onMainTestComponent system TestAdapter {
              
               /**
               * @desc    TP_TSP_TRUSTOBJECTS_BI_03: Verify that the TSP correctly responds to a not supported Trust Object
@@ -1796,7 +1840,7 @@ module EfcInfoExchange_TestCasesTspOld {
              
            } // End of TP_TSP_TRUSTOBJECTS_BI_03
 
-           testcase TP_TSP_TRUSTOBJECTS_BI_04() IutComp system TestAdapter {
+           testcase TP_TSP_TRUSTOBJECTS_BI_04() runs onMainTestComponent system TestAdapter {
              
               /**
               * @desc    TP_TSP_TRUSTOBJECTS_BI_04: Verify that the TSP correctly responds to a RequestADU sent earlier than allowed
@@ -1807,7 +1851,7 @@ module EfcInfoExchange_TestCasesTspOld {
              
            } // End of TP_TSP_TRUSTOBJECTS_BI_04
 
-           testcase TP_TSP_TRUSTOBJECTS_BI_05() IutComp system TestAdapter {
+           testcase TP_TSP_TRUSTOBJECTS_BI_05() runs onMainTestComponent system TestAdapter {
              
               /**
               * @desc    TP_TSP_TRUSTOBJECTS_BI_05: Verify that the TSP correctly responds to a TrustObjectADU sent earlier than allowed
@@ -1824,7 +1868,7 @@ module EfcInfoExchange_TestCasesTspOld {
     
     group PAYMENTCLAIM {
          group Valid_Behaviour {
-            testcase TP_TSP_PaymentClaim_BV_01() runs on IutComp system TestAdapter {
+            testcase TP_TSP_PaymentClaim_BV_01() runs on MainTestComponent system TestAdapter {
                    /**    
 				  * @desc	TP_TSP_PAYMENTCLAIM_BV_01: Verify that a TSP performs the PAYMENTCLAIM transaction correctly when using the actionCode=send 
                   * @remark  [16986:2016], Clause 6.8 and Table A.1/2 AND Table A.7/5 
@@ -1926,7 +1970,7 @@ module EfcInfoExchange_TestCasesTspOld {
                 
                 } // End of TP_TSP_PAYMENTCLAIM_BV_01
                 
-            testcase TP_TSP_PaymentClaim_BV_02() runs on IutComp system TestAdapter {
+            testcase TP_TSP_PaymentClaim_BV_02() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_PAYMENTCLAIM_BV_02: Verify that a TSP performs the PAYMENTCLAIM transaction correctly when using the actionCode=revoke or adjust 
@@ -2061,7 +2105,7 @@ module EfcInfoExchange_TestCasesTspOld {
  		} // End of group Valid_Behaviour
          
          group Invalid_Behaviour {
-            testcase TP_TSP_PaymentClaim_BI_01() runs on IutComp system TestAdapter {
+            testcase TP_TSP_PaymentClaim_BI_01() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_PAYMENTCLAIM_BI_01: Verify that a TSP performs the PAYMENTCLAIM transaction correctly when getting incorrect paymentClaimId 
@@ -2172,7 +2216,7 @@ module EfcInfoExchange_TestCasesTspOld {
                 
                 } // End of TP_TSP_PAYMENTCLAIM_BI_01           		
 
-            testcase TP_TSP_PaymentClaim_BI_02() runs on IutComp system TestAdapter {
+            testcase TP_TSP_PaymentClaim_BI_02() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_PAYMENTCLAIM_BI_02: Verify that a TSP performs the PAYMENTCLAIM transaction correctly when getting incorrect paymentClaimStatus 
@@ -2255,7 +2299,7 @@ module EfcInfoExchange_TestCasesTspOld {
 			                
                 } // End of TP_TSP_PAYMENTCLAIM_BI_02           		
 
-            testcase TP_TSP_PaymentClaim_BI_03() runs on IutComp system TestAdapter {
+            testcase TP_TSP_PaymentClaim_BI_03() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_PAYMENTCLAIM_BI_03: Verify that a TSP performs the PAYMENTCLAIM transaction correctly when getting incorrect referenceDetailsList 
@@ -2337,7 +2381,7 @@ module EfcInfoExchange_TestCasesTspOld {
                 
                 } // End of TP_TSP_PAYMENTCLAIM_BI_03           		
 
-            testcase TP_TSP_PaymentClaim_BI_04() runs on IutComp system TestAdapter {
+            testcase TP_TSP_PaymentClaim_BI_04() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_PAYMENTCLAIM_BI_04: Verify that a TSP performs the PAYMENTCLAIM transaction correctly when getting incorrect actionCode 
@@ -2420,7 +2464,7 @@ module EfcInfoExchange_TestCasesTspOld {
                 
                 } // End of TP_TSP_PAYMENTCLAIM_BI_04   
 
-            testcase TP_TSP_PaymentClaim_BI_05() runs on IutComp system TestAdapter {
+            testcase TP_TSP_PaymentClaim_BI_05() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_PAYMENTCLAIM_BI_05: Getting provoked by various errors with defined specific responses  
@@ -2688,7 +2732,7 @@ module EfcInfoExchange_TestCasesTspOld {
                 
                 } // End of TP_TSP_PAYMENTCLAIM_BI_05   
 
-            testcase TP_TSP_PaymentClaim_BI_06() runs on IutComp system TestAdapter {
+            testcase TP_TSP_PaymentClaim_BI_06() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_PAYMENTCLAIM_BI_06: Verify that a TSP responds correctly to a PaymentClaimADU sent earlier than allowed  
@@ -2784,7 +2828,7 @@ module EfcInfoExchange_TestCasesTspOld {
     
     group DSRC_CONTRACTISSUERLIST {
          group Valid_Behaviour {
-           testcase TP_TSP_CONTRACTISSUERLIST_BV_01() runs on IutComp system TestAdapter {
+           testcase TP_TSP_CONTRACTISSUERLIST_BV_01() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_CONTRACTISSUERLIST_BV_01: Verify that the TSP correctly performs the DSRC.CONTRACTISSUERLIST transaction with three manufacturerIDs 
@@ -2830,7 +2874,7 @@ module EfcInfoExchange_TestCasesTspOld {
     
     group DSRC_EFCCONTEXTDATA {
          group Valid_Behaviour {
-           testcase TP_TSP_DSRC.EFCCONTEXTDATA_BV_01() runs on IutComp system TestAdapter {
+           testcase TP_TSP_DSRC.EFCCONTEXTDATA_BV_01() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_DSRC.EFCCONTEXTDATA_BV_01: Verify that the TSP correctly performs the DSRC.EFCCONTEXTDATA transaction with an EFCContextDataADU containing only mandatory context data for a domain type = dsrcContext 
@@ -2847,7 +2891,7 @@ module EfcInfoExchange_TestCasesTspOld {
                 
                 } // End of TP_TSP_DSRC.EFCCONTEXTDATA_BV_01
 
-           testcase TP_TSP_DSRC.EFCCONTEXTDATA_BV_02() runs on IutComp system TestAdapter {
+           testcase TP_TSP_DSRC.EFCCONTEXTDATA_BV_02() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_DSRC.EFCCONTEXTDATA_BV_02: Verify that the TSP correctly performs the DSRC.EFCCONTEXTDATA transaction with an EFCContextDataADU containing only mandatory context data for a domain type = dsrcClosedContext 
@@ -2864,7 +2908,7 @@ module EfcInfoExchange_TestCasesTspOld {
                 
                 } // End of TP_TSP_DSRC.EFCCONTEXTDATA_BV_02
 
-           testcase TP_TSP_DSRC.EFCCONTEXTDATA_BV_03() runs on IutComp system TestAdapter {
+           testcase TP_TSP_DSRC.EFCCONTEXTDATA_BV_03() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_DSRC.EFCCONTEXTDATA_BV_03: Verify that the TSP correctly performs the DSRC.EFCCONTEXTDATA transaction with an EFCContextDataADU containing mandatory context data plus tariffClassDefinition for a domain type = dsrcClosedContext 
@@ -2881,7 +2925,7 @@ module EfcInfoExchange_TestCasesTspOld {
                 
                 } // End of TP_TSP_DSRC.EFCCONTEXTDATA_BV_03
 
-           testcase TP_TSP_DSRC.EFCCONTEXTDATA_BV_04() runs on IutComp system TestAdapter {
+           testcase TP_TSP_DSRC.EFCCONTEXTDATA_BV_04() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_DSRC.EFCCONTEXTDATA_BV_04: Verify that the TSP correctly performs the DSRC.EFCCONTEXTDATA transaction with an EFCContextDataADU containing mandatory context data plus localVehicleClassDefinition for a domain type = dsrcClosedContext 
@@ -2898,7 +2942,7 @@ module EfcInfoExchange_TestCasesTspOld {
                 
                 } // End of TP_TSP_DSRC.EFCCONTEXTDATA_BV_04
 
-           testcase TP_TSP_DSRC.EFCCONTEXTDATA_BV_05() runs on IutComp system TestAdapter {
+           testcase TP_TSP_DSRC.EFCCONTEXTDATA_BV_05() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_DSRC.EFCCONTEXTDATA_BV_05: Verify that the TSP correctly performs the DSRC.EFCCONTEXTDATA transaction with an EFCContextDataADU containing mandatory context data plus timeClassDefinition for a domain type = dsrcClosedContext 
@@ -2915,7 +2959,7 @@ module EfcInfoExchange_TestCasesTspOld {
                 
                 } // End of TP_TSP_DSRC.EFCCONTEXTDATA_BV_05
 
-           testcase TP_TSP_DSRC.EFCCONTEXTDATA_BV_06() runs on IutComp system TestAdapter {
+           testcase TP_TSP_DSRC.EFCCONTEXTDATA_BV_06() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_DSRC.EFCCONTEXTDATA_BV_06: Verify that the TSP correctly performs the DSRC.EFCCONTEXTDATA transaction with an EFCContextDataADU containing mandatory context data plus userClassDefinition for a domain type = dsrcClosedContext 
@@ -2932,7 +2976,7 @@ module EfcInfoExchange_TestCasesTspOld {
                                 
                 } // End of TP_TSP_DSRC.EFCCONTEXTDATA_BV_06
 
-           testcase TP_TSP_DSRC.EFCCONTEXTDATA_BV_07() runs on IutComp system TestAdapter {
+           testcase TP_TSP_DSRC.EFCCONTEXTDATA_BV_07() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_DSRC.EFCCONTEXTDATA_BV_07: Verify that the TSP correctly performs the DSRC.EFCCONTEXTDATA transaction with an EFCContextDataADU containing mandatory context data plus feeDefinition for a domain type = dsrcClosedContext 
@@ -2953,7 +2997,7 @@ module EfcInfoExchange_TestCasesTspOld {
          
          group Invalid_Behaviour {
 
-           testcase TP_TSP_DSRC.EFCCONTEXTDATA_BI_01() runs on IutComp system TestAdapter {
+           testcase TP_TSP_DSRC.EFCCONTEXTDATA_BI_01() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_DSRC.EFCCONTEXTDATA_BI_01: Verify that the TSP correctly responds to an EFCContextDataADU containing only mandatory context data for a domain type = dsrcContext with a wrong data field 
@@ -2969,7 +3013,7 @@ module EfcInfoExchange_TestCasesTspOld {
                 
                 } // End of TP_TSP_DSRC.EFCCONTEXTDATA_BI_01
 
-           testcase TP_TSP_DSRC.EFCCONTEXTDATA_BI_02() runs on IutComp system TestAdapter {
+           testcase TP_TSP_DSRC.EFCCONTEXTDATA_BI_02() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_DSRC.EFCCONTEXTDATA_BI_02: Verify that the TSP correctly responds to an EFCContextDataADU containing only mandatory context data for a domain type = dsrcClosedContext with a wrong data field 
@@ -2987,7 +3031,7 @@ module EfcInfoExchange_TestCasesTspOld {
                 
                 } // End of TP_TSP_DSRC.EFCCONTEXTDATA_BI_02
 
-           testcase TP_TSP_DSRC.EFCCONTEXTDATA_BI_03() runs on IutComp system TestAdapter {
+           testcase TP_TSP_DSRC.EFCCONTEXTDATA_BI_03() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_DSRC.EFCCONTEXTDATA_BI_03: Verify that the TSP responds correctly to an EfcContextDataADU sent earlier than allowed 
@@ -3013,7 +3057,7 @@ module EfcInfoExchange_TestCasesTspOld {
     group DSRC_BILLINGDETAILS {
          group Valid_Behaviour {
 
-           testcase TP_TSP_DSRC.BILLINGDETAILS_BV_01() runs on IutComp system TestAdapter {
+           testcase TP_TSP_DSRC.BILLINGDETAILS_BV_01() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_DSRC.BILLINGDETAILS_BV_01: Verify that the TSP correctly performs a DSRC.BILLINGDETAILS transaction when a TC sends a single BillingDetailsADU with no optional fields except includedDiscounts and actionCode=send 
@@ -3047,7 +3091,7 @@ module EfcInfoExchange_TestCasesTspOld {
 				f_closeDownMtc();                  
                 } // End of TP_TSP_DSRC.BILLINGDETAILS_BV_01
 
-           testcase TP_TSP_DSRC.BILLINGDETAILS_BV_02() runs on IutComp system TestAdapter {
+           testcase TP_TSP_DSRC.BILLINGDETAILS_BV_02() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_DSRC.BILLINGDETAILS_BV_02: Verify that the TSP correctly performs a DSRC.BILLINGDETAILS transaction when the TC provides multiple BillingDetailsADUs with no optional fields  
@@ -3067,7 +3111,7 @@ module EfcInfoExchange_TestCasesTspOld {
                 
                 } // End of TP_TSP_DSRC.BILLINGDETAILS_BV_02
 
-           testcase TP_TSP_DSRC.BILLINGDETAILS_BV_03() runs on IutComp system TestAdapter {
+           testcase TP_TSP_DSRC.BILLINGDETAILS_BV_03() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_DSRC.BILLINGDETAILS_BV_03: Verify that the TSP correctly performs a DSRC.BILLINGDETAILS transaction when the TC sends a single BillingDetailsADU with actionCode = adjust and no optional fields 
@@ -3130,7 +3174,7 @@ module EfcInfoExchange_TestCasesTspOld {
                           
            } // End of TP_TSP_DSRC.BILLINGDETAILS_BV_03
 
-           testcase TP_TSP_DSRC.BILLINGDETAILS_BV_04() runs on IutComp system TestAdapter {
+           testcase TP_TSP_DSRC.BILLINGDETAILS_BV_04() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_DSRC.BILLINGDETAILS_BV_05: Verify that the TSP correctly performs a DSRC.BILLINGDETAILS transaction when the TC sends a single BillingDetailsADU with actionCode = revoke and no optional fields 
@@ -3195,7 +3239,7 @@ module EfcInfoExchange_TestCasesTspOld {
          
          group Invalid_Behaviour {
 
-           testcase TP_TSP_DSRC.BILLINGDETAILS_BI_01() runs on IutComp system TestAdapter {
+           testcase TP_TSP_DSRC.BILLINGDETAILS_BI_01() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_DSRC.BILLINGDETAILS_BI_01: Verify that the TSP correctly responds to a single BillingDetailsADU with only mandatory fields, and then correctly responds to a a second BillingDetailsADU issued before TIMEA expires 
@@ -3235,7 +3279,7 @@ module EfcInfoExchange_TestCasesTspOld {
                 
                 } // End of TP_TSP_DSRC.BILLINGDETAILS_BI_01
 
-           testcase TP_TSP_DSRC.BILLINGDETAILS_BI_02() runs on IutComp system TestAdapter {
+           testcase TP_TSP_DSRC.BILLINGDETAILS_BI_02() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_DSRC.BILLINGDETAILS_BI_02: Verify that the TSP correctly responds to a series of BillingDetailsADUs bearing only mandatory fields, each BillingDetailsADU having one mandatory field bearing an incorrect value 
@@ -3327,7 +3371,7 @@ module EfcInfoExchange_TestCasesTspOld {
                 
                 } // End of TP_TSP_DSRC.BILLINGDETAILS_BI_02
 
-           testcase TP_TSP_DSRC.BILLINGDETAILS_BI_03() runs on IutComp system TestAdapter {
+           testcase TP_TSP_DSRC.BILLINGDETAILS_BI_03() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_DSRC.BILLINGDETAILS_BI_03: Verify that the TSP correctly responds to a BillingDetailsADU adjusting the fee of a not previously issued BillingDetailsADU 
@@ -3402,7 +3446,7 @@ module EfcInfoExchange_TestCasesTspOld {
                 
                 } // End of TP_TSP_DSRC.BILLINGDETAILS_BI_03
 
-           testcase TP_TSP_DSRC.BILLINGDETAILS_BI_04() runs on IutComp system TestAdapter {
+           testcase TP_TSP_DSRC.BILLINGDETAILS_BI_04() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_DSRC.BILLINGDETAILS_BI_04: Verify that the TSP correctly responds to a BillingDetailsADU revoking a not previously issued BillingDetailsADU 
@@ -3477,7 +3521,7 @@ module EfcInfoExchange_TestCasesTspOld {
                 
                 } // End of TP_TSP_DSRC.BILLINGDETAILS_BI_04
 
-           testcase TP_TSP_DSRC.BILLINGDETAILS_BI_05() runs on IutComp system TestAdapter {
+           testcase TP_TSP_DSRC.BILLINGDETAILS_BI_05() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_DSRC.BILLINGDETAILS_BI_05: Verify that the TSP responds correctly to a BillingDetailsADU sent earlier than allowed 
@@ -3546,7 +3590,7 @@ module EfcInfoExchange_TestCasesTspOld {
     group DSRC_REPORTABNORMALOBE {
          group Valid_Behaviour {
 
-           testcase TP_TSP_DSRC.REPORTABNORMALOBE_BV_01() runs on IutComp system TestAdapter {
+           testcase TP_TSP_DSRC.REPORTABNORMALOBE_BV_01() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_DSRC.REPORTABNORMALOBE_BV_01: Verify that the TSP correctly performs a DSRC.REPORTABNORMALOBE transaction in response to an APDU containing valid ReportAbnormalOBEADUs 
@@ -3589,7 +3633,7 @@ module EfcInfoExchange_TestCasesTspOld {
          
          group Invalid_Behaviour {		
 
-           testcase TP_TSP_DSRC.REPORTABNORMALOBE_BI_01() runs on IutComp system TestAdapter {
+           testcase TP_TSP_DSRC.REPORTABNORMALOBE_BI_01() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_DSRC.REPORTABNORMALOBE_BI_01: Verify that the TSP correctly responds to an APDU containing one ReportAbnormalOBEADU with no userId field present 
@@ -3643,7 +3687,7 @@ module EfcInfoExchange_TestCasesTspOld {
                 
                 } // End of TP_TSP_DSRC.REPORTABNORMALOBE_BI_01
 
-           testcase TP_TSP_DSRC.REPORTABNORMALOBE_BI_02() runs on IutComp system TestAdapter {
+           testcase TP_TSP_DSRC.REPORTABNORMALOBE_BI_02() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_DSRC.REPORTABNORMALOBE_BI_02: Verify that the TSP correctly responds to an APDU containing one ReportAbnormalOBEADU with no value or invalid values in the field userId 
@@ -3710,7 +3754,7 @@ module EfcInfoExchange_TestCasesTspOld {
                	f_closeDownMtc();  			
                 } // End of TP_TSP_DSRC.REPORTABNORMALOBE_BI_02
 
-           testcase TP_TSP_DSRC.REPORTABNORMALOBE_BI_03() runs on IutComp system TestAdapter {
+           testcase TP_TSP_DSRC.REPORTABNORMALOBE_BI_03() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_DSRC.REPORTABNORMALOBE_BI_03: Verify that the TSP correctly responds to an APDU containing one ReportAbnormalOBEADU with no dateAndTime field 
@@ -3769,7 +3813,7 @@ module EfcInfoExchange_TestCasesTspOld {
                                 
                 } // End of TP_TSP_DSRC.REPORTABNORMALOBE_BI_03
 
-           testcase TP_TSP_DSRC.REPORTABNORMALOBE_BI_04() runs on IutComp system TestAdapter {
+           testcase TP_TSP_DSRC.REPORTABNORMALOBE_BI_04() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_DSRC.REPORTABNORMALOBE_BI_04: Verify that the TSP correctly responds to an APDU containing ReportAbnormalOBEADU with no value or invalid values in field dateAndTime 
@@ -3837,7 +3881,7 @@ module EfcInfoExchange_TestCasesTspOld {
                 
                 } // End of TP_TSP_DSRC.REPORTABNORMALOBE_BI_04
 
-           testcase TP_TSP_DSRC.REPORTABNORMALOBE_BI_05() runs on IutComp system TestAdapter {
+           testcase TP_TSP_DSRC.REPORTABNORMALOBE_BI_05() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_DSRC.REPORTABNORMALOBE_BI_05: Verify that the TSP correctly responds to an APDU containing one ReportAbnormalOBEADU with no efcContextMark field 
@@ -3897,7 +3941,7 @@ module EfcInfoExchange_TestCasesTspOld {
                 
                 } // End of TP_TSP_DSRC.REPORTABNORMALOBE_BI_05
 
-           testcase TP_TSP_DSRC.REPORTABNORMALOBE_BI_06() runs on IutComp system TestAdapter {
+           testcase TP_TSP_DSRC.REPORTABNORMALOBE_BI_06() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_DSRC.REPORTABNORMALOBE_BI_06: Verify that the TSP correctly responds to an APDU containing one ReportAbnormalOBEADU with no value or invalid values in the field efcContextMark 
@@ -3968,7 +4012,7 @@ module EfcInfoExchange_TestCasesTspOld {
                 
                 } // End of TP_TSP_DSRC.REPORTABNORMALOBE_BI_06
 
-           testcase TP_TSP_DSRC.REPORTABNORMALOBE_BI_07() runs on IutComp system TestAdapter {
+           testcase TP_TSP_DSRC.REPORTABNORMALOBE_BI_07() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_DSRC.REPORTABNORMALOBE_BI_07: Verify that the TSP correctly responds to an APDU containing ReportAbnormalOBEADU not containing the abnormalOBEReason field 
@@ -4027,7 +4071,7 @@ module EfcInfoExchange_TestCasesTspOld {
                 
                 } // End of TP_TSP_DSRC.REPORTABNORMALOBE_BI_07
 
-           testcase TP_TSP_DSRC.REPORTABNORMALOBE_BI_08() runs on IutComp system TestAdapter {
+           testcase TP_TSP_DSRC.REPORTABNORMALOBE_BI_08() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_DSRC.REPORTABNORMALOBE_BI_08: Verify that the TSP correctly responds to an APDU containing one ReportAbnormalOBEADU with no value or invalid values in the field abnormalOBEReason 
@@ -4093,7 +4137,7 @@ module EfcInfoExchange_TestCasesTspOld {
                	f_closeDownMtc();             
                 } // End of TP_TSP_DSRC.REPORTABNORMALOBE_BI_08
                
-			testcase TP_TSP_DSRC.REPORTABNORMALOBE_BI_09() runs on IutComp system TestAdapter {
+			testcase TP_TSP_DSRC.REPORTABNORMALOBE_BI_09() runs on MainTestComponent system TestAdapter {
                  /**
                   * @desc    TP_TSP_DSRC.REPORTABNORMALOBE_BI_09: Verify that the TSP responds correctly to a ReportAbnormalOBEADU sent earlier than allowed 
                   * @remark  [16986:2016], Clause 7.4 and Table A.1/2 AND Table A.2/1 AND Table A.26/4
@@ -4155,7 +4199,7 @@ module EfcInfoExchange_TestCasesTspOld {
     
     group GNSS_TOLLDECLARATION {
          group Valid_Behaviour {
-           testcase TP_TSP_GNSS_TOLLDECLARATION_BV_01() runs on IutComp system TestAdapter {
+           testcase TP_TSP_GNSS_TOLLDECLARATION_BV_01() runs on MainTestComponent system TestAdapter {
                   /**
                   * @desc    TP_TSP_GNSS_TOLLDECLARATION_BV_01: Verify that the TSP correctly performs a GNSS.TOLLDECLARATION transaction with actionCodes = send, revoke and adjust 
                   * @remark  [16986:2016], Clause 8.1 and Table A.1/2 AND Table A.2/2 AND Table A.52/3
@@ -4221,7 +4265,7 @@ module EfcInfoExchange_TestCasesTspOld {
     group GNSS_BILLINGDETAILS_TSP {
          group Valid_Behaviour {
 
-           testcase TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_01() runs on IutComp system TestAdapter {
+           testcase TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_01() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_01: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TSP transaction with BillingDetailsADUs
@@ -4242,7 +4286,7 @@ module EfcInfoExchange_TestCasesTspOld {
                                 
                 } // End of TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_01           
           
-           testcase TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_02() runs on IutComp system TestAdapter {
+           testcase TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_02() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_06: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TSP transaction with single BillingDetailsADU with actionCode = adjust and no optional fields 
@@ -4268,7 +4312,7 @@ module EfcInfoExchange_TestCasesTspOld {
                 
                 } // End of TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_02           
 
-           testcase TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_03() runs on IutComp system TestAdapter {
+           testcase TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_03() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_03: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TSP transaction with revoking a single BillingDetailsADU containing only mandatory fields 
@@ -4306,7 +4350,7 @@ module EfcInfoExchange_TestCasesTspOld {
          // Base TCs shall be carried out in addition and prior to the TCs listed below.
          group Valid_Behaviour {
 
-           testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BV_01() runs on IutComp system TestAdapter {
+           testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BV_01() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BV_01: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TC transaction with a single BillingDetailsADU with no optional fields except includedDiscounts field and actionCode=send 
@@ -4326,7 +4370,7 @@ module EfcInfoExchange_TestCasesTspOld {
 					// Set test success                
                 } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BV_01           
 
-           testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BV_02() runs on IutComp system TestAdapter {
+           testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BV_02() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BV_02: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TC transaction with a single BillingDetailsADU
@@ -4348,7 +4392,7 @@ module EfcInfoExchange_TestCasesTspOld {
                 
                 } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BV_02           
 
-           testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BV_03() runs on IutComp system TestAdapter {
+           testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BV_03() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BV_03: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TC transaction with a single BillingDetailsADU
@@ -4372,7 +4416,7 @@ module EfcInfoExchange_TestCasesTspOld {
                 
                 } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BV_03           
 
-           testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BV_04() runs on IutComp system TestAdapter {
+           testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BV_04() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BV_04:  Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TC transaction with a single BillingDetailsADU
@@ -4396,7 +4440,7 @@ module EfcInfoExchange_TestCasesTspOld {
                 
                 } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BV_04           
 
-           testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BV_05() runs on IutComp system TestAdapter {
+           testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BV_05() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BV_05: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TC transaction with a single BillingDetailsADU
@@ -4420,7 +4464,7 @@ module EfcInfoExchange_TestCasesTspOld {
                 
                 } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BV_05           
 
-           testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BV_06() runs on IutComp system TestAdapter {
+           testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BV_06() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BV_06: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TC transaction
@@ -4443,7 +4487,7 @@ module EfcInfoExchange_TestCasesTspOld {
                 
                 } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BV_06
                 
-           testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BV_07() runs on IutComp system TestAdapter {
+           testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BV_07() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BV_07: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TC transaction with a single BillingDetailsADU
@@ -4471,7 +4515,7 @@ module EfcInfoExchange_TestCasesTspOld {
                 
                 } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BV_07                 
 
-           testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BV_08() runs on IutComp system TestAdapter {
+           testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BV_08() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BV_08: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TC transaction with a single BillingDetailsADU
@@ -4501,7 +4545,7 @@ module EfcInfoExchange_TestCasesTspOld {
          
          group Invalid_Behaviour {
 
-           testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BI_01() runs on IutComp system TestAdapter {
+           testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BI_01() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BI_01: Verify that the TSP correctly responds to a series of BillingDetailsADUs bearing only mandatory fields,
@@ -4523,7 +4567,7 @@ module EfcInfoExchange_TestCasesTspOld {
                 
                 } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BI_01                     
 
-           testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BI_02() runs on IutComp system TestAdapter {
+           testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BI_02() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BI_02: Verify that the TSP correctly responds to a BillingDetailsADU adjusting the fee for a BillingDetailsADU that does not exist 
@@ -4545,7 +4589,7 @@ module EfcInfoExchange_TestCasesTspOld {
                 
                 } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BI_02           
 
-           testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BI_03() runs on IutComp system TestAdapter {
+           testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BI_03() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BI_03: Verify that the TSP correctly responds to a BillingDetailsADU
@@ -4567,7 +4611,7 @@ module EfcInfoExchange_TestCasesTspOld {
                 
                 } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BI_03           
 
-           testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BI_04() runs on IutComp system TestAdapter {
+           testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BI_04() runs on MainTestComponent system TestAdapter {
                   /**
                   * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BI_04: Verify that the TSP correctly responds to a BillingDetailsADU sent earlier than allowed 
                   * @remark  [16986:2016], Clause 8.2.3 AND 8.2.4 and Table A.1/2 AND Table A.2/2 AND Table A.52/2
@@ -4595,7 +4639,7 @@ module EfcInfoExchange_TestCasesTspOld {
     group GNSS_PAYMENTANNOUNCEMENT {
          group Valid_Behaviour {
 
-           testcase TP_TSP_GNSS_PAYMENTANNOUNCEMENT_BV_01() runs on IutComp system TestAdapter {
+           testcase TP_TSP_GNSS_PAYMENTANNOUNCEMENT_BV_01() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_GNSS_PAYMENTANNOUNCEMENT_BV_01: Verify that the TSP correctly performs the GNSS.PAYMENTANNOUNCEMENT transaction with actionCode=send 
@@ -4619,7 +4663,7 @@ module EfcInfoExchange_TestCasesTspOld {
                 
                 } // End of TP_TSP_GNSS_PAYMENTANNOUNCEMENT_BV_01                    
 
-           testcase TP_TSP_GNSS_PAYMENTANNOUNCEMENT_BV_02() runs on IutComp system TestAdapter {
+           testcase TP_TSP_GNSS_PAYMENTANNOUNCEMENT_BV_02() runs on MainTestComponent system TestAdapter {
                   /**
                   * @desc    TP_TSP_GNSS_PAYMENTANNOUNCEMENT_BV_02: Verify that the TSP correctly performs the GNSS.PAYMENTANNOUCEMENT transaction with actionCode=adjust 
                   * @remark  [16986:2016], Clause 6.8 and Table A.1/2 AND Table A.2/2 AND Table A.52/4 
@@ -4646,7 +4690,7 @@ module EfcInfoExchange_TestCasesTspOld {
                 
                 } // End of TP_TSP_GNSS_PAYMENTANNOUNCEMENT_BV_02                    
 
-           testcase TP_TSP_GNSS_PAYMENTANNOUNCEMENT_BV_03() runs on IutComp system TestAdapter {
+           testcase TP_TSP_GNSS_PAYMENTANNOUNCEMENT_BV_03() runs on MainTestComponent system TestAdapter {
                   /**
                   * @desc    TP_TSP_GNSS_PAYMENTANNOUNCEMENT_BV_03: Verify that the TSP correctly performs the GNSS.PAYMENTANNOUCEMENT transaction with actionCode=revoke 
                   * @remark  [16986:2016], Clause 6.8 and Table A.1/2 AND Table A.2/2 AND Table A.52/4 
