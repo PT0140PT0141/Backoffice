@@ -3418,7 +3418,7 @@ module EfcInfoExchange_TestCasesTspOld {
 				var NAckParams v_nAckParams2 :={{1, AduReasonCode_semanticError_},{2,AduReasonCode_semanticError_}};
 
 				alt {
-					//PT140 TODO Can the repetion in the two alts be reduced?
+					// Either Params1 or Params2 Nacks are valid
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
@@ -3493,7 +3493,7 @@ module EfcInfoExchange_TestCasesTspOld {
 				var NAckParams v_nAckParams2 :={{1, AduReasonCode_semanticError_},{2,AduReasonCode_semanticError_}};
 
 				alt {
-					//PT140 TODO Can the repetion in the two alts be reduced?
+					// Either Params1 or Params2 Nacks are valid
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
@@ -3665,7 +3665,7 @@ module EfcInfoExchange_TestCasesTspOld {
 				var NAckParams v_nAckParams2 :={{1, AduReasonCode_semanticError_},{2,AduReasonCode_semanticError_}};
 
 				alt {
-					//PT140 TODO Can the repetion in the two alts be reduced?
+					// Either Params1 or Params2 Nacks are valid
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
@@ -3732,7 +3732,7 @@ module EfcInfoExchange_TestCasesTspOld {
 				var NAckParams v_nAckParams2 :={{1, AduReasonCode_invalidADU_},{2,AduReasonCode_abnormalObeUserIdRejected_}}
 
 				alt {
-					//PT140 TODO Can the repetion in the two alts be reduced?
+					// Either Params1 or Params2 Nacks are valid
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
@@ -3790,7 +3790,7 @@ module EfcInfoExchange_TestCasesTspOld {
 				var NAckParams v_nAckParams2 :={{1, AduReasonCode_semanticError_},{2,AduReasonCode_semanticError_}};
 
 				alt {
-					//PT140 TODO Can the repetion in the two alts be reduced?
+					// Either Params1 or Params2 Nacks are valid
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
@@ -3858,7 +3858,7 @@ module EfcInfoExchange_TestCasesTspOld {
 				var NAckParams v_nAckParams2 :={{1, AduReasonCode_invalidADU_},{2,abnormalObeDateAndTimeRejected_}}
 
 				alt {
-					//PT140 TODO Can the repetion in the two alts be reduced?
+					// Either Params1 or Params2 Nacks are valid
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
@@ -3918,7 +3918,7 @@ module EfcInfoExchange_TestCasesTspOld {
 				var NAckParams v_nAckParams2 :={{1, AduReasonCode_semanticError_}};
 
 				alt {
-					//PT140 TODO Can the repetion in the two alts be reduced?
+					// Either Params1 or Params2 Nacks are valid
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
@@ -3989,7 +3989,7 @@ module EfcInfoExchange_TestCasesTspOld {
 				var NAckParams v_nAckParams2 :={{1, AduReasonCode_semanticError_},{2,AduReasonCode_semanticError_}}
 
 				alt {
-					//PT140 TODO Can the repetion in the two alts be reduced?
+					// Either Params1 or Params2 Nacks are valid
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
@@ -4048,7 +4048,7 @@ module EfcInfoExchange_TestCasesTspOld {
 				var NAckParams v_nAckParams2 :={{1, AduReasonCode_semanticError_}};
 
 				alt {
-					//PT140 TODO Can the repetion in the two alts be reduced?
+					// Either Params1 or Params2 Nacks are valid
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
@@ -4116,7 +4116,7 @@ module EfcInfoExchange_TestCasesTspOld {
 				var NAckParams v_nAckParams2 :={{1, abnormalObeReasonCodeRejected},{2,abnormalObeReasonCodeRejected}}
 
 				alt {
-					//PT140 TODO Can the repetion in the two alts be reduced?
+					// Either Params1 or Params2 Nacks are valid
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
@@ -4357,18 +4357,48 @@ module EfcInfoExchange_TestCasesTspOld {
                   * @remark  [16986:2016], Clause 8.2.3 AND 8.2.4 and Table A.1/2 AND Table A.2/2 AND Table A.52/2 AND Table A.56/6
                   */
                   
-                 // Initialisation 
-					// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
-					//  Wait for GNSS.TOLLDECLARATION
-					// Send positive Ack within time constraints
+                 // Initialisation
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A52_1_implementedGNSSBILLINGDETAILSTSP and ICS_A52_3_implementedGNSSTOLLDECLARATION;
+				f_intialiseMtc(v_runOrNot);                   
+				// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
+				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1);
+				//  PT140 TODO: Template for Toll Declaration to be defined
+				alt {
+					[] mtcPort.receive(mw_apduTollDeclaration) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();					
+						}
+               		
+					// Send Ack within time constraints
+					f_wait(TOLLDECLARATION_TIME1_TC);
+					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+					} // End of first alt statement
+
 				
                  // Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
                  	// action code = send
                  	// includedDiscounts in usageList with textDetail field being set according to values specified in Table A.54 of CEN/TS 16986:2016
-                 // Step 2: Wait for positive Ack within TSP_GNSS_BILLINGDETAILS.TIME1
-				
-					// Set test success                
-                } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BV_01           
+                 	// PT140 TODO: Correct template to be defined. Using basic BillingDetails template in what follows (to be changed)
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+					{modifies mw_aduBillingDetails:= {
+					  	billingDetailsId := 1, actionCode := ActionCode_send_, includedDiscounts.discounts := 10, includedDiscounts.discountQualifier := DiscountQualifier_userDiscount_ }}
+					});                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 
+                 // Step 2: Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
+				// Set timer
+                 t_step.start(BILLINGDETAILS_TIME1_MAX_TSP);                 
+				alt {
+					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
+					  
+						// Log what we received
+						f_logApduReceivedAndTStep();
+						t_step.stop;
+						//Set verdict
+						setverdict(pass);
+					}
+				} 
+				f_closeDownMtc();                  
+           } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BV_01           
 
            testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BV_02() runs on MainTestComponent system TestAdapter {
              
@@ -4379,18 +4409,47 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
-					// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
-					//  Wait for GNSS.TOLLDECLARATION
-					// Send positive Ack within time constraints
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A52_1_implementedGNSSBILLINGDETAILSTSP and ICS_A52_3_implementedGNSSTOLLDECLARATION;
+				f_intialiseMtc(v_runOrNot);                   
+				// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
+				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1);
+				//  PT140 TODO: Template for Toll Declaration to be defined
+				alt {
+					[] mtcPort.receive(mw_apduTollDeclaration) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();					
+						}
+               		
+					// Send Ack within time constraints
+					f_wait(TOLLDECLARATION_TIME1_TC);
+					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+					} // End of first alt statement
+
 				
-                 // Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
+                // Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
                  	// action code = send
                  	// CHOICE forSectionedRoads
-                 // Step 2: Wait for positive Ack within TSP_GNSS_BILLINGDETAILS.TIME1
-				
-					// Set test success                
-                
-                } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BV_02           
+                  	// PT140 TODO: Correct template to be defined. Using basic BillingDetails template in what follows (to be changed)
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+					{modifies mw_aduBillingDetails:= {
+					  	billingDetailsId := 1, actionCode := ActionCode_send_ }
+					});                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 
+                 // Step 2: Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
+				// Set timer
+                 t_step.start(BILLINGDETAILS_TIME1_MAX_TSP);                 
+				alt {
+					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
+					  
+						// Log what we received
+						f_logApduReceivedAndTStep();
+						t_step.stop;
+						//Set verdict
+						setverdict(pass);
+					}
+				} 
+				f_closeDownMtc();                
+           } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BV_02           
 
            testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BV_03() runs on MainTestComponent system TestAdapter {
              
@@ -4401,20 +4460,48 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
-					// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
-					//  Wait for GNSS.TOLLDECLARATION
-					// Send positive Ack within time constraints
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A52_1_implementedGNSSBILLINGDETAILSTSP and ICS_A52_3_implementedGNSSTOLLDECLARATION;
+				f_intialiseMtc(v_runOrNot);                   
+				// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
+				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1);
+				//  PT140 TODO: Template for Toll Declaration to be defined
+				alt {
+					[] mtcPort.receive(mw_apduTollDeclaration) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();					
+						}
+               		
+					// Send Ack within time constraints
+					f_wait(TOLLDECLARATION_TIME1_TC);
+					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+					} // End of first alt statement
+
 				
-                 // Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
+                // Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
                  	// action code = send
                  	// CHOICE forTravellingInArea
-                 	// the values of all fields in BillingDetailsADU being within the range specified by the IUT
+                  	// PT140 TODO: Correct template to be defined. Using basic BillingDetails template in what follows (to be changed)
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+					{modifies mw_aduBillingDetails:= {
+					  	billingDetailsId := 1, actionCode := ActionCode_send_ }
+					});                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 
+                 // Step 2: Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
+				// Set timer
+                 t_step.start(BILLINGDETAILS_TIME1_MAX_TSP);                 
+				alt {
+					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
+					  
+						// Log what we received
+						f_logApduReceivedAndTStep();
+						t_step.stop;
+						//Set verdict
+						setverdict(pass);
+					}
+				} 
+				f_closeDownMtc();                
                 
-                 // Step 2: Wait for positive Ack within TSP_GNSS_BILLINGDETAILS.TIME1
-				
-					// Set test success                
-                
-                } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BV_03           
+            } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BV_03           
 
            testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BV_04() runs on MainTestComponent system TestAdapter {
              
@@ -4425,18 +4512,66 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
-					// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
-					//  Wait for GNSS.TOLLDECLARATION
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A52_1_implementedGNSSBILLINGDETAILSTSP and ICS_A52_3_implementedGNSSTOLLDECLARATION;
+				f_intialiseMtc(v_runOrNot);                   
+				// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
+				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1);
+				//  PT140 TODO: Template for Toll Declaration to be defined
+				alt {
+					[] mtcPort.receive(mw_apduTollDeclaration) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();					
+						}
+               		
 					// Send Ack within time constraints
+					f_wait(TOLLDECLARATION_TIME1_TC);
+					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+					} // End of first alt statement
+
 				
                  // Step 1: Send one valid APDU containing 10 valid BillingDetailsADUs with:
                  	// action code = send
                  	// CHOICE forStayingInArea
-                 	// the values of all fields in BillingDetailsADU being within the range specified by the IUT
-                 
-                 // Step 2: Wait for positive Ack within TSP_GNSS_BILLINGDETAILS.TIME1
-				
-					// Set test success                
+                  	// PT140 TODO: Correct template to be defined. Using basic BillingDetails template in what follows (to be changed)
+				var InfoExchange v_apduRespondedTo :=
+					{m_apduNoSecInit(
+						{modifies mw_aduBillingDetails:= {billingDetailsId := 4, actionCode := ActionCode_send_}}),
+					m_apduNoSecInit(
+						{modifies mw_aduBillingDetails:= {billingDetailsId := 5, actionCode := ActionCode_send_}}),	
+					m_apduNoSecInit(
+						{modifies mw_aduBillingDetails:= {billingDetailsId := 6, actionCode := ActionCode_send_}}),
+					m_apduNoSecInit(
+						{modifies mw_aduBillingDetails:= {billingDetailsId := 7, actionCode := ActionCode_send_}}),
+					m_apduNoSecInit(
+						{modifies mw_aduBillingDetails:= {billingDetailsId := 8, actionCode := ActionCode_send_}}),
+					m_apduNoSecInit(
+						{modifies mw_aduBillingDetails:= {billingDetailsId := 9, actionCode := ActionCode_send_}}),
+					m_apduNoSecInit(
+						{modifies mw_aduBillingDetails:= {billingDetailsId := 10, actionCode := ActionCode_send_}}),
+					m_apduNoSecInit(
+						{modifies mw_aduBillingDetails:= {billingDetailsId := 11, actionCode := ActionCode_send_}}),
+					m_apduNoSecInit(
+						{modifies mw_aduBillingDetails:= {billingDetailsId := 12, actionCode := ActionCode_send_}}),
+					m_apduNoSecInit(
+						{modifies mw_aduBillingDetails:= {billingDetailsId := 13, actionCode := ActionCode_send_}})
+					};                 
+				f_sendAndLogApdu(v_apduRespondedTo);
+                 // Step 2: Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
+				// Set timer
+                 t_step.start(BILLINGDETAILS_TIME1_MAX_TSP);                 
+				alt {
+					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
+					  
+						// Log what we received
+						f_logApduReceivedAndTStep();
+						t_step.stop;
+						//Set verdict
+						setverdict(pass);
+					}
+				} 
+				f_closeDownMtc();                
+
+}                
                 
                 } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BV_04           
 
@@ -4449,20 +4584,48 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
-					// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
-					//  Wait for GNSS.TOLLDECLARATION
-					// Send positive Ack within time constraints
-					
-                 // Step 1: Send one valid APDU containing 10 valid BillingDetailsADUs with:
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A52_1_implementedGNSSBILLINGDETAILSTSP and ICS_A52_3_implementedGNSSTOLLDECLARATION;
+				f_intialiseMtc(v_runOrNot);                   
+				// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
+				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1);
+				//  PT140 TODO: Template for Toll Declaration to be defined
+				alt {
+					[] mtcPort.receive(mw_apduTollDeclaration) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();					
+						}
+               		
+					// Send Ack within time constraints
+					f_wait(TOLLDECLARATION_TIME1_TC);
+					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+					} // End of first alt statement
+
+				
+                 // Step 1: Send one valid APDU containing  a valid BillingDetailsADU with:
                  	// action code = send
                  	// CHOICE forCordonCrossings
-                 	// the values of all fields in BillingDetailsADU being within the range specified by the IUT
-                 
-                 // Step 2: Wait for positive Ack within TSP_GNSS_BILLINGDETAILS.TIME1
-				
-					// Set test success                
+                  	// PT140 TODO: Correct template to be defined. Using basic BillingDetails template in what follows (to be changed)
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+					{modifies mw_aduBillingDetails:= {
+					  	billingDetailsId := 1, actionCode := ActionCode_send_ }
+					});                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 
+                 // Step 2: Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
+				// Set timer
+                 t_step.start(BILLINGDETAILS_TIME1_MAX_TSP);                 
+				alt {
+					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
+					  
+						// Log what we received
+						f_logApduReceivedAndTStep();
+						t_step.stop;
+						//Set verdict
+						setverdict(pass);
+					}
+				} 
+				f_closeDownMtc();                               
                 
-                } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BV_05           
+            } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BV_05           
 
            testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BV_06() runs on MainTestComponent system TestAdapter {
              
@@ -4473,17 +4636,52 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
-					// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
-					//  Wait for GNSS.TOLLDECLARATION
-					// Send positive Ack within time constraints                 		
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A52_1_implementedGNSSBILLINGDETAILSTSP and ICS_A52_3_implementedGNSSTOLLDECLARATION;
+				f_intialiseMtc(v_runOrNot);                   
+				// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
+				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1);
+				//  PT140 TODO: Template for Toll Declaration to be defined
+				alt {
+					[] mtcPort.receive(mw_apduTollDeclaration) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();					
+						}
+               		
+					// Send Ack within time constraints
+					f_wait(TOLLDECLARATION_TIME1_TC);
+					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+					} // End of first alt statement
 				
                  // Step 1: Send one valid APDU containing a number of valid BillingDetailsADU equal to GNSS.BILLINGDETAILS.TSP.PARAM1_MAX, with
                  	// action code = send 
                  	// no optional fields
-                 
-                 // Step 2: Wait for positive Ack within TSP_GNSS_BILLINGDETAILS.TIME1
+                // Set first element of apdu
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+					{modifies mw_aduBillingDetails:= {
+					  	billingDetailsId := 1, actionCode := ActionCode_send_ }
+					});                 
 				
-					// Set test success                
+				// Set all remaining elements of apdu
+				for (var integer v_ind := 2, v_ind < (GNSS.BILLINGDETAILS_TSP_PARAM1_MAX - 1), v_ind := v_ind + 1)
+						v_apduRespondedTo[v_ind] := m_apduNoSecInit({modifies mw_aduBillingDetails:= {
+					  	billingDetailsId := v_ind, actionCode := ActionCode_send_ }});
+						continue;
+				
+				f_sendAndLogApdu(v_apduRespondedTo);                 
+                 // Step 2: Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
+				// Set timer
+                 t_step.start(BILLINGDETAILS_TIME1_MAX_TSP);                 
+				alt {
+					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
+					  
+						// Log what we received
+						f_logApduReceivedAndTStep();
+						t_step.stop;
+						//Set verdict
+						setverdict(pass);
+					}
+				} 
+				f_closeDownMtc();                 
                 
                 } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BV_06
                 
@@ -4524,21 +4722,61 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
-					// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
-					//  Wait for GNSS.TOLLDECLARATION
-					// Send positive Ack within time constraints
-					// Send one valid APDU containing one valid BillingDetailsADU with action code = send and no optional parameters
-					// Wait for positive Ack
-					
-                 // Step 1: Send one valid APDU containing BillingDetailsADU as the only ADU, where:
-                 	// the values of all fields in BillingDetailsADU being valid and within the range specified by the IUT
-                 	// no optional fields are specified
-                 	// billingDetailsNum referencing the previously sent BillingDetailsADU
-                 	// action code = revoke
-                 
-                 // Step 2: Wait for positive Ack within TSP_GNSS_BILLINGDETAILS.TIME1
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A52_1_implementedGNSSBILLINGDETAILSTSP and ICS_A52_3_implementedGNSSTOLLDECLARATION;
+				f_intialiseMtc(v_runOrNot);                   
+				// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
+				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1);
+				//  PT140 TODO: Template for Toll Declaration to be defined
+				alt {
+					[] mtcPort.receive(mw_apduTollDeclaration) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();					
+						}
+               		
+					// Send Ack within time constraints
+					f_wait(TOLLDECLARATION_TIME1_TC);
+					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+					} // End of first alt statement
+
 				
-					// Set test success                
+                 // Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
+                 	// action code = send
+                 	// includedDiscounts in usageList with textDetail field being set according to values specified in Table A.54 of CEN/TS 16986:2016
+                 	// PT140 TODO: Correct template to be defined. Using basic BillingDetails template in what follows (to be changed)
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+					{modifies mw_aduBillingDetails:= {
+					  	billingDetailsId := 1, actionCode := ActionCode_send_ }}
+					});                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 
+                 // Step 2: Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
+				// Set timer
+                 t_step.start(BILLINGDETAILS_TIME1_MAX_TSP);                 
+				alt {
+					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
+					  
+						// Log what we received
+						f_logApduReceivedAndTStep();
+						t_step.stop;
+					}
+				} 
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+					{modifies mw_aduBillingDetails:= {
+					  	billingDetailsId := 1, actionCode := ActionCode_revoke_ }}
+					});                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 
+                 // Step 2: Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
+				// Set timer
+                 t_step.start(BILLINGDETAILS_TIME1_MAX_TSP);                 
+				alt {
+					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
+					  
+						// Log what we received
+						f_logApduReceivedAndTStep();
+						t_step.stop;
+						setverdict(pass);
+					}
+				} 					
+				f_closeDownMtc();					           
                 
                 } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BV_08                                     
  		} // End of group Valid_Behaviour
@@ -4576,16 +4814,61 @@ module EfcInfoExchange_TestCasesTspOld {
                   
                  // Initialisation 
 
-					// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
-					//  Wait for GNSS.TOLLDECLARATION
-					// Send positive Ack within time constraints
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A52_1_implementedGNSSBILLINGDETAILSTSP and ICS_A52_3_implementedGNSSTOLLDECLARATION;
+				f_intialiseMtc(v_runOrNot);                   
+				// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
+				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1);
+				//  PT140 TODO: Template for Toll Declaration to be defined
+				alt {
+					[] mtcPort.receive(mw_apduTollDeclaration) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();					
+						}
+               		
+					// Send Ack within time constraints
+					f_wait(TOLLDECLARATION_TIME1_TC);
+					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+					} // End of first alt statement
 
-                 // Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
-                 	// action code = adjust 
-                 	// billingDetailsNum corresponding to a BillingDetails not sent previously
-                 	// valid value for paymentFeeAmount
-                 
-                 // Step 2: Wait for NAck with issueCode = actionCodeNotSupported within TSP_GNSS_BILLINGDETAILS.TIME1
+                 // PT140 TODO : mw_aduBillingDetails template to be defined
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+					{modifies mw_aduBillingDetails:= {
+					  	billingDetailsId := 14, actionCode := ActionCode_adjust_, paymentFeeAmount := 45
+					  	}
+					});                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 
+
+                 // Step 2: Wait for negative Ack within DSRC.BILLINGDETAILS.TIME1 identifying the APDU containing the BillingDetailsADU numbered 14 and with issueCode= semanticError 
+				//Create parameters for the m_apduNAck			
+				var NAckParams v_nAckParams1 :={{0, AduReasonCode_semanticError_}};
+				var NAckParams v_nAckParams2 :={{1, AduReasonCode_semanticError_},{2,AduReasonCode_semanticError_}};
+
+				alt {
+					// Either Params1 or Params2 Nacks are valid
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(BILLINGETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+						
+						//Set verdict
+						setverdict(pass);
+					}
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(BILLINGDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+						
+						//Set verdict
+						setverdict(pass);
+					}
+				}				
+				f_closeDownMtc();  			
                 
                 } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BI_02           
 
@@ -4598,16 +4881,61 @@ module EfcInfoExchange_TestCasesTspOld {
                   */
                   
                  // Initialisation 
-
-					// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
-					//  Wait for GNSS.TOLLDECLARATION
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A52_1_implementedGNSSBILLINGDETAILSTSP and ICS_A52_3_implementedGNSSTOLLDECLARATION;
+				f_intialiseMtc(v_runOrNot);                   
+				// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
+				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1);
+				//  PT140 TODO: Template for Toll Declaration to be defined
+				alt {
+					[] mtcPort.receive(mw_apduTollDeclaration) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();					
+						}
+               		
 					// Send Ack within time constraints
+					f_wait(TOLLDECLARATION_TIME1_TC);
+					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+					} // End of first alt statement
 
-                 // Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
-                 	// action code = revoke 
-                 	// billingDetailsNum corresponding to a BillingDetails not sent previously
+                 // PT140 TODO : mw_aduBillingDetails template to be defined
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+					{modifies mw_aduBillingDetails:= {
+					  	billingDetailsId := 14, actionCode := ActionCode_revoke_
+					  	}
+					});                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 
 
-                 // Step 2: Wait for NAck with issueCode = actionCodeNotSupported within TSP_GNSS_BILLINGDETAILS.TIME1
+                 // Step 2: Wait for negative Ack within DSRC.BILLINGDETAILS.TIME1 identifying the APDU containing the BillingDetailsADU numbered 14 and with issueCode= semanticError 
+				//Create parameters for the m_apduNAck			
+				var NAckParams v_nAckParams1 :={{0, AduReasonCode_semanticError_}};
+				var NAckParams v_nAckParams2 :={{1, AduReasonCode_semanticError_},{2,AduReasonCode_semanticError_}};
+
+				alt {
+					// Either Params1 or Params2 Nacks are valid
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(BILLINGETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+						
+						//Set verdict
+						setverdict(pass);
+					}
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(BILLINGDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+						
+						//Set verdict
+						setverdict(pass);
+					}
+				}				
+				f_closeDownMtc();  
                 
                 } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BI_03           
 
@@ -4623,12 +4951,65 @@ module EfcInfoExchange_TestCasesTspOld {
 					// Send positive Ack within time constraints
 					// Send one valid APDU containing one valid BillingDetailsADU with action code = send and no optional parameters
 					// Wait for positive Ack
-					
-                 // Step 1: Send one valid APDU containing one valid BillingDetailsADU before TIMEA_MIN expires with
-                 	// action code = send 
-                 	// no optional parameters
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A52_1_implementedGNSSBILLINGDETAILSTSP and ICS_A52_3_implementedGNSSTOLLDECLARATION;
+				f_intialiseMtc(v_runOrNot);                   
+				// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
+				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1);
+				//  PT140 TODO: Template for Toll Declaration to be defined
+				alt {
+					[] mtcPort.receive(mw_apduTollDeclaration) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();					
+						}
+               		
+					// Send Ack within time constraints
+					f_wait(TOLLDECLARATION_TIME1_TC);
+					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+					} // End of first alt statement
 
-                 // Step 2: Wait for NAck_requestSentTooOften within TSP_GNSS_BILLINGDETAILS.TIME1 
+                 // PT140 TODO : mw_aduBillingDetails template to be defined
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+					{modifies mw_aduBillingDetails:= {
+					  	billingDetailsId := 1, actionCode := ActionCode_send_
+					  	}
+					});                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 
+
+				// Do not wait for positive Ack
+
+                // Step 1:
+                // Send one valid DSRC.BILLINGDETAILS numbered 4  before TIME1
+                 //  Send one valid APDU containing one BillingDetailsADU numbered 4 with actionCode = SEND and only mandatory fields
+                 // PT140 TODO : mw_aduBillingDetails template to be defined
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+					{modifies mw_aduBillingDetails:= {
+					  	billingDetailsId := 4, actionCode := ActionCode_send_
+					  	}
+					});                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 
+
+              		// Wait for negative Ack with ADUReasonCode field = requestSentTooOften (if positive Ack or not received set test failure)                	
+				// Set timer
+                 t_step.start(BILLINGDETAILS_TIME1_MAX_TSP);
+				// Step #2: Wait for Nack ADU				 					
+				// Either we receive an APDU containing  Nack or the timeout expires
+				// timeout expiration is handled in the altstep branch
+
+				alt {
+					[] mtcPort.receive(m_apduNAck_requestSentTooOften(v_apduRespondedTo)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(BILLINGDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+						
+						//Set verdict
+						setverdict(pass);
+					}
+                } // End of alt statement
+                
+                f_closeDownMtc();  			
                                 
                 } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BI_04           
 		
