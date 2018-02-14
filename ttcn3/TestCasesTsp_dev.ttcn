@@ -614,7 +614,7 @@ module EfcInfoExchange_TestCasesTspOld {
 						f_logApduReceivedAndTStep();
 
 						//Check minumum time and stop timer
-						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						f_checkMinimumTStep(TRUSTOBJECTS_TIME2_MIN_TSP); //t_step is an implicit argument and what we will compare against
 						t_step.stop;
 						
 						//Set verdict
@@ -625,7 +625,7 @@ module EfcInfoExchange_TestCasesTspOld {
 						f_logApduReceivedAndTStep();
 
 						//Check minumum time and stop timer
-						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						f_checkMinimumTStep(TRUSTOBJECTS_TIME2_MIN_TSP); //t_step is an implicit argument and what we will compare against
 						t_step.stop;
 						
 						//Set verdict
@@ -637,7 +637,7 @@ module EfcInfoExchange_TestCasesTspOld {
 						f_logApduReceivedAndTStep();
 
 						//Check minumum time and stop timer
-						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						f_checkMinimumTStep(TRUSTOBJECTS_TIME2_MIN_TSP); //t_step is an implicit argument and what we will compare against
 						t_step.stop;
 						
 						//Set verdict
@@ -648,7 +648,7 @@ module EfcInfoExchange_TestCasesTspOld {
 						f_logApduReceivedAndTStep();
 
 						//Check minumum time and stop timer
-						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						f_checkMinimumTStep(TRUSTOBJECTS_TIME2_MIN_TSP); //t_step is an implicit argument and what we will compare against
 						t_step.stop;
 						
 						//Set verdict
