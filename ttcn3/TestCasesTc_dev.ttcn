@@ -540,6 +540,54 @@ module EfcInfoExchange_TestCasesTcDev {
 
     } // End goup USERDETAILS
 
+	group DSRC_REPORTABNORMALOBE {
+		group Valid_Behaviour {
+			testcase TP_TC_DSRC_REPORTABNORMALOBE_BV_01() runs on MainTestComponent system TestAdapter {							
+               /**
+                * @desc    TP_TC_DSRC_REPORTABNORMALOBE_BV_01: Verify that the TC correctly performs a DSRC.REPORTABNORMALOBE transaction
+                * @remark  [16986:2016], Clause 7.4 and Table A.1/1 AND Table A.2/1 AND Table A.26/4
+                */
+
+  				// Initialisation
+				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A2_1_isDsrc and ICS_A26_4_implementedDSRCREPORTABNORAMLOBE;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+                 
+				// Start by setting test failure
+				setverdict(fail);
+												
+                // Step 1: Tigger IUT with DSRC.REPORTABNORMALOBE_TR_TC_1 to send valid Initiating_APDU containing
+                // one or more ADUs of type ReportAbnormalOBEADU containing different combinations of valid
+                // and IUT declared values in the following data elements
+				//		- userID = at least one element shall be present;
+				//		- dateAndTime = present and valid;
+				//		- efcContextMark = present and valid;
+				//		- abnormalOBEReason code = present and valid                
+				f_sendAndLogTrigger(DSRCREPORTABNORMALOBE_TR_TC_1);
+
+				//  Wait for DSRC.REPORTABNORMALOBE ADU
+				alt {
+					[] mtcPort.receive(mw_apduDsrcReportAbnormalObe) -> value v_apduReceived { //TODO Template to be defined
+						// Log what we received
+						f_logApduReceivedAndTStep();					
+						}               		
+					// Step 2: Send Ack within time constraints
+					f_wait(DSRC_REPORTABNORMALOBE_TIME1_MIN_TSP);
+					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+					// Set test success
+					setverdict(pass);
+					} // End of alt statement
+
+				f_closeDownMtc();   						           
+			} // End testcase TP_TC_DSRC_REPORTABNORMALOBE_BV_01	
+		} // End Valid_Behaviour
+
+		group Invalid_Bahaviour {
+               /**
+                 * @remark  No TPs have been defined
+                 */			
+		} // End Invalid_Behaviour		
+	} // End DSRC_REPORTABNORMALOBE
+
 	group LISTOFUSERS {
 	
 		group Valid_Behaviour {
@@ -1397,49 +1445,6 @@ module EfcInfoExchange_TestCasesTcDev {
 		
 	} // End DSRC_BILLINGDETAILS
 
-	group DSRC_REPORTABNORMALOBE {
-	
-		group Valid_Behaviour {
-		
-			testcase TP_TC_DSRC_REPORTABNORMALOBE_BV_01() runs on MainTestComponent system TestAdapter {
-							
-               /**
-                * @desc    TP_TC_DSRC_REPORTABNORMALOBE_BV_01: Verify that the TC correctly performs a DSRC.REPORTABNORMALOBE transaction
-                * @remark  [16986:2016], Clause 7.4 and Table A.1/1 AND Table A.2/1 AND Table A.26/41
-                */
- 
-  				// Initialisation
-                 
-				// Start by setting test success
-								
-                // Step 1: Tigger IUT with DSRC.REPORTABNORMALOBE_TR_TC_1 to send valid Initiating_APDU containing
-                // one or more ADUs of type ReportAbnormalOBEADU containing different combinations of valid
-                // and IUT declared values in the following data elements
-				//		- userID = at least one element shall be present;
-				//		- dateAndTime = present and valid;
-				//		- efcContextMark = present and valid;
-				//		- abnormalOBEReason code = present and valid                
-
-                // Wait for above specified APDU within time constraints
-                // use template for APDU
-                // if not received or received outside specification or time constraints set test fail
-                
-                // Step 2: Send AckADU to conclude the transaction 
-                // within the time DSRC.REPORTABNORMALOBE.TIME1
-
-			} // End testcase TP_TC_DSRC_REPORTABNORMALOBE_BV_01
-			
-		} // End Valid_Behaviour
-
-		group Invalid_Bahaviour {
-
-               /**
-                 * @remark  No TPs have been defined
-                 */			
-			
-		} // End Invalid_Behaviour		
-		
-	} // End DSRC_REPORTABNORMALOBE
 
 	group GNSS_TOLLDECLARATION {
 	
