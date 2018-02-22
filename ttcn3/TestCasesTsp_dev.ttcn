@@ -1717,8 +1717,8 @@ module EfcInfoExchange_TestCasesTspOld {
     
     group TRUSTOBJECTS {
          group Valid_Behaviour {
-           testcase TP_TSP_TRUSTOBJECTS_BV_01() runs on MainTestComponent system TestAdapter {
-             
+           
+         testcase TP_TSP_TRUSTOBJECTS_BV_01() runs on MainTestComponent system TestAdapter {
               /**
               * @desc    TP_TSP_TRUSTOBJECTS_BV_01: Verify that the TSP correctly provides a TrustObjectADU without TC request
               * @remark  [16986:2016], Clause 6.6 and Table A.1/2
@@ -1730,44 +1730,44 @@ module EfcInfoExchange_TestCasesTspOld {
 				
 				// Start by setting test failure
 				setverdict(fail);
-				var boolean isCertificateOrPublicKey:=false, isDsrcKeyRef := false, isMacMasterKey := false, isDsrcMasterKey := false;
-				
+				var boolean isCertificateOrPublicKey:=false;
+				var boolean isDsrcKeyRef := false;
+				var boolean isMacMasterKey := false;
+				var boolean isDsrcMasterKey := false;
+				var integer ObjectsReceived := 0;
 				// Step 1: Trigger IUT with TRUSTOBJECTS_TR_2
 				f_sendAndLogTrigger(TRUSTOBJECTS_TR_2);
 				//  Wait for TRUSTOBJECTS
 				// We expect to receive as many TRUSTOBJECTS as the declared supported number
-				for (v_j:=1; v_j<=NUMBER_OF_TRUSTOBJECT_TYPES_SUPPORTED; v_j:= v_j+1) {
-					alt {
-						[] mtcPort.receive(m_apduTrustObject) -> value v_apduReceived {
-							// Log what we received
-							f_logApduReceivedAndTStep();	
-							
-							//Read the trustObjectPurpose received and add to set 				
-							if ((match(v_apduReceived ,m_apduTrustObjectCertificateObject)) or 
-							    (match(v_apduReceived ,m_apduTrustObjectPublicKeyObject))) 
-								isCertificateOrPublicKey:=true;
-							if (match(v_apduReceived ,m_apduTrustObjectGenericTONotCrl) {
-								setverdict(fail);
-								stop;
-							};
-							if (match(v_apduReceived ,m_apduTrustObjectDsrcKeyRef)) 
-								isDsrcKeyRef:=true;
-							if (match(v_apduReceived ,m_apduTrustObjectMacMasterKey)) 
-								isMacMasterKey:=true;
-							if (match(v_apduReceived ,m_apduTrustObjectDsrcMasterKey)) 
-								isDsrcMasterKey:=true;
-							}
-						}
-					//send Ack
-					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived)); 			
-					
-				};
-					
+				// PT140 TODO: Seems that alt inside a loop is not allowed. Use repezt statement instead
+				alt {
+					[] mtcPort.receive(m_apduTrustObject) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();	
+						//send Ack whichever object received
+						f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived)); 							
+						//Read the trustObjectPurpose received and add to set 				
+						if ((match(v_apduReceived, m_apduTrustObjectCertificateObject)) or 
+						    (match(v_apduReceived, m_apduTrustObjectPublicKeyObject))) 
+							isCertificateOrPublicKey:=true;
+						if (match(v_apduReceived, m_apduTrustObjectGenericTONotCrl)) {
+							setverdict(fail);
+							stop;
+						};
+						if (match(v_apduReceived ,m_apduTrustObjectDsrcKeyRef)) 
+							isDsrcKeyRef:=true;
+						if (match(v_apduReceived ,m_apduTrustObjectMacMasterKey)) 
+							isMacMasterKey:=true;
+						if (match(v_apduReceived ,m_apduTrustObjectDsrcMasterKey)) 
+							isDsrcMasterKey:=true;
+						ObjectsReceived := ObjectsReceived + 1; // Count the number of trust objects received
+						repeat;
+						}										
+					} // End of alt statement
 				if (ICS_A2_1_isDsrc and isCertificateOrPublicKey and isDsrcKeyRef and isMacMasterKey and isDsrcMasterKey) setverdict(pass);			 				
 				if (ICS_A2_2_isGnss and isCertificateOrPublicKey and isDsrcKeyRef) setverdict(pass);			 				
-					
-				f_closeDownMtc();        
-  
+				if ObjectsReceived < NUMBER_OF_TRUSTOBJECT_TYPES_SUPPORTED setverdict(fail); // We mest receive at least as many Trust Objects as supported
+				f_closeDownMtc();              
            } // End of TP_TSP_TRUSTOBJECTS_BV_01
 
            testcase TP_TSP_TRUSTOBJECTS_BV_02() runs on MainTestComponent system TestAdapter {
@@ -1918,6 +1918,43 @@ module EfcInfoExchange_TestCasesTspOld {
               * @remark  Same as TP_TC_TRUSTOBJECTS_BI_01
               */
 				// Initialisation
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_4_implementedTRUSTOBJECTSElectronicTransfer;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				
+				setverdict(pass); /To be possibly set to failure in the alt step
+				
+				// PT140 TODO: mw_aduTrustObject template to be defined
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+					{modifies mw_aduTrustObject:= {TrustObjectStatus := 5} // Value 5 not supported
+					});                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 
+                // Step 2: Wait for negative Ack within TRUSTOBJECTS.TIME2
+				// Set timer
+                 t_step.start(TRUSTOBJECTS_TYPE1_TIME2_MAX_TSP);                		
+				//Create parameters for the m_apduNAck			
+				var NAckParams v_nAckParams1 :={{0, AduReasonCode_invalidADU_}};
+				var NAckParams v_nAckParams2 :={{1, AduReasonCode_invalidADU_}};
+				
+				alt {
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(TRUSTOBJECTS_TYPE1_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;						
+					}
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(TRUSTOBJECTS_TYPE1_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+						
+					}
+				} 
+				f_closeDownMtc();                   
              
            } // End of TP_TSP_TRUSTOBJECTS_BI_01
 
@@ -1929,7 +1966,46 @@ module EfcInfoExchange_TestCasesTspOld {
               * @remark  Same as TP_TC_TRUSTOBJECTS_BI_02
               */
 				// Initialisation
-             
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_4_implementedTRUSTOBJECTSElectronicTransfer;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				
+				setverdict(pass); /To be possibly set to failure in the alt step
+				
+				// PT140 TODO: mw_aduTrustObject template to be defined
+				// Set two different TrustObject adus by varying the type of trust object 
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+					{modifies mw_aduTrustObject:= {typeOfTrustObject := TrustObjectTypes_symmetricKey_} },
+					{modifies mw_aduTrustObject:= {typeOfTrustObject := TrustObjectTypes_encryptedSymmetricKey_} }
+					);                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 
+                // Step 2: Wait for negative Ack within TRUSTOBJECTS.TIME2
+				// Set timer
+                 t_step.start(TRUSTOBJECTS_TYPE1_TIME2_MAX_TSP);                		
+				//Create parameters for the m_apduNAck			
+				var NAckParams v_nAckParams1 :={{0, AduReasonCode_semanticError_}};
+				var NAckParams v_nAckParams2 :={{1, AduReasonCode_semanticError_}};
+				
+				alt {
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(TRUSTOBJECTS_TYPE1_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;						
+					}
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(TRUSTOBJECTS_TYPE1_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+						
+					}
+				} 
+				f_closeDownMtc();                   
+                          
            } // End of TP_TSP_TRUSTOBJECTS_BI_02
 
            testcase TP_TSP_TRUSTOBJECTS_BI_03() runs onMainTestComponent system TestAdapter {
@@ -1939,6 +2015,7 @@ module EfcInfoExchange_TestCasesTspOld {
               * @remark  [16986:2016], Clause 6.6 and Table A.1/2 
               * @remark  Same as TP_TC_TRUSTOBJECTS_BI_03
               */
+// PT140 TODO: Valid (or invalid) combinations to be decided and defined	
 				// Initialisation
              
            } // End of TP_TSP_TRUSTOBJECTS_BI_03
@@ -1951,7 +2028,55 @@ module EfcInfoExchange_TestCasesTspOld {
               * @remark  Same as TP_TC_TRUSTOBJECTS_BI_04
               */
 				// Initialisation
-             
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_4_implementedTRUSTOBJECTSElectronicTransfer;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				
+				setverdict(pass); /To be possibly set to failure in the alt step
+				
+				// PT140 TODO: m_aduRequestTrustObject template to be defined
+				// Step1: send RequestADU by specifying the type of trustobject
+				f_sendAndLogApdu(
+					m_apduNoSecInit(
+						{modifies m_aduRequestTrustObject:= {
+					  	requestedTrustObject.trustObjectSpec.typeOfTrustObject := TrustObjectTypes_encryptedSymmetricKey_
+					  	}
+					}
+					)
+				);
+       			// Send again immediately same ADU with different  valid type of trust object
+				var InfoExchange v_apduToSend := m_apduNoSecInit(
+					{modifies m_aduRequestTrustObject:= {
+					  	requestedTrustObject.trustObjectSpec.typeOfTrustObject := TrustObjectTypes_symmetricKey_
+					  	}
+					});
+				f_sendAndLogApdu(v_apduToSend);
+
+                               
+				//Set timer
+				t_step.start(TRUSTOBJECTS_TYPE1_TIME1_MAX_TSP);
+                
+				// Step #2: Wait for Nack ADU				 					
+				// Either we receive an APDU containing  Nack or the timeout expires
+				// timeout expiration is handled in the altstep branch
+
+				//Create parameters for the m_apduNAck			
+				var NAckParams v_nAckParams1 :={{0, AduReasonCode_invalidADU_}};
+				var NAckParams v_nAckParams2 :={{1, AduReasonCode_invalidADU_},{2,AduReasonCode_invalidADU_}};
+				
+				alt {
+					[] mtcPort.receive(m_apduNAck_requestSentTooOften(v_apduToSend)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(TRUSTOBJECTS_TYPE1_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+						
+						//Set verdict
+						setverdict(pass);
+					}
+                } // End of alt statement
+				f_closeDownMtc();            
            } // End of TP_TSP_TRUSTOBJECTS_BI_04
 
            testcase TP_TSP_TRUSTOBJECTS_BI_05() runs onMainTestComponent system TestAdapter {
@@ -1962,7 +2087,49 @@ module EfcInfoExchange_TestCasesTspOld {
               * @remark  Same as TP_TC_TRUSTOBJECTS_BI_05
               */
 				// Initialisation
-             
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_4_implementedTRUSTOBJECTSElectronicTransfer;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				
+				setverdict(pass); /To be possibly set to failure in the alt step
+				
+				// PT140 TODO: mw_aduTrustObject template to be defined
+				// Step1: send RequestADU by specifying the type of trustobject
+				f_sendAndLogApdu(
+					m_apduNoSecInit(
+						{modifies mw_aduTrustObject:= {typeOfTrustObject := TrustObjectTypes_symmetricKey_} }
+					)
+				);
+       			// Send again immediately same ADU with different  valid type of trust object
+				var InfoExchange v_apduToSend := m_apduNoSecInit(
+					{modifies mw_aduTrustObject:= {typeOfTrustObject := TrustObjectTypes_encryptedSymmetricKey_} });
+				f_sendAndLogApdu(v_apduToSend);
+
+                               
+				//Set timer
+				t_step.start(TRUSTOBJECTS_TYPE1_TIME2_MAX_TSP);
+                
+				// Step #2: Wait for Nack ADU				 					
+				// Either we receive an APDU containing  Nack or the timeout expires
+				// timeout expiration is handled in the altstep branch
+
+				//Create parameters for the m_apduNAck			
+				var NAckParams v_nAckParams1 :={{0, AduReasonCode_invalidADU_}};
+				var NAckParams v_nAckParams2 :={{1, AduReasonCode_invalidADU_},{2,AduReasonCode_invalidADU_}};
+				
+				alt {
+					[] mtcPort.receive(m_apduNAck_requestSentTooOften(v_apduToSend)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(TRUSTOBJECTS_TYPE1_TIME2_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+						
+						//Set verdict
+						setverdict(pass);
+					}
+                } // End of alt statement
+				f_closeDownMtc();              
            } // End of TP_TSP_TRUSTOBJECTS_BI_05
            		
         } // End of group Invalid_Behaviour
