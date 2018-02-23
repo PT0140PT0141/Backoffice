@@ -567,19 +567,25 @@ module EfcInfoExchange_TestCasesTcDev {
 				//		- abnormalOBEReason code = present and valid                
 				f_sendAndLogTrigger(DSRCREPORTABNORMALOBE_TR_TC_1);
 
+				//  Wait for apdu containing DsrcReportAbnormalOBE ADUs
+                 // PT140 TODO : mw_aduDsrcReportAbnormalObe template to be defined
+				var InfoExchange v_apduToBeReceived := {
+				  	m_apduNoSecInit({mw_aduDsrcReportAbnormalObe})
+           		};                 
+
 				//  Wait for DSRC.REPORTABNORMALOBE ADU
 				alt {
-					[] mtcPort.receive(mw_apduDsrcReportAbnormalObe) -> value v_apduReceived {
-					//TODO PT140 APDU DsrcReportAbnormalObe Template to be defined
+					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();					
-						}               		
-					// Step 2: Send Ack within time constraints
-					f_wait(DSRC_REPORTABNORMALOBE_TIME1_MIN_TSP);
-					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
-					// Set test success
-					setverdict(pass);
-					} // End of alt statement
+					               		
+						// Step 2: Send Ack within time constraints
+						f_wait(DSRC_REPORTABNORMALOBE_TIME1_MIN_TSP);
+						f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+						// Set test success
+						setverdict(pass);
+					}
+				} // End of alt statement
 
 				f_closeDownMtc();   						           
 			} // End testcase TP_TC_DSRC_REPORTABNORMALOBE_BV_01	
@@ -599,20 +605,20 @@ module EfcInfoExchange_TestCasesTcDev {
                 /**
                  * @desc    TP_TC_DSRC_EFCCONTEXTDATA_BV_01: Verify that the TC correctly performs a DSRC.EFCCONTEXTDATA transaction
                  *			for a domain type = dsrcContext  
-                 * @remark  [16986:2016], Clause 7.2 and Table A.1/1 AND Table A.2/1 AND Table A.30/2 = dsrcContext
+                 * @remark  [16986:2016], Clause 7.2 and Table A.1/1 AND Table A.2/1 AND Table A.26/2 AND Table A.30/2 = dsrcContext
                  */
  
    				// Local variables
   				var InfoExchange v_apduReceived; 
   				
   				// Initialisation
-				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A2_1_isDsrc and ICS_A30_2_implementedDSRCCONTEXT;
+				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A2_1_isDsrc and ICS_A26_2_implementedDSRCEFCCONTEXTDATA and ICS_A30_2_implementedDSRCCONTEXT;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
                                   
 				// Start by setting test success
 				setverdict(pass);  //TODO PT140 is this really neccessary?
 								
-                // Step 1: Tigger IUT with DSRC.EFCCONTEXTDATA_TR_TC_1 to send valid Initiating_Apdu
+                // Step 1: Tigger IUT with DSRC.EFCCONTEXTDATA_TR_TC_1_A to send valid Initiating_Apdu
                 // containing a EFCContextDataADU as the only ADU, with
                 //		- domainType = dsrcContext;
                 //		- the values of all fields in EFCContextDataADU being within the range specified by the IUT
@@ -620,8 +626,9 @@ module EfcInfoExchange_TestCasesTcDev {
 
 				//  Wait for apdu containing domain type = dsrcContext
                  // PT140 TODO : mw_aduDsrcEfcContext template to be defined
+				
 				var InfoExchange v_apduToBeReceived := {
-				  	m_apduNoSecInit({modifies mw_aduDsrcEfcContext:= {domainType := dsrcContext}})
+				  	m_apduNoSecInit(modifies mw_aduDsrcEfcContext:= {domainType := dsrcContext})
            		};                 
 
                 // Wait for above specified APDU within time constraints
@@ -630,16 +637,15 @@ module EfcInfoExchange_TestCasesTcDev {
 
 				alt {
 					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
-					//TODO PT140 APDU DsrcEfcContextData Template to be defined
 						// Log what we received
-						f_logApduReceivedAndTStep();					
-						}               		
-					// Step 2: Send Ack within time constraints
-					f_wait(DSRC_EFCCONTEXTDATA_TIME1_MIN_TC);
-					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
-					// Set test success
-					setverdict(pass);
-					} // End of alt statement
+						f_logApduReceivedAndTStep();					              		
+						// Step 2: Send Ack within time constraints
+						f_wait(DSRC_EFCCONTEXTDATA_TIME1_MIN_TSP);
+						f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+						// Set test success
+						setverdict(pass);
+					}
+				} // End of alt statement
 				f_closeDownMtc();              	
 			} // End testcase TP_TC_DSRC_EFCCONTEXTDATA_BV_01	
 			
@@ -648,29 +654,29 @@ module EfcInfoExchange_TestCasesTcDev {
                 /**
                  * @desc    TP_TC_DSRC_EFCCONTEXTDATA_BV_02: Verify that the TC correctly performs a DSRC.EFCCONTEXTDATA transaction
                  *			for a domain type = dsrcClosedContext  
-                 * @remark  [16986:2016], Clause 7.2 and Table A.1/1 AND Table A.2/1 AND Table A.30/2 = dsrcContext
+                 * @remark  [16986:2016], Clause 7.2 and Table A.1/1 AND Table A.2/1 AND Table A.26.2 AND Table A.30/2 = dsrcContext
                  */
  
    				// Local variables
   				var InfoExchange v_apduReceived; 
   				
   				// Initialisation
-				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A2_1_isDsrc and ICS_A30_2_implementedDSRCCONTEXT;
+				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A2_1_isDsrc and ICS_A26_2_implementedDSRCEFCCONTEXTDATA and ICS_A30_2_implementedDSRCCONTEXT;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
                                   
 				// Start by setting test success
 				setverdict(pass);  //TODO PT140 is this really neccessary?
 								
-                // Step 1: Tigger IUT with DSRC.EFCCONTEXTDATA_TR_TC_1 to send valid Initiating_Apdu
+                // Step 1: Tigger IUT with DSRC.EFCCONTEXTDATA_TR_TC_1_B to send valid Initiating_Apdu
                 // containing a EFCContextDataADU as the only ADU, with
                 //		- domainType = dsrcClosedContext;
                 //		- the values of all fields in EFCContextDataADU being within the range specified by the IUT
-				f_sendAndLogTrigger(DSRC_EFCCONTEXTDATA_TR_TC_1_A);
+				f_sendAndLogTrigger(DSRC_EFCCONTEXTDATA_TR_TC_1_B);
 
 				//  Wait for apdu containing domain type = dsrcClosedContext
                  // PT140 TODO : mw_aduDsrcEfcContext template to be defined
 				var InfoExchange v_apduToBeReceived := {
-				  	m_apduNoSecInit({modifies mw_aduDsrcEfcContext:= {domainType := dsrcClosedContext}})
+				  	m_apduNoSecInit(modifies mw_aduDsrcEfcContext:= {domainType := dsrcClosedContext})
            		};                 
 
                 // Wait for above specified APDU within time constraints
@@ -679,16 +685,15 @@ module EfcInfoExchange_TestCasesTcDev {
 
 				alt {
 					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
-					//TODO PT140 APDU DsrcEfcContextData Template to be defined
 						// Log what we received
-						f_logApduReceivedAndTStep();					
-						}               		
-					// Step 2: Send Ack within time constraints
-					f_wait(DSRC_EFCCONTEXTDATA_TIME1_MIN_TC);
-					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
-					// Set test success
-					setverdict(pass);
-					} // End of alt statement
+						f_logApduReceivedAndTStep();					              		
+						// Step 2: Send Ack within time constraints
+						f_wait(DSRC_EFCCONTEXTDATA_TIME1_MIN_TSP);
+						f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+						// Set test success
+						setverdict(pass);
+					}
+				} // End of alt statement
 				f_closeDownMtc();              	
 			} // End testcase TP_TC_DSRC_EFCCONTEXTDATA_BV_02				
 			
@@ -700,6 +705,132 @@ module EfcInfoExchange_TestCasesTcDev {
                  */			
 		} // End Invalid_Behaviour		
 	} // End DSRC_EFCCONTEXTDATA
+
+	group DSRC_BILLINGDETAILS {
+	
+		group Valid_Behaviour {
+		
+			testcase TP_TC_DSRC_BILLINGDETAILS_BV_01() runs on MainTestComponent system TestAdapter {
+							
+               /**
+                * @desc    TP_TC_DSRC_EFCCONTEXTDATA_BV_01: Verify that the TC correctly performs a DSRC.BILLINGDETAILS transaction
+                *			with actionCode=send
+                * @remark  [16986:2016], Clause 7.3 and Table A.1/1 AND Table A.2/1 AND Table A26.3
+                */
+
+   				// Local variables
+  				var InfoExchange v_apduReceived; 
+  				
+  				// Initialisation
+				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A2_1_isDsrc and ICS_A26_3_implementedDSRCBILLINGDETAILS;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+                                  
+				// Start by setting test success
+				setverdict(pass);  //TODO PT140 is this really neccessary?
+
+                // Step 1: Tigger IUT with DSRC.BILLINGDETAILS_TR_TC_1_A to send valid Initiating_Apdu containing BillingDetailsADUs
+                // containing all valid permutations of present and not present optional fields and choices that are used
+                // in the IUT implementation, all with actionCode = send
+
+				f_sendAndLogTrigger(DSRC_BILLINGDETAILS_TR_TC_1_A);
+
+                 // PT140 TODO : mw_aduDsrcBillingDetails template to be defined
+				var InfoExchange v_apduToBeReceived := {
+				  	m_apduNoSecInit({modifies mw_aduDsrcBillingDetails:= {actionCode := send}})
+           		};                 
+
+                // Wait for above specified APDU within time constraints
+                // if not received or received outside specification or time constraints set test fail
+
+				alt {
+					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();					              		
+						// Step 2: Send Ack within time constraints
+						f_wait(DSRC_BILLINGDETAILS_TIME1_MIN_TSP);
+						f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+						// Set test success
+						setverdict(pass);
+					}
+				} // End of alt statement
+				f_closeDownMtc();              	
+			} // End testcase TP_TC_DSRC_BILLINGDETAILS_BV_01
+			
+			testcase TP_TC_DSRC_BILLINGDETAILS_BV_02() runs on MainTestComponent system TestAdapter {
+							
+               /**
+                * @desc    TP_TC_DSRC_EFCCONTEXTDATA_BV_02: Verify that the TC correctly performs a DSRC.BILLINGDETAILS transaction
+                *			with actionCode=adjust
+                * @remark  [16986:2016], Clause 7.3 and Table A.1/1 AND Table A.2/1 AND Table A.36/15 = adjust
+                */
+ 
+  				// Initialisation
+                 
+				// Start by setting test success
+				
+				// Trigger a first BILLINGDETAILS transaction with DSRC.BILLINGDETAILS_TR_TC_1
+				// receive the BillingetailsADU
+				// send a negative Ack (except of issueCode "acceptedWithWarning")
+				
+								
+                // Step 1: Tigger IUT with DSRC.BILLINGDETAILS_TR_TC_1 to send valid Initiating_Apdu containing
+                // exactely one BillingDetailsADU;
+                // billingDetailsId referencing the previously sent BillingDetailsADU;
+                // with actionCode = adjust
+
+                // Wait for above specified APDU within time constraints
+                // use template for APDU
+                // if not received or received outside specification or time constraints set test fail
+                
+                // Step 2: Send AckADU to conclude the transaction 
+                // within the time DSRC.BILLINGDETAILS.TIME1
+
+			} // End testcase TP_TC_DSRC_BILLINGDETAILS_BV_02
+						
+			testcase TP_TC_DSRC_BILLINGDETAILS_BI_03() runs on MainTestComponent system TestAdapter {
+							
+               /**
+                * @desc    TP_TC_DSRC_EFCCONTEXTDATA_BV_03: Verify that the TC correctly performs a DSRC.BILLINGDETAILS transaction
+                *			with actionCode=revoke
+                * @remark  [16986:2016], Clause 7.3 and Table A.1/1 AND Table A.2/1 AND Table A.36/15 = revoke
+                */
+ 
+  				// Initialisation
+                 
+				// Start by setting test success
+				
+				// Trigger a first BILLINGDETAILS transaction with DSRC.BILLINGDETAILS_TR_TC_1
+				// receive the BillingetailsADU
+				// send an AckADU
+				
+								
+                // Step 1: Tigger IUT with DSRC.BILLINGDETAILS_TR_TC_1 to send valid Initiating_Apdu containing
+                // exactely one BillingDetailsADU;
+                // billingDetailsId referencing the previously sent BillingDetailsADU;
+                // with actionCode = revoke
+
+                // Wait for above specified APDU within time constraints
+                // use template for APDU
+                // if not received or received outside specification or time constraints set test fail
+                
+                // Step 2: Send AckADU to conclude the transaction 
+                // within the time DSRC.BILLINGDETAILS.TIME1
+
+			} // End testcase TP_TC_DSRC_BILLINGDETAILS_BV_03
+			
+		} // End Valid_Behaviour
+		
+		group Invalid_Behaviour {
+
+               /**
+                 * @remark  No TPs have been defined
+                 */			
+			
+		} // End Invalid_Behaviour
+		
+	} // End DSRC_BILLINGDETAILS
+
+
 
 	group LISTOFUSERS {
 	
@@ -1386,178 +1517,7 @@ module EfcInfoExchange_TestCasesTcDev {
 
 	} // End DSRC_CONTRACTISSUERLIST 
 
-	group DSRC_EFCCONTEXTDATA {
 	
-		group Valid_Behaviour {
-		
-			testcase TP_TC_DSRC_EFCCONTEXTDATA_BV_01() runs on MainTestComponent system TestAdapter {
-							
-                /**
-                 * @desc    TP_TC_DSRC_EFCCONTEXTDATA_BV_01: Verify that the TC correctly performs a DSRC.EFCCONTEXTDATA transaction
-                 *			for a domain type = dsrcContext  
-                 * @remark  [16986:2016], Clause 7.2 and Table A.1/1 AND Table A.2/2 AND Table A.30/2 = dsrcContext
-                 */
- 
-  				// Initialisation
-                 
-				// Start by setting test success
-								
-                // Step 1: Tigger IUT with DSRC.EFCCONTEXTDATA_TR_TC_1 to send valid Initiating_Apdu
-                // containing a EFCContextDataADU as the only ADU, with
-                //		- domainType = dsrcContext;
-                //		- the values of all fields in EFCContextDataADU being within the range specified by the IUT
-                
-
-                // Wait for above specified APDU within time constraints
-                // use template for APDU
-                // if not received or received outside specification or time constraints set test fail
-                
-                // Step 2: Send AckADU to conclude the transaction 
-                // within the time DSRC.CONTRACTISSUERLIST.TIME1  
-              	
-			} // End testcase TP_TC_DSRC_EFCCONTEXTDATA_BV_01
-			
-			testcase TP_TC_DSRC_EFCCONTEXTDATA_BV_02() runs on MainTestComponent system TestAdapter {
-							
-                /**
-                 * @desc    TP_TC_DSRC_EFCCONTEXTDATA_BV_02: Verify that the TC correctly performs a DSRC.EFCCONTEXTDATA transaction
-                 *			for a domain type = dsrcClosedContext
-                 * @remark  [16986:2016], Clause 7.2 and Table A.1/1 AND Table A.2/2 AND Table A.30/2 = dsrcClosedContext
-                 */
- 
-  				// Initialisation
-                 
-				// Start by setting test success
-								
-                // Step 1: Tigger IUT with DSRC.EFCCONTEXTDATA_TR_TC_1 to send valid Initiating_Apdu
-                // containing a EFCContextDataADU as the only ADU, with
-                //		- domainType = dsrcClosedContext;
-                //		- the values of all fields in EFCContextDataADU being within the range specified by the IUT
-
-                // Wait for above specified APDU within time constraints
-                // use template for APDU
-                // if not received or received outside specification or time constraints set test fail
-                
-                // Step 2: Send AckADU to conclude the transaction 
-                // within the time DSRC.CONTRACTISSUERLIST.TIME1  
-              	
-			} // End testcase TP_TC_DSRC_EFCCONTEXTDATA_BV_02
-			
-		} // End group Valid_Behaviour
-		
-		group Invalid_Behaviour
-		
-               /**
-                 * @remark  No TPs have been defined
-                 */
- 		
-		} // End Invalid_Behaviour
-
-	} // End DSRC_EFCCONTEXTDATA
-	
-	group DSRC_BILLINGDETAILS {
-	
-		group Valid_Behaviour {
-		
-			testcase TP_TC_DSRC_BILLINGDETAILS_BV_01() runs on MainTestComponent system TestAdapter {
-							
-               /**
-                * @desc    TP_TC_DSRC_EFCCONTEXTDATA_BV_01: Verify that the TC correctly performs a DSRC.BILLINGDETAILS transaction
-                *			with actionCode=send
-                * @remark  [16986:2016], Clause 7.3 and Table A.1/1 AND Table A.2/1
-                */
- 
-  				// Initialisation
-                 
-				// Start by setting test success
-								
-                // Step 1: Tigger IUT with DSRC.BILLINGDETAILS_TR_TC_1 to send valid Initiating_Apdu containing BillingDetailsADUs
-                // containing all valid permutations of present and not present optional fields and choices that are used
-                // in the IUT implementation, all with actionCode = send
-
-                // Wait for above specified APDU within time constraints
-                // use template for APDU
-                // if not received or received outside specification or time constraints set test fail
-                
-                // Step 2: Send AckADU to conclude the transaction 
-                // within the time DSRC.BILLINGDETAILS.TIME1
-
-			} // End testcase TP_TC_DSRC_BILLINGDETAILS_BV_01
-			
-			testcase TP_TC_DSRC_BILLINGDETAILS_BV_02() runs on MainTestComponent system TestAdapter {
-							
-               /**
-                * @desc    TP_TC_DSRC_EFCCONTEXTDATA_BV_02: Verify that the TC correctly performs a DSRC.BILLINGDETAILS transaction
-                *			with actionCode=adjust
-                * @remark  [16986:2016], Clause 7.3 and Table A.1/1 AND Table A.2/1 AND Table A.36/15 = adjust
-                */
- 
-  				// Initialisation
-                 
-				// Start by setting test success
-				
-				// Trigger a first BILLINGDETAILS transaction with DSRC.BILLINGDETAILS_TR_TC_1
-				// receive the BillingetailsADU
-				// send a negative Ack (except of issueCode "acceptedWithWarning")
-				
-								
-                // Step 1: Tigger IUT with DSRC.BILLINGDETAILS_TR_TC_1 to send valid Initiating_Apdu containing
-                // exactely one BillingDetailsADU;
-                // billingDetailsId referencing the previously sent BillingDetailsADU;
-                // with actionCode = adjust
-
-                // Wait for above specified APDU within time constraints
-                // use template for APDU
-                // if not received or received outside specification or time constraints set test fail
-                
-                // Step 2: Send AckADU to conclude the transaction 
-                // within the time DSRC.BILLINGDETAILS.TIME1
-
-			} // End testcase TP_TC_DSRC_BILLINGDETAILS_BV_02
-						
-			testcase TP_TC_DSRC_BILLINGDETAILS_BI_03() runs on MainTestComponent system TestAdapter {
-							
-               /**
-                * @desc    TP_TC_DSRC_EFCCONTEXTDATA_BV_03: Verify that the TC correctly performs a DSRC.BILLINGDETAILS transaction
-                *			with actionCode=revoke
-                * @remark  [16986:2016], Clause 7.3 and Table A.1/1 AND Table A.2/1 AND Table A.36/15 = revoke
-                */
- 
-  				// Initialisation
-                 
-				// Start by setting test success
-				
-				// Trigger a first BILLINGDETAILS transaction with DSRC.BILLINGDETAILS_TR_TC_1
-				// receive the BillingetailsADU
-				// send an AckADU
-				
-								
-                // Step 1: Tigger IUT with DSRC.BILLINGDETAILS_TR_TC_1 to send valid Initiating_Apdu containing
-                // exactely one BillingDetailsADU;
-                // billingDetailsId referencing the previously sent BillingDetailsADU;
-                // with actionCode = revoke
-
-                // Wait for above specified APDU within time constraints
-                // use template for APDU
-                // if not received or received outside specification or time constraints set test fail
-                
-                // Step 2: Send AckADU to conclude the transaction 
-                // within the time DSRC.BILLINGDETAILS.TIME1
-
-			} // End testcase TP_TC_DSRC_BILLINGDETAILS_BV_03
-			
-		} // End Valid_Behaviour
-		
-		group Invalid_Behaviour {
-
-               /**
-                 * @remark  No TPs have been defined
-                 */			
-			
-		} // End Invalid_Behaviour
-		
-	} // End DSRC_BILLINGDETAILS
-
 
 	group GNSS_TOLLDECLARATION {
 	
