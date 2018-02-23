@@ -548,12 +548,15 @@ module EfcInfoExchange_TestCasesTcDev {
                 * @remark  [16986:2016], Clause 7.4 and Table A.1/1 AND Table A.2/1 AND Table A.26/4
                 */
 
+  				// Local variables
+  				var InfoExchange v_apduReceived; 
+  				
   				// Initialisation
 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A2_1_isDsrc and ICS_A26_4_implementedDSRCREPORTABNORAMLOBE;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
                  
-				// Start by setting test failure
-				setverdict(fail);
+				// Start by setting test success
+				setverdict(pass);  //TODO PT140 is this really neccessary?
 												
                 // Step 1: Tigger IUT with DSRC.REPORTABNORMALOBE_TR_TC_1 to send valid Initiating_APDU containing
                 // one or more ADUs of type ReportAbnormalOBEADU containing different combinations of valid
@@ -566,7 +569,8 @@ module EfcInfoExchange_TestCasesTcDev {
 
 				//  Wait for DSRC.REPORTABNORMALOBE ADU
 				alt {
-					[] mtcPort.receive(mw_apduDsrcReportAbnormalObe) -> value v_apduReceived { //TODO Template to be defined
+					[] mtcPort.receive(mw_apduDsrcReportAbnormalObe) -> value v_apduReceived {
+					//TODO PT140 APDU DsrcReportAbnormalObe Template to be defined
 						// Log what we received
 						f_logApduReceivedAndTStep();					
 						}               		
@@ -587,6 +591,115 @@ module EfcInfoExchange_TestCasesTcDev {
                  */			
 		} // End Invalid_Behaviour		
 	} // End DSRC_REPORTABNORMALOBE
+
+	group DSRC_EFCCONTEXTDATA {
+		group Valid_Behaviour {
+			testcase TP_TC_DSRC_EFCCONTEXTDATA_BV_01() runs on MainTestComponent system TestAdapter {
+							
+                /**
+                 * @desc    TP_TC_DSRC_EFCCONTEXTDATA_BV_01: Verify that the TC correctly performs a DSRC.EFCCONTEXTDATA transaction
+                 *			for a domain type = dsrcContext  
+                 * @remark  [16986:2016], Clause 7.2 and Table A.1/1 AND Table A.2/1 AND Table A.30/2 = dsrcContext
+                 */
+ 
+   				// Local variables
+  				var InfoExchange v_apduReceived; 
+  				
+  				// Initialisation
+				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A2_1_isDsrc and ICS_A30_2_implementedDSRCCONTEXT;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+                                  
+				// Start by setting test success
+				setverdict(pass);  //TODO PT140 is this really neccessary?
+								
+                // Step 1: Tigger IUT with DSRC.EFCCONTEXTDATA_TR_TC_1 to send valid Initiating_Apdu
+                // containing a EFCContextDataADU as the only ADU, with
+                //		- domainType = dsrcContext;
+                //		- the values of all fields in EFCContextDataADU being within the range specified by the IUT
+				f_sendAndLogTrigger(DSRC_EFCCONTEXTDATA_TR_TC_1_A);
+
+				//  Wait for apdu containing domain type = dsrcContext
+                 // PT140 TODO : mw_aduDsrcEfcContext template to be defined
+				var InfoExchange v_apduToBeReceived := {
+				  	m_apduNoSecInit({modifies mw_aduDsrcEfcContext:= {domainType := dsrcContext}})
+           		};                 
+
+                // Wait for above specified APDU within time constraints
+                // use template for APDU
+                // if not received or received outside specification or time constraints set test fail
+
+				alt {
+					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
+					//TODO PT140 APDU DsrcEfcContextData Template to be defined
+						// Log what we received
+						f_logApduReceivedAndTStep();					
+						}               		
+					// Step 2: Send Ack within time constraints
+					f_wait(DSRC_EFCCONTEXTDATA_TIME1_MIN_TC);
+					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+					// Set test success
+					setverdict(pass);
+					} // End of alt statement
+				f_closeDownMtc();              	
+			} // End testcase TP_TC_DSRC_EFCCONTEXTDATA_BV_01	
+			
+			testcase TP_TC_DSRC_EFCCONTEXTDATA_BV_02() runs on MainTestComponent system TestAdapter {
+							
+                /**
+                 * @desc    TP_TC_DSRC_EFCCONTEXTDATA_BV_02: Verify that the TC correctly performs a DSRC.EFCCONTEXTDATA transaction
+                 *			for a domain type = dsrcClosedContext  
+                 * @remark  [16986:2016], Clause 7.2 and Table A.1/1 AND Table A.2/1 AND Table A.30/2 = dsrcContext
+                 */
+ 
+   				// Local variables
+  				var InfoExchange v_apduReceived; 
+  				
+  				// Initialisation
+				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A2_1_isDsrc and ICS_A30_2_implementedDSRCCONTEXT;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+                                  
+				// Start by setting test success
+				setverdict(pass);  //TODO PT140 is this really neccessary?
+								
+                // Step 1: Tigger IUT with DSRC.EFCCONTEXTDATA_TR_TC_1 to send valid Initiating_Apdu
+                // containing a EFCContextDataADU as the only ADU, with
+                //		- domainType = dsrcClosedContext;
+                //		- the values of all fields in EFCContextDataADU being within the range specified by the IUT
+				f_sendAndLogTrigger(DSRC_EFCCONTEXTDATA_TR_TC_1_A);
+
+				//  Wait for apdu containing domain type = dsrcClosedContext
+                 // PT140 TODO : mw_aduDsrcEfcContext template to be defined
+				var InfoExchange v_apduToBeReceived := {
+				  	m_apduNoSecInit({modifies mw_aduDsrcEfcContext:= {domainType := dsrcClosedContext}})
+           		};                 
+
+                // Wait for above specified APDU within time constraints
+                // use template for APDU
+                // if not received or received outside specification or time constraints set test fail
+
+				alt {
+					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
+					//TODO PT140 APDU DsrcEfcContextData Template to be defined
+						// Log what we received
+						f_logApduReceivedAndTStep();					
+						}               		
+					// Step 2: Send Ack within time constraints
+					f_wait(DSRC_EFCCONTEXTDATA_TIME1_MIN_TC);
+					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+					// Set test success
+					setverdict(pass);
+					} // End of alt statement
+				f_closeDownMtc();              	
+			} // End testcase TP_TC_DSRC_EFCCONTEXTDATA_BV_02				
+			
+		} // End Valid_Behaviour
+
+		group Invalid_Bahaviour {
+               /**
+                 * @remark  No TPs have been defined
+                 */			
+		} // End Invalid_Behaviour		
+	} // End DSRC_EFCCONTEXTDATA
 
 	group LISTOFUSERS {
 	
