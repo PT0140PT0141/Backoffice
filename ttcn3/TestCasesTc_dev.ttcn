@@ -28,7 +28,8 @@ module EfcInfoExchange_TestCasesTcDev {
     import from EfcInfoExchange_Pixits all;
     import from EfcInfoExchange_Ics all;
     import from EfcInfoExchange_Templates all;
-    
+	import from EfcInfoExchange_InteroperabilityStatement all;
+	
      /**
       * @desc    These test cases apply to Toll Charger claiming conformance to [16986:2016]
       * and applying Test Purposes as from CEN/TS17154-1:xxxx Annex A
@@ -548,29 +549,23 @@ module EfcInfoExchange_TestCasesTcDev {
                 * @remark  [16986:2016], Clause 7.4 and Table A.1/1 AND Table A.2/1 AND Table A.26/4
                 */
 
-  				// Local variables
-  				var InfoExchange v_apduReceived; 
-  				
   				// Initialisation
 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A2_1_isDsrc and ICS_A26_4_implementedDSRCREPORTABNORAMLOBE;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
                  
-				// Start by setting test success
-				setverdict(pass);  //TODO PT140 is this really neccessary?
-												
-                // Step 1: Tigger IUT with DSRC.REPORTABNORMALOBE_TR_TC_1 to send valid Initiating_APDU containing
+                // Step 1: Trigger IUT with DSRC.REPORTABNORMALOBE_TR_TC_1 to send valid Initiating_APDU containing
                 // one or more ADUs of type ReportAbnormalOBEADU containing different combinations of valid
                 // and IUT declared values in the following data elements
 				//		- userID = at least one element shall be present;
 				//		- dateAndTime = present and valid;
 				//		- efcContextMark = present and valid;
 				//		- abnormalOBEReason code = present and valid                
-				f_sendAndLogTrigger(DSRCREPORTABNORMALOBE_TR_TC_1);
+				f_sendAndLogTrigger(DSRC_REPORTABNORMALOBE_TR_TC_1);
 
 				//  Wait for apdu containing DsrcReportAbnormalOBE ADUs
-                 // PT140 TODO : mw_aduDsrcReportAbnormalObe template to be defined
+                 // PT140 TODO : mw_adusDsrcReportAbnormalObe template to be defined
 				var InfoExchange v_apduToBeReceived := {
-				  	m_apduNoSecInit({mw_aduDsrcReportAbnormalObe})
+				  	m_apduNoSecInit(mw_adusDsrcReportAbnormalObe)
            		};                 
 
 				//  Wait for DSRC.REPORTABNORMALOBE ADU
@@ -608,16 +603,10 @@ module EfcInfoExchange_TestCasesTcDev {
                  * @remark  [16986:2016], Clause 7.2 and Table A.1/1 AND Table A.2/1 AND Table A.26/2 AND Table A.30/2 = dsrcContext
                  */
  
-   				// Local variables
-  				var InfoExchange v_apduReceived; 
-  				
   				// Initialisation
 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A2_1_isDsrc and ICS_A26_2_implementedDSRCEFCCONTEXTDATA and ICS_A30_2_implementedDSRCCONTEXT;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
-                                  
-				// Start by setting test success
-				setverdict(pass);  //TODO PT140 is this really neccessary?
-								
+                                  					
                 // Step 1: Tigger IUT with DSRC.EFCCONTEXTDATA_TR_TC_1_A to send valid Initiating_Apdu
                 // containing a EFCContextDataADU as the only ADU, with
                 //		- domainType = dsrcContext;
@@ -628,7 +617,7 @@ module EfcInfoExchange_TestCasesTcDev {
                  // PT140 TODO : mw_aduDsrcEfcContext template to be defined
 				
 				var InfoExchange v_apduToBeReceived := {
-				  	m_apduNoSecInit(modifies mw_aduDsrcEfcContext:= {domainType := dsrcContext})
+				  	m_apduNoSecInit(modifies mw_aduDsrcEfcContext:= {domainType := dsrcContext})	//TODO awrite a template that is generic for both drscContext and closedDsrcContext
            		};                 
 
                 // Wait for above specified APDU within time constraints
@@ -657,17 +646,12 @@ module EfcInfoExchange_TestCasesTcDev {
                  * @remark  [16986:2016], Clause 7.2 and Table A.1/1 AND Table A.2/1 AND Table A.26.2 AND Table A.30/2 = dsrcContext
                  */
  
-   				// Local variables
-  				var InfoExchange v_apduReceived; 
-  				
+			
   				// Initialisation
 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A2_1_isDsrc and ICS_A26_2_implementedDSRCEFCCONTEXTDATA and ICS_A30_2_implementedDSRCCONTEXT;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
                                   
-				// Start by setting test success
-				setverdict(pass);  //TODO PT140 is this really neccessary?
-								
-                // Step 1: Tigger IUT with DSRC.EFCCONTEXTDATA_TR_TC_1_B to send valid Initiating_Apdu
+				// Step 1: Tigger IUT with DSRC.EFCCONTEXTDATA_TR_TC_1_B to send valid Initiating_Apdu
                 // containing a EFCContextDataADU as the only ADU, with
                 //		- domainType = dsrcClosedContext;
                 //		- the values of all fields in EFCContextDataADU being within the range specified by the IUT
@@ -699,7 +683,7 @@ module EfcInfoExchange_TestCasesTcDev {
 			
 		} // End Valid_Behaviour
 
-		group Invalid_Bahaviour {
+		group Invalid_Behaviour {
                /**
                  * @remark  No TPs have been defined
                  */			
@@ -717,26 +701,20 @@ module EfcInfoExchange_TestCasesTcDev {
                 *			with actionCode=send
                 * @remark  [16986:2016], Clause 7.3 and Table A.1/1 AND Table A.2/1 AND Table A26.3
                 */
-
-   				// Local variables
-  				var InfoExchange v_apduReceived; 
-  				
+				
   				// Initialisation
 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A2_1_isDsrc and ICS_A26_3_implementedDSRCBILLINGDETAILS;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
                                   
-				// Start by setting test success
-				setverdict(pass);  //TODO PT140 is this really neccessary?
-
                 // Step 1: Tigger IUT with DSRC.BILLINGDETAILS_TR_TC_1_A to send valid Initiating_Apdu containing BillingDetailsADUs
                 // containing all valid permutations of present and not present optional fields and choices that are used
                 // in the IUT implementation, all with actionCode = send
 
 				f_sendAndLogTrigger(DSRC_BILLINGDETAILS_TR_TC_1_A);
 
-                 // PT140 TODO : mw_aduDsrcBillingDetails template to be defined
+                 // PT140 TODO : mw_adusDsrcBillingDetails template to be defined
 				var InfoExchange v_apduToBeReceived := {
-				  	m_apduNoSecInit({modifies mw_aduDsrcBillingDetails:= {actionCode := send}})
+				  	m_apduNoSecInit({modifies mw_adusDsrcBillingDetails:= {actionCode := ActionCode_send_ }}) 
            		};                 
 
                 // Wait for above specified APDU within time constraints
