@@ -38,6 +38,9 @@ module EfcInfoExchange_Pixits {
     modulepar RecordOfInteger USERDETAILS_PRIVACYBOUND_LIST_OF_PARAMETERS;  
     modulepar RecordOfInteger USERDETAILS_NOT_AGREED_LIST;
     
-	modulepar integer NUMBER_OF_TRUSTOBJECT_TYPES_SUPPORTED;
+	type integer TrustObjectTypePurposePair[2];
+	modulepar record of TrustObjectTypePurposePair RECEIVED_TRUST_OBJECTS_SUPPORTED;	//Should contain all the allowed pairs {TrustObjectType,TrustObjectPurpose} pairs accepted by the IUT for receiving 
+	modulepar record of TrustObjectTypePurposePair SENT_TRUST_OBJECTS_SUPPORTED;		//Should contain all the allowed pairs {TrustObjectType,TrustObjectPurpose} pairs accepted by the IUT for sending
+	 	
         
 }

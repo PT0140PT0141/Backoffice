@@ -24,15 +24,14 @@ module EfcInfoExchange_TestCasesTc {
      *          Common_Parametrised_Asn1_Data TTCN-3 module is a workaround
      */
     import from Common_ParametrisedAsn1Data all;
-    import from EfcInfoExchange_Functions all;
-    import from EfcInfoExchange_Pixits all;
-    import from EfcInfoExchange_Templates all;
     
     // Backoffice
     import from EfcInfoExchange_Functions all;
     import from EfcInfoExchange_Templates all;
-    import from EfcInfoExchange_Ics all;
+	import from EfcInfoExchange_Pixits all;
+	import from EfcInfoExchange_Ics all;
     import from EfcInfoExchange_Interfaces all;
+	import from EfcInfoExchange_InteroperabilityStatement all;
 
  group USERDETAILS {
          group Valid_Behaviour {
