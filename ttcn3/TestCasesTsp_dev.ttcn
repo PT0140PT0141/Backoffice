@@ -839,7 +839,7 @@ module EfcInfoExchange_TestCasesTspOld {
 				if (sizeof (v_userParameterRequests) == 0) {
 					setverdict(inconclusive);
 					f_addLogEntry("Privacy bound parameters missing. Test cannot be executed");
-					stop
+					stop;
 					};
                 
 				// Step1: send RequestADU
@@ -1050,7 +1050,7 @@ module EfcInfoExchange_TestCasesTspOld {
 				if (sizeof (v_userParameterRequests) == 0) {
 					setverdict(inconclusive);
 					f_addLogEntry("Not agreed parameters missing. Test cannot be executed");
-					stop
+					stop;
 					};
                 
 				// Step1: send RequestADU
@@ -1993,7 +1993,73 @@ module EfcInfoExchange_TestCasesTspOld {
               */
 // PT140 TODO: Valid (or invalid) combinations to be decided and defined	
 				// Initialisation
-             
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_4_implementedTRUSTOBJECTSElectronicTransfer;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				// Find a couple of TrustObjectType, TrustobjectPurpose not supported by the IUT
+				var integer NotSupportedTypeOrPurpose[2];
+				for (var integer v_types :=0; v_types < 8 ;v_types:=v_types+1) // Loop within types
+					{
+						for (var integer v_purposes :=0; v_purposes < 17; v_purposes:=v_purposes+1) // Loop within purposes
+							{
+							  NotSupportedTypeOrPurpose := {v_types,v_purposes}; // Set value of not supported parameters combination
+							  // Check if this combination is supported						  
+							  for (var integer v_cntl=0; v_cntl<sizeof(RECEIVED_TRUST_OBJECTS_SUPPORTED) ) {
+							    if RECEIVED_TRUST_OBJECTS_SUPPORTED[v_cntl] == {v_types,v_purposes} {
+							    	NotSupportedTypeOrPurpose := {100,100};	  // If supported, invalidate the value of not supported parameters combination
+							    };							  
+							  	continue; // Continue for all supported couples
+							  	}
+							  	If NotSupportedTypeOrPurpose != {100,100} {
+							  		break;  // Found one invalid combination to be used in the test
+							  	};
+								continue; // Loop within Trust Object purposes
+							}
+					If NotSupportedTypeOrPurpose != {100,100} {
+							break;  // Found one invalid combination to be used in the test
+							};					
+					continue;	// Loop within Trust Object types		
+					};
+				// Decide if test to be run (invalid couple of purpose and type found)
+				If NotSupportedTypeOrPurpose == {100,100} {
+				  setverdict(inconclusive);
+				  stop;
+				  }
+				// Send a Trust Object with Type and Purpose as found
+				// PT140 TODO: mw_aduTrustObject template to be defined
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+					{modifies mw_aduTrustObject:= {typeOfTrustObject := NotSupportedTypeOrPurpose[1], purposesOfTrustObject := NotSupportedTypeOrPurpose[1]}			  
+					}
+					);                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 
+                // Step 2: Wait for negative Ack within TRUSTOBJECTS.TIME2
+				// Set timer
+                 t_step.start(TRUSTOBJECTS_TYPE1_TIME2_MAX_TSP);                		
+				//Create parameters for the m_apduNAck			
+				var NAckParams v_nAckParams1 :={{0, AduReasonCode_semanticError_}};
+				var NAckParams v_nAckParams2 :={{1, AduReasonCode_semanticError_}};
+				
+				alt {
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(TRUSTOBJECTS_TYPE1_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;						
+						setverdict(pass);
+					}
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(TRUSTOBJECTS_TYPE1_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+						setverdict(pass);
+					}
+				} 
+				f_closeDownMtc();                   
+                          
            } // End of TP_TSP_TRUSTOBJECTS_BI_03
 
            testcase TP_TSP_TRUSTOBJECTS_BI_04() runs onMainTestComponent system TestAdapter {
