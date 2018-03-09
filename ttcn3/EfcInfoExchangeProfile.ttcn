@@ -1,9 +1,8 @@
 /**
- * @author  PT28/PT0141/PT140
- * @desc    This module provides work-around to implement ASN.1 parametrization capability extensively used in ASN.1 files
- * @see     Electronic fee collection (EFC) — Conformity evaluation of Front End and Back End equipment to ISO 17575-3 — Part 1: Test suite structure and test purpose
- * @see     Electronic fee collection (EFC) — Evaluation of equipment for conformity to CEN ISO/TS 17575-3 — Part 1: Test suite structure and test purpose
- * @remark  See Annex A - EFC data type specifications
+ * @author  PT140
+ * @desc    This module definitions that are made in the text of the standard, rather than in an ASN.1 attachment
+ * @see     CEN/TS 16986 Electronic Fee Collection - Interoperable application profiles for information exchange between Service Provision and Toll Charging
+ * @remark  See Tables 6 and 7
  * @version $id$
  */
 module EfcInfoExchangeProfile language "TTCN-3:2010 Advanced Parameterization" {
