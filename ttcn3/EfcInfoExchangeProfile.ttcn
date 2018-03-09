@@ -1,0 +1,26 @@
+/**
+ * @author  PT28/PT0141/PT140
+ * @desc    This module provides work-around to implement ASN.1 parametrization capability extensively used in ASN.1 files
+ * @see     Electronic fee collection (EFC) — Conformity evaluation of Front End and Back End equipment to ISO 17575-3 — Part 1: Test suite structure and test purpose
+ * @see     Electronic fee collection (EFC) — Evaluation of equipment for conformity to CEN ISO/TS 17575-3 — Part 1: Test suite structure and test purpose
+ * @remark  See Annex A - EFC data type specifications
+ * @version $id$
+ */
+module EfcInfoExchangeProfile language "TTCN-3:2010 Advanced Parameterization" {
+
+
+	//ADUReasonCodes; 
+	const integer AduReasonCode_semanticError_:=3000; //Every message (except AckADU) can be responded with a “semantic error” code when its semantics is not understood.
+	const integer AduReasonCode_actionCodeNotSupported_:=3010; //The sent action code is not supported
+	const integer AduReasonCode_acceptedWithWarning_ := 4000; //Bilateral agreement on any other issue which semantics needs to be defined for the attributes issueLocation, issueContent and issueText.
+	//The ADU was accepted and will be processed. Further information will be provided by means of warnings.
+
+	//APDUReasonCodes
+	const integer ApduReasonCode_sequenceError_:=4; //If an APDU is sent out of the logical sequence an AckADU indicating the “sequence error“ shall be sent
+	const integer ApduReasonCode_otherReason_:=5; //Bilateral agreement on APDU reason code
+	const integer ApduReasonCode_protocolVersionError_:= 6;//	APDU rejected because Protocol Version not supported
+	const integer ApduReasonCode_originatorRejected_:=7//APDU rejected because Apdu Originator not known or no valid contract exists
+	const integer ApduReasonCode_recipientUnknown_:=8;//APDU rejected because Information Recipient not known (or no valid contract exists)
+	const integer ApduReasonCode_relatedApduUnknown_:=9;//APDU rejected because related APDU unknown or transaction finished.
+	const integer ApduReasonCode_requestSentTooOften_:=10;//APDU rejected because request was sent too often (processing of similar request still active)
+}

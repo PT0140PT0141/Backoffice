@@ -9,7 +9,7 @@ module EfcInfoExchange_TesterData {
 	group ContractIssuerData {
  	
         // PT140 TODO use template instead, i.e. define e template for ContractIssuerListAdu and modify manufacturerID only 
-        modulepar ContractIssuerListADU TESTER_CONTRACT_ISSUER_DATA_VALID_1 {
+        modulepar ContractIssuerListADU TESTER_CONTRACT_ISSUER_DATA_VALID_1 := {
             efcContextMark := TESTER_EFC_CONTEXT_MARK,
             equipmentClass := TESTER_EQUIPMENT_CLASS,
             manufacturerID := TESTER_MANUFACTURER_ID_1,
