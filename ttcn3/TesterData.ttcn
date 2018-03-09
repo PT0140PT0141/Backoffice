@@ -3,7 +3,53 @@
 // * @desc      This module declares test data which are being prepared by the tester
 // * @version   $id$
 // */
-//module EfcInfoExchange_TesterData {
+
+module EfcInfoExchange_TesterData {
+
+	group ContractIssuerData {
+ 	
+        // PT140 TODO use template instead, i.e. define e template for ContractIssuerListAdu and modify manufacturerID only 
+        modulepar ContractIssuerListADU TESTER_CONTRACT_ISSUER_DATA_VALID_1 {
+            efcContextMark := TESTER_EFC_CONTEXT_MARK,
+            equipmentClass := TESTER_EQUIPMENT_CLASS,
+            manufacturerID := TESTER_MANUFACTURER_ID_1,
+            uniquePartOfPAN := TESTER_UNIQUE_PART_OF_PAN,
+            typeOfEFCApplication := TESTER_TYPE_OF_EFCAPPLICATION,
+            securityLevel := TESTER_SECURITY_LEVEL,
+            acCrKeyReference := TESTER_AC_CR_KEY_REFERENCE,
+            authKeyReference := TESTER_AUTH_KEY_REFERENCE,
+            validFrom := now - 1 day // PT140 TODO
+            };
+    
+        // PT140 TODO use template instead, i.e. define e template for ContractIssuerListAdu and modify manufacturerID only 		
+        modulepar ContractIssuerListADU TESTER_CONTRACT_ISSUER_DATA_VALID_2 {
+            efcContextMark := TESTER_EFC_CONTEXT_MARK,
+            equipmentClass := TESTER_EQUIPMENT_CLASS,
+            manufacturerID := TESTER_MANUFACTURER_ID_1,
+            uniquePartOfPAN := TESTER_UNIQUE_PART_OF_PAN,
+            typeOfEFCApplication := TESTER_TYPE_OF_EFCAPPLICATION,
+            securityLevel := TESTER_SECURITY_LEVEL,
+            acCrKeyReference := TESTER_AC_CR_KEY_REFERENCE,
+            authKeyReference := TESTER_AUTH_KEY_REFERENCE,
+            validFrom := now - 1 day // PT140 TODO
+            };
+    
+        // PT140 TODO use template instead, i.e. define e template for ContractIssuerListAdu and modify manufacturerID only 		
+        modulepar ContractIssuerListADU TESTER_CONTRACT_ISSUER_DATA_VALID_3 {
+            efcContextMark := TESTER_EFC_CONTEXT_MARK,
+            equipmentClass := TESTER_EQUIPMENT_CLASS,
+            manufacturerID := TESTER_MANUFACTURER_ID_3,
+            uniquePartOfPAN := TESTER_UNIQUE_PART_OF_PAN,
+            typeOfEFCApplication := TESTER_TYPE_OF_EFCAPPLICATION,
+            securityLevel := TESTER_SECURITY_LEVEL,
+            acCrKeyReference := TESTER_AC_CR_KEY_REFERENCE,
+            authKeyReference := TESTER_AUTH_KEY_REFERENCE,
+            validFrom := now - 1 day // PT140 TODO
+            };	
+		
+	} // end group ContractIssuerData
+} // end module 
+	
 // 
 //    /**
 //     * @desc    Declare Testerdata of UserParameterResponseDetails
