@@ -5,7 +5,28 @@
  * @see     [xxxx-1:2016], Clause 5.2.1  Namimg conventions
  * @version $id$
  */
-module EfcInfoExchange_TestCasesTspOld {
+  /**
+ * work in progress Status overview
+ *
+ *	Transaction type			!	BV					! BI			! Comments
+ * 	----------------------------!-----------------------!---------------!--------------------------------
+ *	Base						! partially done		! partially done! functions to compute and evaluate authenticators to be defined and TP_TSP_Base_BI_08 to be completed
+ *	Userdetails					! done					! partially done! TSP_USERDETAILS_BI_02 and TSP_USERDETAILS_BI_03 to be  revised
+ *	ListOfUsers					! done					! done			!
+ *	ExceptionList				! 						! 				!
+ *	TrustObjects				! 						! 				!
+ *	PaymentClaim				! 						! 				!
+ *	DSRC.ContractIssuerList		! 						! 				! 
+ *	DSRC.EFCContextData			! 						! 				! 
+ *	DSRC.BillingDetails			! 	 					! 				! 
+ *	DSRC.ReportAbnormalOBE		! 						! 				! 
+ *	GNSS.TollDeclaration		! 						! 				!
+ *	GNSS.BillingDetails.TSP		! 						! 				!
+ *	GNSS.BillingDEtails.TC		! 						! 				!
+ *	GNSS.PaymentAnnouncement	! 						! 				!
+ */
+ 
+module EfcInfoExchange_TestCasesTspDev {
     /**
      * @desc    [12855:2015]: 
      * @see     Annex A (normative)  data type specifications
@@ -40,8 +61,7 @@ module EfcInfoExchange_TestCasesTspOld {
              /**
               * @desc    TP_TSP_Base_BV_01: Verify that a TC validates correct infoExchanceAuthenticators in received APDUs and generates correct infoExchangeAuthenticators 
               * @remark  [16986:2016], Clause 6.2.2 and Table A.1/2 
-              */
-               
+              */            
                
                // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS and ICS_A3_3_useAuthenticator;
@@ -51,12 +71,18 @@ module EfcInfoExchange_TestCasesTspOld {
                               
                // Step 1: Send Initiating APDU containing a valid RequestADU with requestedADUType=provideUserDetailsADU
                // and in addition an infoExchangeAuthenticator = value calculated according to clause 7.3 of EN ISO 12855
-               
-				f_sendAndLogApdu(
-					m_apduSecInit(
-						{m_aduRequestProvideUserDetails(v_userParameterRequests)}
-					)
-				);                             
+
+				// Prepare the APDU without authenticator
+				var InfoExchange apduToBeSent := m_apduSecInit(
+						{m_aduRequestProvideUserDetails(v_userParameterRequests), infoExchangeAuthenticator := 1}
+					);
+
+				// Compute the authenticator and send the APDU
+				// PT 140 TODO: f_computeAuthenticator to be defined				
+				apduToBeSent.infoExchangeAuthenticator := f_computeAuthenticator(apduToBeSent);
+                
+				// send RequestADU
+				f_sendAndLogApdu(apduToBeSent);                                          
                
                //Set timer
 				t_step.start(USERDETAILS_TIME1_MAX_TSP);
@@ -65,7 +91,6 @@ module EfcInfoExchange_TestCasesTspOld {
 				// Either we receive an authenticated APDU containing Provide User Details ADU(s) or the timeout expires
 				// timeout expiration is handled in the altstep branch
 				alt {
-					// PT140 TODO: Template for authenticated APDU to be defined
 					[]	mtcPort.receive(mw_apduAuthenticatedProvideUserDetails) -> value v_apduReceived{    		                    		
 						// Log what we received
 						f_logApduReceivedAndTStep();
@@ -74,14 +99,16 @@ module EfcInfoExchange_TestCasesTspOld {
 						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
 						t_step.stop;
 						
-						// TODO PT140: Check the ADU record and find the one we are expecting. Either function or template
- 
-						//Set verdict
-						setverdict(pass);
- 					    			                              
-						// Step3: Send DefaultAck with correct identifier and set verdict
-						f_wait(USERDETAILS_TIME2_MIN_TSP);
-						f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+						// TODO PT140: f_evaluateAuthenticator function to be defined
+						if f_evaluateAuthenticator()) {
+							setverdict(pass);
+							// Step3: Send DefaultAck with correct identifier and set verdict
+							f_wait(USERDETAILS_TIME2_MIN_TSP);
+							f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));							  
+							}
+						else {
+							setverdict(fail)
+							};
 						}
 					} // End of alt statement
 				
@@ -118,12 +145,11 @@ module EfcInfoExchange_TestCasesTspOld {
 				// Timeout expiration is handled in the altstep branch
 				
 				//Create parameters for the m_apduNAck			
-				var NAckParams v_nAckParams1 :={{0, AduReasonCode_invalidADU_}}
-				var NAckParams v_nAckParams2 :={{1, AduReasonCode_invalidADU_},{2,AduReasonCode_invalidADU_}}
+				var NAckParams v_nAckParams1 :={{0, ApduReasonCode_protocolVersionError_}}
+				var NAckParams v_nAckParams2 :={{1, ApduReasonCode_protocolVersionError_},{2,ApduReasonCode_protocolVersionError_}}
 				
-				// PT140: TODO m_apduNAck_protocolVersionError template to be defined				
 				alt {
-					[] mtcPort.receive(m_apduNAck_protocolVersionError(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
 
@@ -134,7 +160,7 @@ module EfcInfoExchange_TestCasesTspOld {
 						//Set verdict
 						setverdict(pass);
 					}
-					[] mtcPort.receive(m_apduNAck_protocolVersionError(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
 
@@ -179,12 +205,11 @@ module EfcInfoExchange_TestCasesTspOld {
 				// Timeout expiration is handled in the altstep branch
 				
 				//Create parameters for the m_apduNAck			
-				var NAckParams v_nAckParams1 :={{0, AduReasonCode_invalidADU_}};
-				var NAckParams v_nAckParams2 :={{1, AduReasonCode_invalidADU_},{2,AduReasonCode_invalidADU_}};
+				var NAckParams v_nAckParams1 :={{0, ApduReasonCode_originatorRejected_}};
+				var NAckParams v_nAckParams2 :={{1, ApduReasonCode_originatorRejected_},{2,ApduReasonCode_originatorRejected_}};
 				
-				// PT140: TODO m_apduNAck_originatorRejected template to be defined				
 				alt {
-					[] mtcPort.receive(m_apduNAck_originatorRejected(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
 
@@ -195,7 +220,7 @@ module EfcInfoExchange_TestCasesTspOld {
 						//Set verdict
 						setverdict(pass);
 					}
-					[] mtcPort.receive(m_apduNAck_originatorRejected(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
 
@@ -241,12 +266,11 @@ module EfcInfoExchange_TestCasesTspOld {
 				// Timeout expiration is handled in the altstep branch
 				
 				//Create parameters for the m_apduNAck			
-				var NAckParams v_nAckParams1 :={{0, AduReasonCode_invalidADU_}}
-				var NAckParams v_nAckParams2 :={{1, AduReasonCode_invalidADU_},{2,AduReasonCode_invalidADU_}}
+				var NAckParams v_nAckParams1 :={{0, ApduReasonCode_originatorRejected_}}
+				var NAckParams v_nAckParams2 :={{1, ApduReasonCode_originatorRejected_},{2, ApduReasonCode_originatorRejected_}}
 				
-				// PT140: TODO m_apduNAck_senderRejected template to be defined				
 				alt {
-					[] mtcPort.receive(m_apduNAck_senderRejected(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
 
@@ -257,7 +281,7 @@ module EfcInfoExchange_TestCasesTspOld {
 						//Set verdict
 						setverdict(pass);
 					}
-					[] mtcPort.receive(m_apduNAck_senderRejected(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
 
@@ -303,12 +327,11 @@ module EfcInfoExchange_TestCasesTspOld {
 				// Timeout expiration is handled in the altstep branch
 				
 				//Create parameters for the m_apduNAck			
-				var NAckParams v_nAckParams1 :={{0, AduReasonCode_invalidADU_}};
-				var NAckParams v_nAckParams2 :={{1, AduReasonCode_invalidADU_},{2,AduReasonCode_invalidADU_}};
+				var NAckParams v_nAckParams1 :={{0, ApduReasonCode_recipientUnknown_}};
+				var NAckParams v_nAckParams2 :={{1, ApduReasonCode_recipientUnknown_},{2, ApduReasonCode_recipientUnknown_}};
 				
-				// PT140: TODO m_apduNAck_recipientUnknown template to be defined				
 				alt {
-					[] mtcPort.receive(m_apduNAck_recipientUnknown(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
 
@@ -319,7 +342,7 @@ module EfcInfoExchange_TestCasesTspOld {
 						//Set verdict
 						setverdict(pass);
 					}
-					[] mtcPort.receive(m_apduNAck_recipientUnknown(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
 
@@ -371,7 +394,6 @@ module EfcInfoExchange_TestCasesTspOld {
 						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
 						t_step.stop;
 						
-						// TODO PT140: Check the ADU record and find the one we are expecting. Either function or template
 						// Step3: Send DefaultAck with correct identifier
 						f_wait(USERDETAILS_TIME2_MIN_TSP);
 						f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
@@ -389,12 +411,11 @@ module EfcInfoExchange_TestCasesTspOld {
 				// Timeout expiration is handled in the altstep branch
 				
 				//Create parameters for the m_apduNAck			
-				var NAckParams v_nAckParams1 :={{0, AduReasonCode_invalidADU_}};
-				var NAckParams v_nAckParams2 :={{1, AduReasonCode_invalidADU_},{2,AduReasonCode_invalidADU_}};
+				var NAckParams v_nAckParams1 :={{0, ApduReasonCode_apduNotOK_}};
+				var NAckParams v_nAckParams2 :={{1, ApduReasonCode_apduNotOK_},{2, ApduReasonCode_apduNotOK_}};
 				
-				// PT140: TODO m_apduNAck_apduNotOk template to be defined				
 				alt {
-					[] mtcPort.receive(m_apduNAck_apduNotOk(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
 
@@ -405,7 +426,7 @@ module EfcInfoExchange_TestCasesTspOld {
 						//Set verdict
 						setverdict(pass);
 					}
-					[] mtcPort.receive(m_apduNAck_apduNotOk(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
 
@@ -447,12 +468,11 @@ module EfcInfoExchange_TestCasesTspOld {
 				// Timeout expiration is handled in the altstep branch
 				
 				//Create parameters for the m_apduNAck			
-				var NAckParams v_nAckParams1 :={{0, AduReasonCode_invalidADU_}};
-				var NAckParams v_nAckParams2 :={{1, AduReasonCode_invalidADU_},{2,AduReasonCode_invalidADU_}};
+				var NAckParams v_nAckParams1 :={{0, ApduReasonCode_apduNotOK_}};
+				var NAckParams v_nAckParams2 :={{1, ApduReasonCode_apduNotOK_},{2, ApduReasonCode_apduNotOK_}};
 				
-				// PT140: TODO m_apduNAck_apduNotOk template to be defined				
 				alt {
-					[] mtcPort.receive(m_apduNAck_apduNotOk(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
 
@@ -463,7 +483,7 @@ module EfcInfoExchange_TestCasesTspOld {
 						//Set verdict
 						setverdict(pass);
 					}
-					[] mtcPort.receive(m_apduNAck_apduNotOk(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
 
@@ -505,15 +525,16 @@ module EfcInfoExchange_TestCasesTspOld {
 				// Timeout expiration is handled in the altstep branch
 				
 				//Create parameters for the m_apduNAck			
-				var NAckParams v_nAckParams1 :={{0, AduReasonCode_invalidADU_}};
-				var NAckParams v_nAckParams2 :={{1, AduReasonCode_invalidADU_},{2,AduReasonCode_invalidADU_}};
+				var NAckParams v_nAckParams1 :={{0, ApduReasonCode_sequenceError_}};
+				var NAckParams v_nAckParams2 :={{1, ApduReasonCode_sequenceError_},{2, ApduReasonCode_sequenceError_}};
+				var NAckParams v_nAckParams3 :={{0, ApduReasonCode_apduNotOK_}};
+				var NAckParams v_nAckParams4 :={{1, ApduReasonCode_apduNotOK_},{2, ApduReasonCode_apduNotOK_}};
 				
-				// PT140: TODO m_apduNAck_sequenceError and m_apduNAck_apduNotOk template to be defined				
 
 				// Either apduNotOk or sequenceError error codes may be sent by the IUT
 				
 				alt {
-					[] mtcPort.receive(m_apduNAck_sequenceError(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
 
@@ -524,7 +545,7 @@ module EfcInfoExchange_TestCasesTspOld {
 						//Set verdict
 						setverdict(pass);
 					}
-					[] mtcPort.receive(m_apduNAck_sequenceError(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
 
@@ -536,7 +557,7 @@ module EfcInfoExchange_TestCasesTspOld {
 						setverdict(pass);
 						
 						}
-					[] mtcPort.receive(m_apduNAck_apduNotOk(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams3)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
 
@@ -547,7 +568,7 @@ module EfcInfoExchange_TestCasesTspOld {
 						//Set verdict
 						setverdict(pass);
 					}
-					[] mtcPort.receive(m_apduNAck_apduNotOk(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams4)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
 
@@ -570,20 +591,56 @@ module EfcInfoExchange_TestCasesTspOld {
 				 */
                    
 				// Initialisation
-				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_4_implementedTRUSTOBJECTS;
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_4_implementedTRUSTOBJECTSElectronicTransfer;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				
 				// Send the IUT a  trigger to send one initial APDU with requestedADUType=trustObjectRequestADU and complete its transaction
-				f_sendAndLogTrigger(TRUSTOBJECTS_TR_1_A);
+				f_sendAndLogTrigger(TRUSTOBJECTS_TR_2);
 				
 				//  Wait for TrustObjectAdu
+				// PT140 TODO: Note that the following code is identical to the one in TSP_TRUSTOBJECTS_BV_01
 				// TODO PT140 TrustObject ADU templates to be defined
+				var boolean isCertificateOrPublicKey:=false;
+				var boolean isDsrcKeyRef := false;
+				var boolean isMacMasterKey := false;
+				var boolean isDsrcMasterKey := false;
+				var integer ObjectsReceived := 0;
+				// Step 1: Trigger IUT with TRUSTOBJECTS_TR_2
+				f_sendAndLogTrigger(TRUSTOBJECTS_TR_2);
+				//  Wait for TRUSTOBJECTS
+				// We expect to receive as many TRUSTOBJECTS as the declared supported number
+				// PT140 TODO: Seems that alt inside a loop is not allowed. Use repeat statement instead
 				alt {
-					[] mtcPort.receive(mw_apduTrustObject) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduTrustObject) -> value v_apduReceived {
 						// Log what we received
-						f_logApduReceivedAndTStep();					
-						}
-				} 
+						f_logApduReceivedAndTStep();	
+						//send Ack whichever object received
+						f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived)); 							
+						//Read the trustObjectPurpose received and add to set 				
+						if ((match(v_apduReceived, m_apduTrustObjectCertificateObject)) or 
+						    (match(v_apduReceived, m_apduTrustObjectPublicKeyObject))) 
+							isCertificateOrPublicKey:=true;
+						if (match(v_apduReceived, m_apduTrustObjectGenericTONotCrl)) {
+							setverdict(fail);
+							stop;
+						};
+						if (match(v_apduReceived ,m_apduTrustObjectDsrcKeyRef)) 
+							isDsrcKeyRef:=true;
+						if (match(v_apduReceived ,m_apduTrustObjectMacMasterKey)) 
+							isMacMasterKey:=true;
+						if (match(v_apduReceived ,m_apduTrustObjectDsrcMasterKey)) 
+							isDsrcMasterKey:=true;
+						ObjectsReceived := ObjectsReceived + 1; // Count the number of trust objects received
+						repeat;
+						}										
+					} // End of alt statement
+				if (ICS_A2_1_isDsrc and isCertificateOrPublicKey and isDsrcKeyRef and isMacMasterKey and isDsrcMasterKey) setverdict(pass);			 				
+				if (ICS_A2_2_isGnss and isCertificateOrPublicKey and isDsrcKeyRef) setverdict(pass);			 				
+				if ObjectsReceived < NUMBER_OF_TRUSTOBJECT_TYPES_SUPPORTED {
+				  	setverdict(fail);
+				  	stop
+				  	}; // We must receive at least as many Trust Objects as supported
+				
 				// TODO PT140: Extract from the received apdu the type of TrustObject requested	and the ApduId value
 							
 				// Step 1: PT140 TODO Send Initiating APDU containing a valid TrustObjectADU with inResponseToApduId not equal to the value of the previously sent APDU
@@ -596,15 +653,15 @@ module EfcInfoExchange_TestCasesTspOld {
 				// Timeout expiration is handled in the altstep branch
 				
 				//Create parameters for the m_apduNAck			
-				var NAckParams v_nAckParams1 :={{0, AduReasonCode_invalidADU_}};
-				var NAckParams v_nAckParams2 :={{1, AduReasonCode_invalidADU_},{2,AduReasonCode_invalidADU_}};
-				
-				// PT140: TODO m_apduNAck_sequenceError and m_apduNAck_apduNotOk template to be defined				
-
+				var NAckParams v_nAckParams1 :={{0, ApduReasonCode_sequenceError_}};
+				var NAckParams v_nAckParams2 :={{1, ApduReasonCode_sequenceError_},{2, ApduReasonCode_sequenceError_}};
+				var NAckParams v_nAckParams3 :={{0, ApduReasonCode_apduNotOK_}};
+				var NAckParams v_nAckParams4 :={{1, ApduReasonCode_apduNotOK_},{2, ApduReasonCode_apduNotOK_}};
+								
 				// Either apduNotOk or sequenceError error codes may be sent by the IUT
 				
 				alt {
-					[] mtcPort.receive(m_apduNAck_sequenceError(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
 
@@ -615,7 +672,7 @@ module EfcInfoExchange_TestCasesTspOld {
 						//Set verdict
 						setverdict(pass);
 					}
-					[] mtcPort.receive(m_apduNAck_sequenceError(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
 
@@ -627,7 +684,7 @@ module EfcInfoExchange_TestCasesTspOld {
 						setverdict(pass);
 						
 						}
-					[] mtcPort.receive(m_apduNAck_apduNotOk(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams3)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
 
@@ -638,7 +695,7 @@ module EfcInfoExchange_TestCasesTspOld {
 						//Set verdict
 						setverdict(pass);
 					}
-					[] mtcPort.receive(m_apduNAck_apduNotOk(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams4)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
 
@@ -683,11 +740,10 @@ module EfcInfoExchange_TestCasesTspOld {
 				// Timeout expiration is handled in the altstep branch
 				
 				//Create parameters for the m_apduNAck			
-				var NAckParams v_nAckParams1 :={{1, AduReasonCode_invalidADU_},{2,AduReasonCode_invalidADU_}};
+				var NAckParams v_nAckParams1 :={{1, ApduReasonCode_apduNotOK_},{2, ApduReasonCode_apduNotOK_}};
 				
-				// PT140: TODO m_apduNAck_apduNotOk template to be defined				
 				alt {
-					[] mtcPort.receive(m_apduNAck_apduNotOk(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
 
@@ -720,13 +776,12 @@ module EfcInfoExchange_TestCasesTspOld {
 				var InfoExchange apduToBeSent := m_aduRequestProvideUserDetails(v_userParameterRequest);
 				// TODO PT140: function to calculate authenticator to be defined
 				var integer corruptedAuthenticator := f_computeAuthenticator(apduToBeSent) + 1;
-				template (value) Infoexchange m_wrongAuthenticator modifies m_apduNoSec:= {infoExchangeAuthenticator := corruptedAuthenticator};
+				var Infoexchange apduToBeSent := m_apduNoSec({
+				  	m_aduRequestProvideUserDetails(v_userParameterRequests), 				  
+					infoExchangeAuthenticator := corruptedAuthenticator});
 				// Then send it together with the request ADU
-  				f_sendAndLogApdu(
-                             m_wrongAuthenticator({m_aduRequestProvideUserDetails(v_userParameterRequests)})
-							);
-               
-               
+  				f_sendAndLogApdu(apduToBeSent);
+                        
                //Set timer
 				t_step.start(USERDETAILS_TIME1_MAX_TSP);
                 
@@ -734,12 +789,11 @@ module EfcInfoExchange_TestCasesTspOld {
 				// Timeout expiration is handled in the altstep branch
 				
 				//Create parameters for the m_apduNAck			
-				var NAckParams v_nAckParams1 :={{0, AduReasonCode_invalidADU_}};
-				var NAckParams v_nAckParams2 :={{1, AduReasonCode_invalidADU_},{2,AduReasonCode_invalidADU_}};
+				var NAckParams v_nAckParams1 :={{0, ApduReasonCode_apduNotOK_}};
+				var NAckParams v_nAckParams2 :={{1, ApduReasonCode_apduNotOK_},{2, ApduReasonCode_apduNotOK_}};
 				
-				// PT140: TODO m_apduNAck_apduNotOk template to be defined				
 				alt {
-					[] mtcPort.receive(m_apduNAck_apduNotOk(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
 
@@ -750,7 +804,7 @@ module EfcInfoExchange_TestCasesTspOld {
 						//Set verdict
 						setverdict(pass);
 					}
-					[] mtcPort.receive(m_apduNAck_apduNotOk(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
 
@@ -857,7 +911,6 @@ module EfcInfoExchange_TestCasesTspOld {
 				// Either we receive an APDU containing Provide User Details ADU or the timeout expires
 				// timeout expiration is handled in the altstep branch
 				// The received Provide Use Details ADU shall have status flag = 2, and an empty list of user details
-				// TODO PT140: Check whether the parameterisation of the mw_apduProvideUserDetails template is correct
 
 				alt {
 					[] mtcPort.receive(mw_apduProvideUserDetails(v_apduRespondedTo)) -> value v_apduReceived{
@@ -1090,6 +1143,7 @@ module EfcInfoExchange_TestCasesTspOld {
 							ProvideUserDetailsADU: modifies mw_aduProvideUserDetails := {
 								userId := omit,
 								statusFlag:=2,
+								listOfUserParameters.useParameterStatus := 3,
 								listOfUserParameters := omit
 							}
 						)) {
@@ -1148,11 +1202,11 @@ module EfcInfoExchange_TestCasesTspOld {
 				// timeout expiration is handled in the altstep branch
 
 				//Create parameters for the m_apduNAck			
-				var NAckParams v_nAckParams1 :={{0, AduReasonCode_invalidADU_}};
-				var NAckParams v_nAckParams2 :={{1, AduReasonCode_invalidADU_},{2,AduReasonCode_invalidADU_}};
+				var NAckParams v_nAckParams1 :={{0, ApduReasonCode_requestSentTooOften_}};
+				var NAckParams v_nAckParams2 :={{1, ApduReasonCode_requestSentTooOften_},{2, ApduReasonCode_requestSentTooOften_}};
 				
 				alt {
-					[] mtcPort.receive(m_apduNAck_requestSentTooOften(v_apduToSend)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAck(v_apduToSend, v_nAckParams1)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
 
@@ -1163,6 +1217,17 @@ module EfcInfoExchange_TestCasesTspOld {
 						//Set verdict
 						setverdict(pass);
 					}
+					[] mtcPort.receive(m_apduNAck(v_apduToSend, v_nAckParams2)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(LISTOFUSERS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+						
+						//Set verdict
+						setverdict(pass);
+					}					
                 } // End of alt statement
 				f_closeDownMtc();  			
                 
@@ -1404,7 +1469,6 @@ module EfcInfoExchange_TestCasesTspOld {
 				var NAckParams v_nAckParams2 :={{1, AduReasonCode_invalidADU_},{2,AduReasonCode_invalidADU_}};
 				
 				alt {
-					//PT140 TODO Can the repetion in the two alts be reduced?
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
@@ -1509,7 +1573,7 @@ module EfcInfoExchange_TestCasesTspOld {
 				// Save the apdu to be sent to check later in the received Nack					
 				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
 					{modifies m_aduRequestListOfUsers:= {
-					  	userIdRequestTime := now + 1000.0
+					  	userIdRequestTime := fx_getUtc() + 1000
 						}
 					});
 				f_sendAndLogApdu(v_apduRespondedTo);
@@ -1525,7 +1589,6 @@ module EfcInfoExchange_TestCasesTspOld {
 				var NAckParams v_nAckParams2 :={{1, AduReasonCode_invalidADU_},{2,AduReasonCode_invalidADU_}};
 				
 				alt {
-					//PT140 TODO Can the repetion in the two alts be reduced?
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
@@ -1588,9 +1651,12 @@ module EfcInfoExchange_TestCasesTspOld {
 				// Step #2: Wait for Nack ADU				 					
 				// Either we receive an APDU containing  Nack or the timeout expires
 				// timeout expiration is handled in the altstep branch
-
+				//Create parameters for the m_apduNAck			
+				var NAckParams v_nAckParams1 :={{0, ApduReasonCode_requestSentTooOften_}};
+				var NAckParams v_nAckParams2 :={{1, ApduReasonCode_requestSentTooOften_},{2, ApduReasonCode_requestSentTooOften_}};
+				
 				alt {
-					[] mtcPort.receive(m_apduNAck_requestSentTooOften(v_apduRespondedTo)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
 
@@ -1601,7 +1667,19 @@ module EfcInfoExchange_TestCasesTspOld {
 						//Set verdict
 						setverdict(pass);
 					}
-                } // End of alt statement
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(LISTOFUSERS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+						
+						//Set verdict
+						setverdict(pass);
+					}
+				}
+
 				f_closeDownMtc();  			
 
              } // End of TP_TSP_LISTOFUSERS_BI_05

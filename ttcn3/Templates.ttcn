@@ -51,6 +51,18 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
     	  },
     	  infoExchangeAuthenticator := omit
     	}
+    	
+        
+        /**
+         * @desc    Generic template for InfoExchange structure, with authentication     
+         */
+    	template InfoExchange m_apduSec(in template ApciFields p_apci, in template Adus p_adus):={
+    	  infoExchangeContent:={
+    	  	apci:=p_apci,
+    	  	adus:=p_adus
+    	  },
+    	  infoExchangeAuthenticator := *
+    	}
     
     	/**
          * @desc Generic template for ApciFields 
@@ -239,6 +251,8 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			}
         				
 			template InfoExchange mw_apduProvideUserDetails := m_apduNoSec(mw_apci, mw_recordOfAduProvideUserDetails);
+			
+			template InfoExchange mw_apduAuthenticatedProvideUserDetails := m_apduSec(mw_apci, mw_recordOfAduProvideUserDetails);
 		}
 
 		group LISTOFUSERS {
