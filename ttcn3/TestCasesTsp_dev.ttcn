@@ -13,17 +13,17 @@
  *	Base						! partially done		! partially done! functions to compute and evaluate authenticators to be defined and TP_TSP_Base_BI_08 to be completed
  *	Userdetails					! done					! partially done! TSP_USERDETAILS_BI_02 and TSP_USERDETAILS_BI_03 to be  revised
  *	ListOfUsers					! done					! done			!
- *	ExceptionList				! 						! 				!
- *	TrustObjects				! 						! 				!
- *	PaymentClaim				! 						! 				!
- *	DSRC.ContractIssuerList		! 						! 				! 
- *	DSRC.EFCContextData			! 						! 				! 
- *	DSRC.BillingDetails			! 	 					! 				! 
- *	DSRC.ReportAbnormalOBE		! 						! 				! 
- *	GNSS.TollDeclaration		! 						! 				!
- *	GNSS.BillingDetails.TSP		! 						! 				!
- *	GNSS.BillingDEtails.TC		! 						! 				!
- *	GNSS.PaymentAnnouncement	! 						! 				!
+ *	ExceptionList				! done					! done			!
+ *	TrustObjects				! partially done    	! done			! TrustObject templates to be defined. TP_TSP_TRUSTOBJECTS_BV_03 and TP_TSP_TRUSTOBJECTS_BV_04 not asking for all possible combinations 
+ *	PaymentClaim				! partially done		! partially done! BillingDetails and PaymentClaim templates to be defined
+ *	DSRC.ContractIssuerList		! partially done		! partially done! mw_aduContractIssuerList to be defined
+ *	DSRC.EFCContextData			! open					! open			! 
+ *	DSRC.BillingDetails			! open  				! open			! 
+ *	DSRC.ReportAbnormalOBE		! partially done		! partially done! mw_aduReportAbnormalOBE to be defined. TSP_DSRC.REPORTABNORMALOBE_BI_08 has problems in closing parenthesis or semicolons
+ *	GNSS.TollDeclaration		! open					! open			!
+ *	GNSS.BillingDetails.TSP		! open					! open			!
+ *	GNSS.BillingDEtails.TC		! partially done		! open			! templates to be defined. code to be completed
+ *	GNSS.PaymentAnnouncement	! open					! done			!
  */
  
 module EfcInfoExchange_TestCasesTspDev {
@@ -1701,8 +1701,7 @@ module EfcInfoExchange_TestCasesTspDev {
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				
 				// Step 1a: Trigger IUT with EXCEPTIONLIST.TR_TSP_1 LIST_TYPE=BLACK
-				// PT140 TODO: Need a way to specify a Black list
-				f_sendAndLogTrigger(EXCEPTIONLIST_TR_TSP_1);
+				f_sendAndLogTrigger(EXCEPTIONLIST_TR_TSP_1_A);
 				//  Wait for EXCEPTIONLIST with LIST_TYPE=BLACK
 				alt {
 					[] mtcPort.receive(mw_apduExceptionList modifies mw_aduExceptionList := {exceptionListType := ExceptionListType_blackList_}) -> value v_apduReceived {
@@ -1716,8 +1715,7 @@ module EfcInfoExchange_TestCasesTspDev {
 					} // End of first alt statement
 					
 				// Step 1b: Trigger IUT with EXCEPTIONLIST.TR_TSP_1 LIST_TYPE=WHITE within time constraints
-				// PT140 TODO: Need a way to specify a White list
-				f_sendAndLogTrigger(EXCEPTIONLIST_TR_TSP_1);
+				f_sendAndLogTrigger(EXCEPTIONLIST_TR_TSP_1_B);
 				//  Wait for EXCEPTIONLIST with LIST_TYPE=WHITE
 				alt {
 					[] mtcPort.receive(mw_apduExceptionList modifies mw_aduExceptionList := {exceptionListType := ExceptionListType_whiteList_}) -> value v_apduReceived {
@@ -1746,8 +1744,7 @@ module EfcInfoExchange_TestCasesTspDev {
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				
 				// Step 1: Trigger IUT with EXCEPTIONLIST.TR_TSP_1 LIST_TYPE=DISCOUNT
-				// PT140 TODO: Need a way to specify a Discount list
-				f_sendAndLogTrigger(EXCEPTIONLIST_TR_TSP_1);
+				f_sendAndLogTrigger(EXCEPTIONLIST_TR_TSP_1_C);
 				//  Wait for EXCEPTIONLIST with LIST_TYPE=DISCOUNT
 				alt {
 					[] mtcPort.receive(mw_apduExceptionList modifies mw_aduExceptionList := {exceptionListType := ExceptionListType_discountList_}) -> value v_apduReceived {
@@ -1805,7 +1802,8 @@ module EfcInfoExchange_TestCasesTspDev {
 				f_sendAndLogTrigger(TRUSTOBJECTS_TR_2);
 				//  Wait for TRUSTOBJECTS
 				// We expect to receive as many TRUSTOBJECTS as the declared supported number
-				// PT140 TODO: Seems that alt inside a loop is not allowed. Use repezt statement instead
+				// PT140 TODO: TrustObjects templates to be defined
+				// PT140 Seems that alt inside a loop is not allowed. Use repeat statement instead
 				alt {
 					[] mtcPort.receive(m_apduTrustObject) -> value v_apduReceived {
 						// Log what we received
@@ -1879,6 +1877,7 @@ module EfcInfoExchange_TestCasesTspDev {
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_4_implementedTRUSTOBJECTSElectronicTransfer;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				// PT140 TODO: m_aduRequestTrustObjects template to be defined
+				// PT140 TODO: loop in all available types of trustobject supported by the IUT not realised. Multiple triggers and a loop?
 				var InfoExchange v_apduRespondedTo := m_apduNoSecInit({m_aduRequestTrustObjects});
 				f_sendAndLogApdu(v_apduRespondedTo);
 
@@ -1899,7 +1898,7 @@ module EfcInfoExchange_TestCasesTspDev {
 						// Check whether the ADU arrived too soon: the function will set failure and stop the test if so
 						f_checkMinimumTime(t_step, TRUSTOBJECTS_TYPE1_TIME1_MIN_TSP); // 
  
-						// User Details ADU correctly arrived. Stop timer
+						// Trust Object ADU correctly arrived. Stop timer
 						t_step.stop;
 
 						//Set verdict
@@ -1933,6 +1932,7 @@ module EfcInfoExchange_TestCasesTspDev {
 				f_sendAndLogTrigger(TRUSTOBJECTS_TR_1);
 				//  Wait for request for TRUSTOBJECTS
 				// PT140 TODO: m_aduRequestTrustObjects template to be defined
+				// PT140 TODO: loop in all available types of trustobject requested supported by the IUT not realised. Multiple triggers and a loop?
 				// Set timer
                  t_step.start(TRUSTOBJECTS_TYPE1_TIME1_MAX_TSP);                 
 				alt {
@@ -1944,6 +1944,7 @@ module EfcInfoExchange_TestCasesTspDev {
 				} 					
                  // Step 1: Send one valid APDU containing one valid TrustObjectADU
                  // PT140 TODO : mw_aduTrustObjects template to be defined
+				// PT140 TODO: Analysis of what requested and what to be sent missing
 				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(mw_aduTrustObjects);                 
 				f_sendAndLogApdu(v_apduRespondedTo);                 
                  // Step 2: Wait for positive Ack within TRUSTOBJECTS.TIME2
@@ -2069,7 +2070,6 @@ module EfcInfoExchange_TestCasesTspDev {
               * @remark  [16986:2016], Clause 6.6 and Table A.1/2 
               * @remark  Same as TP_TC_TRUSTOBJECTS_BI_03
               */
-// PT140 TODO: Valid (or invalid) combinations to be decided and defined	
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_4_implementedTRUSTOBJECTSElectronicTransfer;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
@@ -2175,20 +2175,30 @@ module EfcInfoExchange_TestCasesTspDev {
 				// Step #2: Wait for Nack ADU				 					
 				// Either we receive an APDU containing  Nack or the timeout expires
 				// timeout expiration is handled in the altstep branch
+				//Create parameters for the m_apduNAck			
+				var NAckParams v_nAckParams1 :={{0, ApduReasonCode_requestSentTooOften_}};
+				var NAckParams v_nAckParams2 :={{1, ApduReasonCode_requestSentTooOften_}};
 				
 				alt {
-					[] mtcPort.receive(m_apduNAck_requestSentTooOften(v_apduToSend)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(TRUSTOBJECTS_TYPE1_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;						
+						setverdict(pass);
+					}
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
 
 						//Check minumum time and stop timer
 						f_checkMinimumTStep(TRUSTOBJECTS_TYPE1_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
 						t_step.stop;
-						
-						//Set verdict
 						setverdict(pass);
 					}
-                } // End of alt statement
+				} 
 				f_closeDownMtc();            
            } // End of TP_TSP_TRUSTOBJECTS_BI_04
 
@@ -2220,19 +2230,30 @@ module EfcInfoExchange_TestCasesTspDev {
 				// Step #2: Wait for Nack ADU				 					
 				// Either we receive an APDU containing  Nack or the timeout expires
 				// timeout expiration is handled in the altstep branch
+				//Create parameters for the m_apduNAck			
+				var NAckParams v_nAckParams1 :={{0, ApduReasonCode_requestSentTooOften_}};
+				var NAckParams v_nAckParams2 :={{1, ApduReasonCode_requestSentTooOften_}};
+				
 				alt {
-					[] mtcPort.receive(m_apduNAck_requestSentTooOften(v_apduToSend)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
 
 						//Check minumum time and stop timer
-						f_checkMinimumTStep(TRUSTOBJECTS_TYPE1_TIME2_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
-						
-						//Set verdict
+						f_checkMinimumTStep(TRUSTOBJECTS_TYPE1_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;						
 						setverdict(pass);
 					}
-                } // End of alt statement
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(TRUSTOBJECTS_TYPE1_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
+						setverdict(pass);
+					}
+				} 
 				f_closeDownMtc();              
            } // End of TP_TSP_TRUSTOBJECTS_BI_05
            		
@@ -2272,7 +2293,7 @@ module EfcInfoExchange_TestCasesTspDev {
 						t_step.stop;
 					}
 				} 					
-                	// Send PAYMENTCLAIM with ActionCode=SEND and changing:
+                	// Send PAYMENTCLAIM with ActionCode=SEND and setting:
                 		// UserId within declared valid values
                 		// valid values of TypeOfFee
                 		// paymentReference valid and not present
@@ -2607,8 +2628,41 @@ module EfcInfoExchange_TestCasesTspDev {
 						f_logApduReceivedAndTStep();
 						t_step.stop;
 					}
-				} 					
-                	// Send PAYMENTCLAIM with ActionCode=ADJUST
+				}
+                	// Send valid PAYMENTCLAIM with ActionCode=SEND and setting:
+                		// UserId within declared valid values
+                		// valid values of TypeOfFee
+                		// paymentReference valid and not present
+                 // PT140 TODO : mw_aduPaymentClaim template and related fields to be defined
+
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+					{modifies mw_aduPaymentClaim:= {
+					  	userId := EXISTING_USER_ID,
+					  	paymentClaimId := 1,
+					  	startDateTime := now,
+					  	paymentClaimStatus := PaymentClaimStatus_firstVersion_,
+					  	actionCode := ActionCode_send_,
+					  	paymentClaimAmount := 45,
+					  	typeOfFee := TypeOfFee_toll_,
+					  	referenceDetailsList := {1}
+					  	}
+					});                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 
+                		
+              		// Wait for Ack (if negative Ack or not received set test failure)
+				// Set timer
+                 t_step.start(PAYMENTCLAIM_TIME1_MAX_TSP);                 
+				alt {
+					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
+					  
+						// Log what we received
+						f_logApduReceivedAndTStep();
+						t_step.stop;
+					}
+				}
+					// Step 1: send invalid PAYMENTCLAIM				
+				 					
+                	// Send PAYMENTCLAIM with ActionCode=ADJUST, but with status = first version
                  // PT140 TODO : mw_aduPaymentClaim template and related fields to be defined
 
 				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
@@ -2626,13 +2680,12 @@ module EfcInfoExchange_TestCasesTspDev {
 				f_sendAndLogApdu(v_apduRespondedTo);                 
 
 				//Create parameters for the m_apduNAck			
-				var NAckParams v_nAckParams1 :={{0, AduReasonCode_paymentClaimIdRejected_}};
-				var NAckParams v_nAckParams2 :={{1, AduReasonCode_paymentClaimIdRejected_}};
+				var NAckParams v_nAckParams1 :={{0, AduReasonCode_paymentClaimStatusRejected_}};
+				var NAckParams v_nAckParams2 :={{1, AduReasonCode_paymentClaimStatusRejected_}};
                  
                 // Wait for negative Ack (if positive Ack or not received set test failure)
 				
 				alt {
-					//PT140 TODO Can the repetion in the two alts be reduced?
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
@@ -2701,9 +2754,9 @@ module EfcInfoExchange_TestCasesTspDev {
 					});                 
 				f_sendAndLogApdu(v_apduRespondedTo);                 
 
-				//Create parameters for the m_apduNAck			
-				var NAckParams v_nAckParams1 :={{0, AduReasonCode_paymentClaimIdRejected_}};
-				var NAckParams v_nAckParams2 :={{1, AduReasonCode_paymentClaimIdRejected_}};
+				//Create parameters for the m_apduNAck: Note that the generic invalidADU reason code should be more precise (lack in the base standard)			
+				var NAckParams v_nAckParams1 :={{0, AduReasonCode_invalidADU_}};
+				var NAckParams v_nAckParams2 :={{1, AduReasonCode_invalidADU_}};
                  
                 // Wait for negative Ack (if positive Ack or not received set test failure)
 				
@@ -2780,13 +2833,12 @@ module EfcInfoExchange_TestCasesTspDev {
 				f_sendAndLogApdu(v_apduRespondedTo);                 
 
 				//Create parameters for the m_apduNAck			
-				var NAckParams v_nAckParams1 :={{0, AduReasonCode_paymentClaimIdRejected_}};
-				var NAckParams v_nAckParams2 :={{1, AduReasonCode_paymentClaimIdRejected_}};
+				var NAckParams v_nAckParams1 :={{0, AduReasonCode_paymentClaimStatusRejected_}};
+				var NAckParams v_nAckParams2 :={{1, AduReasonCode_paymentClaimStatusRejected_}};
                  
                 // Wait for negative Ack (if positive Ack or not received set test failure)
 				
 				alt {
-					//PT140 TODO Can the repetion in the two alts be reduced?
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
@@ -2813,7 +2865,7 @@ module EfcInfoExchange_TestCasesTspDev {
             testcase TP_TSP_PaymentClaim_BI_05() runs on MainTestComponent system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_PAYMENTCLAIM_BI_05: Getting provoked by various errors with defined specific responses  
+                  * @desc    TP_TSP_PAYMENTCLAIM_BI_05: Verify that the TSP correctly performs the PAYMENTCLAIM transaction when receiving a number of PaymenClaimADUs, each of them containing specific errors  
                   * @remark  [16986:2016], Clause 6.8 and Table A.1/2 AND Table A.7/5  
                   */
                   
@@ -3130,7 +3182,7 @@ module EfcInfoExchange_TestCasesTspDev {
 					  	paymentClaimId := 1,
 					  	startDateTime := now,
 					  	actionCode := ActionCode_revoke_,
-					  	paymentClaimStatus := PaymentClaimStatus_firstVersion_,
+					  	paymentClaimStatus := PaymentClaimStatus_amendedVersion_,
 					  	paymentClaimAmount := 0,
 					  	typeOfFee := TypeOfFee_toll_,
 					  	referenceDetailsList := {1}
@@ -3141,19 +3193,32 @@ module EfcInfoExchange_TestCasesTspDev {
               	// Wait for negative Ack  with NAck_requestSentTooOften code
 				// Set timer
                  t_step.start(PAYMENTCLAIM_TIME1_MAX_TSP);                 
+				//Create parameters for the m_apduNAck			
+				var NAckParams v_nAckParams1 :={{0, ApduReasonCode_requestSentTooOften_}};
+				var NAckParams v_nAckParams2 :={{1, ApduReasonCode_requestSentTooOften_}};
+                 
+                // Wait for negative Ack (if positive Ack or not received set test failure)
+				
 				alt {
-					[] mtcPort.receive(m_apduNAck_requestSentTooOften(v_apduRespondedTo)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
 
 						//Check minumum time and stop timer
 						f_checkMinimumTStep(PAYMENTCLAIM_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
 						t_step.stop;
-						
-						//Set verdict
+						setverdict(pass);						
+					}
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(PAYMENTCLAIM_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						t_step.stop;
 						setverdict(pass);
 					}
-                } // End of alt statement
+				} 
                 
 				f_closeDownMtc();  			
                 
@@ -4137,7 +4202,7 @@ module EfcInfoExchange_TestCasesTspDev {
 					}),
 					m_apduNoSecInit({modifies mw_aduReportAbnormalOBE:= {
 					  	userId := EXISTING_USER_ID,
-					  	dateAndTime := now + 1;
+					  	dateAndTime := now + 1000;
 					  	abnormalOBEReasonCode := AbnormalOBEReasonCode_reasonNotToBeDisclosed_
 					  	}
 					})	
@@ -4393,7 +4458,7 @@ module EfcInfoExchange_TestCasesTspDev {
 					  	abnormalOBEReasonCode := 700
 					  	}
 					})	
-           		};                 
+           		});                 
 				f_sendAndLogApdu(v_apduRespondedTo);                 
 
 				// Set timer
@@ -4404,8 +4469,8 @@ module EfcInfoExchange_TestCasesTspDev {
               			// 1, invalidADU (0)
               			// 2, abnormalObeReasonCodeRejected              			                	
 				//Create parameters for the m_apduNAck			
-				var NAckParams v_nAckParams1 :={{0, AduReasonCode_invalidADU_}}
-				var NAckParams v_nAckParams2 :={{1, abnormalObeReasonCodeRejected},{2,abnormalObeReasonCodeRejected}}
+				var NAckParams v_nAckParams1 :={{0, AduReasonCode_invalidADU_}};
+				var NAckParams v_nAckParams2 :={{1, abnormalObeReasonCodeRejected},{2,abnormalObeReasonCodeRejected}};
 
 				alt {
 					// Either Params1 or Params2 Nacks are valid
