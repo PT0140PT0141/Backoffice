@@ -15,6 +15,8 @@ module EfcInfoExchange_Pixits {
 	
     modulepar float INITIALISE_TRANSACTION_TIMEOUT := 10.0;
     
+    modulepar ExtendedPaymentAmount MAX_ACCEPTED_BILLINGDETAILS_AMOUNT;
+    
 	//For APDUs sent from the IUT...
 	modulepar Provider APDU_ORIGINATOR_FOR_TESTER; //value of the InfoExchange.infoExchangeContent.apci.apduOriginator
 	modulepar Provider INFORMATION_SENDER_ID_FOR_TESTER;	//value of the InfoExchange.infoExchangeContent.apci.informationSenderID
