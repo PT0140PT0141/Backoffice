@@ -964,7 +964,6 @@ module EfcInfoExchange_TestCasesTspDev {
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
              
 				// Step 1: Send two incorrect ADUs with 2 incorrect ADUs
-				// TODO PT140: The two incorrect ADUs are identical, because there is no way to send an empty structure as requested by the Test Purpose
 				var InfoExchange v_apduRespondedTo := m_apduNoSecInit({m_aduRequestProvideUserDetails(omit), m_aduRequestProvideUserDetails({})});
 				f_sendAndLogApdu(v_apduRespondedTo);                               
 
@@ -980,7 +979,6 @@ module EfcInfoExchange_TestCasesTspDev {
 				var NAckParams v_nAckParams2 :={{1, AduReasonCode_invalidADU_},{2,AduReasonCode_invalidADU_}};
 				
 				alt {
-					//PT140 TODO Can the repetion in the two alts be reduced?
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
@@ -1409,7 +1407,6 @@ module EfcInfoExchange_TestCasesTspDev {
 				var NAckParams v_nAckParams2 :={{1, AduReasonCode_invalidADU_},{2,AduReasonCode_invalidADU_}};
 				
 				alt {
-					//PT140 TODO Can the repetion in the two alts be reduced?
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
@@ -1529,7 +1526,6 @@ module EfcInfoExchange_TestCasesTspDev {
 				var NAckParams v_nAckParams2 :={{1, AduReasonCode_invalidADU_},{2,AduReasonCode_invalidADU_}};
 				
 				alt {
-					//PT140 TODO Can the repetion in the two alts be reduced?
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
@@ -2576,7 +2572,6 @@ module EfcInfoExchange_TestCasesTspDev {
 				var NAckParams v_nAckParams2 :={{1, AduReasonCode_paymentClaimIdRejected_}};
 				
 				alt {
-					//PT140 TODO Can the repetion in the two alts be reduced?
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
@@ -2761,7 +2756,6 @@ module EfcInfoExchange_TestCasesTspDev {
                 // Wait for negative Ack (if positive Ack or not received set test failure)
 				
 				alt {
-					//PT140 TODO Can the repetion in the two alts be reduced?
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
@@ -2923,7 +2917,6 @@ module EfcInfoExchange_TestCasesTspDev {
                 // Wait for negative Ack (if positive Ack or not received set test failure)
 				
 				alt {
-					//PT140 TODO Can the repetion in the two alts be reduced?
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
@@ -2967,7 +2960,6 @@ module EfcInfoExchange_TestCasesTspDev {
                 // Wait for negative Ack (if positive Ack or not received set test failure)
 				
 				alt {
-					//PT140 TODO Can the repetion in the two alts be reduced?
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
@@ -3011,7 +3003,6 @@ module EfcInfoExchange_TestCasesTspDev {
                 // Wait for negative Ack (if positive Ack or not received set test failure)
 				
 				alt {
-					//PT140 TODO Can the repetion in the two alts be reduced?
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
@@ -3056,7 +3047,6 @@ module EfcInfoExchange_TestCasesTspDev {
                 // Wait for negative Ack (if positive Ack or not received set test failure)
 				
 				alt {
-					//PT140 TODO Can the repetion in the two alts be reduced?
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
@@ -3101,7 +3091,6 @@ module EfcInfoExchange_TestCasesTspDev {
                 // Wait for negative Ack (if positive Ack or not received set test failure)
 				
 				alt {
-					//PT140 TODO Can the repetion in the two alts be reduced?
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
