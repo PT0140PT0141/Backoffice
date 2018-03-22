@@ -4,18 +4,18 @@
  *  PLEASE DO NOT EDIT! The file will be overwritten when the input file changes.
  *
  *  Source:    EfcCcc.asn
- *  Generator: TTworkbench ASN.1 Parser 1.1.14.201606151123
- *  Date:      10/4/17 4:59 PM
+ *  Generator: TTworkbench ASN.1 Parser 2.25.0.201711292344
+ *  Date:      3/22/18 11:28 AM
  *
  * ----------------------------------------------------------------------------
  *  The ASN.1 to TTCN-3 is a proprietary mapping based on the ES 201 873-7 ETSI standard.
  *  Details about the used mapping can be found in the TTworkbench documentation.
  *
- *  TTworkbench is a product of Testing Technologies.
- *  http://www.testingtech.com
+ *  TTworkbench is a product of Spirent Communications.
+ *  https://www.spirent.com/TTworkbench
  *
- *  TESTING TECHNOLOGIES DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS
- *  SOFTWARE. IN NO EVENT SHALL TESTING TECHNOLOGIES BE LIABLE FOR ANY
+ *  SPIRENT COMMUNICATIONS DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS
+ *  SOFTWARE. IN NO EVENT SHALL SPIRENT COMMUNICATIONS BE LIABLE FOR ANY
  *  SPECIAL, DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
  *  WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN
  *  AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
@@ -27,28 +27,20 @@
  *  EXPRESSED WARRANTY OF NON-INFRINGEMENT OR THE IMPLIED WARRANTIES
  *  OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
  *
- *  (C) Copyright Testing Technologies, 2000-2017. All Rights Reserved.
+ *  (C) Copyright Spirent Communications, 2000-2018. All Rights Reserved.
  * ----------------------------------------------------------------------------
  */
 
 module EfcCcc language "ASN.1:1997" {
   import from ASNAUX all; 
 
-  import from EfcDsrcApplication language "ASN.1:1997" {
-    type EquipmentOBUId, EFC_ContextMark, LPN, VehicleAxles, VehicleSpecificCharacteristics, VehicleCurrentMaxTrainWeight, PaymentMeans, Provider; 
-  }; 
+  import from EfcDsrcApplication language "ASN.1:1997" all; 
 
-  import from AVIAEINumberingAndDataStructures language "ASN.1:1997" {
-    type CS5, IssuerIdentifier, CountryCode; 
-  }; 
+  import from AVIAEINumberingAndDataStructures language "ASN.1:1997" all; 
 
-  import from EfcDsrcGeneric language "ASN.1:1997" {
-    type AttributeIdList; 
-  }; 
+  import from EfcDsrcGeneric language "ASN.1:1997" all; 
 
-  import from EfcAutonomousContextData language "ASN.1:1997" {
-    type LocalVehicleClassId; 
-  }; 
+  import from EfcAutonomousContextData language "ASN.1:1997" all; 
 
   type record of record {
     EfcDsrcApplication.Provider tollContext,

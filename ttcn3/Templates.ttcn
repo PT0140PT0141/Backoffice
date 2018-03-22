@@ -239,8 +239,8 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
         //	}
         	
         	template ProvideUserDetailsADU mw_aduProvideUserDetails := {
-            	originaluserIdRequest := DEFINED_USER_ID,
-            	userId := ?, // TODO PT140: Consider putting DEFINED_USER_ID value here
+            	originaluserIdRequest := EXISTING_USER_ID,
+            	userId := ?, 
             	statusFlag := * ,
             	listOfUserParameters := *
         	}
@@ -288,22 +288,22 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 
 		group EXCEPTIONLIST {
 		  	template ExceptionListADU mw_aduExceptionList := {
-		  	  	exceptionListVersion := any,
+		  	  	exceptionListVersion := ?,
 		  	  	exceptionListType := {ExceptionListType_blackList_, ExceptionListType_whiteList_, ExceptionListType_discountedList_},
-		  	  	exceptionValidityStart := any,
+		  	  	exceptionValidityStart := ?,
 		  	  	exceptionValidityEnd := omit,
-		  	  	exceptionListEntries := any
+		  	  	exceptionListEntries := ?
 		  	}
 		  	template ExceptionListEntry mw_exceptionListEntry := {
-		  	  	userId := any,
-		  	  	statusType := any,
-		  	  	reasonCode := any,
-		  	  	entryValidityStart := any,
+		  	  	userId := ?,
+		  	  	statusType := ?,
+		  	  	reasonCode := ?,
+		  	  	entryValidityStart := ?,
 		  	  	entryValidityEnd := omit,
-		  	  	vehicleParameters := optional,
-		  	  	actionRequested := any,
+		  	  	vehicleParameters := *,
+		  	  	actionRequested := ?,
 		  	  	efcContextMark := omit,
-		  	  	vatId := optional
+		  	  	vatId := *
 		  	}
 		}
 		

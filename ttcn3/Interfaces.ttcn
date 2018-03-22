@@ -10,11 +10,9 @@ module EfcInfoExchange_Interfaces language "TTCN-3:2010 Advanced Parameterizatio
 	import from EfcInfoExchange_Pixits all;
 	 	
 	//importing ASN.1 data automatically translated into TTCN-3	
-	import from EfcInfoExchange language "ASN.1:1997" all;	//from ISO 12855:2015
 
 	//importing ASN.1 data manually translated into TTCN-3
 	import from EfcInfoExchange_ParameterisedAsn1Data all;
-	import from Common_ParametrisedAsn1Data all;
 
 	
     /**

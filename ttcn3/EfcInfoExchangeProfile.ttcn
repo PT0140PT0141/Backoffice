@@ -18,7 +18,7 @@ module EfcInfoExchangeProfile language "TTCN-3:2010 Advanced Parameterization" {
 	const integer ApduReasonCode_sequenceError_:=4; //If an APDU is sent out of the logical sequence an AckADU indicating the “sequence error“ shall be sent
 	const integer ApduReasonCode_otherReason_:=5; //Bilateral agreement on APDU reason code
 	const integer ApduReasonCode_protocolVersionError_:= 6;//	APDU rejected because Protocol Version not supported
-	const integer ApduReasonCode_originatorRejected_:=7//APDU rejected because Apdu Originator not known or no valid contract exists
+	const integer ApduReasonCode_originatorRejected_:=7;//APDU rejected because Apdu Originator not known or no valid contract exists
 	const integer ApduReasonCode_recipientUnknown_:=8;//APDU rejected because Information Recipient not known (or no valid contract exists)
 	const integer ApduReasonCode_relatedApduUnknown_:=9;//APDU rejected because related APDU unknown or transaction finished.
 	const integer ApduReasonCode_requestSentTooOften_:=10;//APDU rejected because request was sent too often (processing of similar request still active)
