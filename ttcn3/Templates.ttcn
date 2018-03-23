@@ -38,6 +38,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 	//importing ASN.1 data manually translated into TTCN-3
 	import from EfcInfoExchange_ParameterisedAsn1Data all;  
     import from Common_ParametrisedAsn1Data all;
+	import from EfcInfoExchangeProfile all;
     
     group ApduTemplates {
         
@@ -138,6 +139,8 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			p_adus
 	    );
 
+		template (value) Adus m_oneAckInAdusStruct(in AckADU p_ackADU):={ackAdus:={p_ackADU}};
+		
 		/**
 		 * 
 		 * @desc Corresponds to the event Default_Ack_Apdu described in test purposes.
@@ -145,35 +148,55 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		 */ 
 		template (value) InfoExchange m_apduDefaultAck(in InfoExchange p_apduToAck) := m_apduDefault(
 			p_apduToAck, 
-			{m_aduDefaultAck(p_apduToAck)}
+			m_oneAckInAdusStruct(m_aduDefaultAck(p_apduToAck))
 		);
 
 		/**
 		 * 
 		 * @desc Corresponds to the event NAck_Apdu described in test purposes.
-    	 * @desc Definition: "NAck_Apdu(zero or more sets of Param defined as {aduPosition, aduReasonCode}) "Default_Apdu containing one AckADU containing {apduAckCode= apduOK(2), issues containing one element for each Param set containing {issueADUStruct=aduPosition, issueCode = aduReasonCode }}"
+    	 * @desc Definition: "NAck_Apdu(zero or more sets of Param defined as {aduPosition, aduReasonCode}) 
+    	 * @desc "Default_Apdu containing one AckADU containing {apduAckCode= apduOK(2), issues containing one 
+    	 * @desc element for each Param set containing {issueADUStruct=aduPosition, issueCode = aduReasonCode }}"
+    	 * @desc NOTE	the NAck_Apdu definition assumes that there are some valid ADUs in the APDU it is 
+    	 * @desc responding to (otherwise an apduAckCode  = apduNotOK(3) might have been a feasible answer)
 		 */ 
 		template (value) InfoExchange m_apduNAck(in InfoExchange p_apduToAck, in NAckParams p_nAckParams) := m_apduDefault(
-			//PT140 TODO Write the template definition Ulrik
+			p_apduToAck, 
+			m_oneAckInAdusStruct(m_aduNAck(p_apduToAck, p_nAckParams))
 	    );
 
 		type record of record {
     		NumberOfADUStruct issueADUStruct,
     		AduReasonCode issueCode
 	  	}  NAckParams;
+
+		template AckADU m_aduNAck(in InfoExchange p_apduToAck, in NAckParams p_nAckParams) := {
+			apduIdentifier := p_apduToAck.infoExchangeContent.apci.apduIdentifier,
+			explicitlyAckedAdus := omit,
+			apduAckCode := ApduReasonCode_apduNotOK_ ,
+			apduAckText := omit,
+			issues := p_nAckParams
+		}
+    	
 			
 		/**
 		 * 
 		 * @desc Corresponds to the event NAck_requestSentTooOften described in test purposes.
 		 * @desc Definition: "Default_Apdu containing one AckADU containing {apduAckCode= requestSentTooOften(10)}" 
 		 */ 
-		template (value) InfoExchange m_apduNAck_requestSentTooOften(in InfoExchange p_apduToAck) := m_apduDefault(
-			// PT140 TODO Write the template definition Ulrik
+		template (value) InfoExchange m_apduNAckRequestSentTooOften(in InfoExchange p_apduToAck) := m_apduDefault(
+			p_apduToAck,
+			m_oneAckInAdusStruct(m_aduAckRequestSentTooOften(p_apduToAck))			
 		);
-			
-    	//def event NAck_Apdu(zero or more sets of Param defined as {aduPosition, aduReasonCode}) "Default_Apdu containing one AckADU containing {apduAckCode= apduOK(2), issues containing one element for each Param set containing {issueADUStruct=aduPosition, issueCode = aduReasonCode }}"
-    	//NOTE	the NAck_Apdu definition assumes that there are some valid ADUs in the APDU it is responding to (otherwise an apduAckCode  = apduNotOK(3) might have been a feasible answer
-    	//def event NAck_requestSentTooOften "Default_Apdu containing one AckADU containing {apduAckCode= requestSentTooOften(10)}"
+
+		template AckADU m_aduAckRequestSentTooOften(in InfoExchange p_apduToAck) := {
+			apduIdentifier := p_apduToAck.infoExchangeContent.apci.apduIdentifier,
+			explicitlyAckedAdus := omit,
+			apduAckCode := ApduReasonCode_requestSentTooOften_ ,
+			apduAckText := omit,
+			issues := omit
+		}
+    	
     	
     	template Adus mw_recordOfAduRequest:= {
 			requestAdus:=? 
@@ -189,14 +212,14 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			issues := *
 		}
 
-    	template AckADU m_aduDefaultAck(in InfoExchange p_apduToAck) := {
-            apduIdentifier := p_apduToAck.infoExchangeContent.apci.apduIdentifier,
-            explicitlyAckedAdus := omit,
-            apduAckCode := ApduReasonCode_apduOK_ ,
-            apduAckText := omit,
-            issues := omit
-    	}
-    	
+		template AckADU m_aduDefaultAck(in InfoExchange p_apduToAck) := {
+			apduIdentifier := p_apduToAck.infoExchangeContent.apci.apduIdentifier,
+			explicitlyAckedAdus := omit,
+			apduAckCode := ApduReasonCode_apduOK_ ,
+			apduAckText := omit,
+			issues := omit
+		}
+
     }
     
 	group AduTemplates{
@@ -256,6 +279,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		}
 
 		group LISTOFUSERS {
+			//TODO unclear what these definitions are supposed to mean
 			type record of userId userIdList;
 		  	
 		  	template RequestADU mw_aduRequestListOfUsers := {
@@ -273,7 +297,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		  				requestedADUType	:= AduType_provideUserIdListADU_,
       					userIdRequestType	:= 0,
       					userId				:= DEFINED_USER_ID,
-						userIdRequestTime	:= now() // TODO PT140: check whether the now function exixts
+						userIdRequestTime	:= fx_getUtc() 
 					}
 				}
 			}

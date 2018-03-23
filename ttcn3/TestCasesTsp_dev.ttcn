@@ -78,8 +78,7 @@ module EfcInfoExchange_TestCasesTspDev {
 					);
 
 				// Compute the authenticator and send the APDU
-				// PT 140 TODO: f_computeAuthenticator to be defined				
-				apduToBeSent.infoExchangeAuthenticator := f_computeAuthenticator(apduToBeSent);
+				apduToBeSent.infoExchangeAuthenticator := fx_computeAuthenticator(apduToBeSent);
                 
 				// send RequestADU
 				f_sendAndLogApdu(apduToBeSent);                                          
@@ -99,8 +98,8 @@ module EfcInfoExchange_TestCasesTspDev {
 						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
 						t_step.stop;
 						
-						// TODO PT140: f_evaluateAuthenticator function to be defined
-						if f_evaluateAuthenticator()) {
+						// TODO PT140: fx_evaluateAuthenticator mst be given an argument
+						if fx_evaluateAuthenticator()) {
 							setverdict(pass);
 							// Step3: Send DefaultAck with correct identifier and set verdict
 							f_wait(USERDETAILS_TIME2_MIN_TSP);
@@ -774,8 +773,8 @@ module EfcInfoExchange_TestCasesTspDev {
 				// Step 1: Send an Initiating_Apdu containing invalid authenticator
 				// and valid RequestADU with requestedADUType=provideUserDetailsADU
 				var InfoExchange apduToBeSent := m_aduRequestProvideUserDetails(v_userParameterRequest);
-				// TODO PT140: function to calculate authenticator to be defined
-				var integer corruptedAuthenticator := f_computeAuthenticator(apduToBeSent) + 1;
+				// TODO PT140: UPDATE the corrupted autentuicator. you cannot add a number to a data structure
+				var integer corruptedAuthenticator := fx_computeAuthenticator(apduToBeSent) + 1;
 				var Infoexchange apduToBeSent := m_apduNoSec({
 				  	m_aduRequestProvideUserDetails(v_userParameterRequests), 				  
 					infoExchangeAuthenticator := corruptedAuthenticator});
