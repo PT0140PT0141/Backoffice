@@ -98,8 +98,7 @@ module EfcInfoExchange_TestCasesTspDev {
 						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
 						t_step.stop;
 						
-						// TODO PT140: fx_evaluateAuthenticator mst be given an argument
-						if fx_evaluateAuthenticator()) {
+						if fx_evaluateAuthenticator(v_apduReceived)) {
 							setverdict(pass);
 							// Step3: Send DefaultAck with correct identifier and set verdict
 							f_wait(USERDETAILS_TIME2_MIN_TSP);
@@ -1197,13 +1196,9 @@ module EfcInfoExchange_TestCasesTspDev {
 				// Step #2: Wait for Nack ADU				 					
 				// Either we receive an APDU containing  Nack or the timeout expires
 				// timeout expiration is handled in the altstep branch
-
-				//Create parameters for the m_apduNAck			
-				var NAckParams v_nAckParams1 :={{0, ApduReasonCode_requestSentTooOften_}};
-				var NAckParams v_nAckParams2 :={{1, ApduReasonCode_requestSentTooOften_},{2, ApduReasonCode_requestSentTooOften_}};
 				
 				alt {
-					[] mtcPort.receive(m_apduNAck(v_apduToSend, v_nAckParams1)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAckRequestSentTooOften(v_apduToSend)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
 
@@ -1214,17 +1209,6 @@ module EfcInfoExchange_TestCasesTspDev {
 						//Set verdict
 						setverdict(pass);
 					}
-					[] mtcPort.receive(m_apduNAck(v_apduToSend, v_nAckParams2)) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(LISTOFUSERS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
-						
-						//Set verdict
-						setverdict(pass);
-					}					
                 } // End of alt statement
 				f_closeDownMtc();  			
                 
@@ -1646,23 +1630,9 @@ module EfcInfoExchange_TestCasesTspDev {
 				// Step #2: Wait for Nack ADU				 					
 				// Either we receive an APDU containing  Nack or the timeout expires
 				// timeout expiration is handled in the altstep branch
-				//Create parameters for the m_apduNAck			
-				var NAckParams v_nAckParams1 :={{0, ApduReasonCode_requestSentTooOften_}};
-				var NAckParams v_nAckParams2 :={{1, ApduReasonCode_requestSentTooOften_},{2, ApduReasonCode_requestSentTooOften_}};
 				
 				alt {
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(LISTOFUSERS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
-						
-						//Set verdict
-						setverdict(pass);
-					}
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAckRequestSentTooOften(v_apduRespondedTo)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
 
@@ -2171,27 +2141,14 @@ module EfcInfoExchange_TestCasesTspDev {
 				// Step #2: Wait for Nack ADU				 					
 				// Either we receive an APDU containing  Nack or the timeout expires
 				// timeout expiration is handled in the altstep branch
-				//Create parameters for the m_apduNAck			
-				var NAckParams v_nAckParams1 :={{0, ApduReasonCode_requestSentTooOften_}};
-				var NAckParams v_nAckParams2 :={{1, ApduReasonCode_requestSentTooOften_}};
-				
 				alt {
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAckRequestSentTooOften(v_apduRespondedTo)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
 
 						//Check minumum time and stop timer
 						f_checkMinimumTStep(TRUSTOBJECTS_TYPE1_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
 						t_step.stop;						
-						setverdict(pass);
-					}
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(TRUSTOBJECTS_TYPE1_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
 						setverdict(pass);
 					}
 				} 
@@ -2226,27 +2183,15 @@ module EfcInfoExchange_TestCasesTspDev {
 				// Step #2: Wait for Nack ADU				 					
 				// Either we receive an APDU containing  Nack or the timeout expires
 				// timeout expiration is handled in the altstep branch
-				//Create parameters for the m_apduNAck			
-				var NAckParams v_nAckParams1 :={{0, ApduReasonCode_requestSentTooOften_}};
-				var NAckParams v_nAckParams2 :={{1, ApduReasonCode_requestSentTooOften_}};
 				
 				alt {
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAckRequestSentTooOften(v_apduRespondedTo)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
 
 						//Check minumum time and stop timer
 						f_checkMinimumTStep(TRUSTOBJECTS_TYPE1_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
 						t_step.stop;						
-						setverdict(pass);
-					}
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(TRUSTOBJECTS_TYPE1_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
 						setverdict(pass);
 					}
 				} 
@@ -3182,14 +3127,10 @@ module EfcInfoExchange_TestCasesTspDev {
               	// Wait for negative Ack  with NAck_requestSentTooOften code
 				// Set timer
                  t_step.start(PAYMENTCLAIM_TIME1_MAX_TSP);                 
-				//Create parameters for the m_apduNAck			
-				var NAckParams v_nAckParams1 :={{0, ApduReasonCode_requestSentTooOften_}};
-				var NAckParams v_nAckParams2 :={{1, ApduReasonCode_requestSentTooOften_}};
-                 
                 // Wait for negative Ack (if positive Ack or not received set test failure)
 				
 				alt {
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAckRequestSentTooOften(v_apduRespondedTo)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
 
@@ -3197,15 +3138,6 @@ module EfcInfoExchange_TestCasesTspDev {
 						f_checkMinimumTStep(PAYMENTCLAIM_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
 						t_step.stop;
 						setverdict(pass);						
-					}
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(PAYMENTCLAIM_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
-						setverdict(pass);
 					}
 				} 
                 
@@ -4013,25 +3945,10 @@ module EfcInfoExchange_TestCasesTspDev {
 				// Step #2: Wait for Nack ADU				 					
 				// Either we receive an APDU containing  Nack or the timeout expires
 				// timeout expiration is handled in the altstep branch
-				//Create parameters for the m_apduNAck			
-				var NAckParams v_nAckParams1 :={{0, ApduReasonCode_requestSentTooOften_}};
-				var NAckParams v_nAckParams2 :={{1, ApduReasonCode_requestSentTooOften_},{2,ApduReasonCode_requestSentTooOften_}};
 				// Set timer
                  t_step.start(BILLINGDETAILS_TIME1_MAX_TSP);
 				alt {
-					// Either Params1 or Params2 Nacks are valid
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(BILLINGDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
-						
-						//Set verdict
-						setverdict(pass);
-					}
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAckRequestSentTooOften(v_apduRespondedTo)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
 
