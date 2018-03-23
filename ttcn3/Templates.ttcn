@@ -279,8 +279,6 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		}
 
 		group LISTOFUSERS {
-			//TODO unclear what these definitions are supposed to mean
-			type record of userId userIdList;
 		  	
 		  	template RequestADU mw_aduRequestListOfUsers := {
 		  		userListRequest :={
@@ -296,15 +294,15 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		  			userListRequest :={
 		  				requestedADUType	:= AduType_provideUserIdListADU_,
       					userIdRequestType	:= 0,
-      					userId				:= DEFINED_USER_ID,
+      					userId				:= EXISTING_USER_ID,
 						userIdRequestTime	:= fx_getUtc() 
 					}
 				}
 			}
 
-			template ProvideUserIdListADU mw_aduProvideUserDetails := {
-            	UserIdRequestType := 0,
-            	UserId := ?, // TODO PT140: Consider putting DEFINED_USER_ID value here
+			template ProvideUserIdListADU mw_aduProvideUserIdList := {
+				originalUserIdRequestType := UserIdRequestType_allUserIdsToGivenCustomer_,
+				originalUserId := EXISTING_USER_ID,
             	userIdList := *
         	}
 			
@@ -313,7 +311,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		group EXCEPTIONLIST {
 		  	template ExceptionListADU mw_aduExceptionList := {
 		  	  	exceptionListVersion := ?,
-		  	  	exceptionListType := {ExceptionListType_blackList_, ExceptionListType_whiteList_, ExceptionListType_discountedList_},
+				exceptionListType := {ExceptionListType_blackList_, ExceptionListType_whiteList_, ExceptionListType_discountedList_},
 		  	  	exceptionValidityStart := ?,
 		  	  	exceptionValidityEnd := omit,
 		  	  	exceptionListEntries := ?
@@ -352,16 +350,6 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 
 		group GNSS_PAYMENTANNOUNCEMENT {}
 
-    	//PT140 TODO could they be grouped with the structures they belong to?
-        const integer c_semanticError := 3000;
-      	const integer c_actionCodeNotSupported := 3010;
-     	const integer c_acceptedWithWarning := 4000;
-    	const integer c_sequenceError := 4;
-		const integer c_otherReason := 5;
-		const integer c_protocolVersionError := 6;
-		const integer c_originatorRejected := 7;
-		const integer c_recipientUnknown := 8;
-		const integer c_relatedApduUnknown := 9;
-		const integer c_nackRequestSentTooOften := 10 ;
+
 	}
 }

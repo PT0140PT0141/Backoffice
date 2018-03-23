@@ -1912,7 +1912,7 @@ module EfcInfoExchange_TestCasesTspDev {
 				 
            } // End of TP_TSP_TRUSTOBJECTS_BV_03
 
-           testcase TP_TSP_TRUSTOBJECTS_BV_04() runs onMainTestComponent system TestAdapter {
+           testcase TP_TSP_TRUSTOBJECTS_BV_04() runs on MainTestComponent system TestAdapter {
              
               /**
               * @desc    TP_TSP_TRUSTOBJECTS_BV_04: Verify that the TSP correctly requests and responds to a TrustObjectADU
@@ -1929,7 +1929,7 @@ module EfcInfoExchange_TestCasesTspDev {
 				// PT140 TODO: m_aduRequestTrustObjects template to be defined
 				// PT140 TODO: loop in all available types of trustobject requested supported by the IUT not realised. Multiple triggers and a loop?
 				// Set timer
-                 t_step.start(TRUSTOBJECTS_TYPE1_TIME1_MAX_TSP);                 
+                t_step.start(TRUSTOBJECTS_TYPE1_TIME1_MAX_TSP);                 
 				alt {
 					[] mtcPort.receive(m_aduRequestTrustObjects) -> value v_apduReceived {
 						// Log what we received
@@ -1937,12 +1937,13 @@ module EfcInfoExchange_TestCasesTspDev {
 						t_step.stop;
 					}
 				} 					
-                 // Step 1: Send one valid APDU containing one valid TrustObjectADU
-                 // PT140 TODO : mw_aduTrustObjects template to be defined
+                // Step 1: Send one valid APDU containing one valid TrustObjectADU
+                // PT140 TODO : m_aduTrustObjects template to be defined
 				// PT140 TODO: Analysis of what requested and what to be sent missing
-				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(mw_aduTrustObjects);                 
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(m_aduTrustObjects);                 
 				f_sendAndLogApdu(v_apduRespondedTo);                 
-                 // Step 2: Wait for positive Ack within TRUSTOBJECTS.TIME2
+                
+                // Step 2: Wait for positive Ack within TRUSTOBJECTS.TIME2
 				// Set timer
                  t_step.start(TRUSTOBJECTS_TYPE1_TIME2_MAX_TSP);                 
 				alt {
