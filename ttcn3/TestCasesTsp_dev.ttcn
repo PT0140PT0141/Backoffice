@@ -10,7 +10,7 @@
  *
  *	Transaction type			!	BV					! BI			! Comments
  * 	----------------------------!-----------------------!---------------!--------------------------------
- *	Base						! partially done		! partially done! functions to compute and evaluate authenticators to be defined and TP_TSP_Base_BI_08 to be completed
+ *	Base						! done					! done			! TrustObject templates to be defined
  *	Userdetails					! done					! partially done! TSP_USERDETAILS_BI_02 and TSP_USERDETAILS_BI_03 to be  revised
  *	ListOfUsers					! done					! done			!
  *	ExceptionList				! done					! done			!
@@ -607,7 +607,7 @@ module EfcInfoExchange_TestCasesTspDev {
 				f_sendAndLogTrigger(TRUSTOBJECTS_TR_2);
 				//  Wait for TRUSTOBJECTS
 				// We expect to receive as many TRUSTOBJECTS as the declared supported number
-				// PT140 TODO: Seems that alt inside a loop is not allowed. Use repeat statement instead
+				// PT140 TODO: Seems that alt inside a loop is not allowed. Repeat statement used instead
 				alt {
 					[] mtcPort.receive(m_apduTrustObject) -> value v_apduReceived {
 						// Log what we received
@@ -639,11 +639,25 @@ module EfcInfoExchange_TestCasesTspDev {
 				  	stop
 				  	}; // We must receive at least as many Trust Objects as supported
 				
-				// TODO PT140: Extract from the received apdu the type of TrustObject requested	and the ApduId value
-							
-				// Step 1: PT140 TODO Send Initiating APDU containing a valid TrustObjectADU with inResponseToApduId not equal to the value of the previously sent APDU
+				// TODO PT140: Templates to be defined
+				// Step 1: Send Initiating APDU containing a valid TrustObjectADU with inResponseToApduId not equal to the value of the previously sent APDU
 				
-
+				// Answer with the requested Trust Object, altering the inResponseToApduId field to a zero value											
+						if (match(v_apduReceived ,m_apduTrustObjectDsrcKeyRef)) 
+							{
+								template (value) ApciFields m_apciSendInvalidInResponseToAid modifies mw_apduTrustObjectDsrcKeyRef:= {infoExchangeContent.apci.inResponseToApduId.apduIdentifier := 0};							  
+								f_sendAndLogApdu(m_apciSendInvalidInResponseToAid);			  
+							}; 							
+						if (match(v_apduReceived ,m_apduTrustObjectDsrcKeyRef)) 
+							{
+								template (value) ApciFields m_apciSendInvalidInResponseToAid modifies m_apduTrustObjectMacMasterKey:= {infoExchangeContent.apci.inResponseToApduId.apduIdentifier := 0};							  
+								f_sendAndLogApdu(m_apciSendInvalidInResponseToAid);			  
+							}; 							
+						if (match(v_apduReceived ,m_apduTrustObjectDsrcKeyRef)) 
+							{
+								template (value) ApciFields m_apciSendInvalidInResponseToAid modifies m_apduTrustObjectDsrcMasterKey:= {infoExchangeContent.apci.inResponseToApduId.apduIdentifier := 0};							  
+								f_sendAndLogApdu(m_apciSendInvalidInResponseToAid);			  
+							}; 							
                //Set timer
 				t_step.start(TRUSTOBJECT_TIME1_MAX_TSP);
 				
@@ -773,7 +787,10 @@ module EfcInfoExchange_TestCasesTspDev {
 				// and valid RequestADU with requestedADUType=provideUserDetailsADU
 				var InfoExchange apduToBeSent := m_aduRequestProvideUserDetails(v_userParameterRequest);
 				// TODO PT140: UPDATE the corrupted autentuicator. you cannot add a number to a data structure
-				var integer corruptedAuthenticator := fx_computeAuthenticator(apduToBeSent) + 1;
+				var ApduAuthenticator corruptedAuthenticator:= fx_computeAuthenticator(apduToBeSent);
+				var octetstring newAuthenticator := corruptedAuthenticator.authenticatorEfc.tbsAuthenticatorEfc.apduContentDigest.hashedMessageContent;
+				newAuthenticator := int2oct(oct2int(newAuthenticator) + 1, len(newAuthenticator));
+				corruptedAuthenticator.authenticatorEfc.tbsAuthenticatorEfc.apduContentDigest.hashedMessageContent := newAuthenticator;
 				var Infoexchange apduToBeSent := m_apduNoSec({
 				  	m_aduRequestProvideUserDetails(v_userParameterRequests), 				  
 					infoExchangeAuthenticator := corruptedAuthenticator});
