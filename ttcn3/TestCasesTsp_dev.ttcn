@@ -592,21 +592,15 @@ module EfcInfoExchange_TestCasesTspDev {
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_4_implementedTRUSTOBJECTSElectronicTransfer;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				
-				// Send the IUT a  trigger to send one initial APDU with requestedADUType=trustObjectRequestADU and complete its transaction
-				f_sendAndLogTrigger(TRUSTOBJECTS_TR_2);
-				
-				//  Wait for TrustObjectAdu
 				// PT140 TODO: Note that the following code is identical to the one in TSP_TRUSTOBJECTS_BV_01
 				// TODO PT140 TrustObject ADU templates to be defined
 				var boolean isCertificateOrPublicKey:=false;
 				var boolean isDsrcKeyRef := false;
 				var boolean isMacMasterKey := false;
 				var boolean isDsrcMasterKey := false;
-				var integer ObjectsReceived := 0;
-				// Step 1: Trigger IUT with TRUSTOBJECTS_TR_2
-				f_sendAndLogTrigger(TRUSTOBJECTS_TR_2);
-				//  Wait for TRUSTOBJECTS
-				// We expect to receive as many TRUSTOBJECTS as the declared supported number
+				// Send the IUT a  trigger to send one initial APDU with requestedADUType=trustObjectRequestADU and complete its transaction
+				f_sendAndLogTrigger(TRUSTOBJECTS_TR_1);				
+				//  Wait for request for TrustObjectAdu
 				// PT140 TODO: Seems that alt inside a loop is not allowed. Repeat statement used instead
 				alt {
 					[] mtcPort.receive(m_apduTrustObject) -> value v_apduReceived {
@@ -628,17 +622,17 @@ module EfcInfoExchange_TestCasesTspDev {
 							isMacMasterKey:=true;
 						if (match(v_apduReceived ,m_apduTrustObjectDsrcMasterKey)) 
 							isDsrcMasterKey:=true;
-						ObjectsReceived := ObjectsReceived + 1; // Count the number of trust objects received
-						repeat;
 						}										
 					} // End of alt statement
-				if (ICS_A2_1_isDsrc and isCertificateOrPublicKey and isDsrcKeyRef and isMacMasterKey and isDsrcMasterKey) setverdict(pass);			 				
-				if (ICS_A2_2_isGnss and isCertificateOrPublicKey and isDsrcKeyRef) setverdict(pass);			 				
-				if ObjectsReceived < NUMBER_OF_TRUSTOBJECT_TYPES_SUPPORTED {
-				  	setverdict(fail);
-				  	stop
-				  	}; // We must receive at least as many Trust Objects as supported
-				
+					// Only allowed combinations according to profile
+					if not (
+						(ICS_A2_1_isDsrc and isCertificateOrPublicKey and isDsrcKeyRef and isMacMasterKey and isDsrcMasterKey) or			 				
+						(ICS_A2_2_isGnss and isCertificateOrPublicKey and isDsrcKeyRef)
+						) {
+							setverdict(fail);  
+							stop;
+						};			 				
+
 				// TODO PT140: Templates to be defined
 				// Step 1: Send Initiating APDU containing a valid TrustObjectADU with inResponseToApduId not equal to the value of the previously sent APDU
 				
