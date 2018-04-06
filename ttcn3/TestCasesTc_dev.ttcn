@@ -18,7 +18,7 @@
  *	ExceptionList				! open					! open			!
  *	TrustObjects				! open					! open			!
  *	PaymentClaim				! open					! none			!
- *	DSRC.ContractIssuerList		! done					! done			! Tester data to be finalized
+ *	DSRC.ContractIssuerList		! done					! done			! 
  *	DSRC.EFCContextData			! done					! none			! Template to be done
  *	DSRC.BillingDetails			! partially done		! none			! 
  *	DSRC.ReportAbnormalOBE		! done					! none			! Template to be done
@@ -849,9 +849,9 @@ module EfcInfoExchange_TestCasesTcDev {
                 // PT140 TODO : mw_aduContractIssuerList template to be defined
 				var InfoExchange v_apduToBeSent := m_apduNoSecInit(
 					{modifies mw_recordOfAduContractIssuerList := {
-					  	TESTER_CONTRACT_ISSUER_DATA_VALID_1, // PT140 TODO Testerdata definition
-					  	TESTER_CONTRACT_ISSUER_DATA_VALID_2, // PT140 TODO Testerdata definition
-					  	TESTER_CONTRACT_ISSUER_DATA_VALID_3 // PT140 TODO Testerdata definition
+					  	TESTER_CONTRACT_ISSUER_DATA_VALID_1,
+					  	TESTER_CONTRACT_ISSUER_DATA_VALID_2,
+					  	TESTER_CONTRACT_ISSUER_DATA_VALID_3
 					  	}
 					});                 
 				f_sendAndLogApdu(v_apduToBeSent);                     
@@ -900,9 +900,9 @@ module EfcInfoExchange_TestCasesTcDev {
 
 				var InfoExchange v_apduToBeSent := m_apduNoSecInit(
 					{modifies mw_recordOfAduContractIssuerList := {
-					  	TESTER_CONTRACT_ISSUER_DATA_INVALID_1, // PT140 TODO Testerdata definition
-					  	TESTER_CONTRACT_ISSUER_DATA_INVALID_2, // PT140 TODO Testerdata definition
-					  	TESTER_CONTRACT_ISSUER_DATA_INVALID_3 // PT140 TODO Testerdata definition
+					  	TESTER_CONTRACT_ISSUER_DATA_INVALID_1,
+					  	TESTER_CONTRACT_ISSUER_DATA_INVALID_2,
+					  	TESTER_CONTRACT_ISSUER_DATA_INVALID_3
 					  	}
 					});                 
 				f_sendAndLogApdu(v_apduToBeSent); 
@@ -957,7 +957,7 @@ module EfcInfoExchange_TestCasesTcDev {
                 // Step 1: Send Initiating_Apdu containing one valid RequestADU of type userListRequest
 				var InfoExchange v_apduToBeSent := m_apduNoSecInit(
 					{modifies mw_recordOfAduContractIssuerList := {
-					  	TESTER_CONTRACT_ISSUER_DATA_VALID_1 // PT140 TODO Testerdata definition
+					  	TESTER_CONTRACT_ISSUER_DATA_VALID_1
 					  	}
 					});                 
 				f_sendAndLogApdu(v_apduToBeSent);                     
@@ -966,7 +966,7 @@ module EfcInfoExchange_TestCasesTcDev {
                 // before DSRC.CONTRACTISSUERLIST.TIMEA_MIN has passed
 				f_wait(DSRC_CONTRACTISSUERLIST_TIMEA_MIN_TSP / 2);
 
-				var InfoExchange v_apduToBeSent := m_apduNoSecInit(
+				var InfoExchange v_apduToBeSent := m_apduDefault(
 					{modifies mw_recordOfAduContractIssuerList := {
 					  	TESTER_CONTRACT_ISSUER_DATA_VALID_2 // PT140 TODO Testerdata definition
 					  	}
