@@ -31,9 +31,11 @@ module EfcInfoExchange_TesterData {
 		modulepar UTF8String TESTER_SECURITY_LEVEL;
 		modulepar EfcInfoExchange.Int2 TESTER_AC_CR_KEY_REFERENCE;
 		modulepar integer TESTER_AUTH_KEY_REFERENCE;
-
+		modulepar UTF8String TESTER_UNIQUE_PART_OF_PAN_INVALID;
+		modulepar EfcInfoExchange.Int2 TESTER_AC_CR_KEY_REFERENCE_INVALID;
+		modulepar integer TESTER_AUTH_KEY_REFERENCE_INVALID;
 				
-		template ContractIssuerListADU m_contractIssuerListADU(in EfcInfoExchange.Int4 p_manufacturerID):={
+		template ContractIssuerListADU m_contractIssuerListADU_Tester(in EfcInfoExchange.Int4 p_manufacturerID):={
 			efcContextMark := TESTER_EFC_CONTEXT_MARK,
 			equipmentClass := TESTER_EQUIPMENT_CLASS,
 			manufacturerID := p_manufacturerID,
@@ -45,9 +47,28 @@ module EfcInfoExchange_TesterData {
 			validFrom := fx_getUtc(-3600*24) 
 	   	}
  	
-		modulepar ContractIssuerListADU TESTER_CONTRACT_ISSUER_DATA_VALID_1 := m_contractIssuerListADU(TESTER_MANUFACTURER_ID_1);
-        modulepar ContractIssuerListADU TESTER_CONTRACT_ISSUER_DATA_VALID_2 := m_contractIssuerListADU(TESTER_MANUFACTURER_ID_2);
-        modulepar ContractIssuerListADU TESTER_CONTRACT_ISSUER_DATA_VALID_3 := m_contractIssuerListADU(TESTER_MANUFACTURER_ID_3);
+		modulepar ContractIssuerListADU TESTER_CONTRACT_ISSUER_DATA_VALID_1 := m_contractIssuerListADU_Tester(TESTER_MANUFACTURER_ID_1);        
+        modulepar ContractIssuerListADU TESTER_CONTRACT_ISSUER_DATA_VALID_2 := m_contractIssuerListADU_Tester(TESTER_MANUFACTURER_ID_2);
+        modulepar ContractIssuerListADU TESTER_CONTRACT_ISSUER_DATA_VALID_3 := m_contractIssuerListADU_Tester(TESTER_MANUFACTURER_ID_3);
+
+		template ContractIssuerListADU m_contractIssuerListADU_Invalid_1(in EfcInfoExchange.Int4 p_manufacturerID) modifies m_contractIssuerListADU_Tester:=
+		{
+			uniquePartOfPAN := TESTER_UNIQUE_PART_OF_PAN_INVALID
+		}
+
+		template ContractIssuerListADU m_contractIssuerListADU_Invalid_2(in EfcInfoExchange.Int4 p_manufacturerID) modifies m_contractIssuerListADU_Tester :=
+		{
+			acCrKeyReference := TESTER_AC_CR_KEY_REFERENCE_INVALID
+		}	
+
+		template ContractIssuerListADU m_contractIssuerListADU_Invalid_2(in EfcInfoExchange.Int4 p_manufacturerID) modifies m_contractIssuerListADU_Tester :=
+		{
+			authKeyReference := TESTER_AUTH_KEY_REFERENCE_INVALID
+		}	
+
+		modulepar ContractIssuerListADU TESTER_CONTRACT_ISSUER_DATA_INVALID_1 := m_contractIssuerListADU_Invalid_1(TESTER_MANUFACTURER_ID_1);
+		modulepar ContractIssuerListADU TESTER_CONTRACT_ISSUER_DATA_INVALID_2 := m_contractIssuerListADU_Invalid_2(TESTER_MANUFACTURER_ID_1);
+		modulepar ContractIssuerListADU TESTER_CONTRACT_ISSUER_DATA_INVALID_3 := m_contractIssuerListADU_Invalid_3(TESTER_MANUFACTURER_ID_1);
 		
 	} // end group ContractIssuerData
 	
