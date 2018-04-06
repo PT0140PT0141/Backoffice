@@ -50,6 +50,15 @@ module EfcInfoExchange_TesterData {
         modulepar ContractIssuerListADU TESTER_CONTRACT_ISSUER_DATA_VALID_3 := m_contractIssuerListADU(TESTER_MANUFACTURER_ID_3);
 		
 	} // end group ContractIssuerData
+	
+	group ProvideUserDetailsData {
+		modulepar UserParameterResponseDetails UserParameterResponseDetails_TESTER_VALUES[27]:={};
+	}
+	
+	
+	
+	
+	
 } // end module 
 	
 // 

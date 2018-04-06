@@ -83,8 +83,8 @@ module EfcInfoExchange_TestCasesTcDev {
 				//Step 1: wait for user details request
 				mtcAccessPort.send(USERDETAILS_TR_TC_1);
 
-				var integer v_noParamsToUse ;
-				var RecordOfUserParameterRequest listOfParameterReq;
+				var integer v_noReqAdusReceived;
+				var RecordOfUserParameterRequest v_listOfParametersRequested;
 				alt {
 					[] mtcPort.receive(mw_apduRequest) -> value v_apduReceived {
                 		                    		
@@ -98,14 +98,17 @@ module EfcInfoExchange_TestCasesTcDev {
 						//Set default verdict
 						setverdict(pass);
 
-						v_noParamsToUse := sizeof(v_apduReceived.infoExchangeContent.adus.requestAdus);
+						v_noReqAdusReceived := sizeof(v_apduReceived.infoExchangeContent.adus.requestAdus);
 						//Set verdict to fail in case it fails
 						
-						for (var integer v_loop1 :=0; v_loop1<v_noParamsToUse;v_loop1:=v_loop1+1) {	
- 							if ( match(v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1], mw_aduRequestProvideUserDetails)) {
-								listOfParameterReq := v_apduReceived.infoExchangeContent.adus.requestAdus[v_ct].userDetailsRequest.listOfParametersRequested;
-								for (var integer v_loop2 :=0; v_loop2<sizeof(listOfParameterReq);v_loop2:=v_loop2+1) {
-									if (not (match(listOfParameterReq[v_loop2], mw_userDetailsSupportedListOfParameters ))) {
+						
+						
+						for (var integer v_loop1 :=0; v_loop1<v_noReqAdusReceived;v_loop1:=v_loop1+1) {	
+							var RequestADU v_receivedRequestAdu:=v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1];
+ 							if ( match(v_receivedRequestAdu, mw_aduRequestProvideUserDetails)) {
+								v_listOfParametersRequested := v_receivedRequestAdu.userDetailsRequest.listOfParametersRequested;
+								for (var integer v_loop2 :=0; v_loop2<sizeof(v_listOfParametersRequested);v_loop2:=v_loop2+1) {
+									if (not (match(v_listOfParametersRequested[v_loop2], mw_userDetailsSupportedListOfParameters ))) {
 										setverdict(fail);
 										stop;
 									}
@@ -120,20 +123,24 @@ module EfcInfoExchange_TestCasesTcDev {
 				
 				//Step 2 send ProvideUserDetails within TIME1
 				f_wait(USERDETAILS_TIME1_MIN_TC);
-				var Adus v_adus[v_noParamsToUse];
+
+				//All ADUs will be put in the array v_adus
+				var Adus v_adus[v_noReqAdusReceived];
 				
-				for (var integer v_loop1 :=0; v_loop1<v_noParamsToUse;v_loop1:=v_loop1+1) {
-					var ProvideUserDetailsADU v_theAdu :=v_adus.provideUserDetailsADUs[v_loop1];
+				//Build v_adus by looping through it
+				for (var integer v_loop1 :=0; v_loop1<v_noReqAdusReceived;v_loop1:=v_loop1+1) {
+					var ProvideUserDetailsADU v_theAdu;
 					v_theAdu.originaluserIdRequest := v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1].userId;
-					v_theAdu.userId := v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1].userId;
+					v_theAdu.userId := v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1].userId; //TODO this simply copies the ID of the original request. Is that enough?
 					v_theAdu.statusFlag := UserStatus_standardCommercialUserContract_;
-					for (var integer v_loop2 :=0; v_loop2<sizeof(listOfParameterReq);v_loop2:=v_loop2+1) {
-						v_theAdu.listOfUserParameters[v_loop2].requestedUserParameter:=omit;
-						v_theAdu.listOfUserParameters[v_loop2].userParameterResponse:= USER_PARAMETER_RESPONSE_DUMMY_VALUES[listOfParameterReq[v_loop2]];					
+					for (var integer v_loop2 :=0; v_loop2<sizeof(v_listOfParametersRequested);v_loop2:=v_loop2+1) {
+						v_theAdu.listOfUserParameters[v_loop2].requestedUserParameter:=omit;   //TODO is this necessary. I think that if we do not set it then it is omitted 
+						v_theAdu.listOfUserParameters[v_loop2].userParameterResponse:= UserParameterResponseDetails_TESTER_VALUES[v_listOfParametersRequested[v_loop2]];					
 						v_theAdu.listOfUserParameters[v_loop2].userParameterStatus:= UserParameterStatus_userParameterAvailable_;					
-						v_theAdu.listOfUserParameters[v_loop2].userInfoValidityPeriod:=omit;
-					}
-				}								                   
+						v_theAdu.listOfUserParameters[v_loop2].userInfoValidityPeriod:=omit; //TODO is this necessary. I think that if we do not set it then it is omitted
+//					}
+					v_adus[v_loop1]:=v_theAdu;
+//				}								                   
 				
 				var InfoExchange v_apduProvideUserDetailsSend:=m_apduNoSec( m_apciSendResponse(v_apduReceived), v_adus);
 				f_sendAndLogApdu(v_apduProvideUserDetailsSend);
@@ -173,8 +180,8 @@ module EfcInfoExchange_TestCasesTcDev {
 				//Step 1: wait for user details request
 				mtcAccessPort.send(USERDETAILS_TR_TC_1);
 
-				var integer v_noParamsToUse ;
-				var RecordOfUserParameterRequest listOfParameterReq;
+				var integer v_noReqAdusReceived ;
+				var RecordOfUserParameterRequest listOfParametersRequested;
 				alt {
 					[] mtcPort.receive(mw_apduRequest) -> value v_apduReceived{
                 		                    		
@@ -188,14 +195,14 @@ module EfcInfoExchange_TestCasesTcDev {
 						//Set default verdict
 						setverdict(pass);
 
-						v_noParamsToUse := sizeof(v_apduReceived.infoExchangeContent.adus.requestAdus);
+						v_noReqAdusReceived := sizeof(v_apduReceived.infoExchangeContent.adus.requestAdus);
 						//Set verdict to fail in case it fails
 						
-						for (var integer v_loop1 :=0; v_loop1<v_noParamsToUse;v_loop1:=v_loop1+1) {	
+						for (var integer v_loop1 :=0; v_loop1<v_noReqAdusReceived;v_loop1:=v_loop1+1) {	
  							if ( match(v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1], mw_aduRequestProvideUserDetails)) {
-								listOfParameterReq := v_apduReceived.infoExchangeContent.adus.requestAdus[v_ct].userDetailsRequest.listOfParametersRequested;
-								for (var integer v_loop2 :=0; v_loop2<sizeof(listOfParameterReq);v_loop2:=v_loop2+1) {
-									if (not (match(listOfParameterReq[v_loop2], mw_userDetailsSupportedListOfParameters ))) {
+								listOfParametersRequested := v_apduReceived.infoExchangeContent.adus.requestAdus[v_ct].userDetailsRequest.listOfParametersRequested;
+								for (var integer v_loop2 :=0; v_loop2<sizeof(listOfParametersRequested);v_loop2:=v_loop2+1) {
+									if (not (match(listOfParametersRequested[v_loop2], mw_userDetailsSupportedListOfParameters ))) {
 										setverdict(fail);
 										stop;
 									}
@@ -210,9 +217,9 @@ module EfcInfoExchange_TestCasesTcDev {
 
 				//Step 2 send ProvideUserDetails within TIME1
 				f_wait(USERDETAILS_TIME1_MIN_TC);
-				var Adus v_adus[v_noParamsToUse];
+				var Adus v_adus[v_noReqAdusReceived];
 				
-				// TODO PT140: prepare in v_adus provideUserDetailsADU not correctsponing to requested parameters								                   
+				// TODO PT140: prepare in v_adus provideUserDetailsADU not corresponding to requested parameters, that is v_adus is NEVER SET								                   
 				
 				var InfoExchange v_apduProvideUserDetailsSend:=m_apduNoSec(m_apciSendResponse(v_apduReceived), v_adus);
 				f_sendAndLogApdu(v_apduProvideUserDetailsSend);
@@ -221,7 +228,7 @@ module EfcInfoExchange_TestCasesTcDev {
 				t_step.start(USERDETAILS_TIME2_MAX_TC);
 				
 				//step 3 wait for AckADU with NAckApdu and semantic error (3000)
-				var NAckParams v_nAckParams1 :={{0, AduReasonCode_semanticError_}}
+				var NAckParams v_nAckParams1 :=m_nAckParamsSingle(0, AduReasonCode_semanticError_);
 				// TODO PT140 prepare second alternative for providing semantic error
 				
 				alt {
@@ -254,8 +261,8 @@ module EfcInfoExchange_TestCasesTcDev {
 				//Step 1: wait for user details request
 				mtcAccessPort.send(USERDETAILS_TR_TC_1);
 
-				var integer v_noParamsToUse ;
-				var RecordOfUserParameterRequest listOfParameterReq;
+				var integer v_noReqAdusReceived ;
+				var RecordOfUserParameterRequest listOfParametersRequested;
 				alt {
 					[] mtcPort.receive(mw_apduRequest) -> value v_apduReceived{
                 		                    		
@@ -269,14 +276,14 @@ module EfcInfoExchange_TestCasesTcDev {
 						//Set default verdict
 						setverdict(pass);
 
-						v_noParamsToUse := sizeof(v_apduReceived.infoExchangeContent.adus.requestAdus);
+						v_noReqAdusReceived := sizeof(v_apduReceived.infoExchangeContent.adus.requestAdus);
 						//Set verdict to fail in case it fails
 						
-						for (var integer v_loop1 :=0; v_loop1<v_noParamsToUse;v_loop1:=v_loop1+1) {	
+						for (var integer v_loop1 :=0; v_loop1<v_noReqAdusReceived;v_loop1:=v_loop1+1) {	
  							if ( match(v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1], mw_aduRequestProvideUserDetails)) {
-								listOfParameterReq := v_apduReceived.infoExchangeContent.adus.requestAdus[v_ct].userDetailsRequest.listOfParametersRequested;
-								for (var integer v_loop2 :=0; v_loop2<sizeof(listOfParameterReq);v_loop2:=v_loop2+1) {
-									if (not (match(listOfParameterReq[v_loop2], mw_userDetailsSupportedListOfParameters ))) {
+								listOfParametersRequested := v_apduReceived.infoExchangeContent.adus.requestAdus[v_ct].userDetailsRequest.listOfParametersRequested;
+								for (var integer v_loop2 :=0; v_loop2<sizeof(listOfParametersRequested);v_loop2:=v_loop2+1) {
+									if (not (match(listOfParametersRequested[v_loop2], mw_userDetailsSupportedListOfParameters ))) {
 										setverdict(fail);
 										stop;
 									}
@@ -291,7 +298,7 @@ module EfcInfoExchange_TestCasesTcDev {
 
 				//Step 2 send ProvideUserDetails within TIME1
 				f_wait(USERDETAILS_TIME1_MIN_TC);
-				var Adus v_adus[v_noParamsToUse];
+				var Adus v_adus[v_noReqAdusReceived];
 				
 				// TODO PT140: prepare in v_adus provideUserDetailsADU with no Status Flag being present								                   
 				
@@ -302,7 +309,7 @@ module EfcInfoExchange_TestCasesTcDev {
 				t_step.start(USERDETAILS_TIME2_MAX_TC);
 				
 				//step 3 wait for AckADU with NAckApdu and invaldAdu error (0)
-				var NAckParams v_nAckParams1 :={{0, AduReasonCode_invalidADU_}}
+				var NAckParams v_nAckParams1 :=m_nAckParamsSingle(0, AduReasonCode_invalidADU_);
 						
 				alt {
 					[] mtcPort.receive(m_apduNAck(v_apduToSend, v_nAckParams1)) -> value v_apduReceived{
@@ -334,8 +341,8 @@ module EfcInfoExchange_TestCasesTcDev {
 				//Step 1: wait for user details request
 				mtcAccessPort.send(USERDETAILS_TR_TC_1);
 
-				var integer v_noParamsToUse;
-				var RecordOfUserParameterRequest listOfParameterReq;
+				var integer v_noReqAdusReceived;
+				var RecordOfUserParameterRequest listOfParametersRequested;
 				alt {
 					[] mtcPort.receive(mw_apduRequest) -> value v_apduReceived{
                 		                    		
@@ -349,14 +356,14 @@ module EfcInfoExchange_TestCasesTcDev {
 						//Set default verdict
 						setverdict(pass);
 
-						v_noParamsToUse := sizeof(v_apduReceived.infoExchangeContent.adus.requestAdus);
+						v_noReqAdusReceived := sizeof(v_apduReceived.infoExchangeContent.adus.requestAdus);
 						//Set verdict to fail in case it fails
 						
-						for (var integer v_loop1 :=0; v_loop1<v_noParamsToUse;v_loop1:=v_loop1+1) {	
+						for (var integer v_loop1 :=0; v_loop1<v_noReqAdusReceived;v_loop1:=v_loop1+1) {	
  							if ( match(v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1], mw_aduRequestProvideUserDetails)) {
-								listOfParameterReq := v_apduReceived.infoExchangeContent.adus.requestAdus[v_ct].userDetailsRequest.listOfParametersRequested;
-								for (var integer v_loop2 :=0; v_loop2<sizeof(listOfParameterReq);v_loop2:=v_loop2+1) {
-									if (not (match(listOfParameterReq[v_loop2], mw_userDetailsSupportedListOfParameters ))) {
+								listOfParametersRequested := v_apduReceived.infoExchangeContent.adus.requestAdus[v_ct].userDetailsRequest.listOfParametersRequested;
+								for (var integer v_loop2 :=0; v_loop2<sizeof(listOfParametersRequested);v_loop2:=v_loop2+1) {
+									if (not (match(listOfParametersRequested[v_loop2], mw_userDetailsSupportedListOfParameters ))) {
 										setverdict(fail);
 										stop;
 									}
@@ -371,7 +378,7 @@ module EfcInfoExchange_TestCasesTcDev {
 
 				//Step 2 send ProvideUserDetails within TIME1
 				f_wait(USERDETAILS_TIME1_MIN_TC);
-				var Adus v_adus[v_noParamsToUse];
+				var Adus v_adus[v_noReqAdusReceived];
 				
 				// TODO PT140: prepare in v_adus provideUserDetailsADU with Status Flag = 1..5 and no listOfUserParameters begin present								                   
 				
@@ -382,7 +389,7 @@ module EfcInfoExchange_TestCasesTcDev {
 				t_step.start(USERDETAILS_TIME2_MAX_TC);
 				
 				//step 3 wait for AckADU with NAckApdu and invaldAdu error (0)
-				var NAckParams v_nAckParams1 :={{0, AduReasonCode_invalidADU_}}
+				var NAckParams v_nAckParams1 :=m_nAckParamsSingle(0, AduReasonCode_invalidADU_);
 						
 				alt {
 					[] mtcPort.receive(m_apduNAck(v_apduToSend, v_nAckParams1)) -> value v_apduReceived{
@@ -414,8 +421,8 @@ module EfcInfoExchange_TestCasesTcDev {
 				//Step 1: wait for user details request
 				mtcAccessPort.send(USERDETAILS_TR_TC_1);
 
-				var integer v_noParamsToUse;
-				var RecordOfUserParameterRequest listOfParameterReq;
+				var integer v_noReqAdusReceived;
+				var RecordOfUserParameterRequest listOfParametersRequested;
 				alt {
 					[] mtcPort.receive(mw_apduRequest) -> value v_apduReceived{
                 		                    		
@@ -429,14 +436,14 @@ module EfcInfoExchange_TestCasesTcDev {
 						//Set default verdict
 						setverdict(pass);
 
-						v_noParamsToUse := sizeof(v_apduReceived.infoExchangeContent.adus.requestAdus);
+						v_noReqAdusReceived := sizeof(v_apduReceived.infoExchangeContent.adus.requestAdus);
 						//Set verdict to fail in case it fails
 						
-						for (var integer v_loop1 :=0; v_loop1<v_noParamsToUse;v_loop1:=v_loop1+1) {	
+						for (var integer v_loop1 :=0; v_loop1<v_noReqAdusReceived;v_loop1:=v_loop1+1) {	
  							if ( match(v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1], mw_aduRequestProvideUserDetails)) {
-								listOfParameterReq := v_apduReceived.infoExchangeContent.adus.requestAdus[v_ct].userDetailsRequest.listOfParametersRequested;
-								for (var integer v_loop2 :=0; v_loop2<sizeof(listOfParameterReq);v_loop2:=v_loop2+1) {
-									if (not (match(listOfParameterReq[v_loop2], mw_userDetailsSupportedListOfParameters ))) {
+								listOfParametersRequested := v_apduReceived.infoExchangeContent.adus.requestAdus[v_ct].userDetailsRequest.listOfParametersRequested;
+								for (var integer v_loop2 :=0; v_loop2<sizeof(listOfParametersRequested);v_loop2:=v_loop2+1) {
+									if (not (match(listOfParametersRequested[v_loop2], mw_userDetailsSupportedListOfParameters ))) {
 										setverdict(fail);
 										stop;
 									}
@@ -451,7 +458,7 @@ module EfcInfoExchange_TestCasesTcDev {
 
 				//Step 2 send ProvideUserDetails within TIME1
 				f_wait(USERDETAILS_TIME1_MIN_TC);
-				var Adus v_adus[v_noParamsToUse];
+				var Adus v_adus[v_noReqAdusReceived];
 				
 				// TODO PT140: prepare in v_adus provideUserDetailsADU with Status Flag /= 1..5 and listOfUserParameters begin present								                   
 				
@@ -462,7 +469,7 @@ module EfcInfoExchange_TestCasesTcDev {
 				t_step.start(USERDETAILS_TIME2_MAX_TC);
 				
 				//step 3 wait for AckADU with NAckApdu and invaldAdu error (0)
-				var NAckParams v_nAckParams1 :={{0, AduReasonCode_invalidADU_}}
+				var NAckParams v_nAckParams1 :=m_nAckParamsSingle(0, AduReasonCode_invalidADU_);
 						
 				alt {
 					[] mtcPort.receive(m_apduNAck(v_apduToSend, v_nAckParams1)) -> value v_apduReceived{
@@ -494,8 +501,8 @@ module EfcInfoExchange_TestCasesTcDev {
 				//Step 1: wait for user details request
 				mtcAccessPort.send(USERDETAILS_TR_TC_1);
 
-				var integer v_noParamsToUse;
-				var RecordOfUserParameterRequest listOfParameterReq;
+				var integer v_noReqAdusReceived;
+				var RecordOfUserParameterRequest listOfParametersRequested;
 				alt {
 					[] mtcPort.receive(mw_apduRequest) -> value v_apduReceived{
                 		                    		
@@ -509,14 +516,14 @@ module EfcInfoExchange_TestCasesTcDev {
 						//Set default verdict
 						setverdict(pass);
 
-						v_noParamsToUse := sizeof(v_apduReceived.infoExchangeContent.adus.requestAdus);
+						v_noReqAdusReceived := sizeof(v_apduReceived.infoExchangeContent.adus.requestAdus);
 						//Set verdict to fail in case it fails
 						
-						for (var integer v_loop1 :=0; v_loop1<v_noParamsToUse;v_loop1:=v_loop1+1) {	
+						for (var integer v_loop1 :=0; v_loop1<v_noReqAdusReceived;v_loop1:=v_loop1+1) {	
  							if ( match(v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1], mw_aduRequestProvideUserDetails)) {
-								listOfParameterReq := v_apduReceived.infoExchangeContent.adus.requestAdus[v_ct].userDetailsRequest.listOfParametersRequested;
-								for (var integer v_loop2 :=0; v_loop2<sizeof(listOfParameterReq);v_loop2:=v_loop2+1) {
-									if (not (match(listOfParameterReq[v_loop2], mw_userDetailsSupportedListOfParameters ))) {
+								listOfParametersRequested := v_apduReceived.infoExchangeContent.adus.requestAdus[v_ct].userDetailsRequest.listOfParametersRequested;
+								for (var integer v_loop2 :=0; v_loop2<sizeof(listOfParametersRequested);v_loop2:=v_loop2+1) {
+									if (not (match(listOfParametersRequested[v_loop2], mw_userDetailsSupportedListOfParameters ))) {
 										setverdict(fail);
 										stop;
 									}
@@ -531,7 +538,7 @@ module EfcInfoExchange_TestCasesTcDev {
 
 				//Step 2 send ProvideUserDetails within TIME1
 				f_wait(USERDETAILS_TIME1_MIN_TC);
-				var Adus v_adus[v_noParamsToUse];
+				var Adus v_adus[v_noReqAdusReceived];
 				
 				// TODO PT140: prepare in v_adus provideUserDetailsADU with invalid parameters in UserParameterResponse field								                   
 				
@@ -542,7 +549,7 @@ module EfcInfoExchange_TestCasesTcDev {
 				t_step.start(USERDETAILS_TIME2_MAX_TC);
 				
 				//step 3 wait for AckADU with NAckApdu and invaldAdu error (0)
-				var NAckParams v_nAckParams1 :={{0, AduReasonCode_invalidADU_}}
+				var NAckParams v_nAckParams1 :=m_nAckParamsSingle(0, AduReasonCode_invalidADU_);
 						
 				alt {
 					[] mtcPort.receive(m_apduNAck(v_apduToSend, v_nAckParams1)) -> value v_apduReceived{
@@ -915,7 +922,8 @@ module EfcInfoExchange_TestCasesTcDev {
               	// if negative Ack or not received set test failure
 
 				//Create parameters for the m_apduNAck			
-				var NAckParams v_nAckParams1 :={{0, AduReasonCode_semanticError_}};
+				var NAckParams v_nAckParams1 :=m_nAckParamsSingle(0, AduReasonCode_semanticError_);
+				//TODO Does the construct below really work?
 				var NAckParams v_nAckParams2 :={{1, AduReasonCode_semanticError_},{2,AduReasonCode_semanticError_},{3, AduReasonCode_semanticError_}};
 
 				alt {
@@ -976,14 +984,11 @@ module EfcInfoExchange_TestCasesTcDev {
                 // Start timer
                 t_step.start(DSRC_CONTRACTISSUERLIST_TIME1_MAX_TC);   
 
-                // Step 2: Wait for NAck_Apdu with issueCode=NAck_requestSentTooOften(10)
+                // Step 2: Wait for NAck_requestSentTooOften
                 // within the time DSRC.CONTRACTISSUERLIST.TIME1  
 
-				//Create parameters for the m_apduNAck			
-				var NAckParams v_nAckParams :={{0, ApduReasonCode_requestSentTooOften_}};
-
 				alt {
-					[] mtcPort.receive(m_apduNAck(v_apduToBeSent,v_nAckParams)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAckRequestSentTooOften(v_apduToBeSent)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
 

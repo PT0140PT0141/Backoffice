@@ -166,9 +166,26 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 	    );
 
 		type record of record {
-    		NumberOfADUStruct issueADUStruct,
-    		AduReasonCode issueCode
+			NumberOfADUStruct issueADUStruct,
+			ASNAUX.UTF8String issueLocation length (0 .. 512) optional,
+			ASNAUX.UTF8String issueContent length (0 .. 1024) optional,
+			AduReasonCode issueCode,
+			ASNAUX.UTF8String issueText length (0 .. 1024) optional
 	  	}  NAckParams;
+	  	
+		template (value) NAckParams m_nAckParamsSingle(
+			in NumberOfADUStruct p_issueADUStruct, 
+			in AduReasonCode p_issueCode
+		):={
+			{
+				issueADUStruct:=p_issueADUStruct,
+				issueLocation := omit,
+				issueContent := omit,
+				issueCode := p_issueCode,
+				issueText:= omit
+			}
+		};
+	  	
 
 		template AckADU m_aduNAck(in InfoExchange p_apduToAck, in NAckParams p_nAckParams) := {
 			apduIdentifier := p_apduToAck.infoExchangeContent.apci.apduIdentifier,
@@ -240,7 +257,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
         	}
         	
         	template (value) RequestADU m_aduRequestProvideUserDetails(
-        	                                                           in template (value) UserParameterRequests p_userParameterRequests
+        		in template (value) UserParameterRequests p_userParameterRequests
         	) modifies mw_aduRequestProvideUserDetails := {
         		userDetailsRequest:={
         			requestedADUType := AduType_provideUserDetailsADU_,	
@@ -251,15 +268,15 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
         		}
         	}
         	       			
-        //	template ProvideUserDetailsADU mw_userDetailsPrivacy_apduIdentifier := {
-        //        originaluserIdRequest := DEFINED_USERID,
-        //        userId := *,
-        //        statusFlag := * ,
-        //        listOfUserParameters.UserParameterResponse := omit,
-        //        listOfUserParameters.userParameterResponse := *,
-        //        listOfUserParameters.userParameterStatus := 2,
-        //        listOfUserParameters.userInfoValidityPeriod := omit
-        //	}
+//        	template ProvideUserDetailsADU mw_userDetailsPrivacy_apduIdentifier := {
+//                originaluserIdRequest := DEFINED_USERID,
+//                userId := *,
+//                statusFlag := * ,
+//                listOfUserParameters.UserParameterResponse := omit,
+//                listOfUserParameters.userParameterResponse := *,
+//                listOfUserParameters.userParameterStatus := 2,
+//                listOfUserParameters.userInfoValidityPeriod := omit
+//        	}
         	
         	template ProvideUserDetailsADU mw_aduProvideUserDetails := {
             	originaluserIdRequest := EXISTING_USER_ID,
@@ -289,14 +306,12 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				}
 			}
 		  	
-		  	template RequestADU m_aduRequestListOfUsers := {
-		  		modifies mw_aduRequestListOfUsers :={
-		  			userListRequest :={
-		  				requestedADUType	:= AduType_provideUserIdListADU_,
-      					userIdRequestType	:= 0,
-      					userId				:= EXISTING_USER_ID,
-						userIdRequestTime	:= fx_getUtc() 
-					}
+		  	template (value) RequestADU m_aduRequestListOfUsers := {
+	  			userListRequest :={
+	  				requestedADUType	:= AduType_provideUserIdListADU_,
+  					userIdRequestType	:= 0,
+  					userId				:= EXISTING_USER_ID,
+					userIdRequestTime	:= fx_getUtc() 
 				}
 			}
 
@@ -311,11 +326,12 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		group EXCEPTIONLIST {
 		  	template ExceptionListADU mw_aduExceptionList := {
 		  	  	exceptionListVersion := ?,
-				exceptionListType := {ExceptionListType_blackList_, ExceptionListType_whiteList_, ExceptionListType_discountedList_},
+				exceptionListType := (ExceptionListType_blackList_, ExceptionListType_whiteList_, ExceptionListType_discountedList_),
 		  	  	exceptionValidityStart := ?,
 		  	  	exceptionValidityEnd := omit,
 		  	  	exceptionListEntries := ?
 		  	}
+		  	
 		  	template ExceptionListEntry mw_exceptionListEntry := {
 		  	  	userId := ?,
 		  	  	statusType := ?,
