@@ -329,12 +329,28 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		  	}
 		}
 		
-
 		group TRUSTOBJECTS {}
 
-		group PAYMENTCLAIM{}
+		group PAYMENTCLAIM {}
 
-		group DSRC_CONTRACTISSUERLIST{}
+		group DSRC_CONTRACTISSUERLIST {
+			
+			template ContractIssuerListADU mw_aduContractIssuerList := {
+				efcContextMark := ?,
+				equipmentClass := ?,
+				manufacturerID := ?,
+				uniquePartOfPAN := ?,
+				typeOfEFCApplication := ?,
+				securityLevel := ?,
+				acCrKeyReference := ?,
+				authKeyRererence := ?,
+				validFrom := ?
+			} 		
+		
+			template Adus mw_recordOfAduContractIssuerList := {
+				contractIssuerListADUs := ?
+			}
+		}
 
 		group DSRC_EFCCONTEXTDATA {}
 
