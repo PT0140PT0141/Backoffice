@@ -173,7 +173,11 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			ASNAUX.UTF8String issueText length (0 .. 1024) optional
 	  	}  NAckParams;
 	  	
-		template (value) NAckParams m_nAckParamsSingle(
+		/**
+		 * 
+		 * @desc Construct with one issueCode value, to be used when creating customised m_apduNAck)
+		 */ 		
+	 	template (value) NAckParams m_nAckParamsSingle(
 			in NumberOfADUStruct p_issueADUStruct, 
 			in AduReasonCode p_issueCode
 		):={

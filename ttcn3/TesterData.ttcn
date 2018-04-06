@@ -4,8 +4,7 @@
 // * @version   $id$
 // */
 
-module EfcInfoExchange_TesterData {
-
+<<<<<<< HEAD
 	//importing other modules
 	import from EfcInfoExchange_Functions all;
 		
@@ -182,3 +181,217 @@ module EfcInfoExchange_TesterData {
 //}
 //     
 //    
+=======
+module EfcInfoExchange_TesterData {
+
+	//importing other modules
+	import from EfcInfoExchange_Functions all;
+		
+	//importing ASN.1 data automatically translated into TTCN-3	
+	import from EfcInfoExchange language "ASN.1:1997" all;	//from ISO 12855:2015
+	import from EfcDsrcApplication language "ASN.1:1997" all;
+
+	//importing ASN.1 data manually translated into TTCN-3
+	import from EfcInfoExchange_ParameterisedAsn1Data all;
+	import from Common_ParametrisedAsn1Data all;
+	
+
+	group ContractIssuerData {
+
+		//TODO set sensible default values of the tester data parameters
+		modulepar EfcDsrcApplication.EFC_ContextMark TESTER_EFC_CONTEXT_MARK;
+		modulepar EfcInfoExchange.Int2 TESTER_EQUIPMENT_CLASS;
+		modulepar EfcInfoExchange.Int4 TESTER_MANUFACTURER_ID_1;
+		modulepar EfcInfoExchange.Int4 TESTER_MANUFACTURER_ID_2;
+		modulepar EfcInfoExchange.Int4 TESTER_MANUFACTURER_ID_3;
+		modulepar UTF8String TESTER_UNIQUE_PART_OF_PAN;
+		modulepar UTF8String TESTER_TYPE_OF_EFCAPPLICATION;
+		modulepar UTF8String TESTER_SECURITY_LEVEL;
+		modulepar EfcInfoExchange.Int2 TESTER_AC_CR_KEY_REFERENCE;
+		modulepar integer TESTER_AUTH_KEY_REFERENCE;
+
+				
+		template ContractIssuerListADU m_contractIssuerListADU(in EfcInfoExchange.Int4 p_manufacturerID):={
+			efcContextMark := TESTER_EFC_CONTEXT_MARK,
+			equipmentClass := TESTER_EQUIPMENT_CLASS,
+			manufacturerID := p_manufacturerID,
+			uniquePartOfPAN := TESTER_UNIQUE_PART_OF_PAN,
+			typeOfEFCApplication := TESTER_TYPE_OF_EFCAPPLICATION,
+			securityLevel := TESTER_SECURITY_LEVEL,
+			acCrKeyReference := TESTER_AC_CR_KEY_REFERENCE,
+			authKeyReference := TESTER_AUTH_KEY_REFERENCE,
+			validFrom := fx_getUtc(-3600*24) 
+	   	}
+ 	
+		modulepar ContractIssuerListADU TESTER_CONTRACT_ISSUER_DATA_VALID_1 := m_contractIssuerListADU(TESTER_MANUFACTURER_ID_1);
+        modulepar ContractIssuerListADU TESTER_CONTRACT_ISSUER_DATA_VALID_2 := m_contractIssuerListADU(TESTER_MANUFACTURER_ID_2);
+        modulepar ContractIssuerListADU TESTER_CONTRACT_ISSUER_DATA_VALID_3 := m_contractIssuerListADU(TESTER_MANUFACTURER_ID_3);
+		
+	} // end group ContractIssuerData
+	
+	group ProvideUserDetailsData {
+		modulepar UserParameterResponseDetails UserParameterResponseDetails_TESTER_VALUES[27]:={
+			{"UserName1","Company1","Street1","999999","Town1","Country1","CompanyTaxIdentifier1"}, //UserPostalAddress
+			1234567890, 										//ContractSerialNumber
+			{'ABCD'O, {2030, 12, 31}}, 							//ContractValidity 
+//	 modulepar EfcDsrcApplication.DriverCharacteristics DRIVER_CHARACTERISTICS_1 := {10, 255}; //INT!, INT1 in ISO14906
+//	 modulepar EfcDsrcApplication.EFC_ContextMark EFC_CONTEXTMARK_1 := {INFORMATION_SENDER_ID_FOR_TESTER, '11'O ,99};
+//	 modulepar EfcDsrcApplication.EnvironmentalCharacteristics ENVIRONMENTAL_CHARACTERISTICS_1 := {euro_6(6), co2class4(4)}; 
+//	 modulepar EfcDsrcApplication.EngineCharacteristics ENGINECHARACTERISTICS_1 := EngineCharacteristics_battery_;  
+//	 modulepar EfcDsrcApplication.EquipmentOBUId EQUIPMENT_OBU_ID_1:='11AA22BB33CC'O;
+//	 modulepar EfcDsrcApplication.EquipmentStatus EQUIPMENT_STATUS_1 := '01010101010101'B;//BitString(16)
+//	 modulepar EfcDsrcApplication.PersonalAccountNumber PAN1:=1000; //PAN value for testing
+//	 modulepar EfcDsrcApplication.PaymentMeans PAYMENT_MEANS_1 := {PAN1,{2030,12,31}, "1234"};
+//	 modulepar EfcDsrcApplication.PaymentMeansBalance PAYMENT_MEANS_BALANCE := {"7FFFFF"};
+//	 modulepar EfcDsrcApplication.PaymentMeansUnit PAYMENT_MEANS_UNIT_1 := "3F784";
+//	 modulepar EfcDsrcApplication.PersonalAccountNumber PERSONAL_ACCOUNT_NUMBER_1 := PAN1;
+//	 modulepar EfcDsrcApplication.Provider PROVIDER_1 := INFORMATION_SENDER_ID_FOR_TESTER;
+//	 modulepar EfcDsrcApplication.ReceiptContract RECEIPT_CONTRACT_1 := {INFORMATION_SENDER_ID_FOR_TESTER,"1F2E", 9999};
+//	 modulepar EfcDsrcApplication.ValidityOfContract VALIDITY_OF_CONTRACT_1 := {2030, 12, 31};
+//	 modulepar EfcDsrcApplication.VehicleAuthenticator VEHICLE_AUTHENTICATOR_1 := "1234567890ABCDEF";
+//	 modulepar EfcDsrcApplication.VehicleClass VEHICLE_CLASS_1 := 15;
+//	 modulepar EfcDsrcApplication.VehicleDimensions VEHICLE_DIMENSIONS_1 := {99, 99, 99};
+//	 modulepar EfcDsrcApplication.VehicleLicencePlateNumber VEHICLE_LICENSEPLATE_NUMBER_1 := {"EU", 1, "1C75D9"};
+//	 modulepar EfcDsrcApplication.VehicleIdentificationNumber VEHICLE_IDENTIFICATION_NUMBER_1 := 1111111111;
+//	 modulepar EfcDsrcApplication.VehicleWeightLaden c_VEHICLE_LADEN_WEIGHT_1 := 255;
+//	 modulepar EfcDsrcApplication.VehicleWeightLimits VEHICLE_WEIGHT_LIMITS_1 := {99, 150, 50}; 
+//	 modulepar EfcDsrcApplication.VehicleAxles VEHICLE_AXLES_1 := {15, {dualTyres,{4,3}}};
+//	 modulepar EfcDsrcApplication.ExhaustEmissionValues EXHAUST_EMISSION_VALUES_1 := {mg_km(0), 0, 0, 0, 0};
+//	 modulepar EfcDsrcApplication.DieselEmissionValues DIESEL_EMISSION_VALUES_1 := {mg_km(0), 0, 0}
+//	 modulepar ExtendedUserPostalAddress EXTENDED_USER_POSTAL_ADDRESS_1 := {
+//	   "RoleDescriptor1",
+//	   "OrganisationName1",
+//	   "OrganisationUnit1",
+//	   "Function1",
+//	   "FormOfAddress1",
+//	   "Qualification1",
+//	   "Surname1",
+//	   "GivenName1",
+//	   "DeliveryServicePoint1",
+//	   "ThouroughFare1",
+//	   "Postcode1",
+//	   "Town1",
+//	   "Region1",
+//	   "Country1",
+//	   "Code1",
+//	   "Phone1",
+//	   "PhoneSubscriberNumber1",
+//	   "Code2",
+//	   "Mobile1",
+//	   "MobileSubscriberNumber2",
+//	   "Code3",
+//	   "Fax1",
+//	   "FaxSubscriberNumber1",
+//	   "Email1" 
+//	 }; 																			//ContractSerialNumber
+			
+		};
+	}
+	
+	
+	
+	
+	
+} // end module 
+	
+// 
+//    /**
+//     * @desc    Declare Testerdata of UserParameterResponseDetails
+//     */
+//
+//	//importing other modules
+//	import from EfcInfoExchange_Pixits all;
+//    //importing ASN.1 data automatically translated into TTCN-3	
+//    import from EfcInfoExchange language "ASN.1:1997" all;
+//    import from EfcDsrcApplication language "ASN.1:1997" all;
+//    
+//    //importing ASN.1 data manually translated into TTCN-3
+//    import from EfcInfoExchange_ParameterisedAsn1Data all;
+//    import from Common_ParametrisedAsn1Data all;
+//    
+//    //PT140 TODO redefine these as USER_PARAMETER_RESPONSE_DUMMY_VALUES record of
+//    modulepar UserPostalAddress TESTERUSERPOSTALADDRESS1 := {"UserName1","Company1","Street1","999999","Town1","Country1","CompanyTaxIdentifier1"};
+//    modulepar EfcDsrcApplication.ContractSerialNumber CONTRACT_SERIAL_NUMBER_1 := 1234567890; //INT4 in ISO14906
+//    modulepar EfcDsrcApplication.ContractValidity CONTRACT_VALIDITY_1 := {'ABCD'O, {2030, 12, 31}};
+//    modulepar EfcDsrcApplication.DriverCharacteristics DRIVER_CHARACTERISTICS_1 := {10, 255}; //INT!, INT1 in ISO14906
+//    modulepar EfcDsrcApplication.EFC_ContextMark EFC_CONTEXTMARK_1 := {INFORMATION_SENDER_ID_FOR_TESTER, '11'O ,99};
+//    modulepar EfcDsrcApplication.EnvironmentalCharacteristics ENVIRONMENTAL_CHARACTERISTICS_1 := {euro_6(6), co2class4(4)}; 
+//    modulepar EfcDsrcApplication.EngineCharacteristics ENGINECHARACTERISTICS_1 := EngineCharacteristics_battery_;  
+//    modulepar EfcDsrcApplication.EquipmentOBUId EQUIPMENT_OBU_ID_1:='11AA22BB33CC'O;
+//    modulepar EfcDsrcApplication.EquipmentStatus EQUIPMENT_STATUS_1 := '01010101010101'B;//BitString(16)
+//    modulepar EfcDsrcApplication.PersonalAccountNumber PAN1:=1000; //PAN value for testing
+//    modulepar EfcDsrcApplication.PaymentMeans PAYMENT_MEANS_1 := {PAN1,{2030,12,31}, "1234"};
+//    modulepar EfcDsrcApplication.PaymentMeansBalance PAYMENT_MEANS_BALANCE := {"7FFFFF"};
+//    modulepar EfcDsrcApplication.PaymentMeansUnit PAYMENT_MEANS_UNIT_1 := "3F784";
+//    modulepar EfcDsrcApplication.PersonalAccountNumber PERSONAL_ACCOUNT_NUMBER_1 := PAN1;
+//    modulepar EfcDsrcApplication.Provider PROVIDER_1 := INFORMATION_SENDER_ID_FOR_TESTER;
+//    modulepar EfcDsrcApplication.ReceiptContract RECEIPT_CONTRACT_1 := {INFORMATION_SENDER_ID_FOR_TESTER,"1F2E", 9999};
+//    modulepar EfcDsrcApplication.ValidityOfContract VALIDITY_OF_CONTRACT_1 := {2030, 12, 31};
+//    modulepar EfcDsrcApplication.VehicleAuthenticator VEHICLE_AUTHENTICATOR_1 := "1234567890ABCDEF";
+//    modulepar EfcDsrcApplication.VehicleClass VEHICLE_CLASS_1 := 15;
+//    modulepar EfcDsrcApplication.VehicleDimensions VEHICLE_DIMENSIONS_1 := {99, 99, 99};
+//    modulepar EfcDsrcApplication.VehicleLicencePlateNumber VEHICLE_LICENSEPLATE_NUMBER_1 := {"EU", 1, "1C75D9"};
+//    modulepar EfcDsrcApplication.VehicleIdentificationNumber VEHICLE_IDENTIFICATION_NUMBER_1 := 1111111111;
+//    modulepar EfcDsrcApplication.VehicleWeightLaden c_VEHICLE_LADEN_WEIGHT_1 := 255;
+//    modulepar EfcDsrcApplication.VehicleWeightLimits VEHICLE_WEIGHT_LIMITS_1 := {99, 150, 50}; 
+//    modulepar EfcDsrcApplication.VehicleAxles VEHICLE_AXLES_1 := {15, {dualTyres,{4,3}}};
+//    modulepar EfcDsrcApplication.ExhaustEmissionValues EXHAUST_EMISSION_VALUES_1 := {mg_km(0), 0, 0, 0, 0};
+//    modulepar EfcDsrcApplication.DieselEmissionValues DIESEL_EMISSION_VALUES_1 := {mg_km(0), 0, 0}
+//    modulepar ExtendedUserPostalAddress EXTENDED_USER_POSTAL_ADDRESS_1 := {
+//    	"RoleDescriptor1",
+//    	"OrganisationName1",
+//    	"OrganisationUnit1",
+//    	"Function1",
+//    	"FormOfAddress1",
+//    	"Qualification1",
+//    	"Surname1",
+//    	"GivenName1",
+//    	"DeliveryServicePoint1",
+//    	"ThouroughFare1",
+//    	"Postcode1",
+//    	"Town1",
+//    	"Region1",
+//    	"Country1",
+//    	"Code1",
+//    	"Phone1",
+//    	"PhoneSubscriberNumber1",
+//    	"Code2",
+//    	"Mobile1",
+//    	"MobileSubscriberNumber2",
+//    	"Code3",
+//    	"Fax1",
+//    	"FaxSubscriberNumber1",
+//    	"Email1" 
+//    }; 
+//    	   	
+//    modulepar ASNAUX.UTF8String PREFERRED_USER_LANGUAGE1 := "SE";
+//    
+//    /**
+//     * @desc    Preparing test user id data
+//     */    
+//    
+//    type record of UserId UserIdList;
+//	modulepar UserIdList TEST_USER_ID_LIST := f_createUserIdList(); 
+//
+//	function f_createUserIdList() return UserIdList{
+//        const integer c_maxTestUsers := 10000; 
+//        var UserIdList v_userIdList;
+//        
+//        //initialize test user Id values 
+//        for (var integer index:=0; index< c_maxTestUsers; index := index+1) {
+//        	v_userIdList[index] := {
+//        		index, //PT140: must be of type pan
+//        		index+10000, // contractSerialNumber = INT4; may start e.g. at 10000
+//        		"EU"&index, // licenseplatenumber = type LPN
+//        		"99"&index // type obeId = manufacturer id (i.e. 99) + equipment OBU id
+//        	}
+//        }
+//        return v_userIdList;
+//	}
+//	// make them availble at run time
+//
+//	
+//}
+//     
+//    
+>>>>>>> stash

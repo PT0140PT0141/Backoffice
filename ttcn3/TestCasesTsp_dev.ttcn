@@ -98,7 +98,7 @@ module EfcInfoExchange_TestCasesTspDev {
 						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
 						t_step.stop;
 						
-						if fx_evaluateAuthenticator(v_apduReceived)) {
+						if (fx_evaluateAuthenticator(v_apduReceived)) {
 							setverdict(pass);
 							// Step3: Send DefaultAck with correct identifier and set verdict
 							f_wait(USERDETAILS_TIME2_MIN_TSP);
@@ -115,7 +115,7 @@ module EfcInfoExchange_TestCasesTspDev {
         } // End of group Valid_Behaviour
          
         group Invalid_Behaviour {
-			Testcase TP_TSP_Base_BI_01() runs on MainTestComponent system TestAdapter {
+			testcase TP_TSP_Base_BI_01() runs on MainTestComponent system TestAdapter {
 				/**
 				 * @desc    TP_TSP_Base_BI_01: Verify that the TSP correctly responds to invalid aidIdentifier in the APCI field received inside an APDU 
 				 * @remark  [16986:2016], Clause 6.2.1 and Table A.1/2 
@@ -173,7 +173,7 @@ module EfcInfoExchange_TestCasesTspDev {
 				f_closeDownMtc(); 		
 			}  // End of Testcase TP_TSP_Base_BI_01
 			
-			Testcase TP_TSP_Base_BI_02() runs on MainTestComponent system TestAdapter {
+			testcase TP_TSP_Base_BI_02() runs on MainTestComponent system TestAdapter {
 				/**
 				 * @desc    TP_TSP_Base_BI_02: Verify that the TSP correctly responds to invalid apduOriginator in APCI field received inside an APDU 
 				 * @remark  [16986:2016], Clause 6.2.1 and Table A.1/2 
@@ -234,7 +234,7 @@ module EfcInfoExchange_TestCasesTspDev {
 				
 			} //End of TP_TSP_Base_BI_02
 
-			Testcase TP_TSP_Base_BI_03() runs on MainTestComponent system TestAdapter {
+			testcase TP_TSP_Base_BI_03() runs on MainTestComponent system TestAdapter {
 				/**
 				 * @desc    TP_TSP_Base_BI_03: Verify that the TSP correctly responds to invalid or unknown informationSenderID in APCI field received inside an APDU 
 				 * @remark  [16986:2016], Clause 6.2.1 and Table A.1/2 
@@ -295,7 +295,7 @@ module EfcInfoExchange_TestCasesTspDev {
 				
 			} //End of TP_TSP_Base_BI_03
 			
-			Testcase TP_TSP_Base_BI_04() runs on MainTestComponent system TestAdapter {
+			testcase TP_TSP_Base_BI_04() runs on MainTestComponent system TestAdapter {
 				/**
 				 * @desc    TP_TSP_Base_BI_04: Verify that the TSP correctly responds to an informationRecipientID in APCI field which does not address the TSP itself 
 				 * @remark  [16986:2016], Clause 6.2.1 and Table A.1/2 
@@ -356,7 +356,7 @@ module EfcInfoExchange_TestCasesTspDev {
 				
 			} //End of TP_TSP_Base_BI_04
 
-			Testcase TP_TSP_Base_BI_05() runs on MainTestComponent system TestAdapter {
+			testcase TP_TSP_Base_BI_05() runs on MainTestComponent system TestAdapter {
 				/**
 				 * @desc    TP_TSP_Base_BI_05: Verify that the TSP correctly responds to invalid apduIdentifier in APCI field received inside an APDU 
 				 * @remark  [16986:2016], Clause 6.2.1 and Table A.1/2 
@@ -437,9 +437,9 @@ module EfcInfoExchange_TestCasesTspDev {
 					}
 				} 
 				f_closeDownMtc(); 												
-			}	End of 	TP_TSP_Base_BI_05
+			}	//End of 	TP_TSP_Base_BI_05
 
-			Testcase TP_TSP_Base_BI_06() runs on MainTestComponent system TestAdapter {
+			testcase TP_TSP_Base_BI_06() runs on MainTestComponent system TestAdapter {
 				/**
 				 * @desc    TP_TSP_Base_BI_06: Verify that the TSP correctly responds to an APDU which contains the nextAPDUId field  inside the APCI field 
 				 * @remark  [16986:2016], Clause 6.2.1 and Table A.1/2 
@@ -497,7 +497,7 @@ module EfcInfoExchange_TestCasesTspDev {
 				
 			} //End of TP_TSP_Base_BI_06
 			
-			Testcase TP_TSP_Base_BI_07() runs on MainTestComponent system TestAdapter {
+			testcase TP_TSP_Base_BI_07() runs on MainTestComponent system TestAdapter {
 				/**
 				 * @desc    TP_TSP_Base_BI_07: Verify that the TSP correctly responds to an APDU which contains the inResponseToApduId inside the APCI field but the received APDU is not in response to a previous APDU 
 				 * @remark  [16986:2016], Clause 6.2.1 and Table A.1/2 
@@ -582,7 +582,7 @@ module EfcInfoExchange_TestCasesTspDev {
 				
 			} //End of TP_TSP_Base_BI_07				
 
-			Testcase TP_TSP_Base_BI_08() runs on MainTestComponent system TestAdapter {
+			testcase TP_TSP_Base_BI_08() runs on MainTestComponent system TestAdapter {
 				/**
 				 * @desc    TP_TSP_Base_BI_08: Verify that the TSP correctly responds to an APDU which contains an invalid inResponseToApduId value inside  the APCI field 
 				 * @remark  [16986:2016], Clause 6.2.1 and Table A.1/2 
@@ -610,28 +610,32 @@ module EfcInfoExchange_TestCasesTspDev {
 						f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived)); 							
 						//Read the trustObjectPurpose received and add to set 				
 						if ((match(v_apduReceived, m_apduTrustObjectCertificateObject)) or 
-						    (match(v_apduReceived, m_apduTrustObjectPublicKeyObject))) 
+						    (match(v_apduReceived, m_apduTrustObjectPublicKeyObject))) {
 							isCertificateOrPublicKey:=true;
+						    }
 						if (match(v_apduReceived, m_apduTrustObjectGenericTONotCrl)) {
 							setverdict(fail);
 							stop;
 						};
-						if (match(v_apduReceived ,m_apduTrustObjectDsrcKeyRef)) 
+						if (match(v_apduReceived ,m_apduTrustObjectDsrcKeyRef)){ 
 							isDsrcKeyRef:=true;
-						if (match(v_apduReceived ,m_apduTrustObjectMacMasterKey)) 
+						}
+						if (match(v_apduReceived ,m_apduTrustObjectMacMasterKey)) {
 							isMacMasterKey:=true;
-						if (match(v_apduReceived ,m_apduTrustObjectDsrcMasterKey)) 
+						}
+						if (match(v_apduReceived ,m_apduTrustObjectDsrcMasterKey)) {
 							isDsrcMasterKey:=true;
-						}										
-					} // End of alt statement
-					// Only allowed combinations according to profile
-					if not (
-						(ICS_A2_1_isDsrc and isCertificateOrPublicKey and isDsrcKeyRef and isMacMasterKey and isDsrcMasterKey) or			 				
-						(ICS_A2_2_isGnss and isCertificateOrPublicKey and isDsrcKeyRef)
-						) {
-							setverdict(fail);  
-							stop;
-						};			 				
+						}
+					}										
+				} // End of alt statement
+				// Only allowed combinations according to profile
+				if (not (
+					(ICS_A2_1_isDsrc and isCertificateOrPublicKey and isDsrcKeyRef and isMacMasterKey and isDsrcMasterKey) or			 				
+					(ICS_A2_2_isGnss and isCertificateOrPublicKey and isDsrcKeyRef)
+				)) {
+					setverdict(fail);  
+					stop;
+				};			 				
 
 				// TODO PT140: Templates to be defined
 				// Step 1: Send Initiating APDU containing a valid TrustObjectADU with inResponseToApduId not equal to the value of the previously sent APDU
@@ -717,7 +721,7 @@ module EfcInfoExchange_TestCasesTspDev {
 				
 			} //End of TP_TSP_Base_BI_08
 			
-			Testcase TP_TSP_Base_BI_09() runs on MainTestComponent system TestAdapter {
+			testcase TP_TSP_Base_BI_09() runs on MainTestComponent system TestAdapter {
 				/**
 				 * @desc    TP_TSP_Base_BI_09: Verify that the TSP correctly responds to an invalid apduDate inside the APCI field of a received APDU
 				 * @remark  [16986:2016], Clause 6.2.1 and Table A.1/2 
