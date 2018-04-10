@@ -14,7 +14,7 @@
  *	Userdetails					! done					! partially done! TSP_USERDETAILS_BI_02 and TSP_USERDETAILS_BI_03 to be  revised
  *	ListOfUsers					! done					! done			!
  *	ExceptionList				! done					! done			!
- *	TrustObjects				! partially done    	! done			! TrustObject templates to be defined. TP_TSP_TRUSTOBJECTS_BV_03 and TP_TSP_TRUSTOBJECTS_BV_04 not asking for all possible combinations 
+ *	TrustObjects				! done    				! done			! TrustObject templates to be defined.
  *	PaymentClaim				! partially done		! partially done! BillingDetails and PaymentClaim templates to be defined
  *	DSRC.ContractIssuerList		! partially done		! partially done! mw_aduContractIssuerList to be defined
  *	DSRC.EFCContextData			! open					! open			! 
@@ -1857,43 +1857,41 @@ module EfcInfoExchange_TestCasesTspDev {
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_4_implementedTRUSTOBJECTSElectronicTransfer;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				// PT140 TODO: m_aduRequestTrustObjects template to be defined
-				// PT140 TODO: loop in all available types of trustobject supported by the IUT not realised. Multiple triggers and a loop?
-				var InfoExchange v_apduRespondedTo := m_apduNoSecInit({m_aduRequestTrustObjects});
-				f_sendAndLogApdu(v_apduRespondedTo);
+				// Loop in all available types of trustobject supported by the IUT as specified by the length of SENT_TRUST_OBJECTS_SUPPORTED Pixit record
+				var integer v_trustObjectsToBeSent = sizeof(RECEIVED_TRUST_OBJECTS_SUPPORTED);
+				for (var integer v_trustObjectsReceived :=1; v_trustObjectsReceived<v_trustObjectsToBeSent;v_trustObjectsReceived:=v_trustObjectsReceived+1)
+					{
+					// Prepare a request of a Trust Object by taking allowed type and purpose from the RECEIVED_TRUST_OBJECTS_SUPPORTED Pixit value
+					// PT140 TODO: Check whether indexing a record of records is correctly done
+						var InfoExchange v_apduRespondedTo := m_apduNoSecInit(modifies m_aduRequestTrustObjects{
+						  	trustObjectRequest.requestedTrustObject.trustObjectSpec.typeOfTrustObject := SENT_TRUST_OBJECTS_SUPPORTED[v_trustObjectsReceived].[1],
+						  	trustObjectRequest.requestedTrustObject.trustObjectSpec.typeOfTrustObject := SENT_TRUST_OBJECTS_SUPPORTED[v_trustObjectsReceived].[2]						  	
+							});
+						f_sendAndLogApdu(v_apduRespondedTo);
 
-				// Set timer
-                 t_step.start(TRUSTOBJECTS_TYPE1_TIME1_MAX_TSP);
-				// Step #2: Wait for TrustObjects ADU
-				// Either we receive an APDU containing  TrustObject or the timeout expires
-				// timeout expiration is handled in the altstep branch
-
-				// PT140 TODO: m_apduTrustObjects to be defined
-
-                 alt {
-                      [] mtcPort.receive(m_apduTrustObjects(v_apduRespondedTo)) -> value v_apduReceived {
-                      		
-						// Log what we received 					
-						f_logApduReceivedAndTStep();
-
-						// Check whether the ADU arrived too soon: the function will set failure and stop the test if so
-						f_checkMinimumTime(t_step, TRUSTOBJECTS_TYPE1_TIME1_MIN_TSP); // 
- 
-						// Trust Object ADU correctly arrived. Stop timer
-						t_step.stop;
-
-						//Set verdict
-						setverdict(pass);
- 						                       
-                        // Step #3: Send DefaultACK with correct identifier
-                        
-						f_wait(TRUSTOBJECTS_TYPE1_TIME2_MIN_TSP);
-						f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
-						
-                      }
-                    } // End of alt statement
-				
+						// Set timer
+                		 t_step.start(TRUSTOBJECTS_TYPE1_TIME1_MAX_TSP);
+						// Step #2: Wait for TrustObjects ADU
+						// Either we receive an APDU containing  TrustObject or the timeout expires
+						// timeout expiration is handled in the altstep branch
+						// PT140 TODO: m_apduTrustObjects to be defined
+                 		alt {
+                      		[] mtcPort.receive(m_apduTrustObjects(v_apduRespondedTo)) -> value v_apduReceived {
+								// Log what we received 					
+								f_logApduReceivedAndTStep();
+								// Check whether the ADU arrived too soon: the function will set failure and stop the test if so
+								f_checkMinimumTime(t_step, TRUSTOBJECTS_TYPE1_TIME1_MIN_TSP); // 
+								// Trust Object ADU correctly arrived. Stop timer
+								t_step.stop;
+                        		// Step #3: Send DefaultACK with correct identifier
+								f_wait(TRUSTOBJECTS_TYPE1_TIME2_MIN_TSP);
+								f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+                      			}
+                    		} // End of alt statement
+						}; // end of for statement
+				//Set verdict
+				setverdict(pass);
 				f_closeDownMtc(); 
-				
 				 
            } // End of TP_TSP_TRUSTOBJECTS_BV_03
 
@@ -1912,35 +1910,76 @@ module EfcInfoExchange_TestCasesTspDev {
 				f_sendAndLogTrigger(TRUSTOBJECTS_TR_1);
 				//  Wait for request for TRUSTOBJECTS
 				// PT140 TODO: m_aduRequestTrustObjects template to be defined
-				// PT140 TODO: loop in all available types of trustobject requested supported by the IUT not realised. Multiple triggers and a loop?
+				// PT140 TODO: loop in all available types of trustobject requested supported by the IUT by repeating receive
 				// Set timer
+				var integer v_expectedTrustObjectRequests := sizeof(SENT_TRUST_OBJECTS_SUPPORTED);
+				var integer v_receivedTrustObjects := 0;
                 t_step.start(TRUSTOBJECTS_TYPE1_TIME1_MAX_TSP);                 
 				alt {
 					[] mtcPort.receive(m_aduRequestTrustObjects) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
 						t_step.stop;
-					}
-				} 					
-                // Step 1: Send one valid APDU containing one valid TrustObjectADU
-                // PT140 TODO : m_aduTrustObjects template to be defined
-				// PT140 TODO: Analysis of what requested and what to be sent missing
-				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(m_aduTrustObjects);                 
-				f_sendAndLogApdu(v_apduRespondedTo);                 
+						v_receivedTrustObjects := v_receivedTrustObjects + 1;
+                		// Step 1: Send one valid APDU containing one valid TrustObjectADU
+                		// PT140 TODO : m_aduTrustObjects template to be defined
+						// PT140 TODO: Analysis of what requested and what to be sent missing
+						var integer v_requestedTrustObjectType := v_apduReceived.Adus.requestAdus.trustObjectRequest.trustObjectSpec.typeOfTrustObject;
+						var record v_requestedTrustObjectPurpose := v_apduReceived.Adus.requestAdus.trustObjectRequest.trustObjectSpec.purposesOfTrustObject;
+						template (value) ApciFields m_apciSendFirstInvalidAid modifies m_apciSendFirst:= {aidIdentifier:=0};
+						if (v_requestedTrustObjectType == certificate){
+							var InfoExchange v_apduRespondedTo := m_apduNoSecInit(modifies m_aduTrustObjects{
+						  		trustObjectID := float2int(rnd());
+						  		purposesOfTrustObject := v_requestedTrustObjectPurpose;
+						  		startValidity := now;
+						  		endValidity := omit;
+						  		trustObjectStatus := valid;
+								trustObject := TESTER_CERTIFICATE_OBJECT
+								});                 												
+							};
+						if (v_requestedTrustObjectType == publicKey){
+							var InfoExchange v_apduRespondedTo := m_apduNoSecInit(modifies m_aduTrustObjects{
+						  		trustObjectID := float2int(rnd());
+						  		purposesOfTrustObject := v_requestedTrustObjectPurpose;
+						  		startValidity := now;
+						  		endValidity := omit;
+						  		trustObjectStatus := valid;
+								trustObject := TESTER_PUBLICKEY_OBJECT
+								});                 												
+							};
+
+						if (v_requestedTrustObjectType == symmetricKey){
+							var InfoExchange v_apduRespondedTo := m_apduNoSecInit(modifies m_aduTrustObjects{
+						  		trustObjectID := float2int(rnd());
+						  		purposesOfTrustObject := v_requestedTrustObjectPurpose;
+						  		startValidity := now;
+						  		endValidity := omit;
+						  		trustObjectStatus := valid;
+								trustObject := TESTER_DSRCKEY_OBJECT
+								});                 												
+							};
+						
+						f_sendAndLogApdu(v_apduRespondedTo);                 
                 
-                // Step 2: Wait for positive Ack within TRUSTOBJECTS.TIME2
-				// Set timer
-                 t_step.start(TRUSTOBJECTS_TYPE1_TIME2_MAX_TSP);                 
-				alt {
-					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
+                		// Step 2: Wait for positive Ack within TRUSTOBJECTS.TIME2
+						// Set timer
+                 		t_step.start(TRUSTOBJECTS_TYPE1_TIME2_MAX_TSP);                 
+						alt {
+							[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
 					  
-						// Log what we received
-						f_logApduReceivedAndTStep();
-						t_step.stop;
-						//Set verdict
+								// Log what we received
+								f_logApduReceivedAndTStep();
+								t_step.stop;
+								}
+							} // End of second alt 
+						}
+					if (v_receivedTrustObjects == v_expectedTrustObjectRequests) {
 						setverdict(pass);
-					}
-				} 
+						break;  
+						};
+                	t_step.start(TRUSTOBJECTS_TYPE1_TIME1_MAX_TSP);  // Restart timer               
+					repeat;	
+					} // End of first alt 					
 				f_closeDownMtc();                  
 
 
