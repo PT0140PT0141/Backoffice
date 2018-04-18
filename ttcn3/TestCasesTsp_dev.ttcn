@@ -15,11 +15,11 @@
  *	ListOfUsers					! done					! done			!
  *	ExceptionList				! done					! done			!
  *	TrustObjects				! done    				! done			! TrustObject templates to be defined.
- *	PaymentClaim				! partially done		! partially done! BillingDetails and PaymentClaim templates to be defined
- *	DSRC.ContractIssuerList		! partially done		! partially done! Template mw_aduContractIssuerList to be defined
+ *	PaymentClaim				! done					! done			! BillingDetails and PaymentClaim templates to be defined
+ *	DSRC.ContractIssuerList		! done					! done			! Template mw_aduContractIssuerList to be defined
  *	DSRC.EFCContextData			! open					! open			! 
  *	DSRC.BillingDetails			! done					! done			! Billingdetails templates to be defined.
- *	DSRC.ReportAbnormalOBE		! partially done		! partially done! mw_aduReportAbnormalOBE to be defined. A problem in parenthesis
+ *	DSRC.ReportAbnormalOBE		! done					! done			! mw_aduReportAbnormalOBE to be defined.
  *	GNSS.TollDeclaration		! open					! open			!
  *	GNSS.BillingDetails.TSP		! open					! open			!
  *	GNSS.BillingDetails.TC		! done					! done			! templates to be defined.
