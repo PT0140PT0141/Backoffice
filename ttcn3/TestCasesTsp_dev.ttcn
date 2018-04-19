@@ -766,7 +766,7 @@ module EfcInfoExchange_TestCasesTspDev {
 					}
 				} 
 				f_closeDownMtc(); 												
-			}	End of 	TP_TSP_Base_BI_09
+			}	//End of 	TP_TSP_Base_BI_09
 
 			testcase TP_TSP_Base_BI_10() runs on MainTestComponent system TestAdapter {
              /**
@@ -939,13 +939,13 @@ module EfcInfoExchange_TestCasesTspDev {
 						                        
 						//Set verdict
 						setverdict(pass);
-						if sizeof(v_apduReceived.adus.provideUserDetailsADUs) > 1 {
+						if (sizeof(v_apduReceived.adus.provideUserDetailsADUs) > 1) {
 						  setverdict (fail);
 						  stop;
 						}
 						if (not match(
 							v_apduReceived.adus.provideUserDetailsADUs[0],						
-							ProvideUserDetailsADU modifies mw_aduProvideUserDetails := {
+							ProvideUserDetailsADU : modifies mw_aduProvideUserDetails := {
 								statusFlag:=2,
 								listOfUserParameters := omit
 								}
@@ -982,7 +982,7 @@ module EfcInfoExchange_TestCasesTspDev {
 
 				// Step 2: wait for a Semantic Error code Nack 
 
-				t_step.start(USERDETAILS_TIME1_MAX_TSP)
+				t_step.start(USERDETAILS_TIME1_MAX_TSP);
 
 				// Either we receive an APDU containing Nack with semantic error as error code or the timeout expires
 				// timeout expiration handling is in the altstep branch				
@@ -1022,7 +1022,8 @@ module EfcInfoExchange_TestCasesTspDev {
 			testcase TP_TSP_USERDETAILS_BI_02() runs on MainTestComponent system TestAdapter {
             
 			  /**
-			  * @desc    TP_TSP_USERDETAILS_BI_02: Verify that the TSP correctly handles a RequestADUs of type userDetailsRequest with listOfUsersParametersRequested containing non-supported user details
+			  * @desc    TP_TSP_USERDETAILS_BI_02: Verify that the TSP correctly handles a RequestADUs of type userDetailsRequest with 
+			  * listOfUsersParametersRequested containing non-supported user details
 			  * @remark  [16986:2016], Clause 6.4 and Table A.1/2 AND Table A.7/1  
 			  */          
 				// Initialisation
@@ -1032,18 +1033,29 @@ module EfcInfoExchange_TestCasesTspDev {
 
 				// Front End shall initially receive a Request named as Transaction sequence #1
 				// Find a parameter whose value  is not supported by the IUT
-				v_SupportedParameters := SUPPORTED_LIST_OF_PARAMETERS;
 				// Prepare the list of requested parameters with one element which is unsupported
-				found := false;
-				for (var integer v_Support :=0;  v_Support:=v_Support+1, found := false)
-					for (var integer v_ind := 0, v_ind < sizeof(SUPPORTED_LIST_OF_PARAMETERS), v_ind := v_ind + 1)
-						if NOT( v_SupportedParameters[v_IND]  == v_Support) v_unsupported == v_Support; found == true; break;
-						continue;
-					continue;				
-				var InfoExchange v_apduRespondedTo := m_apduNoSecInit({m_aduRequestProvideUserDetails(omit), m_aduRequestProvideUserDetails({})});
-				f_sendAndLogApdu(
-					m_apduNoSecInit(v_apduRespondedTo)
-				);                              
+
+				var integer v_notSupportedUserDetailsParameter;
+				for (
+					v_notSupportedUserDetailsParameter := 0; 
+					v_notSupportedUserDetailsParameter < sizeof(USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS); 
+					v_notSupportedUserDetailsParameter := v_notSupportedUserDetailsParameter + 1
+				) {
+					if (
+						not(
+							match(v_notSupportedUserDetailsParameter, integer:complement(USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS))
+						)
+					) {break;}
+				}
+				
+				
+				var InfoExchange v_apduNoSecInit := m_apduNoSecInit(
+					{
+						m_aduRequestProvideUserDetails({v_notSupportedUserDetailsParameter}), 
+						m_aduRequestProvideUserDetails({USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS[0]})
+					}
+				);
+				f_sendAndLogApdu(v_apduNoSecInit);                              
                                 
 				//Set timer
 				t_step.start(USERDETAILS_TIME1_MAX_TSP);
@@ -1145,7 +1157,7 @@ module EfcInfoExchange_TestCasesTspDev {
 						                        
 						//Set verdict
 						setverdict(pass);
-						if sizeof(v_apduReceived.adus.provideUserDetailsADUs) > 1 {
+						if (sizeof(v_apduReceived.adus.provideUserDetailsADUs) > 1) {
 						  setverdict (fail);
 						  stop;
 						}
@@ -1277,12 +1289,13 @@ module EfcInfoExchange_TestCasesTspDev {
  						//	Check whether the list of users contains elements
  						// If not, set verdict fail
  						                              
-                        If (lengthof(v_apduReceived.adus.provideUserIdListADUs.userIdList) == 0) {
+                        if (lengthof(v_apduReceived.adus.provideUserIdListADUs.userIdList) == 0) {
                           f_addLogEntry("Empty user list received");
                           setverdict(fail);
                           stop;
                         };
-                        If (v_apduReceived.adus.provideUserIdListADUs.userId <> DEFINED_USER_ID) {
+                        
+                        if (not (v_apduReceived.adus.provideUserIdListADUs.userId == EXISTING_USER_ID)) {
                           f_addLogEntry("Wrong User ID received");
                           setverdict(fail);
                           stop;
@@ -1345,12 +1358,12 @@ module EfcInfoExchange_TestCasesTspDev {
  						//	Check whether the list of users contains elements
  						// If yes, set verdict fail
  						                              
-                        If (lengthof(v_apduReceived.adus.provideUserIdListADUs.userIdList) > 0) {
+                        if (lengthof(v_apduReceived.adus.provideUserIdListADUs.userIdList) > 0) {
                           f_addLogEntry("Not empty user list received");
                           setverdict(fail);
                           stop;
                         };
-                        If (v_apduReceived.adus.provideUserIdListADUs.userId <> EMPTYLIST_USER_ID) {
+                        if (not(v_apduReceived.adus.provideUserIdListADUs.userId == EMPTYLIST_USER_ID)) {
                           f_addLogEntry("Wrong User ID received");
                           setverdict(fail);
                           stop;
@@ -1670,7 +1683,7 @@ module EfcInfoExchange_TestCasesTspDev {
     
     group EXCEPTIONLIST {
          group Valid_Behaviour {
-           testcase TP_TSP_EXCEPTIONLIST_BV_01() MainTestComponent system TestAdapter {
+           testcase TP_TSP_EXCEPTIONLIST_BV_01() runs on MainTestComponent system TestAdapter {
              
               /**
               * @desc    TP_TSP_EXCEPTIONLIST_BV_01: Verify that the TSP correctly performs an EXCEPTIONLIST transaction for blacklist and whitelist 

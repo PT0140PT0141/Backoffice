@@ -374,15 +374,37 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		group DSRC_EFCCONTEXTDATA {						
 			template EfcContextDataADU mw_aduDsrcEfcContextData := {
 				entityOverview := *,
-				domainType.dsrcContext.iso175753ADU := ?,
-				domainType.dsrcContext.feeModifiers := omit
+				domainType:= mw_dsrcContext
+			}
+
+			type record DsrcContext {
+				record {
+					Iso17575_3AduBody iso175753ADU,
+					FeeModifiers feeModifiers optional
+				} regimeContextData
+			} 
+			
+			template DsrcContext mw_dsrcContext :={
+				dummyVar:=*,
+				iso175753ADU := ?,
+				feeModifiers := omit
 			}
 	
 			template EfcContextDataADU mw_aduDsrclosedContextEfcContextData := {
 				entityOverview := *,
-				domainType.dsrcClosedContext.closedContext := ?
-				domainType.dsrcClosedContext.feeModifiers := omit
-			}								
+				domainType := mw_dsrcClosedContext
+			}	
+			
+			type record DsrcClosedContext {
+				ClosedContextDefinition closedContext,
+				FeeModifiers feeModifiers optional
+			} 
+			
+			template DsrcClosedContext mw_dsrcClosedContext :={
+				closedContext := ?,
+				feeModifiers := omit
+			}
+										
 		}
 
 		group DSRC_BILLINGDETAILS{}
