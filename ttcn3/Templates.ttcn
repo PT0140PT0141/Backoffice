@@ -371,39 +371,18 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			}
 		}
 
-		group DSRC_EFCCONTEXTDATA {		
-			
-/* How to convert this record into a template?
-	
-		type record EfcContextDataADU {
-		EntityOverview entityOverview optional,
-		union {
-			record {
-				Iso17575_3AduBody contextInterrelations optional,
-				record of record {
-					Iso17575_3AduBody iso175753ADU,
-					FeeModifiers 	  feeModifiers optional
-				} regimeContextData
-			} gnssContext,
-			record {
-				record {
-					Iso17575_3AduBody iso175753ADU,
-					FeeModifiers feeModifiers optional
-				} regimeContextData
-			} dsrcContext,
-			record {
-				ClosedContextDefinition closedContext,
-				FeeModifiers feeModifiers optional
-			} dsrcClosedContext
-		} domainType
-	}
-*/	
-			template EfcContextDataADU mw_aduDSRCEfcContextData := {
+		group DSRC_EFCCONTEXTDATA {						
+			template EfcContextDataADU mw_aduDsrcEfcContextData := {
 				entityOverview := *,
 				domainType.dsrcContext.iso175753ADU := ?,
-				domainType.dsrcContext.feeModifier := omit
+				domainType.dsrcContext.feeModifiers := omit
 			}
-				
+	
+			template EfcContextDataADU mw_aduDsrclosedContextEfcContextData := {
+				entityOverview := *,
+				domainType.dsrcClosedContext.closedContext := ?
+				domainType.dsrcClosedContext.feeModifiers := omit
+			}								
 		}
 
 		group DSRC_BILLINGDETAILS{}
