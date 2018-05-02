@@ -17,10 +17,10 @@
  *	ExceptionList				! open					! open			!
  *	TrustObjects				! open					! open			!
  *	PaymentClaim				! open					! none			!
- *	DSRC.ContractIssuerList		! done					! done			! 
+ *	DSRC.ContractIssuerList		! done					! done			! ready for compile
  *	DSRC.EFCContextData			! done					! none			! ready for compile 
  *	DSRC.BillingDetails			! partially done		! none			! 
- *	DSRC.ReportAbnormalOBE		! done					! none			! Template to be done
+ *	DSRC.ReportAbnormalOBE		! done					! none			! ready for compile
  *	GNSS.TollDeclaration		! open					! open			!
  *	GNSS.BillingDetails.TSP		! open					! open			!
  *	GNSS.BillingDEtails.TC		! open					! none			!
@@ -591,11 +591,7 @@ module EfcInfoExchange_TestCasesTcDev {
 				//		- abnormalOBEReason code = present and valid                
 				f_sendAndLogTrigger(DSRC_REPORTABNORMALOBE_TR_TC_1);
 
-				//  Wait for apdu containing DsrcReportAbnormalOBE ADUs
-                 // PT140 TODO : mw_adusDsrcReportAbnormalObe template to be defined
-				var InfoExchange v_apduToBeReceived := {
-				  	m_apduNoSecInit(mw_adusDsrcReportAbnormalObe)
-           		};                 
+				var InfoExchange v_apduToBeReceived := m_apduNoSecInit(mw_adusDsrcReportAbnormalObe);                 
 
 				//  Wait for DSRC.REPORTABNORMALOBE ADU
 				alt {
@@ -847,7 +843,6 @@ module EfcInfoExchange_TestCasesTcDev {
                                 		              
                 // Step 1:
                 // Prepare and send Initiating_Apdu containing three ContractIssuerListADUs with differing manufacturerID values
-                // PT140 TODO : mw_aduContractIssuerList template to be defined
 				var InfoExchange v_apduToBeSent := m_apduNoSecInit(
 					{modifies mw_recordOfAduContractIssuerList := {
 					  	TESTER_CONTRACT_ISSUER_DATA_VALID_1,
