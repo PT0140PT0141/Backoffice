@@ -14,7 +14,7 @@
  *	Base						! open					! open			!
  *	Userdetails					! open					! open			! something available but to be reworked
  *	ListOfUsers					! open					! open			!
- *	ExceptionList				! open					! open			!
+ *	ExceptionList				! done					! open			! ready for compile of the BV
  *	TrustObjects				! open					! open			!
  *	PaymentClaim				! open					! none			!
  *	DSRC.ContractIssuerList		! done					! done			! ready for compile
@@ -829,7 +829,7 @@ module EfcInfoExchange_TestCasesTcDev {
 
 	group DSRC_CONTRACTISSUERLIST {
 		group Valid_Behaviour {		
-			testcase Testcase TP_TC_DSRC_CONTRACTISSUERLIST_BV_01() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_DSRC_CONTRACTISSUERLIST_BV_01() runs on MainTestComponent system TestAdapter {
 							
                 /**
                  * @desc    TP_TC_DSRC_CONTRACTISSUERLIST_BV_01: Verify that the TC correctly performs
@@ -838,7 +838,7 @@ module EfcInfoExchange_TestCasesTcDev {
                  */
  
  				// Initialisation
- 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A2_1_isDsrc and ICS_A26_1_implementedDSRCCINTRACTISSUERLIST;
+ 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A2_1_isDsrc and ICS_A26_1_implementedDSRCCONTRACTISSUERLIST;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
                                 		              
                 // Step 1:
@@ -865,7 +865,7 @@ module EfcInfoExchange_TestCasesTcDev {
 						f_logApduReceivedAndTStep();
 						
 						//Check minumum time and stop timer
-						f_checkMinimumTStep(DSRC_DSRC_CONTRACTISSUERLIST_TIME1_MIN_TC);
+						f_checkMinimumTStep(DSRC_CONTRACTISSUERLIST_TIME1_MIN_TC);
 						t_step.stop;						
 
 						//Set verdict
@@ -878,7 +878,7 @@ module EfcInfoExchange_TestCasesTcDev {
 		} // End group Valid_Behaviour
 					
 		group Invalid_Behaviour {	
-			testcase Testcase TP_TC_DSRC_CONTRACTISSUERLIST_BI_01() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_DSRC_CONTRACTISSUERLIST_BI_01() runs on MainTestComponent system TestAdapter {
 							
                 /**
                  * @desc    TP_TC_DSRC_CONTRACTISSUERLIST_BI_01: Verify that the TC correctly responds to
@@ -887,7 +887,7 @@ module EfcInfoExchange_TestCasesTcDev {
                  */
 
 				// Initialisation
- 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A2_1_isDsrc and ICS_A26_1_implementedDSRCCINTRACTISSUERLIST;
+ 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A2_1_isDsrc and ICS_A26_1_implementedDSRCCONTRACTISSUERLIST;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc                        		
                  
                 // Step 1:
@@ -922,7 +922,7 @@ module EfcInfoExchange_TestCasesTcDev {
 						f_logApduReceivedAndTStep();
 
 						//Check minumum time and stop timer
-						f_checkMinimumTStep(DSRC_DSRC_CONTRACTISSUERLIST_TIME1_MIN_TC);
+						f_checkMinimumTStep(DSRC_CONTRACTISSUERLIST_TIME1_MIN_TC);
 						t_step.stop;
 						setverdict(pass);
 						}
@@ -931,7 +931,7 @@ module EfcInfoExchange_TestCasesTcDev {
 						f_logApduReceivedAndTStep();
 
 						//Check minumum time and stop timer
-						f_checkMinimumTStep(DSRC_DSRC_CONTRACTISSUERLIST_TIME1_MIN_TC);
+						f_checkMinimumTStep(DSRC_CONTRACTISSUERLIST_TIME1_MIN_TC);
 						t_step.stop;
 						setverdict(pass);
 						}
@@ -939,7 +939,7 @@ module EfcInfoExchange_TestCasesTcDev {
 				f_closeDownMtc(); 						              	
 			} // End testcase TP_TC_DSRC_CONTRACTISSUERLIST_BI_01			
 
-			testcase Testcase TP_TC_DSRC_CONTRACTISSUERLIST_BI_02() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_DSRC_CONTRACTISSUERLIST_BI_02() runs on MainTestComponent system TestAdapter {
 							
                 /**
                  * @desc    TP_TC_DSRC_CONTRACTISSUERLIST_BI_02: Verify that the TC correctly responds to a RequestADU
@@ -948,7 +948,7 @@ module EfcInfoExchange_TestCasesTcDev {
                  */
 
 				// Initialisation
- 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A2_1_isDsrc and ICS_A26_1_implementedDSRCCINTRACTISSUERLIST;
+ 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A2_1_isDsrc and ICS_A26_1_implementedDSRCCONTRACTISSUERLIST;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc                        		
                  
                 // Step 1: Send Initiating_Apdu containing one valid RequestADU of type userListRequest
@@ -982,7 +982,7 @@ module EfcInfoExchange_TestCasesTcDev {
 						f_logApduReceivedAndTStep();
 
 						//Check minumum time and stop timer
-						f_checkMinimumTStep(DSRC_DSRC_CONTRACTISSUERLIST_TIME1_MIN_TC);
+						f_checkMinimumTStep(DSRC_CONTRACTISSUERLIST_TIME1_MIN_TC);
 						t_step.stop;
 						setverdict(pass);
 						}
@@ -1114,22 +1114,72 @@ module EfcInfoExchange_TestCasesTcDev {
 			testcase TP_TC_EXCEPTIONLIST_BV_01() runs on MainTestComponent system TestAdapter {
 										
                 /**
-                 * @desc    TP_TC_EXCEPTIONLIST_BV_01: Verify that the TC correctly responds to an ExceptionListADU for blacklist and whitelist
-                 *			with invalid userId data
+                 * @desc    TP_TC_EXCEPTIONLIST_BV_01: 1)	Verify that the TC correctly responds to an ExceptionListADU
+                 *			for blacklist and whitelist
                  * @remark  [16986:2016], Clause 6.6 and Table A.1/1 AND Table A.7/3
                  */
 			
  				// Initialisation
-                 
+ 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A7_3_implementedEXCEPTIONLIST;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc                 
 				// Start by setting test success
 				
-				// Loop (first intertation [LIST_TYPE] = white; second iteration [LIST_TYPE] = black)
+				// Loop (first intertation [LIST_TYPE] = black; second iteration [LIST_TYPE] = white)
+							
+                // Step 1 / loop 1 for black list:
+                // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for black list
+                var InfoExchange v_apduToBeSent := m_apduNoSecInit(TESTER_EXCEPTIONLIST_ADU_BLACK_VALID);
+				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+  	
+                // Start timer
+                t_step.start(EXCEPTIONLIST_BLACK_TIME1_MAX_TC);               
+                // Step 2:	
+              	// Wait for Default_Ack_Apdu within time EXCEPTIONLIST.TIME1
+              	// if negative Ack or not received set test failure --> is done in altstep
+
+				alt {
+					[] mtcPort.receive(m_apduDefaultAck(v_apduToBeSent)) -> value v_apduReceived {
+					  
+						// Log what we received
+						f_logApduReceivedAndTStep();
+						
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
+						t_step.stop;						
+					}
+				}
 				
-                	// Step 1: Send one Initiating_Apdu containing exactly one ExceptionListADU for [LIST_TYPE]
-                	
-                	// Step 2: Wait for Default_Ack within EXCEPTIONLIST.TIME1 of type LIST_TYPE  
+				// Note: Step 2 may start immediately as no TIMEA is defined for EXCEPTIONLIST
+				
+				// Step 2 / loop 2 for white list:
+                // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for white list
+                var InfoExchange v_apduToBeSent := m_apduNoSecInit(TESTER_EXCEPTIONLIST_ADU_WHITE_VALID);
+				f_sendAndLogApdu(v_apduToBeSent);                	
+  	
+                // Start timer
+                t_step.start(EXCEPTIONLIST_WHITE_TIME1_MAX_TC);               
+                // Step 2:	
+              	// Wait for Default_Ack_Apdu within time EXCEPTIONLIST.TIME1
+              	// if negative Ack or not received set test failure --> is done in altstep
+
+				alt {
+					[] mtcPort.receive(m_apduDefaultAck(v_apduToBeSent)) -> value v_apduReceived {
+					  
+						// Log what we received
+						f_logApduReceivedAndTStep();
+						
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
+						t_step.stop;						
+
+						//Set verdict
+						setverdict(pass);
+					}
+				} 				 
+				f_closeDownMtc();
                 
-                } // End of TP_TC_EXCEPTIONLIST_BV_01
+			} // End of TP_TC_EXCEPTIONLIST_BV_01
+                                
 
 			testcase TP_TC_EXCEPTIONLIST_BV_02() runs on MainTestComponent system TestAdapter {
 										
@@ -1138,20 +1188,59 @@ module EfcInfoExchange_TestCasesTcDev {
                  *			for discounted user list
                  * @remark  [16986:2016], Clause 6.6 and Table A.1/1 AND Table A.7/3
                  */
-			
+
  				// Initialisation
-                 
+ 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A7_3_implementedEXCEPTIONLIST;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc                 
 				// Start by setting test success
-								
-                // Step 1: Send one Initiating_Apdu containing exactly one ExceptionListADU of LIST_TYPE=discounted
-                	
-                // Step 2: Wait for
+							
+                // Step 1:
+                // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for discounted user list
+                var InfoExchange v_apduToBeSent := m_apduNoSecInit(TESTER_EXCEPTIONLIST_ADU_DISCOUNTED_VALID);
+				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+  	
+                // Start timer
+                t_step.start(EXCEPTIONLIST_DISCOUNT_TIME1_MAX_TC);               
+                // Step 2:	
+              	// Wait for Default_Ack_Apdu within time EXCEPTIONLIST.TIME1
                 //		- Default_Ack, or
                 //		- NAck_Apdu with aduReasonCode = semanticError(3000)
-                // within EXCEPTIONLIST.TIME1 of type LIST_TYPE  
-                
-                } // End of TP_TC_EXCEPTIONLIST_BV_02
-                
+              	// if negative Ack or not received set test failure --> is done in altstep
+
+				var NAckParams v_nAckParams1 :={{0, AduReasonCode_semanticError_}};
+				var NAckParams v_nAckParams2 :={{1, AduReasonCode_semanticError_}};
+
+				alt {
+					[] mtcPort.receive(m_apduDefaultAck(v_apduToBeSent)) -> value v_apduReceived {					  
+						// Log what we received
+						f_logApduReceivedAndTStep();						
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(EXCEPTIONLIST_DISCOUNT_TIME1_MIN_TC);
+						t_step.stop;
+						//Set verdict
+						setverdict(pass)												
+					}
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {				  
+						// Log what we received
+						f_logApduReceivedAndTStep();						
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(EXCEPTIONLIST_DISCOUNT_TIME1_MIN_TC);
+						t_step.stop;
+						//Set verdict
+						setverdict(pass)												
+					}
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {				  
+						// Log what we received
+						f_logApduReceivedAndTStep();						
+						//Check minumum time and stop timer
+						f_checkMinimumTStep(EXCEPTIONLIST_DISCOUNT_TIME1_MIN_TC);
+						t_step.stop;
+						//Set verdict
+						setverdict(pass)												
+					}								
+				}			 
+				f_closeDownMtc();
+              
 			} // End of group Valid_Behaviour
 			
 			group Invalid_Behaviour {
@@ -1603,83 +1692,7 @@ module EfcInfoExchange_TestCasesTcDev {
  		
  		} // End Invalid_Behaviour
  		
- 	} // End PAYMENTCLAIM
-
-	group DSRC_CONTRACTISSUERLIST {
-	
-		group Valid_Behaviour {
-		
-			testcase Testcase TP_TC_DSRC_CONTRACTISSUERLIST_BV_01() runs on MainTestComponent system TestAdapter {
-							
-                /**
-                 * @desc    TP_TC_DSRC_CONTRACTISSUERLIST_BV_01: Verify that the TC correctly performs
-                 *			a DSRC.CONTRACTISSUERLIST transaction with three ContractIssuerListADUs  
-                 * @remark  [16986:2016], Clause 7.1 and Table A.1/1 AND Table A.26/1
-                 */
-                   		
- 				// Initialisation
-                 
-                // Step 1:
-                // Send Initiating_Apdu containing three ContractIssuerListADUs with differing manufacturerID values
-                
-                // Step 2:	
-              	// Wait for Default_Ack_Apdu within time DSRC.CONTRACTISSUERLIST.TIME1
-              	// if negative Ack or not received set test failure
-              	
-              } // End testcase TP_TC_DSRC_CONTRACTISSUERLIST_BV_01
-              
-		} // End group Valid_Behaviour
-		
-		group Invalid_Behaviour {
-		
-			testcase Testcase TP_TC_DSRC_CONTRACTISSUERLIST_BI_01() runs on MainTestComponent system TestAdapter {
-							
-                /**
-                 * @desc    TP_TC_DSRC_CONTRACTISSUERLIST_BI_01: Verify that the TC correctly responds to
-                 *			a ContractIssuerListADUs with three different semantically faulty parameters  
-                 * @remark  [16986:2016], Clause 7.1 and Table A.1/1 AND Table A.26/1
-                 */
-                   		
- 				// Initialisation
-                 
-                // Step 1:
-                // Send Initiating_Apdu containing three ContractIssuerListADUs each one with exactly
-                // one incorrect parameter value from the set [uniquePartOfPan, acCrKeyReference, authKeyReference]
-                
-                // Step 2:	
-              	// Wait for NAck_Apdu with issueCode = semanticError (3000)
-              	// within the time interval DSRC.CONTRACTISSUERLIST.TIME1
-              	// if negative Ack or not received set test failure
-              	
-              } // End testcase TP_TC_DSRC_CONTRACTISSUERLIST_BI_01			
-
-			testcase Testcase TP_TC_DSRC_CONTRACTISSUERLIST_BI_02() runs on MainTestComponent system TestAdapter {
-							
-                /**
-                 * @desc    TP_TC_DSRC_CONTRACTISSUERLIST_BI_02: Verify that the TC correctly responds to a RequestADU
-                 *			sent earlier than allowed  
-                 * @remark  [16986:2016], Clause 7.1 and Table A.1/1 AND Table A.26/1
-                 */
- 
-  				// Initialisation
-                 
-				// Start by setting test success
-								
-                // Step 1: Send Initiating_Apdu containing one valid RequestADU of type userListRequest
-                
-                // Send second Initiating_Apdu containing one valid RequestADU of type userListRequest
-                // before DSRC.CONTRACTISSUERLIST.TIMEA_MIN has passed
-
-                // Step 2: Wait for NAck_Apdu with issueCode=NAck_requestSentTooOften(10)
-                // within the time DSRC.CONTRACTISSUERLIST.TIME1  
-              	
-			} // End testcase TP_TC_DSRC_CONTRACTISSUERLIST_BI_02
-			
-		} // End group Invalid_Behaviour
-
-	} // End DSRC_CONTRACTISSUERLIST 
-
-	
+ 	} // End PAYMENTCLAIM	
 
 	group GNSS_TOLLDECLARATION {
 	
