@@ -7,7 +7,7 @@
  * @version $id$
  */
 module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization" {
-	
+	//test
 	//importing other modules
 	import from EfcInfoExchange_Pixits all;
 	import from EfcInfoExchange_Ics all;
