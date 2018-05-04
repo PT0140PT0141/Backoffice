@@ -385,7 +385,6 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			} 
 			
 			template DsrcContext mw_dsrcContext :={
-				dummyVar:=*,
 				iso175753ADU := ?,
 				feeModifiers := omit
 			}
@@ -403,14 +402,22 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			template DsrcClosedContext mw_dsrcClosedContext :={
 				closedContext := ?,
 				feeModifiers := omit
-			}
-										
+			}							
 		}
 
+		group DSRC_REPORTABNORMALOBE {
+			template ReportAbnormalOBEADU mw_adusDsrcReportAbnormalObe := {
+				userId := ? lenght (1..4), //= at least one element of userId shall be present
+											// TODO PT140: not sure if this works as "length" expression is valid for "records of" only
+											// but userId is a "record" and no "record of" 
+				dateAndTime := ?,
+				efcContextMark := ?,
+				abnormalOBEReasonCode := ? lenght (1..255) //= at least one reason code shall be present in this record of integer
+			}
+		}
+		
 		group DSRC_BILLINGDETAILS{}
-
-		group DSRC_REPORTABNORMALOBE {}
-
+		
 		group GNSS_TOLLDECLARATIONS {}
 
 		group GNSS_BILLINGDETAILS_TSP{}
