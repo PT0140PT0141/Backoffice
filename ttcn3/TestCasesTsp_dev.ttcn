@@ -128,7 +128,7 @@ module EfcInfoExchange_TestCasesTspDev {
 				var UserParameterRequest v_userParameterRequests := f_userDetailsParameters();                
 				
 				// Step 1: Send Initiating APDU containing a valid RequestADU with requestedADUType=provideUserDetailsADU
-				// and in addition containing APCI parameter field containing aidIdentifier ≠ “0” and valid RequestADU with requestedADUType=provideUserDetailsADU
+				// and in addition containing APCI parameter field containing aidIdentifier â‰  â€œ0â€� and valid RequestADU with requestedADUType=provideUserDetailsADU
 				// Just modify the APCI
 				template (value) ApciFields m_apciSendFirstInvalidAid modifies m_apciSendFirst:= {aidIdentifier:=0};
 				// Then send it together with the request ADU
@@ -186,7 +186,7 @@ module EfcInfoExchange_TestCasesTspDev {
 				var UserParameterRequest v_userParameterRequests := f_userDetailsParameters();                
 				
 				// Step 1: Send Initiating APDU containing a valid RequestADU with requestedADUType=provideUserDetailsADU
-				// containing apduOriginator ≠ value declared in the PIXIT
+				// containing apduOriginator â‰  value declared in the PIXIT
 				// Retrieve and alter apduOriginator value
 				var Provider apduWrongOriginator := APDU_ORIGINATOR_FOR_TESTER;
 				apduWrongOriginator.providerIdentifier := apduWrongOriginator.providerIdentifier + 1;
@@ -247,7 +247,7 @@ module EfcInfoExchange_TestCasesTspDev {
 				var UserParameterRequest v_userParameterRequests := f_userDetailsParameters();                
 				
 				// Step 1: Send Initiating APDU containing a valid RequestADU with requestedADUType=provideUserDetailsADU
-				// containing informationSenderID ≠ value declared in the PIXIT
+				// containing informationSenderID â‰  value declared in the PIXIT
 				// Retrieve and alter informationSenderID value
 				var Provider apduWrongSender := INFORMATION_SENDER_ID_FOR_TESTER;
 				apduWrongSender.providerIdentifier := apduWrongSender.providerIdentifier + 1;
@@ -308,7 +308,7 @@ module EfcInfoExchange_TestCasesTspDev {
 				var UserParameterRequest v_userParameterRequests := f_userDetailsParameters();                
 				
 				// Step 1: Send Initiating APDU containing a valid RequestADU with requestedADUType=provideUserDetailsADU
-				// containing informationrecipientID  ≠ value declared in the PIXIT
+				// containing informationrecipientID  â‰  value declared in the PIXIT
 				// Retrieve and alter informationrecipientID value
 				var Provider apduWrongRecipient := INFORMATION_SENDER_ID_FOR_IUT;
 				apduWrongRecipient.providerIdentifier := apduWrongRecipient.providerIdentifier + 1;
@@ -1042,17 +1042,14 @@ module EfcInfoExchange_TestCasesTspDev {
 					v_notSupportedUserDetailsParameter := v_notSupportedUserDetailsParameter + 1
 				) {
 					if (
-						not(
 							match(v_notSupportedUserDetailsParameter, integer:complement(USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS))
-						)
 					) {break;}
 				}
 				
 				
 				var InfoExchange v_apduNoSecInit := m_apduNoSecInit(
 					{
-						m_aduRequestProvideUserDetails({v_notSupportedUserDetailsParameter}), 
-						m_aduRequestProvideUserDetails({USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS[0]})
+						m_aduRequestProvideUserDetails({v_notSupportedUserDetailsParameter})
 					}
 				);
 				f_sendAndLogApdu(v_apduNoSecInit);                              
@@ -1088,9 +1085,8 @@ module EfcInfoExchange_TestCasesTspDev {
 						if (not match(
 							v_apduReceived.adus.provideUserDetailsADUs[0],						
 							ProvideUserDetailsADU: modifies mw_aduProvideUserDetails := {
-								statusFlag:=1,
-								listOfUserParameters := omit,
-								userInfoValidityPeriod := omit
+								statusFlag:=1, //PT140 TODO add userParameterStatus = 1 
+								listOfUserParameters := omit
 							}
 						)) 
 						{
@@ -1387,7 +1383,7 @@ module EfcInfoExchange_TestCasesTspDev {
 			  testcase TP_TSP_LISTOFUSERS_BI_01() runs on MainTestComponent system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_LISTOFUSERS_BI_01: Verify that the TSP correctly receives an invalid requestADU with userIdRequestType ≠ 0 
+                  * @desc    TP_TSP_LISTOFUSERS_BI_01: Verify that the TSP correctly receives an invalid requestADU with userIdRequestType â‰  0 
                   * @remark  [16986:2016], Clause 6.5 and Table A.1/2 AND Table A.7/2  
                   */
 				// Initialisation
@@ -2903,7 +2899,7 @@ module EfcInfoExchange_TestCasesTspDev {
 					}
 				} 					
 
-                // Send PAYMENTCLAIM with ActionCode=SEND and referencing the two performed BillingDetails transactions, and with endDateTime = Ø
+                // Send PAYMENTCLAIM with ActionCode=SEND and referencing the two performed BillingDetails transactions, and with endDateTime = Ã˜
                  // PT140 TODO : mw_aduPaymentClaim template and related fields to be defined
 
 				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
