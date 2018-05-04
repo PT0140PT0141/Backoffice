@@ -28,7 +28,7 @@
  */
  
 module EfcInfoExchange_TestCasesTcDev {
- import from EfcInfoExchange_ParameterisedAsn1Data all;
+	import from EfcInfoExchange_ParameterisedAsn1Data all;
 
     /**
      * @desc    [12855:2015]: 
@@ -41,7 +41,7 @@ module EfcInfoExchange_TestCasesTcDev {
     
     /**
      * @desc    TTCN-3 does not support ASN.1 parameterization (ETSI ES 201 873-7 V4.5.1 Clause 10)
-     * @reramk	Common_Parameterised_Asn1_Data TTCN-3 module is a workaround
+     * @remark	Common_Parameterised_Asn1_Data TTCN-3 module is a workaround
      */
     import from Common_ParametrisedAsn1Data all;
     import from EfcInfoExchange_Interfaces all;
@@ -51,7 +51,8 @@ module EfcInfoExchange_TestCasesTcDev {
     import from EfcInfoExchange_Templates all;
 	import from EfcInfoExchange_InteroperabilityStatement all;
 	import from EfcInfoExchange_TesterData all;
-	
+	import from EfcInfoExchangeProfile all;
+		
      /**
       * @desc    These test cases apply to Toll Charger claiming conformance to [16986:2016]
       * and applying Test Purposes as from CEN/TS17154-1:xxxx Annex A
@@ -137,9 +138,9 @@ module EfcInfoExchange_TestCasesTcDev {
 						v_theAdu.listOfUserParameters[v_loop2].userParameterResponse:= UserParameterResponseDetails_TESTER_VALUES[v_listOfParametersRequested[v_loop2]];					
 						v_theAdu.listOfUserParameters[v_loop2].userParameterStatus:= UserParameterStatus_userParameterAvailable_;					
 						v_theAdu.listOfUserParameters[v_loop2].userInfoValidityPeriod:=omit; //TODO is this necessary. I think that if we do not set it then it is omitted
-//					}
+					}
 					v_adus[v_loop1]:=v_theAdu;
-//				}								                   
+				}								                   
 				
 				var InfoExchange v_apduProvideUserDetailsSend:=m_apduNoSec( m_apciSendResponse(v_apduReceived), v_adus);
 				f_sendAndLogApdu(v_apduProvideUserDetailsSend);
@@ -579,7 +580,7 @@ module EfcInfoExchange_TestCasesTcDev {
                 */
 
   				// Initialisation
-				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A2_1_isDsrc and ICS_A26_4_implementedDSRCREPORTABNORAMLOBE;
+				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A2_1_isDsrc and ICS_A26_4_implementedDSRCREPORTABNORMALOBE;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
                  
                 // Step 1: Trigger IUT with DSRC.REPORTABNORMALOBE_TR_TC_1 to send valid Initiating_APDU containing
@@ -838,7 +839,7 @@ module EfcInfoExchange_TestCasesTcDev {
                  */
  
  				// Initialisation
- 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A2_1_isDsrc and ICS_A26_1_implementedDSRCCONTRACTISSUERLIST;
+ 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A2_1_isDsrc and ICS_A26_1_implementedDSRCCINTRACTISSUERLIST;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
                                 		              
                 // Step 1:
@@ -1153,7 +1154,7 @@ module EfcInfoExchange_TestCasesTcDev {
 				
 				// Step 2 / loop 2 for white list:
                 // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for white list
-                var InfoExchange v_apduToBeSent := m_apduNoSecInit(TESTER_EXCEPTIONLIST_ADU_WHITE_VALID);
+                v_apduToBeSent := m_apduNoSecInit(TESTER_EXCEPTIONLIST_ADU_WHITE_VALID);
 				f_sendAndLogApdu(v_apduToBeSent);                	
   	
                 // Start timer

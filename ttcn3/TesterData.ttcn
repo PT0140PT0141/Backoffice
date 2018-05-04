@@ -1,8 +1,10 @@
-///**
-// * @author    PT0140  
-// * @desc      This module declares test data which are being prepared by the tester
-// * @version   $id$
-// */
+/**
+ * @author    PT0140  
+ * @desc      This module declares test data which are being prepared by the tester
+ * @version   $id$
+ */
+
+module EfcInfoExchange_TesterData{
 
 	//importing other modules
 	import from EfcInfoExchange_Functions all;
@@ -58,7 +60,7 @@
 			acCrKeyReference := TESTER_AC_CR_KEY_REFERENCE_INVALID
 		}	
 
-		template ContractIssuerListADU m_contractIssuerListADU_Invalid_2(in EfcInfoExchange.Int4 p_manufacturerID) modifies m_contractIssuerListADU_Tester :=
+		template ContractIssuerListADU m_contractIssuerListADU_Invalid_3(in EfcInfoExchange.Int4 p_manufacturerID) modifies m_contractIssuerListADU_Tester :=
 		{
 			authKeyReference := TESTER_AUTH_KEY_REFERENCE_INVALID
 		}	
@@ -73,6 +75,11 @@
 	
 		modulepar ExceptionListVersion TESTER_EXCEPTIONLIST_VERSION := 1; // defined as integer
 		modulepar ASNAUX.GeneralizedTime TESTER_EXCEPTIONLIST_VALIDITY_START;
+		
+		modulepar EfcDsrcApplication.PersonalAccountNumber TESTER_PAN_1;
+		modulepar EfcDsrcApplication.LPN TESTER_LPN_1;
+		modulepar EfcAutonomousCharging.ObeId TESTER_OBE_ID_1;
+
 		modulepar UserId TESTER_USERID_BLACK_1 := {
 			pan := TESTER_PAN_1,
 			contractSerialNumber := omit,

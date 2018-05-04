@@ -45,6 +45,8 @@ module EfcInfoExchange_TestCasesTspDev {
     import from EfcInfoExchange_Pixits all;
     import from EfcInfoExchange_Ics all;
     import from EfcInfoExchange_Templates all;
+    import from EfcInfoExchangeProfile all;
+    
     
     /**
      /**
@@ -106,9 +108,9 @@ module EfcInfoExchange_TestCasesTspDev {
 							}
 						else {
 							setverdict(fail)
-							};
-						}
-					} // End of alt statement
+						};
+					}
+				} // End of alt statement
 				
 				f_closeDownMtc();    
              } // TP_TSP_Base_BV_01
@@ -1696,12 +1698,12 @@ module EfcInfoExchange_TestCasesTspDev {
 					[] mtcPort.receive(mw_apduExceptionList modifies mw_aduExceptionList := {exceptionListType := ExceptionListType_blackList_}) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();					
-						}
+					}
                		
 					// Send Ack within time constraints
 					f_wait(EXCEPTIONLIST_TIME1_TC);
 					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
-					} // End of first alt statement
+				} // End of first alt statement
 					
 				// Step 1b: Trigger IUT with EXCEPTIONLIST.TR_TSP_1 LIST_TYPE=WHITE within time constraints
 				f_sendAndLogTrigger(EXCEPTIONLIST_TR_TSP_1_B);
