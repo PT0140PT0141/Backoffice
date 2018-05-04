@@ -347,6 +347,23 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		  	  	efcContextMark := omit,
 		  	  	vatId := *
 		  	}
+
+			template Adus mw_recordOfAduExceptionList := {
+				exceptionListADUs:=? 
+			}
+			
+			template InfoExchange mw_apduExceptionList := m_apduNoSec(mw_apci, mw_recordOfAduExceptionList);
+
+
+			template InfoExchange mw_apduExceptionListOneBlackList modifies mw_apduExceptionList := {
+				infoExchangeContent.adus.exceptionListADUs := {modifies mw_aduExceptionList:= {exceptionListType := ExceptionListType_blackList_ }}
+			}
+			
+			template InfoExchange mw_apduExceptionListOneWhiteList modifies mw_apduExceptionList := {
+				infoExchangeContent.adus.exceptionListADUs := {modifies mw_aduExceptionList:= {exceptionListType := ExceptionListType_whiteList_ }}
+			}
+			
+
 		}
 		
 		group TRUSTOBJECTS {}

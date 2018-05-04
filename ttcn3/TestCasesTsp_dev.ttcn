@@ -1695,36 +1695,37 @@ module EfcInfoExchange_TestCasesTspDev {
 				f_sendAndLogTrigger(EXCEPTIONLIST_TR_TSP_1_A);
 				//  Wait for EXCEPTIONLIST with LIST_TYPE=BLACK
 				alt {
-					[] mtcPort.receive(mw_apduExceptionList modifies mw_aduExceptionList := {exceptionListType := ExceptionListType_blackList_}) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduExceptionListOneBlackList) -> value v_apduReceived {
+						
 						// Log what we received
 						f_logApduReceivedAndTStep();					
-					}
                		
-					// Send Ack within time constraints
-					f_wait(EXCEPTIONLIST_TIME1_TC);
-					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+						// Send Ack within time constraints
+						f_wait(EXCEPTIONLIST_TIME1_TC);
+						f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+					}
 				} // End of first alt statement
 					
 				// Step 1b: Trigger IUT with EXCEPTIONLIST.TR_TSP_1 LIST_TYPE=WHITE within time constraints
 				f_sendAndLogTrigger(EXCEPTIONLIST_TR_TSP_1_B);
 				//  Wait for EXCEPTIONLIST with LIST_TYPE=WHITE
 				alt {
-					[] mtcPort.receive(mw_apduExceptionList modifies mw_aduExceptionList := {exceptionListType := ExceptionListType_whiteList_}) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduExceptionListOneWhiteList) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();					
-						}
 							
-					// Send Ack within time constraints
-					f_wait(EXCEPTIONLIST_TIME1_TC);
-					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
-						
-					// Set test success
-					setverdict(pass);						
- 					} // End of second alt statement
+						// Send Ack within time constraints
+						f_wait(EXCEPTIONLIST_TIME1_TC);
+						f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+							
+						// Set test success
+						setverdict(pass);						
+					}
+ 				} // End of second alt statement
 				f_closeDownMtc();   						           
            } // End of TP_TSP_EXCEPTIONLIST_BV_01
            
-           testcase TP_TSP_EXCEPTIONLIST_BV_02() MainTestComponent system TestAdapter {
+           testcase TP_TSP_EXCEPTIONLIST_BV_02() runs on MainTestComponent system TestAdapter {
              
               /**
               * @desc    TP_TSP_EXCEPTIONLIST_BV_02: Verify that the TSP correctly performs an EXCEPTIONLIST transaction for discounted users 
@@ -1857,7 +1858,7 @@ module EfcInfoExchange_TestCasesTspDev {
              
            } // End of TP_TSP_TRUSTOBJECTS_BV_02
 
-           testcase TP_TSP_TRUSTOBJECTS_BV_03() runs onMainTestComponent system TestAdapter {
+           testcase TP_TSP_TRUSTOBJECTS_BV_03() runs on MainTestComponent system TestAdapter {
              
               /**
               * @desc    TP_TSP_TRUSTOBJECTS_BV_03: Verify that the TSP correctly provides a TrustObjectADU following a TC request 
@@ -1869,16 +1870,16 @@ module EfcInfoExchange_TestCasesTspDev {
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				// PT140 TODO: m_aduRequestTrustObjects template to be defined
 				// Loop in all available types of trustobject supported by the IUT as specified by the length of SENT_TRUST_OBJECTS_SUPPORTED Pixit record
-				var integer v_trustObjectsToBeSent = sizeof(RECEIVED_TRUST_OBJECTS_SUPPORTED);
+				var integer v_trustObjectsToBeSent := sizeof(RECEIVED_TRUST_OBJECTS_SUPPORTED);
 				for (var integer v_trustObjectsReceived :=1; v_trustObjectsReceived<v_trustObjectsToBeSent;v_trustObjectsReceived:=v_trustObjectsReceived+1)
 					{
-					// Prepare a request of a Trust Object by taking allowed type and purpose from the RECEIVED_TRUST_OBJECTS_SUPPORTED Pixit value
-					// PT140 TODO: Check whether indexing a record of records is correctly done
-						var InfoExchange v_apduRespondedTo := m_apduNoSecInit(modifies m_aduRequestTrustObjects{
-						  	trustObjectRequest.requestedTrustObject.trustObjectSpec.typeOfTrustObject := SENT_TRUST_OBJECTS_SUPPORTED[v_trustObjectsReceived].[1],
-						  	trustObjectRequest.requestedTrustObject.trustObjectSpec.typeOfTrustObject := SENT_TRUST_OBJECTS_SUPPORTED[v_trustObjectsReceived].[2]						  	
-							});
-						f_sendAndLogApdu(v_apduRespondedTo);
+						// Prepare a request of a Trust Object by taking allowed type and purpose from the RECEIVED_TRUST_OBJECTS_SUPPORTED Pixit value
+						var InfoExchange v_apduRequestForTrustObject := m_apduNoSecInit( modifies m_aduRequestTrustObjects:={
+						  	trustObjectRequest.requestedTrustObject.trustObjectSpec.typeOfTrustObject := SENT_TRUST_OBJECTS_SUPPORTED[v_trustObjectsReceived].trustObjectType,
+						  	trustObjectRequest.requestedTrustObject.trustObjectSpec.purposeOfTrustObject := SENT_TRUST_OBJECTS_SUPPORTED[v_trustObjectsReceived].trustObjectPurpose	
+							}
+						);
+						f_sendAndLogApdu(v_apduRequestForTrustObject);
 
 						// Set timer
                 		 t_step.start(TRUSTOBJECTS_TYPE1_TIME1_MAX_TSP);
