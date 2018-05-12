@@ -11,9 +11,9 @@
  *	Transaction type			!	BV					! BI			! Comments
  * 	----------------------------!-----------------------!---------------!--------------------------------
  *	Base						! done					! done			! TrustObject templates to be defined
- *	Userdetails					! done					! done			! 
- *	ListOfUsers					! done					! done			!
- *	ExceptionList				! done					! done			!
+ *	Userdetails					! done					! done			! to be compiled
+ *	ListOfUsers					! done					! done			! to be compiled
+ *	ExceptionList				! done					! done			! to be compiled
  *	TrustObjects				! done    				! done			! TrustObject templates to be defined.
  *	PaymentClaim				! done					! done			! BillingDetails and PaymentClaim templates to be defined
  *	DSRC.ContractIssuerList		! done					! done			! Template mw_aduContractIssuerList to be defined
@@ -21,7 +21,7 @@
  *	DSRC.BillingDetails			! done					! done			! Billingdetails templates to be defined.
  *	DSRC.ReportAbnormalOBE		! done					! done			! mw_aduReportAbnormalOBE to be defined.
  *	GNSS.TollDeclaration		! open					! open			!
- *	GNSS.BillingDetails.TSP		! open					! open			!
+ *	GNSS.BillingDetails.TSP		! done					! done			! mw_apduGnssBillingDetails_TSP to be defined
  *	GNSS.BillingDetails.TC		! done					! done			! templates to be defined.
  *	GNSS.PaymentAnnouncement	! open					! done			!
  */
@@ -4603,7 +4603,7 @@ module EfcInfoExchange_TestCasesTspDev {
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A52_3_implementedGNSSTOLLDECLARATION;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				// Step 1: Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send three valid TollDeclarationADUs with actionCode = send, revoke, and adjust, respectively
-				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1);												
+				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1_A);												
 				//  Wait for GNSS.TOLLDECLARATION
 				// PT140 TODO: mw_aduGnssTollDeclaration template to be defined
 				// PT140 TODO: way to set or change amount in the Charge report to be defined
@@ -4661,16 +4661,47 @@ module EfcInfoExchange_TestCasesTspDev {
                   */
                   
                  // Initialisation 
-
-				// Step 1: Trigger IUT with GNSS.BILLINGDETAILS_TSP_1 to send  valid BillingDetailsADUs with:
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A52_3_implementedGNSSTOLLDECLARATION and ICS_A52_1_implementedGNSSBILLINGDETAILSTSP;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1_B);												
+				//  Wait for GNSS.TOLLDECLARATION
+				// PT140 TODO: mw_aduGnssTollDeclaration template to be defined
+				var InfoExchange v_apduToBeReceived := m_apduNoSecInit(mw_aduGnssTollDeclaration);
+				
+				// Receive the correct adu, send positive ack
+				alt {
+					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();					
+						}
+							
+					// Send Ack within time constraints
+					f_wait(GNSSTOLLDECLARATION_TIME1_TC);
+					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+					setverdict(pass);						
+ 					} // End of alt statement 
+				
+				// Step 1: Trigger IUT with GNSS.BILLINGDETAILS_TSP_1_A to send  valid BillingDetailsADUs with:
 					// actionCode = send
 					// all permutations of present and not present optional fields that vary in the IUT implementation
+				f_sendAndLogTrigger(GNSS_BILLINGDETAILS_TSP_TR_TSP_1_A);				
 				
 				//  Wait for GNSS.BILLINGDETAILS
-				
-					// Send Ack within time constraints
-					// Set test success
-                                
+				// PT140 TODO: mw_apduGnssBillingDetails_TSP to be defined
+				alt {
+					[] mtcPort.receive(mw_apduGnssBillingDetails_TSP) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();					
+							
+						// Send Ack within time constraints
+						f_wait(GNSS_BILLINGDETAILS_TSP_TIME1_TC);
+						f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+							
+						// Set test success
+						setverdict(pass);						
+						}
+ 					} // End of alt statement
+				f_closeDownMtc();   						           				                                
                 } // End of TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_01           
           
            testcase TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_02() runs on MainTestComponent system TestAdapter {
@@ -4680,22 +4711,59 @@ module EfcInfoExchange_TestCasesTspDev {
                   * @remark  [16986:2016], Clause 8.2.2 AND 8.2.4 and Table A.1/2 AND Table A.2/1 AND Table A.52/1 AND Table A.56/6
                   */
                   
-                 // Initialisation
-                 	// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one APDU containing one valid TollDeclarationADU
-                 	// Send a positive Ack to conclude the TOLLDECLARATION transaction
-                 	// Trigger IUT with GNSS.BILLINGDETAILS.TR_TSP_1 to send a valid BillingDetails ADU with billingDetailsNum field value = 1
-                 	// Send a positive Ack to conclude the BILLINGDETAILS ADU
-
-				// Step 1: Trigger IUT with GNSS.BILLINGDETAILS.TR_TSP_1 to send one APDU containing one valid BillingDetailsADU with:
-					// actionCode = adjust
-					// only mandatory fields present with valid values
-					// paymentFeeAmount field value = 45
-					// billingDetailsNum field value = 1
+                 // Initialisation 
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A52_3_implementedGNSSTOLLDECLARATION and ICS_A52_1_implementedGNSSBILLINGDETAILSTSP;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1_B);												
+				//  Wait for GNSS.TOLLDECLARATION
+				// PT140 TODO: mw_aduGnssTollDeclaration template to be defined
+				var InfoExchange v_apduToBeReceived := m_apduNoSecInit(mw_aduGnssTollDeclaration);
 				
-				//  Wait for BillingDetails
-				
+				// Receive the correct adu, send positive ack
+				alt {
+					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();					
+						}
+							
 					// Send Ack within time constraints
-					// Set test success
+					f_wait(GNSSTOLLDECLARATION_TIME1_TC);
+					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+ 					} // End of alt statement 
+				f_sendAndLogTrigger(GNSS_BILLINGDETAILS_TSP_TR_TSP_1_B1);				
+				
+				//  Wait for GNSS.BILLINGDETAILS
+				// PT140 TODO: mw_apduGnssBillingDetails_TSP to be defined
+				alt {
+					[] mtcPort.receive(mw_apduGnssBillingDetails_TSP) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();					
+							
+						// Send NAck within time constraints
+						f_wait(GNSS_BILLINGDETAILS_TSP_TIME1_TC);
+						f_sendAndLogApdu(m_apduNAck(v_apduReceived, billingDetailsAmountRejected));
+						}
+ 					} // End of alt statement
+
+				// Step 1: Trigger IUT with GNSS.BILLINGDETAILS.TR_TSP_1_B2 to send one APDU containing one valid BillingDetailsADU with:
+				f_sendAndLogTrigger(GNSS_BILLINGDETAILS_TSP_TR_TSP_1_B2);				
+				
+				//  Wait for GNSS.BILLINGDETAILS
+				// PT140 TODO: mw_apduGnssBillingDetails_TSP to be defined
+				alt {
+					[] mtcPort.receive(mw_apduGnssBillingDetails_TSP) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();					
+							
+						// Send Ack within time constraints
+						f_wait(GNSS_BILLINGDETAILS_TSP_TIME1_TC);
+						f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+							
+						// Set test success
+						setverdict(pass);						
+						}
+ 					} // End of alt statement
+				f_closeDownMtc();   						           				                                
                 
                 } // End of TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_02           
 
@@ -4711,17 +4779,62 @@ module EfcInfoExchange_TestCasesTspDev {
                  	// Send a positive Ack to conclude the TOLLDECLARATION transaction
                  	// Trigger IUT with GNSS.BILLINGDETAILS.TR_TSP_1 to send a valid BillingDetails ADU with billingDetailsNum field value = 1
                  	// Send a positive Ack to conclude the BILLINGDETAILS ADU
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A52_3_implementedGNSSTOLLDECLARATION and ICS_A52_1_implementedGNSSBILLINGDETAILSTSP;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1_B);												
+				//  Wait for GNSS.TOLLDECLARATION
+				// PT140 TODO: mw_aduGnssTollDeclaration template to be defined
+				var InfoExchange v_apduToBeReceived := m_apduNoSecInit(mw_aduGnssTollDeclaration);
+				
+				// Receive the correct adu, send positive ack
+				alt {
+					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();					
+						}
+							
+					// Send Ack within time constraints
+					f_wait(GNSSTOLLDECLARATION_TIME1_TC);
+					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+ 					} // End of alt statement 
+				f_sendAndLogTrigger(GNSS_BILLINGDETAILS_TSP_TR_TSP_1_B1);				
+				
+				//  Wait for GNSS.BILLINGDETAILS
+				// PT140 TODO: mw_apduGnssBillingDetails_TSP to be defined
+				alt {
+					[] mtcPort.receive(mw_apduGnssBillingDetails_TSP) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();					
+							
+						// Send Ack within time constraints
+						f_wait(GNSS_BILLINGDETAILS_TSP_TIME1_TC);
+						f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+						}
+ 					} // End of alt statement
 
-				// Step 1: Trigger IUT with GNSS.BILLINGDETAILS.TR_TSP_1 to send one APDU containing one valid BillingDetailsADU with:
+				// Step 1: Trigger IUT with GNSS.BILLINGDETAILS.TR_TSP_1_C to send one APDU containing one valid BillingDetailsADU with:
 					// actionCode = ActionCode_revoke_
 					// only mandatory fields present with valid values
-					// billingDetailsNum field value = 1
+					// billingDetailsNum field value = same as previous sent Billing Details
+				f_sendAndLogTrigger(GNSS_BILLINGDETAILS_TSP_TR_TSP_1_C);				
 				
-				//  Wait for BillingDetailsADU
+				//  Wait for GNSS.BILLINGDETAILS
+				// PT140 TODO: mw_apduGnssBillingDetails_TSP to be defined
+				alt {
+					[] mtcPort.receive(mw_apduGnssBillingDetails_TSP) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();					
+							
+						// Send Ack within time constraints
+						f_wait(GNSS_BILLINGDETAILS_TSP_TIME1_TC);
+						f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+							
+						// Set test success
+						setverdict(pass);						
+						}
+ 					} // End of alt statement
+				f_closeDownMtc();   						           				                                
 				
-					// Send Ack within time constraints
-					// Set test success
-                
                 } // End of TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_03           
 
 
