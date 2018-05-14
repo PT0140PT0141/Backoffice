@@ -20,10 +20,10 @@
  *	DSRC.EFCContextData			! open					! open			! 
  *	DSRC.BillingDetails			! done					! done			! Billingdetails templates to be defined.
  *	DSRC.ReportAbnormalOBE		! done					! done			! mw_aduReportAbnormalOBE to be defined.
- *	GNSS.TollDeclaration		! open					! open			!
+ *	GNSS.TollDeclaration		! done					! done			! mw_aduGnssTollDeclaration template to be defined
  *	GNSS.BillingDetails.TSP		! done					! done			! mw_apduGnssBillingDetails_TSP to be defined
  *	GNSS.BillingDetails.TC		! done					! done			! templates to be defined.
- *	GNSS.PaymentAnnouncement	! open					! done			!
+ *	GNSS.PaymentAnnouncement	! done					! done			! mw_aduGnssPaymentAnnouncement template to be defined
  */
  
 module EfcInfoExchange_TestCasesTspDev {
@@ -4604,7 +4604,7 @@ module EfcInfoExchange_TestCasesTspDev {
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				// Step 1: Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send three valid TollDeclarationADUs with actionCode = send, revoke, and adjust, respectively
 				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1_A);												
-				//  Wait for GNSS.TOLLDECLARATION
+				//  Wait for GNSS_TOLLDECLARATION
 				// PT140 TODO: mw_aduGnssTollDeclaration template to be defined
 				// PT140 TODO: way to set or change amount in the Charge report to be defined
 				var InfoExchange v_apduToBeReceived := m_apduNoSecInit(
@@ -4625,7 +4625,7 @@ module EfcInfoExchange_TestCasesTspDev {
 						actionCode := ActionCode_revoke_  
 						}					  
 					});
-				
+				t_step.start(GNSS_TOLLDECLARATION_TIME1_MAX_TSP);
 				// Receive the correct adu, send positive ack
 				alt {
 					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
@@ -5635,23 +5635,40 @@ module EfcInfoExchange_TestCasesTspDev {
                   /**
                   * @desc    TP_TSP_GNSS_PAYMENTANNOUNCEMENT_BV_01: Verify that the TSP correctly performs the GNSS.PAYMENTANNOUNCEMENT transaction with actionCode=send 
                   * @remark  [16986:2016], Clause 6.8 and Table A.1/2 AND Table A.2/2 AND Table A.52/4 
-                  */
-                  
+                  */                 
                  // Initialisation 
 
-					// Start by setting test success
-					// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
-					// Wait for TollDeclarationADU
-					// Send one positive Ack within allowed time constraints
-					// PT140 TODO: Who is sending Billing Details in this case?
-	                // Send one correct BillingDetailsADU related to the received Toll Declaration within allowed timeconstraints
-	                // Wait for positive Ack
+				// The IUT is supposedly being prepared with valid test toll declaration data
 					
-				// Step 1: Trigger IUT with GNSS.PAYMENTANNOUNCEMENT.TR_TC_TSP_1 to send one valid PaymentAnnouncementADU with actionCode = send
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A2_2_isGnss and ICS_A52_3_implementedGNSSPAYMENTANNOUNCEMENT;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				
+				// Step 1: Trigger IUT with GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1_A to send one valid PaymentAnnouncementADU with actionCode = send
+				f_sendAndLogTrigger(GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1_A);												
+				//  Wait for GNSS.PAYMENTANNOUNCEMENT
+				// PT140 TODO: mw_aduGnssPaymentAnnouncement template to be defined
+				var InfoExchange v_apduToBeReceived := m_apduNoSecInit(
+					{modifies mw_aduGnssPaymentAnnouncement:= {
+					  	actionCode := ActionCode_send_
+					  	}
+					});
+					
 					// Wait for PaymentAnnouncementADU within allowed time constraints
-					// Send positive Ack within time constraints
+				t_step.start(GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TSP);	
+				alt {
+					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();					
+						}
+							
+					// Send Ack within time constraints
+					f_wait(PAYMENTANNOUNCEMENT_TIME1_TC);
+					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
 					// Set test success
-                
+					setverdict(pass);						
+ 					} // End of alt statement 
+               	f_closeDownMtc();
+               
                 } // End of TP_TSP_GNSS_PAYMENTANNOUNCEMENT_BV_01                    
 
            testcase TP_TSP_GNSS_PAYMENTANNOUNCEMENT_BV_02() runs on MainTestComponent system TestAdapter {
@@ -5661,24 +5678,66 @@ module EfcInfoExchange_TestCasesTspDev {
                   */
                   
                  // Initialisation 
-					// Start by setting test success
-					// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
-					// Wait for TollDeclarationADU
-					// Send one positive Ack within allowed time constraints
-					// PT140 TODO: Who is sending Billing Details in this case?
-	                // Send one correct BillingDetailsADU related to the received Toll Declaration within allowed timeconstraints
-	                // Wait for positive Ack
-					// Trigger IUT with GNSS.PAYMENTANNOUNCEMENT.TR_TSP_1 to send one valid PaymentAnnouncementADU with actionCode=send
-					// Send negative Ack
+
+				// The IUT is supposedly being prepared with valid test toll declaration data
 					
-				// Step 1: Trigger IUT with GNSS.PAYMENTANNOUNCEMENT.TR_TC_TSP_1 to send one valid PaymentAnnouncementADU with:
-					// actionCode = adjust
-					// paymentAnnoucementId = same value as a previously sent PaymentAnnouncementId
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A2_2_isGnss and ICS_A52_3_implementedGNSSPAYMENTANNOUNCEMENT;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				
+				// Trigger IUT with GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1_A to send one valid PaymentAnnouncementADU with actionCode = send
+				f_sendAndLogTrigger(GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1_A);												
+				//  Wait for GNSS.PAYMENTANNOUNCEMENT
+				// PT140 TODO: mw_aduGnssPaymentAnnouncement template to be defined
+				var InfoExchange v_apduToBeReceived := m_apduNoSecInit(
+					{modifies mw_aduGnssPaymentAnnouncement:= {
+					  	actionCode := ActionCode_send_
+					  	}
+					});
+					
 					// Wait for PaymentAnnouncementADU within allowed time constraints
-					// Send positive Ack within time constraints
+				t_step.start(GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TSP);	
+				alt {
+					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();					
+						}
+							
+					// Send Ack within time constraints
+					f_wait(PAYMENTANNOUNCEMENT_TIME1_TC);
+					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+					// Remember Payment Announcement ID and amount for future usage
+					var integer idReceived := v_apduReceived.infoExchangeContent.adus.PaymentAnnouncementADU.paymentAnnouncementID;
+					var ExtendedPaymentAmount amountReceived := v_apduReceived.infoExchangeContent.adus.PaymentAnnouncementADU.totalamount
+ 					} // End of alt statement
+
+				// Step 1: Trigger IUT with GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1_B to send one valid PaymentAnnouncementADU with actionCode = adjust
+				f_sendAndLogTrigger(GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1_B);												
+				//  Wait for GNSS.PAYMENTANNOUNCEMENT
+				// PT140 TODO: mw_aduGnssPaymentAnnouncement template to be defined
+				var InfoExchange v_apduToBeReceived := m_apduNoSecInit(
+					{modifies mw_aduGnssPaymentAnnouncement:= {
+					  	paymentAnnouncementID := idReceived,
+					  	actionCode := ActionCode_adjust_,
+					  	totalamount !=	amountReceived				  	
+					  	}
+					});
+				// Wait for PaymentAnnouncementADU within allowed time constraints
+				t_step.start(GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TSP);	
+				alt {
+					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();					
+						}
+							
+					// Send Ack within time constraints
+					f_wait(PAYMENTANNOUNCEMENT_TIME1_TC);
+					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
 					// Set test success
-					
-                
+					setverdict(pass);						
+ 					} // End of alt statement
+               	
+               	f_closeDownMtc();
+                               
                 } // End of TP_TSP_GNSS_PAYMENTANNOUNCEMENT_BV_02                    
 
            testcase TP_TSP_GNSS_PAYMENTANNOUNCEMENT_BV_03() runs on MainTestComponent system TestAdapter {
@@ -5688,24 +5747,61 @@ module EfcInfoExchange_TestCasesTspDev {
                   */
                   
                  // Initialisation 
-					// Start by setting test success
-					// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
-					// Wait for TollDeclarationADU
-					// Send one positive Ack within allowed time constraints
-					// PT140 TODO: Who is sending Billing Details in this case?
-	                // Send one correct BillingDetailsADU related to the received Toll Declaration within allowed timeconstraints
-	                // Wait for positive Ack
-					// Trigger IUT with GNSS.PAYMENTANNOUNCEMENT.TR_TSP_1 to send one valid PaymentAnnouncementADU with actionCode=send
-					// Send positive Ack
+				// The IUT is supposedly being prepared with valid test toll declaration data
 					
-				// Step 1: Trigger IUT with GNSS.PAYMENTANNOUNCEMENT.TR_TC_TSP_1 to send one valid PaymentAnnouncementADU with:
-					// actionCode = revoke
-					// paymentAnnoucementId = same value as a previously sent PaymentAnnouncementId
-					
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A2_2_isGnss and ICS_A52_3_implementedGNSSPAYMENTANNOUNCEMENT;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				
+				// Trigger IUT with GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1_A to send one valid PaymentAnnouncementADU with actionCode = send
+				f_sendAndLogTrigger(GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1_A);												
+				//  Wait for GNSS.PAYMENTANNOUNCEMENT
+				// PT140 TODO: mw_aduGnssPaymentAnnouncement template to be defined
+				var InfoExchange v_apduToBeReceived := m_apduNoSecInit(
+					{modifies mw_aduGnssPaymentAnnouncement:= {
+					  	actionCode := ActionCode_send_
+					  	}
+					});					
 					// Wait for PaymentAnnouncementADU within allowed time constraints
-					// Send positive Ack within time constraints
+				t_step.start(GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TSP);	
+				alt {
+					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();					
+						}
+							
+					// Send Ack within time constraints
+					f_wait(PAYMENTANNOUNCEMENT_TIME1_TC);
+					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+					// Remember Payment Announcement ID and amount for future usage
+					var integer idReceived := v_apduReceived.infoExchangeContent.adus.PaymentAnnouncementADU.paymentAnnouncementID;
+ 					} // End of alt statement
+
+				// Step 1: Trigger IUT with GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1_C to send one valid PaymentAnnouncementADU with actionCode = revoke
+				f_sendAndLogTrigger(GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1_C);												
+				//  Wait for GNSS.PAYMENTANNOUNCEMENT
+				// PT140 TODO: mw_aduGnssPaymentAnnouncement template to be defined
+				var InfoExchange v_apduToBeReceived := m_apduNoSecInit(
+					{modifies mw_aduGnssPaymentAnnouncement:= {
+					  	paymentAnnouncementID := idReceived,
+					  	actionCode := ActionCode_revoke_
+					  	}
+					});
+				// Wait for PaymentAnnouncementADU within allowed time constraints
+				t_step.start(GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TSP);	
+				alt {
+					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();					
+						}
+							
+					// Send Ack within time constraints
+					f_wait(PAYMENTANNOUNCEMENT_TIME1_TC);
+					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
 					// Set test success
-					
+					setverdict(pass);						
+ 					} // End of alt statement
+               	
+               	f_closeDownMtc();					
                 
                 } // End of TP_TSP_GNSS_PAYMENTANNOUNCEMENT_BV_03                    
 
