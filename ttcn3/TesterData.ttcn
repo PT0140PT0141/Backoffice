@@ -147,6 +147,14 @@ module EfcInfoExchange_TesterData{
 	
 	group ProvideUserDetailsData {
 		modulepar UserParameterResponseDetails UserParameterResponseDetails_TESTER_VALUES[27]:={};
+	}
+	
+	group EFCContextData {
+	 	modulepar  EfcAutonomousContextData.TariffClassDefinition tariffClassDefinitionTESTER_VALUE;
+	 	modulepar  EfcAutonomousContextData.LocalVehicleClassDefinition localVehicleClassDefinitionTESTER_VALUE;
+	 	modulepar  EfcAutonomousContextData.TimeClassDefinition timeClassDefinitionTESTER_VALUE;
+	 	modulepar  EfcAutonomousContextData.UserClassDefinition userClassDefinitionTESTER_VALUE;
+	 	modulepar  FeeDefinition feeDefinitionTESTER_VALUE;
 	}		
 	
 } // end module 

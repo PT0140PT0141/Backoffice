@@ -17,7 +17,7 @@
  *	TrustObjects				! done    				! done			! TrustObject templates to be defined.
  *	PaymentClaim				! done					! done			! BillingDetails and PaymentClaim templates to be defined
  *	DSRC.ContractIssuerList		! done					! done			! Template mw_aduContractIssuerList to be defined
- *	DSRC.EFCContextData			! open					! open			! 
+ *	DSRC.EFCContextData			! open					! open			! mw_aduEfcContextData to be defined
  *	DSRC.BillingDetails			! done					! done			! Billingdetails templates to be defined.
  *	DSRC.ReportAbnormalOBE		! done					! done			! mw_aduReportAbnormalOBE to be defined.
  *	GNSS.TollDeclaration		! done					! done			! mw_aduGnssTollDeclaration template to be defined
@@ -3264,16 +3264,36 @@ module EfcInfoExchange_TestCasesTspDev {
                   /**
                   * @desc    TP_TSP_DSRC.EFCCONTEXTDATA_BV_01: Verify that the TSP correctly performs the DSRC.EFCCONTEXTDATA transaction with an EFCContextDataADU containing only mandatory context data for a domain type = dsrcContext 
                   * @remark  [16986:2016], Clause 7.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/2
-                  */
-                  
+                  */                 
                  // Initialisation
-                 
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_2_implementedDSRCEFCCONTEXTDATA;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+
                  // Step 1: Send EFCCONTEXTDATA with:
                  	// domainType = dsrcContext 
                  	// iso17573ADU containing only mandatory field with valid values
                  	// feeModifiers set to null
+                 // PT140 TODO : mw_aduEfcContextData template to be defined 
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+					{modifies mw_aduEfcContextData := {
+					  	domainType.dsrcContext.regimeContextData.feeModifiers := omit
+						}
+					});                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 
                  // Step 2: Wait for positive Ack within DSRC.EFCCONTEXTDATA.TIME1
-                
+				// Set timer
+                 t_step.start(DSRC_EFCCONTEXTDATA_TIME1_MAX_TSP);                 
+				alt {
+					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {					  
+						// Log what we received
+						f_logApduReceivedAndTStep();
+						t_step.stop;
+						//Set verdict
+						setverdict(pass);
+					}
+				} 
+				f_closeDownMtc();                  
+                                 
                 } // End of TP_TSP_DSRC.EFCCONTEXTDATA_BV_01
 
            testcase TP_TSP_DSRC.EFCCONTEXTDATA_BV_02() runs on MainTestComponent system TestAdapter {
@@ -3283,13 +3303,35 @@ module EfcInfoExchange_TestCasesTspDev {
                   * @remark  [16986:2016], Clause 7.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/2
                   */
                   
+                  */                 
                  // Initialisation
-                  
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_2_implementedDSRCEFCCONTEXTDATA;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+
                  // Step 1: Send EFCCONTEXTDATA with:
                  	// domainType = dsrcClosedContext 
-                 	// dsrcClosedContext with valid values and feeModifiers set to null
-                 	// closedSystem with valid values and all other fields set to null
+                 	// iso17573ADU containing only mandatory field with valid values
+                 	// feeModifiers set to null
+                 // PT140 TODO : mw_aduEfcContextData template to be defined 
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+					{modifies mw_aduEfcContextData := {
+					  	domainType.dsrcClosedContext.feeModifiers := omit
+						}
+					});                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 
                  // Step 2: Wait for positive Ack within DSRC.EFCCONTEXTDATA.TIME1
+				// Set timer
+                 t_step.start(DSRC_EFCCONTEXTDATA_TIME1_MAX_TSP);                 
+				alt {
+					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {					  
+						// Log what we received
+						f_logApduReceivedAndTStep();
+						t_step.stop;
+						//Set verdict
+						setverdict(pass);
+					}
+				} 
+				f_closeDownMtc();                  
                 
                 } // End of TP_TSP_DSRC.EFCCONTEXTDATA_BV_02
 
@@ -3301,13 +3343,35 @@ module EfcInfoExchange_TestCasesTspDev {
                   */
                   
                  // Initialisation
-                  
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_2_implementedDSRCEFCCONTEXTDATA;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+
                  // Step 1: Send EFCCONTEXTDATA with:
                  	// domainType = dsrcClosedContext 
                  	// dsrcClosedContext with valid values and feeModifiers set to null
                  	// closedSystem with tariffClassDefinition = {valid contents} and all other fields set to null
+                 // PT140 TODO : mw_aduEfcContextData template to be defined 
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+					{modifies mw_aduEfcContextData := {
+					  	domainType.dsrcClosedContext.feeModifiers := omit,
+					  	domainType.closedContext.closedSystem.tariffClassDefinition := tariffClassDefinitionTESTER_VALUE
+						}
+					});                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 
                  // Step 2: Wait for positive Ack within DSRC.EFCCONTEXTDATA.TIME1
-                
+				// Set timer
+                 t_step.start(DSRC_EFCCONTEXTDATA_TIME1_MAX_TSP);                 
+				alt {
+					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {					  
+						// Log what we received
+						f_logApduReceivedAndTStep();
+						t_step.stop;
+						//Set verdict
+						setverdict(pass);
+					}
+				} 
+				f_closeDownMtc();                  
+                                  
                 } // End of TP_TSP_DSRC.EFCCONTEXTDATA_BV_03
 
            testcase TP_TSP_DSRC.EFCCONTEXTDATA_BV_04() runs on MainTestComponent system TestAdapter {
@@ -3318,13 +3382,35 @@ module EfcInfoExchange_TestCasesTspDev {
                   */
                   
                  // Initialisation
-                  
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_2_implementedDSRCEFCCONTEXTDATA;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+
                  // Step 1: Send EFCCONTEXTDATA with:
                  	// domainType = dsrcClosedContext 
                  	// dsrcClosedContext with valid values and feeModifiers set to null
                  	// closedSystem with localVehicleClassDefinition  = {valid contents} and all other fields set to null
+                 // PT140 TODO : mw_aduEfcContextData template to be defined 
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+					{modifies mw_aduEfcContextData := {
+					  	domainType.dsrcClosedContext.feeModifiers := omit,
+					  	domainType.closedContext.closedSystem.localVehicleClassDefinition := localVehicleClassDefinitionTESTER_VALUE
+						}
+					});                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 
                  // Step 2: Wait for positive Ack within DSRC.EFCCONTEXTDATA.TIME1
-                
+				// Set timer
+                 t_step.start(DSRC_EFCCONTEXTDATA_TIME1_MAX_TSP);                 
+				alt {
+					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {					  
+						// Log what we received
+						f_logApduReceivedAndTStep();
+						t_step.stop;
+						//Set verdict
+						setverdict(pass);
+					}
+				} 
+				f_closeDownMtc();                  
+                                  
                 } // End of TP_TSP_DSRC.EFCCONTEXTDATA_BV_04
 
            testcase TP_TSP_DSRC.EFCCONTEXTDATA_BV_05() runs on MainTestComponent system TestAdapter {
@@ -3334,13 +3420,35 @@ module EfcInfoExchange_TestCasesTspDev {
                   * @remark  [16986:2016], Clause 7.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/2
                   */
                   
-                 // Initialisation 
+                 // Initialisation
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_2_implementedDSRCEFCCONTEXTDATA;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
                  // Step 1: Send EFCCONTEXTDATA with:
                  	// domainType = dsrcClosedContext 
                  	// dsrcClosedContext with valid values and feeModifiers set to null
                  	// closedSystem with timeClassDefinition  = {valid contents} and all other fields set to null
+                 // PT140 TODO : mw_aduEfcContextData template to be defined 
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+					{modifies mw_aduEfcContextData := {
+					  	domainType.dsrcClosedContext.feeModifiers := omit,
+					  	domainType.closedContext.closedSystem.timeClassDefinition := timeClassDefinitionTESTER_VALUE
+						}
+					});                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 
                  // Step 2: Wait for positive Ack within DSRC.EFCCONTEXTDATA.TIME1
+				// Set timer
+                 t_step.start(DSRC_EFCCONTEXTDATA_TIME1_MAX_TSP);                 
+				alt {
+					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {					  
+						// Log what we received
+						f_logApduReceivedAndTStep();
+						t_step.stop;
+						//Set verdict
+						setverdict(pass);
+					}
+				} 
+				f_closeDownMtc();                  
                 
                 } // End of TP_TSP_DSRC.EFCCONTEXTDATA_BV_05
 
@@ -3351,13 +3459,35 @@ module EfcInfoExchange_TestCasesTspDev {
                   * @remark  [16986:2016], Clause 7.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/2
                   */
                   
-                 // Initialisation 
+                 // Initialisation
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_2_implementedDSRCEFCCONTEXTDATA;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
                  // Step 1: Send EFCCONTEXTDATA with:
                  	// domainType = dsrcClosedContext 
                  	// dsrcClosedContext with valid values and feeModifiers set to null
                  	// closedSystem with userClassDefinition  = {valid contents} and all other fields set to null
+                 // PT140 TODO : mw_aduEfcContextData template to be defined 
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+					{modifies mw_aduEfcContextData := {
+					  	domainType.dsrcClosedContext.feeModifiers := omit,
+					  	domainType.closedContext.closedSystem.userClassDefinition := userClassDefinitionTESTER_VALUE
+						}
+					});                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 
                  // Step 2: Wait for positive Ack within DSRC.EFCCONTEXTDATA.TIME1
+				// Set timer
+                 t_step.start(DSRC_EFCCONTEXTDATA_TIME1_MAX_TSP);                 
+				alt {
+					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {					  
+						// Log what we received
+						f_logApduReceivedAndTStep();
+						t_step.stop;
+						//Set verdict
+						setverdict(pass);
+					}
+				} 
+				f_closeDownMtc();                  
                                 
                 } // End of TP_TSP_DSRC.EFCCONTEXTDATA_BV_06
 
@@ -3368,13 +3498,35 @@ module EfcInfoExchange_TestCasesTspDev {
                   * @remark  [16986:2016], Clause 7.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/2
                   */
                   
-                 // Initialisation 
+                 // Initialisation
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_2_implementedDSRCEFCCONTEXTDATA;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
                  // Step 1: Send EFCCONTEXTDATA with:
                  	// domainType = dsrcClosedContext 
                  	// dsrcClosedContext with valid values and feeModifiers set to null
                  	// closedSystem with feeDefinition  = {valid contents} and all other fields set to null
+                 // PT140 TODO : mw_aduEfcContextData template to be defined 
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+					{modifies mw_aduEfcContextData := {
+					  	domainType.dsrcClosedContext.feeModifiers := omit,
+					  	domainType.closedContext.closedSystem.feeDefinition := feeDefinitionTESTER_VALUE
+						}
+					});                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 
                  // Step 2: Wait for positive Ack within DSRC.EFCCONTEXTDATA.TIME1
+				// Set timer
+                 t_step.start(DSRC_EFCCONTEXTDATA_TIME1_MAX_TSP);                 
+				alt {
+					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {					  
+						// Log what we received
+						f_logApduReceivedAndTStep();
+						t_step.stop;
+						//Set verdict
+						setverdict(pass);
+					}
+				} 
+				f_closeDownMtc();                  
                 
                 } // End of TP_TSP_DSRC.EFCCONTEXTDATA_BV_07
            
@@ -4627,9 +4779,9 @@ module EfcInfoExchange_TestCasesTspDev {
 						f_logApduReceivedAndTStep();					
 						}
 					// PT140 TODO: verify that the extraction of the tollDeclarationId from the received apdu is correct
-					var TollDeclarationId v_idReceived1 = v_apduReceived.infoExchangeContent.adus[1].TollDeclarationADU.tollDeclarationId
-					var TollDeclarationId v_idReceived2 = v_apduReceived.infoExchangeContent.adus[2].TollDeclarationADU.tollDeclarationId
-					var TollDeclarationId v_idReceived3 = v_apduReceived.infoExchangeContent.adus[3].TollDeclarationADU.tollDeclarationId					
+					var TollDeclarationId v_idReceived1 = v_apduReceived.infoExchangeContent.adus.tollDeclarationADUs[1].tollDeclarationId
+					var TollDeclarationId v_idReceived2 = v_apduReceived.infoExchangeContent.adus.tollDeclarationADUs[2].tollDeclarationId
+					var TollDeclarationId v_idReceived3 = v_apduReceived.infoExchangeContent.adus.tollDeclarationADUs[3].tollDeclarationId					
 
 						if ((v_idReceived1 = v_idReceived2) and (v_idReceived1 = v_idReceived3){
 							setverdict(pass);
