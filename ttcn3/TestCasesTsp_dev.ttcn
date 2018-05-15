@@ -4627,9 +4627,9 @@ module EfcInfoExchange_TestCasesTspDev {
 						f_logApduReceivedAndTStep();					
 						}
 					// PT140 TODO: verify that the extraction of the tollDeclarationId from the received apdu is correct
-					var TollDeclarationId v_idReceived1 = v_apduReceived.infoExchangeContent.adus.TollDeclarationADU[1].tollDeclarationId
-					var TollDeclarationId v_idReceived2 = v_apduReceived.infoExchangeContent.adus.TollDeclarationADU[2].tollDeclarationId
-					var TollDeclarationId v_idReceived3 = v_apduReceived.infoExchangeContent.adus.TollDeclarationADU[3].tollDeclarationId					
+					var TollDeclarationId v_idReceived1 = v_apduReceived.infoExchangeContent.adus[1].TollDeclarationADU.tollDeclarationId
+					var TollDeclarationId v_idReceived2 = v_apduReceived.infoExchangeContent.adus[2].TollDeclarationADU.tollDeclarationId
+					var TollDeclarationId v_idReceived3 = v_apduReceived.infoExchangeContent.adus[3].TollDeclarationADU.tollDeclarationId					
 
 						if ((v_idReceived1 = v_idReceived2) and (v_idReceived1 = v_idReceived3){
 							setverdict(pass);
