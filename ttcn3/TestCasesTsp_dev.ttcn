@@ -885,7 +885,6 @@ module EfcInfoExchange_TestCasesTspDev {
 						// Step3: Send DefaultAck with correct identifier and set verdict
 						f_wait(USERDETAILS_TIME2_MIN_TSP);
 						f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
-
 					}
 				} // End of alt statement
 				
@@ -4603,40 +4602,44 @@ module EfcInfoExchange_TestCasesTspDev {
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A52_3_implementedGNSSTOLLDECLARATION;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				// Step 1: Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send three valid TollDeclarationADUs with actionCode = send, revoke, and adjust, respectively
-				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1_A);												
-				//  Wait for GNSS_TOLLDECLARATION
 				// PT140 TODO: mw_aduGnssTollDeclaration template to be defined
 				// PT140 TODO: way to set or change amount in the Charge report to be defined
 				var InfoExchange v_apduToBeReceived := m_apduNoSecInit(
 					{modifies mw_aduGnssTollDeclaration:= {
-					  	tollDeclarationId := 1,
-					  	amount := HOW TO SET?,
+					  	amount := *,
 					  	actionCode := ActionCode_send_,
 					  	}
 					},
 					{modifies mw_aduGnssTollDeclaration:= {
-					  	tollDeclarationId := 2,
 					  	actionCode := ActionCode_adjust_,
-					  	amount := HOW TO SET?,
+					  	amount := *,
 						}
 					},
 					{modifies mw_adGnssTollDeclaration := {
-						tollDeclarationId := 1, // PT 140 TODO: Suppose the tollDeclarationId refers to the one to be revoked
 						actionCode := ActionCode_revoke_  
 						}					  
 					});
-				t_step.start(GNSS_TOLLDECLARATION_TIME1_MAX_TSP);
+				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1_A);												
 				// Receive the correct adu, send positive ack
 				alt {
 					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();					
 						}
-							
-					// Send Ack within time constraints
-					f_wait(GNSSTOLLDECLARATION_TIME1_TC);
-					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
-					setverdict(pass);						
+					// PT140 TODO: verify that the extraction of the tollDeclarationId from the received apdu is correct
+					var TollDeclarationId v_idReceived1 = v_apduReceived.infoExchangeContent.adus.TollDeclarationADU[1].tollDeclarationId
+					var TollDeclarationId v_idReceived2 = v_apduReceived.infoExchangeContent.adus.TollDeclarationADU[2].tollDeclarationId
+					var TollDeclarationId v_idReceived3 = v_apduReceived.infoExchangeContent.adus.TollDeclarationADU[3].tollDeclarationId					
+
+						if ((v_idReceived1 = v_idReceived2) and (v_idReceived1 = v_idReceived3){
+							setverdict(pass);
+							// Step3: Send DefaultAck with correct identifier and set verdict
+							f_wait(GNSSTOLLDECLARATION_TIME1_TC);
+							f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));							  
+							}
+						else {
+							setverdict(fail)
+						};
  					} // End of alt statement 
                	f_closeDownMtc();               
                 } // End of TP_TSP_GNSS_TOLLDECLARATION_BV_01
