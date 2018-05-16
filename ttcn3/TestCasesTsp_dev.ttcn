@@ -17,7 +17,7 @@
  *	TrustObjects				! done    				! done			! TrustObject templates to be defined.
  *	PaymentClaim				! done					! done			! BillingDetails and PaymentClaim templates to be defined
  *	DSRC.ContractIssuerList		! done					! done			! Template mw_aduContractIssuerList to be defined
- *	DSRC.EFCContextData			! open					! open			! mw_aduEfcContextData to be defined
+ *	DSRC.EFCContextData			! done					! open			! 
  *	DSRC.BillingDetails			! done					! done			! Billingdetails templates to be defined.
  *	DSRC.ReportAbnormalOBE		! done					! done			! mw_aduReportAbnormalOBE to be defined.
  *	GNSS.TollDeclaration		! done					! done			! mw_aduGnssTollDeclaration template to be defined
@@ -3273,10 +3273,13 @@ module EfcInfoExchange_TestCasesTspDev {
                  	// domainType = dsrcContext 
                  	// iso17573ADU containing only mandatory field with valid values
                  	// feeModifiers set to null
-                 // PT140 TODO : mw_aduEfcContextData template to be defined 
+				// set tester tolling domain characteristics
+				var Iso17575_3AduBody v_contextData;
+				f_setDsrcContextData(v_contextData);				
 				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
-					{modifies mw_aduEfcContextData := {
-					  	domainType.dsrcContext.regimeContextData.feeModifiers := omit
+					{modifies mw_aduDsrcEfcContextData := {
+					  	iso175753ADU := v_contextData;
+					  	regimeContextData.feeModifiers := omit
 						}
 					});                 
 				f_sendAndLogApdu(v_apduRespondedTo);                 
@@ -3310,12 +3313,14 @@ module EfcInfoExchange_TestCasesTspDev {
 
                  // Step 1: Send EFCCONTEXTDATA with:
                  	// domainType = dsrcClosedContext 
-                 	// iso17573ADU containing only mandatory field with valid values
+                 	// ClosedContextDefinition containing only mandatory field with valid values
                  	// feeModifiers set to null
-                 // PT140 TODO : mw_aduEfcContextData template to be defined 
+
+					// Only tollContextOverview in ClosedContextDefinition set to a valid value
 				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
-					{modifies mw_aduEfcContextData := {
-					  	domainType.dsrcClosedContext.feeModifiers := omit
+					{modifies mw_aduDsrcClosedContextEfcContextData := {
+					  	closedContext.closedSystem.tollContextOverview := tollContextOverviewTESTER_VALUE
+					  	feeModifiers := omit
 						}
 					});                 
 				f_sendAndLogApdu(v_apduRespondedTo);                 
@@ -3350,11 +3355,10 @@ module EfcInfoExchange_TestCasesTspDev {
                  	// domainType = dsrcClosedContext 
                  	// dsrcClosedContext with valid values and feeModifiers set to null
                  	// closedSystem with tariffClassDefinition = {valid contents} and all other fields set to null
-                 // PT140 TODO : mw_aduEfcContextData template to be defined 
 				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
-					{modifies mw_aduEfcContextData := {
-					  	domainType.dsrcClosedContext.feeModifiers := omit,
-					  	domainType.closedContext.closedSystem.tariffClassDefinition := tariffClassDefinitionTESTER_VALUE
+					{modifies mw_aduDsrcClosedContextEfcContextData := {
+					  	feeModifiers := omit,
+					  	closedContext.closedSystem.tariffClassDefinition := closedTariffClassDefinitionTESTER_VALUE
 						}
 					});                 
 				f_sendAndLogApdu(v_apduRespondedTo);                 
@@ -3389,11 +3393,10 @@ module EfcInfoExchange_TestCasesTspDev {
                  	// domainType = dsrcClosedContext 
                  	// dsrcClosedContext with valid values and feeModifiers set to null
                  	// closedSystem with localVehicleClassDefinition  = {valid contents} and all other fields set to null
-                 // PT140 TODO : mw_aduEfcContextData template to be defined 
 				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
-					{modifies mw_aduEfcContextData := {
-					  	domainType.dsrcClosedContext.feeModifiers := omit,
-					  	domainType.closedContext.closedSystem.localVehicleClassDefinition := localVehicleClassDefinitionTESTER_VALUE
+					{modifies mw_aduDsrcClosedContextEfcContextData := {
+					  	feeModifiers := omit,
+					  	closedContext.closedSystem.localVehicleClassDefinition := closedLocalVehicleClassDefinitionTESTER_VALUE
 						}
 					});                 
 				f_sendAndLogApdu(v_apduRespondedTo);                 
@@ -3428,11 +3431,10 @@ module EfcInfoExchange_TestCasesTspDev {
                  	// domainType = dsrcClosedContext 
                  	// dsrcClosedContext with valid values and feeModifiers set to null
                  	// closedSystem with timeClassDefinition  = {valid contents} and all other fields set to null
-                 // PT140 TODO : mw_aduEfcContextData template to be defined 
 				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
-					{modifies mw_aduEfcContextData := {
-					  	domainType.dsrcClosedContext.feeModifiers := omit,
-					  	domainType.closedContext.closedSystem.timeClassDefinition := timeClassDefinitionTESTER_VALUE
+					{modifies mw_aduDsrcClosedContextEfcContextData := {
+					  	feeModifiers := omit,
+					  	closedContext.closedSystem.timeClassDefinition := closedTimeClassDefinitionTESTER_VALUE
 						}
 					});                 
 				f_sendAndLogApdu(v_apduRespondedTo);                 
@@ -3467,11 +3469,10 @@ module EfcInfoExchange_TestCasesTspDev {
                  	// domainType = dsrcClosedContext 
                  	// dsrcClosedContext with valid values and feeModifiers set to null
                  	// closedSystem with userClassDefinition  = {valid contents} and all other fields set to null
-                 // PT140 TODO : mw_aduEfcContextData template to be defined 
 				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
-					{modifies mw_aduEfcContextData := {
-					  	domainType.dsrcClosedContext.feeModifiers := omit,
-					  	domainType.closedContext.closedSystem.userClassDefinition := userClassDefinitionTESTER_VALUE
+					{modifies mw_aduDsrcClosedContextEfcContextData := {
+					  	feeModifiers := omit,
+					  	closedContext.closedSystem.userClassDefinition := closedUserClassDefinitionTESTER_VALUE
 						}
 					});                 
 				f_sendAndLogApdu(v_apduRespondedTo);                 
@@ -3506,11 +3507,10 @@ module EfcInfoExchange_TestCasesTspDev {
                  	// domainType = dsrcClosedContext 
                  	// dsrcClosedContext with valid values and feeModifiers set to null
                  	// closedSystem with feeDefinition  = {valid contents} and all other fields set to null
-                 // PT140 TODO : mw_aduEfcContextData template to be defined 
 				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
-					{modifies mw_aduEfcContextData := {
-					  	domainType.dsrcClosedContext.feeModifiers := omit,
-					  	domainType.closedContext.closedSystem.feeDefinition := feeDefinitionTESTER_VALUE
+					{modifies mw_aduDsrcClosedContextEfcContextData := {
+					  	feeModifiers := omit,
+					  	closedContext.closedSystem.feeDefinition := closedFeeDefinitionTESTER_VALUE
 						}
 					});                 
 				f_sendAndLogApdu(v_apduRespondedTo);                 

@@ -17,6 +17,8 @@ module EfcInfoExchange_TesterData{
 	import from EfcInfoExchange_ParameterisedAsn1Data all;
 	import from Common_ParametrisedAsn1Data all;
 	
+	modulepar provider TESTER_IDENTIFIER;
+	
 	group ContractIssuerData {
 
 		//TODO set sensible default values of the tester data parameters
@@ -155,6 +157,32 @@ module EfcInfoExchange_TesterData{
 	 	modulepar  EfcAutonomousContextData.TimeClassDefinition timeClassDefinitionTESTER_VALUE;
 	 	modulepar  EfcAutonomousContextData.UserClassDefinition userClassDefinitionTESTER_VALUE;
 	 	modulepar  FeeDefinition feeDefinitionTESTER_VALUE;
+	 	modulepar  Optionally_Signed<TollContextOverview> tollContextOverviewTESTER_VALUE;
+	 	modulepar  Optionally_Signed<TollContextPartitionOverviews> tollContextPartitionOverviewTESTER_VALUE;
+	 	modulepar  Optionally_Signed<TariffTables> tariffTableTESTERVALUE;
+	 	modulepar  Optionally_Signed<CurrencyConversionTable> currencyConversionTableTESTER_VALUE;
+	 	modulepar  Optionally_Signed<TariffClassDefinition> tariffClassDefinitionTESTER_TABLE;
+	 	modulepar  Optionally_Signed<LocalVehicleClassDefinition> localVehicleClassDefinitionTESTER_VALUE;
+	 	modulepar  Optionally_Signed<TimeClassDefinition> timeClassDefinitionTESTER_VALUE;
+	 	modulepar  Optionally_Signed<UserClassDefinition> userClassDefinitionTESTER_VALUE;
+	 	modulepar  Optionally_Signed<TollContextPartitionLayouts> tollContextLayoutTESTER_VALUE;
+	 	modulepar  Optionally_Signed<ChargeReportingEventss>  chargeReportingEventsTESTER_VALUE;
+	 	modulepar  Optionally_Signed<ChargeReportConfigurations> chargeReportConfigurationTESTER_VALUE;
+	 	modulepar  EfcDsrcApplication.Int1 tollContextVersionTESTER_VALUE;
+	 	modulepar  ClosedContextType closedContextTypeTESTER_VALUE := ClosedContextType_interconnectedClosedSysytem_;
+	 	modulepar  EfcAutonomousContextData.TollContextOverview closedTollContextOverviewTESTER_VALUE := {
+	 	  tollContext := TESTER_IDENTIFIER;
+	 	  tollContextPartitions := 1, // One partition
+	 	  tollSchemeName := omit,
+	 	  tollContextBoundingBoxes := omit,
+	 	  tollContextOverviewVersion.version := 1,
+	 	  tollContextOverviewVersion.validFrom := fx_getUtc(),
+	 	};
+	 	modulepar  EfcAutonomousContextData.TariffClassDefinition closedTariffClassDefinitionTESTER_VALUE := omit;
+	 	modulepar  EfcAutonomousContextData.LocalVehicleClassDefinition closedLocalVehicleClassDefinitionTESTER_VALUE := omit;
+	 	modulepar  EfcAutonomousContextData.TimeClassDefinition closedTimeClassDefinitionTESTER_VALUE := omit;
+	 	modulepar  EfcAutonomousContextData.UserClassDefinition closedUserClassDefinitionTESTER_VALUE := omit;
+	 	modulepar  FeeDefinition closedFeeDefinitionTESTER_VALUE := omit;
 	}		
 	
 } // end module 

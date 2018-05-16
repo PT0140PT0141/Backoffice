@@ -142,8 +142,24 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
             	f_addLogEntry("Received APDU before minimum wait time at: " & any2unistr(t_step.read));
             	stop
         	};
-    	}  
-        	
+    	}
+    	// function to set a variable with the DSRC system description
+    	function f_setDsrcContextData(in iso175753ADU v_ContextDescription)  runs on MainTestComponent {
+    	  v.ContextDescription.tollContextOverview := tariffClassDefinitionTESTER_VALUE;
+    	  v.ContextDescription.tollContextPartitionOverview := tollContextPartitionOverviewTESTER_VALUE;
+    	  v.ContextDescription.tariffTable := tariffTableTESTER_VALUE;
+    	  v.ContextDescription.currencyConversionTable := currencyConversionTableTESTER_VALUE;
+    	  v.ContextDescription.tariffClassDefinition := tariffClassDefinitionTableTESTER_VALUE;
+    	  v.ContextDescription.localVehicleClassDefinition := localVehicleClassDefinitionTESTER_VALUE;
+    	  v.ContextDescription.timeClassDefinition := timeClassDefinitionTESTER_VALUE;
+    	  v.ContextDescription.userClassDefinition := userClassDefinitionTESTER_VALUE;
+    	  v.ContextDescription.tollContextLayout := tollContextLayoutTESTER_VALUE;
+    	  v.ContextDescription.chargeReportingEvents := chargeReportingEventsTESTER_VALUE;
+    	  v.ContextDescription.chargeReportConfiguration := chargeReportConfigurationTESTER_VALUE;
+    	  v.ContextDescription.tollContextVersion := tollContextVersionTESTER_VALUE;
+    	  
+    	}
+		       	
         // Function which inserts a waiting time - parameter t_wait - and waits in a "do-nothing-loop"
     	function f_wait(in float p_wait){
     		timer t_waitTime;
