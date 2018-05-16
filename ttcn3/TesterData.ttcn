@@ -12,12 +12,14 @@ module EfcInfoExchange_TesterData{
 	//importing ASN.1 data automatically translated into TTCN-3	
 	import from EfcInfoExchange language "ASN.1:1997" all;	//from ISO 12855:2015
 	import from EfcDsrcApplication language "ASN.1:1997" all;
-
+	import from EfcAutonomousCharging language "ASN.1:1997" all;
+	import from EfcAutonomousContextData language "ASN.1:1997" all;
+	
 	//importing ASN.1 data manually translated into TTCN-3
 	import from EfcInfoExchange_ParameterisedAsn1Data all;
 	import from Common_ParametrisedAsn1Data all;
 	
-	modulepar provider TESTER_IDENTIFIER;
+	modulepar Provider TESTER_IDENTIFIER;
 	
 	group ContractIssuerData {
 
@@ -85,13 +87,14 @@ module EfcInfoExchange_TesterData{
 		modulepar UserId TESTER_USERID_BLACK_1 := {
 			pan := TESTER_PAN_1,
 			contractSerialNumber := omit,
-			licensePlateNumber := TESTER_LPN_1,
+			licencePlateNumber := TESTER_LPN_1,
 			obeID := TESTER_OBE_ID_1
 		}			
 		modulepar ASNAUX.GeneralizedTime TESTER_ENTRY_VALIDITY_START;
 		modulepar VehicleParameters TESTER_VEHICLE_PARAMETERS;
 		modulepar ASNAUX.UTF8String TESTER_VAT_ID;  
-	
+		modulepar UserId TESTER_USERID_1;
+		
 		modulepar ExceptionListADU TESTER_EXCEPTIONLIST_ADU_BLACK_VALID := {
 			exceptionListVersion := TESTER_EXCEPTIONLIST_VERSION,
 			exceptionListType := ExceptionListType_blackList_,
@@ -151,37 +154,52 @@ module EfcInfoExchange_TesterData{
 		modulepar UserParameterResponseDetails UserParameterResponseDetails_TESTER_VALUES[27]:={};
 	}
 	
-	group EFCContextData {
-	 	modulepar  EfcAutonomousContextData.TariffClassDefinition tariffClassDefinitionTESTER_VALUE;
-	 	modulepar  EfcAutonomousContextData.LocalVehicleClassDefinition localVehicleClassDefinitionTESTER_VALUE;
-	 	modulepar  EfcAutonomousContextData.TimeClassDefinition timeClassDefinitionTESTER_VALUE;
-	 	modulepar  EfcAutonomousContextData.UserClassDefinition userClassDefinitionTESTER_VALUE;
+	group EfcContextData {
+//TODO Currently not used - needed?
+//	 	modulepar  TariffClassDefinition tariffClassDefinitionTESTER_VALUE;
+//	 	modulepar  LocalVehicleClassDefinition localVehicleClassDefinitionTESTER_VALUE;
+//	 	modulepar  TimeClassDefinition timeClassDefinitionTESTER_VALUE;
+//	 	modulepar  UserClassDefinition userClassDefinitionTESTER_VALUE;
 	 	modulepar  FeeDefinition feeDefinitionTESTER_VALUE;
 	 	modulepar  Optionally_Signed<TollContextOverview> tollContextOverviewTESTER_VALUE;
 	 	modulepar  Optionally_Signed<TollContextPartitionOverviews> tollContextPartitionOverviewTESTER_VALUE;
-	 	modulepar  Optionally_Signed<TariffTables> tariffTableTESTERVALUE;
+	 	modulepar  Optionally_Signed<TariffTables> tariffTableTESTER_VALUE;
 	 	modulepar  Optionally_Signed<CurrencyConversionTable> currencyConversionTableTESTER_VALUE;
-	 	modulepar  Optionally_Signed<TariffClassDefinition> tariffClassDefinitionTESTER_TABLE;
-	 	modulepar  Optionally_Signed<LocalVehicleClassDefinition> localVehicleClassDefinitionTESTER_VALUE;
-	 	modulepar  Optionally_Signed<TimeClassDefinition> timeClassDefinitionTESTER_VALUE;
-	 	modulepar  Optionally_Signed<UserClassDefinition> userClassDefinitionTESTER_VALUE;
+	 	modulepar  Optionally_Signed<TariffClassDefinition> optSignedTariffClassDefinitionTESTER_VALUE;
+	 	modulepar  Optionally_Signed<LocalVehicleClassDefinition> optSignedLocalVehicleClassDefinitionTESTER_VALUE;
+	 	modulepar  Optionally_Signed<TimeClassDefinition> optSignedTimeClassDefinitionTESTER_VALUE;
+	 	modulepar  Optionally_Signed<UserClassDefinition> optSignedUserClassDefinitionTESTER_VALUE;
 	 	modulepar  Optionally_Signed<TollContextPartitionLayouts> tollContextLayoutTESTER_VALUE;
 	 	modulepar  Optionally_Signed<ChargeReportingEventss>  chargeReportingEventsTESTER_VALUE;
 	 	modulepar  Optionally_Signed<ChargeReportConfigurations> chargeReportConfigurationTESTER_VALUE;
 	 	modulepar  EfcDsrcApplication.Int1 tollContextVersionTESTER_VALUE;
 	 	modulepar  ClosedContextType closedContextTypeTESTER_VALUE := ClosedContextType_interconnectedClosedSysytem_;
+
+		modulepar  octetstring basicVersionIdTESTER_VALUE:='00'O;
+		modulepar  UTF8String versionNameTESTER_VALUE:="TollContextOverviewVersion - one value";
+		modulepar  UTF8String valueOfVersionNameTESTER_VALUE:="the version";
 	 	modulepar  EfcAutonomousContextData.TollContextOverview closedTollContextOverviewTESTER_VALUE := {
-	 	  tollContext := TESTER_IDENTIFIER;
-	 	  tollContextPartitions := 1, // One partition
+	 	  tollContext := TESTER_IDENTIFIER,
+	 	  tollContextPartitions := {1}, // One partition
 	 	  tollSchemeName := omit,
 	 	  tollContextBoundingBoxes := omit,
-	 	  tollContextOverviewVersion.version := 1,
-	 	  tollContextOverviewVersion.validFrom := fx_getUtc(),
+	 	  tollContextOverviewVersion:={
+	 	  	version:={
+	 	  		basicVersionId:=basicVersionIdTESTER_VALUE
+//	 	  		extendedVersionId:={
+//	 	  			{
+//	 	  				versionName:=versionNameTESTER_VALUE,
+//	 	  				value_:=valueOfVersionNameTESTER_VALUE
+//	 	  			}
+//	 	  		}
+	 	  	},
+	 	  	validFrom:=fx_getUtc()
+	 	  }
 	 	};
-	 	modulepar  EfcAutonomousContextData.TariffClassDefinition closedTariffClassDefinitionTESTER_VALUE := omit;
-	 	modulepar  EfcAutonomousContextData.LocalVehicleClassDefinition closedLocalVehicleClassDefinitionTESTER_VALUE := omit;
-	 	modulepar  EfcAutonomousContextData.TimeClassDefinition closedTimeClassDefinitionTESTER_VALUE := omit;
-	 	modulepar  EfcAutonomousContextData.UserClassDefinition closedUserClassDefinitionTESTER_VALUE := omit;
+		modulepar TariffClassDefinition closedTariffClassDefinitionTESTER_VALUE := omit;
+	 	modulepar LocalVehicleClassDefinition closedLocalVehicleClassDefinitionTESTER_VALUE := omit;
+	 	modulepar  TimeClassDefinition closedTimeClassDefinitionTESTER_VALUE := omit;
+	 	modulepar  UserClassDefinition closedUserClassDefinitionTESTER_VALUE := omit;
 	 	modulepar  FeeDefinition closedFeeDefinitionTESTER_VALUE := omit;
 	}		
 	

@@ -335,35 +335,75 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		  	  	exceptionValidityEnd := omit,
 		  	  	exceptionListEntries := ?
 		  	}
-		  	
-		  	template ExceptionListEntry mw_exceptionListEntry := {
-		  	  	userId := ?,
-		  	  	statusType := ?,
-		  	  	reasonCode := ?,
-		  	  	entryValidityStart := ?,
-		  	  	entryValidityEnd := omit,
-		  	  	vehicleParameters := *,
-		  	  	actionRequested := ?,
-		  	  	efcContextMark := omit,
-		  	  	vatId := *
-		  	}
+
+			template ExceptionListADU mw_aduExceptionListBlack modifies mw_aduExceptionList := {
+				exceptionListType := ExceptionListType_blackList_
+			}		  	
+
+			template ExceptionListADU mw_aduExceptionListWhite modifies mw_aduExceptionList := {
+				exceptionListType := ExceptionListType_whiteList_
+			}		  	
+
+			template ExceptionListADU mw_aduExceptionListDiscounted modifies mw_aduExceptionList := {
+				exceptionListType := ExceptionListType_discountedList_
+			}		  	
+			
+// Not needed currently
+//		  	template ExceptionListEntry mw_exceptionListEntry := {
+//		  	  	userId := ?,
+//		  	  	statusType := ?,
+//		  	  	reasonCode := ?,
+//		  	  	entryValidityStart := ?,
+//		  	  	entryValidityEnd := omit,
+//		  	  	vehicleParameters := *,
+//		  	  	actionRequested := ?,
+//		  	  	efcContextMark := omit,
+//		  	  	vatId := *
+//		  	}
 
 			template Adus mw_recordOfAduExceptionList := {
 				exceptionListADUs:=? 
 			}
 			
+			template Adus mw_recordOfOneAduExceptionListBlack := {
+				exceptionListADUs:={mw_aduExceptionListBlack}
+			}
+			
+			template Adus mw_recordOfOneAduExceptionListWhite := {
+				exceptionListADUs:={mw_aduExceptionListWhite} 
+			}
+			
+			template Adus mw_recordOfOneAduExceptionListDiscounted := {
+				exceptionListADUs:={mw_aduExceptionListDiscounted} 
+			}
+			
+			
+//			template Adus mw_recordOfOneAduExceptionList(ExceptionListADU p_adu) := {
+//				exceptionListADUs:={p_adu}
+//			}
+			
 			template InfoExchange mw_apduExceptionList := m_apduNoSec(mw_apci, mw_recordOfAduExceptionList);
 
+			template InfoExchange mw_apduExceptionListOneBlackList := m_apduNoSec(mw_apci, mw_recordOfOneAduExceptionListBlack);
 
-			template InfoExchange mw_apduExceptionListOneBlackList modifies mw_apduExceptionList := {
-				infoExchangeContent.adus.exceptionListADUs := {modifies mw_aduExceptionList:= {exceptionListType := ExceptionListType_blackList_ }}
-			}
-			
-			template InfoExchange mw_apduExceptionListOneWhiteList modifies mw_apduExceptionList := {
-				infoExchangeContent.adus.exceptionListADUs := {modifies mw_aduExceptionList:= {exceptionListType := ExceptionListType_whiteList_ }}
-			}
-			
+			template InfoExchange mw_apduExceptionListOneWhiteList := m_apduNoSec(mw_apci, mw_recordOfOneAduExceptionListWhite);
 
+			template InfoExchange mw_apduExceptionListOneDiscountedList := m_apduNoSec(mw_apci, mw_recordOfOneAduExceptionListDiscounted);
+
+
+//			template InfoExchange mw_apduExceptionListOneBlackList modifies mw_apduExceptionList := {
+//				infoExchangeContent.adus.exceptionListADUs := {
+//					modifies mw_aduExceptionList:= {
+//						exceptionListType := ExceptionListType_blackList_ 
+//					}
+//				}
+//			}
+//			
+//			template InfoExchange mw_apduExceptionListOneWhiteList modifies mw_apduExceptionList := {
+//				infoExchangeContent.adus.exceptionListADUs := {modifies mw_aduExceptionList:= {exceptionListType := ExceptionListType_whiteList_ }}
+//			}
+//			
+//
 		}
 		
 		group TRUSTOBJECTS {}
