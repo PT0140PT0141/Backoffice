@@ -27,7 +27,7 @@
  *	GNSS.PaymentAnnouncement	! open					! open			!
  */
  
-module EfcInfoExchange_TestCasesTcDev {
+module EfcInfoExchange_TestCasesTc {
 	import from EfcInfoExchange_ParameterisedAsn1Data all;
 
     /**
@@ -61,10 +61,10 @@ module EfcInfoExchange_TestCasesTcDev {
  
 	group Base {
 	/**
-	 * @desctest cases for validating correct general behaviour which is required for any transaction types
+	 * @desc test cases for validating correct general behaviour which is required for any transaction types
 	 * @remark TODO PT140: These TCs shall be completed after the transaction TCs are finalized
 	 */
-	} //End grou Base TPs
+	} //End group Base TPs
 
 	group USERDETAILS {
          group Valid_Behaviour {

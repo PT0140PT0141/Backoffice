@@ -26,7 +26,7 @@
  *	GNSS.PaymentAnnouncement	! done					! done			! mw_aduGnssPaymentAnnouncement template to be defined
  */
  
-module EfcInfoExchange_TestCasesTspDev {
+module EfcInfoExchange_TestCasesTsp {
     /**
      * @desc    [12855:2015]: 
      * @see     Annex A (normative)  data type specifications
@@ -1738,25 +1738,25 @@ module EfcInfoExchange_TestCasesTspDev {
 				f_sendAndLogTrigger(EXCEPTIONLIST_TR_TSP_1_C);
 				//  Wait for EXCEPTIONLIST with LIST_TYPE=DISCOUNT
 				alt {
-					[] mtcPort.receive(mw_apduExceptionList modifies mw_aduExceptionList := {exceptionListType := ExceptionListType_discountList_}) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduExceptionListOneDiscountedList) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();					
-						}
+						
                			if (not ispresent(v_apduReceived.adus.ExceptionListADU.exceptionListEntries.ExceptionListEntry.vatId)) {
                				// Send NAck within time constraints
 							var NAckParams v_nAckParams1 :={{0, AduReasonCode_invalidADU_}};
 							f_wait(EXCEPTIONLIST_TIME1_TC);
 							f_sendAndLogApdu(m_apduNAck(v_apduReceived, v_nAckParams1));   
                				setverdict(fail);             				
-               				}
-               			else {
+               			} else {
 							// Send Ack within time constraints
 							f_wait(EXCEPTIONLIST_TIME1_TC);
 							f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived)); 			
 							// Set test success
 							setverdict(pass);
-               				};
+               			};
 					} // End of alt statement
+				}
 				
 				f_closeDownMtc(); 
 				              
@@ -1788,15 +1788,16 @@ module EfcInfoExchange_TestCasesTspDev {
 				var boolean isDsrcKeyRef := false;
 				var boolean isMacMasterKey := false;
 				var boolean isDsrcMasterKey := false;
-				var integer ObjectsReceived := 0;
+				var integer objectsReceived := 0;
 				// Step 1: Trigger IUT with TRUSTOBJECTS_TR_2
 				f_sendAndLogTrigger(TRUSTOBJECTS_TR_2);
+
 				//  Wait for TRUSTOBJECTS
 				// We expect to receive as many TRUSTOBJECTS as the declared supported number
-				// PT140 TODO: TrustObjects templates to be defined
+				// PT140 TODO: mw_aduRequestTrustObjects template to be defined
 				// PT140 Seems that alt inside a loop is not allowed. Use repeat statement instead
 				alt {
-					[] mtcPort.receive(m_apduTrustObject) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduTrustObject) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();	
 						//send Ack whichever object received
@@ -1804,24 +1805,24 @@ module EfcInfoExchange_TestCasesTspDev {
 						//Read the trustObjectPurpose received and add to set 				
 						if ((match(v_apduReceived, m_apduTrustObjectCertificateObject)) or 
 						    (match(v_apduReceived, m_apduTrustObjectPublicKeyObject))) 
-							isCertificateOrPublicKey:=true;
+							{isCertificateOrPublicKey:=true;}
 						if (match(v_apduReceived, m_apduTrustObjectGenericTONotCrl)) {
 							setverdict(fail);
 							stop;
 						};
 						if (match(v_apduReceived ,m_apduTrustObjectDsrcKeyRef)) 
-							isDsrcKeyRef:=true;
+							{isDsrcKeyRef:=true;}
 						if (match(v_apduReceived ,m_apduTrustObjectMacMasterKey)) 
-							isMacMasterKey:=true;
+							{isMacMasterKey:=true;}
 						if (match(v_apduReceived ,m_apduTrustObjectDsrcMasterKey)) 
-							isDsrcMasterKey:=true;
-						ObjectsReceived := ObjectsReceived + 1; // Count the number of trust objects received
+							{isDsrcMasterKey:=true;}
+						objectsReceived := objectsReceived + 1; // Count the number of trust objects received
 						repeat;
 						}										
 					} // End of alt statement
-				if (ICS_A2_1_isDsrc and isCertificateOrPublicKey and isDsrcKeyRef and isMacMasterKey and isDsrcMasterKey) setverdict(pass);			 				
-				if (ICS_A2_2_isGnss and isCertificateOrPublicKey and isDsrcKeyRef) setverdict(pass);			 				
-				if ObjectsReceived < NUMBER_OF_TRUSTOBJECT_TYPES_SUPPORTED setverdict(fail); // We must receive at least as many Trust Objects as supported
+				if (ICS_A2_1_isDsrc and isCertificateOrPublicKey and isDsrcKeyRef and isMacMasterKey and isDsrcMasterKey) {setverdict(pass);}			 				
+				if (ICS_A2_2_isGnss and isCertificateOrPublicKey and isDsrcKeyRef) {setverdict(pass);}			 				
+				if (objectsReceived < NUMBER_OF_TRUSTOBJECT_TYPES_SUPPORTED) {setverdict(fail);} // We must receive at least as many Trust Objects as supported
 				f_closeDownMtc();              
            } // End of TP_TSP_TRUSTOBJECTS_BV_01
 
@@ -1844,7 +1845,7 @@ module EfcInfoExchange_TestCasesTspDev {
 				// Set timer
                  t_step.start(TRUSTOBJECTS_TYPE1_TIME2_MAX_TSP);                 
 				alt {
-					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
 					  
 						// Log what we received
 						f_logApduReceivedAndTStep();
@@ -1867,7 +1868,7 @@ module EfcInfoExchange_TestCasesTspDev {
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_4_implementedTRUSTOBJECTSElectronicTransfer;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
-				// PT140 TODO: m_aduRequestTrustObjects template to be defined
+				// PT140 TODO: mw_aduRequestTrustObjects template to be defined
 				// Loop in all available types of trustobject supported by the IUT as specified by the length of SENT_TRUST_OBJECTS_SUPPORTED Pixit record
 				var integer v_trustObjectsToBeSent := sizeof(RECEIVED_TRUST_OBJECTS_SUPPORTED);
 				for (var integer v_trustObjectsReceived :=1; v_trustObjectsReceived<v_trustObjectsToBeSent;v_trustObjectsReceived:=v_trustObjectsReceived+1)
@@ -1887,7 +1888,7 @@ module EfcInfoExchange_TestCasesTspDev {
 						// timeout expiration is handled in the altstep branch
 						// PT140 TODO: m_apduTrustObjects to be defined
                  		alt {
-                      		[] mtcPort.receive(m_apduTrustObjects(v_apduRespondedTo)) -> value v_apduReceived {
+                      		[] mtcPort.receive(mw_apduTrustObject(v_apduRequestForTrustObject)) -> value v_apduReceived {
 								// Log what we received 					
 								f_logApduReceivedAndTStep();
 								// Check whether the ADU arrived too soon: the function will set failure and stop the test if so
@@ -1925,9 +1926,10 @@ module EfcInfoExchange_TestCasesTspDev {
 				// Set timer
 				var integer v_expectedTrustObjectRequests := sizeof(SENT_TRUST_OBJECTS_SUPPORTED);
 				var integer v_receivedTrustObjects := 0;
+				
                 t_step.start(TRUSTOBJECTS_TYPE1_TIME1_MAX_TSP);                 
 				alt {
-					[] mtcPort.receive(m_aduRequestTrustObjects) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduRequestTrustObjects) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
 						t_step.stop;
@@ -1935,62 +1937,67 @@ module EfcInfoExchange_TestCasesTspDev {
                 		// Step 1: Send one valid APDU containing one valid TrustObjectADU
                 		// PT140 TODO : m_aduTrustObjects template to be defined
 						// PT140 TODO: Analysis of what requested and what to be sent missing
-						var integer v_requestedTrustObjectType := v_apduReceived.Adus.requestAdus.trustObjectRequest.trustObjectSpec.typeOfTrustObject;
-						var record v_requestedTrustObjectPurpose := v_apduReceived.Adus.requestAdus.trustObjectRequest.trustObjectSpec.purposesOfTrustObject;
-						template (value) ApciFields m_apciSendFirstInvalidAid modifies m_apciSendFirst:= {aidIdentifier:=0};
-						if (v_requestedTrustObjectType == certificate){
-							var InfoExchange v_apduRespondedTo := m_apduNoSecInit(modifies m_aduTrustObjects{
-						  		trustObjectID := float2int(rnd());
-						  		purposesOfTrustObject := v_requestedTrustObjectPurpose;
-						  		startValidity := now;
-						  		endValidity := omit;
-						  		trustObjectStatus := valid;
-								trustObject := TESTER_CERTIFICATE_OBJECT
-								});                 												
-							};
-						if (v_requestedTrustObjectType == publicKey){
-							var InfoExchange v_apduRespondedTo := m_apduNoSecInit(modifies m_aduTrustObjects{
-						  		trustObjectID := float2int(rnd());
-						  		purposesOfTrustObject := v_requestedTrustObjectPurpose;
-						  		startValidity := now;
-						  		endValidity := omit;
-						  		trustObjectStatus := valid;
-								trustObject := TESTER_PUBLICKEY_OBJECT
-								});                 												
-							};
-
-						if (v_requestedTrustObjectType == symmetricKey){
-							var InfoExchange v_apduRespondedTo := m_apduNoSecInit(modifies m_aduTrustObjects{
-						  		trustObjectID := float2int(rnd());
-						  		purposesOfTrustObject := v_requestedTrustObjectPurpose;
-						  		startValidity := now;
-						  		endValidity := omit;
-						  		trustObjectStatus := valid;
-								trustObject := TESTER_DSRCKEY_OBJECT
-								});                 												
-							};
 						
-						f_sendAndLogApdu(v_apduRespondedTo);                 
+						if (ispresent(v_apduReceived.infoExchangeContent.adus.requestAdus.trustObjectRequest.requestedTrustObject.trustObjectId)) {
+							f_addLogEntry("Received a request for a specific TrustObjectId, this is not supported according to CEN/TS 16986:2016");
+							setverdict(fail);
+							break;					
+						}
+						
+						var TrustObjectSpec v_requestedTrustObjectSpec := v_apduReceived.infoExchangeContent.adus.requestAdus.trustObjectRequest.requestedTrustObject.trustObjectSpec;
+						
+						var TrustObjectTypes v_requestedTrustObjectType := v_requestedTrustObjectSpec.typeOfTrustObject;
+						
+						var RecOfTrustObjectPurposes v_requestedTrustObjectPurposesRecords := v_requestedTrustObjectSpec.purposesOfTrustObject;
+						
+						var InfoExchange v_apduToSend; 
+						                												
+						//TODO this is not complete! THere are other possibilities as well that can be requested
+						if (v_requestedTrustObjectType == TrustObjectTypes_certificate_){
+							v_apduToSend := m_apduTrustObjectResponse(
+								v_apduReceived, 
+								v_requestedTrustObjectPurposesRecords,
+								TESTER_CERTIFICATE_OBJECT			
+							);
+						};
+						
+						if (v_requestedTrustObjectType == TrustObjectTypes_publicKey_){
+							v_apduToSend := m_apduTrustObjectResponse(
+								v_apduReceived, 
+								v_requestedTrustObjectPurposesRecords,
+								TESTER_PUBLICKEY_OBJECT
+							);                 												
+						};
+
+						if (v_requestedTrustObjectType == TrustObjectTypes_symmetricKey_){
+							v_apduToSend := m_apduTrustObjectResponse(
+								v_apduReceived, 
+								v_requestedTrustObjectPurposesRecords,
+								TESTER_DSRCKEY_OBJECT
+							);                 												
+						};
+						
+						f_sendAndLogApdu(v_apduToSend);                 
                 
                 		// Step 2: Wait for positive Ack within TRUSTOBJECTS.TIME2
 						// Set timer
                  		t_step.start(TRUSTOBJECTS_TYPE1_TIME2_MAX_TSP);                 
 						alt {
-							[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
-					  
+							[] mtcPort.receive(m_apduDefaultAck(v_apduToSend)) -> value v_apduReceived {
 								// Log what we received
 								f_logApduReceivedAndTStep();
 								t_step.stop;
-								}
-							} // End of second alt 
-						}
-					if (v_receivedTrustObjects == v_expectedTrustObjectRequests) {
-						setverdict(pass);
-						break;  
+							}
+						} // End of second alt 
+					
+						if (v_receivedTrustObjects == v_expectedTrustObjectRequests) {
+							setverdict(pass);
+							break;  
 						};
-                	t_step.start(TRUSTOBJECTS_TYPE1_TIME1_MAX_TSP);  // Restart timer               
-					repeat;	
-					} // End of first alt 					
+	                	t_step.start(TRUSTOBJECTS_TYPE1_TIME1_MAX_TSP);  // Restart timer               
+						repeat;
+					}	
+				} // End of first alt 					
 				f_closeDownMtc();                  
 
 
@@ -2000,7 +2007,7 @@ module EfcInfoExchange_TestCasesTspDev {
          
          group Invalid_Behaviour {
 
-           testcase TP_TSP_TRUSTOBJECTS_BI_01() runs onMainTestComponent system TestAdapter {
+           testcase TP_TSP_TRUSTOBJECTS_BI_01() runs on MainTestComponent system TestAdapter {
              
               /**
               * @desc    TP_TSP_TRUSTOBJECTS_BI_01: Verify that the TSP correctly responds to a TrustObjectADU received without having issued a request and containing incorrect ADU parameters
@@ -2046,7 +2053,7 @@ module EfcInfoExchange_TestCasesTspDev {
              
            } // End of TP_TSP_TRUSTOBJECTS_BI_01
 
-           testcase TP_TSP_TRUSTOBJECTS_BI_02() runs onMainTestComponent system TestAdapter {
+           testcase TP_TSP_TRUSTOBJECTS_BI_02() runs on MainTestComponent system TestAdapter {
              
               /**
               * @desc    TP_TSP_TRUSTOBJECTS_BI_02: Verify that the TSP correctly responds to more than one correct Trust Object ADUs in the same APDU without having issued a request
@@ -2094,7 +2101,7 @@ module EfcInfoExchange_TestCasesTspDev {
                           
            } // End of TP_TSP_TRUSTOBJECTS_BI_02
 
-           testcase TP_TSP_TRUSTOBJECTS_BI_03() runs onMainTestComponent system TestAdapter {
+           testcase TP_TSP_TRUSTOBJECTS_BI_03() runs on MainTestComponent system TestAdapter {
              
               /**
               * @desc    TP_TSP_TRUSTOBJECTS_BI_03: Verify that the TSP correctly responds to a not supported Trust Object
@@ -2105,34 +2112,34 @@ module EfcInfoExchange_TestCasesTspDev {
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_4_implementedTRUSTOBJECTSElectronicTransfer;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				// Find a couple of TrustObjectType, TrustobjectPurpose not supported by the IUT
-				var integer NotSupportedTypeOrPurpose[2];
+				var integer v_notSupportedTypeOrPurpose[2];
 				for (var integer v_types :=0; v_types < 8 ;v_types:=v_types+1) // Loop within types
 					{
 						for (var integer v_purposes :=0; v_purposes < 17; v_purposes:=v_purposes+1) // Loop within purposes
 							{
-							  NotSupportedTypeOrPurpose := {v_types,v_purposes}; // Set value of not supported parameters combination
+							  v_notSupportedTypeOrPurpose := {v_types,v_purposes}; // Set value of not supported parameters combination
 							  // Check if this combination is supported						  
-							  for (var integer v_cntl=0; v_cntl<sizeof(RECEIVED_TRUST_OBJECTS_SUPPORTED) ) {
-							    if RECEIVED_TRUST_OBJECTS_SUPPORTED[v_cntl] == {v_types,v_purposes} {
-							    	NotSupportedTypeOrPurpose := {100,100};	  // If supported, invalidate the value of not supported parameters combination
+							  for (var integer v_cntl:=0; v_cntl<sizeof(RECEIVED_TRUST_OBJECTS_SUPPORTED);v_cntl:=v_cntl+1) {
+							    if (RECEIVED_TRUST_OBJECTS_SUPPORTED[v_cntl] == {v_types,v_purposes}) {
+							    	v_notSupportedTypeOrPurpose := {100,100};	  // If supported, invalidate the value of not supported parameters combination
 							    };							  
 							  	continue; // Continue for all supported couples
 							  	}
-							  	If NotSupportedTypeOrPurpose != {100,100} {
+							  	if (v_notSupportedTypeOrPurpose != {100,100}) {
 							  		break;  // Found one invalid combination to be used in the test
 							  	};
 								continue; // Loop within Trust Object purposes
 							}
-					If NotSupportedTypeOrPurpose != {100,100} {
+					if (v_notSupportedTypeOrPurpose != {100,100}) {
 							break;  // Found one invalid combination to be used in the test
-							};					
+					};					
 					continue;	// Loop within Trust Object types		
-					};
+				};
 				// Decide if test to be run (invalid couple of purpose and type found)
-				If NotSupportedTypeOrPurpose == {100,100} {
+				if (v_notSupportedTypeOrPurpose == {100,100}) {
 				  setverdict(inconclusive);
 				  stop;
-				  }
+				}
 				// Send a Trust Object with Type and Purpose as found
 				// PT140 TODO: mw_aduTrustObject template to be defined
 				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
@@ -2171,7 +2178,7 @@ module EfcInfoExchange_TestCasesTspDev {
                           
            } // End of TP_TSP_TRUSTOBJECTS_BI_03
 
-           testcase TP_TSP_TRUSTOBJECTS_BI_04() runs onMainTestComponent system TestAdapter {
+           testcase TP_TSP_TRUSTOBJECTS_BI_04() runs on MainTestComponent system TestAdapter {
              
               /**
               * @desc    TP_TSP_TRUSTOBJECTS_BI_04: Verify that the TSP correctly responds to a RequestADU sent earlier than allowed
@@ -2220,7 +2227,7 @@ module EfcInfoExchange_TestCasesTspDev {
 				f_closeDownMtc();            
            } // End of TP_TSP_TRUSTOBJECTS_BI_04
 
-           testcase TP_TSP_TRUSTOBJECTS_BI_05() runs onMainTestComponent system TestAdapter {
+           testcase TP_TSP_TRUSTOBJECTS_BI_05() runs on MainTestComponent system TestAdapter {
              
               /**
               * @desc    TP_TSP_TRUSTOBJECTS_BI_05: Verify that the TSP correctly responds to a TrustObjectADU sent earlier than allowed
@@ -3239,19 +3246,18 @@ module EfcInfoExchange_TestCasesTspDev {
 					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();					
-						}
-					// Send Ack within time constraints
+						// Send Ack within time constraints
 						f_wait(CONTRACTISSUERLIST_TIME1_TC);
 						f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
-						setverdict(pass);			
-					} // End of alt statement
+						setverdict(pass);	
+					}		
+				} // End of alt statement
 				
 				f_closeDownMtc(); 
-				                
-                } // End of TP_TSP_CONTRACTISSUERLIST_BV_01
+			} // End of TP_TSP_CONTRACTISSUERLIST_BV_01
  		} // End of group Valid_Behaviour
          
-         group Invalid_Behaviour {
+        group Invalid_Behaviour {
            // No Invalid Behaviour Test cases defined		
         } // End of group Invalid_Behaviour
 
@@ -3278,11 +3284,13 @@ module EfcInfoExchange_TestCasesTspDev {
 				var Iso17575_3AduBody v_contextData;
 				f_setDsrcContextData(v_contextData);				
 				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
-					{modifies mw_aduDsrcEfcContextData := {
-					  	iso175753ADU := v_contextData;
-					  	regimeContextData.feeModifiers := omit
+					{ 
+						modifies mw_aduDsrcEfcContextData := {
+						  	iso175753ADU := v_contextData,
+						  	regimeContextData.feeModifiers := omit
 						}
-					});                 
+					}
+				);                 
 				f_sendAndLogApdu(v_apduRespondedTo);                 
                  // Step 2: Wait for positive Ack within DSRC.EFCCONTEXTDATA.TIME1
 				// Set timer
@@ -3306,8 +3314,7 @@ module EfcInfoExchange_TestCasesTspDev {
                   * @desc    TP_TSP_DSRC_EFCCONTEXTDATA_BV_02: Verify that the TSP correctly performs the DSRC.EFCCONTEXTDATA transaction with an EFCContextDataADU containing only mandatory context data for a domain type = dsrcClosedContext 
                   * @remark  [16986:2016], Clause 7.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/2
                   */
-                  
-                  */                 
+                                   
                  // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_2_implementedDSRCEFCCONTEXTDATA;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
@@ -3339,9 +3346,9 @@ module EfcInfoExchange_TestCasesTspDev {
 				} 
 				f_closeDownMtc();                  
                 
-                } // End of TP_TSP_DSRC_EFCCONTEXTDATA_BV_02
+			} // End of TP_TSP_DSRC_EFCCONTEXTDATA_BV_02
 
-           testcase TP_TSP_DSRC_EFCCONTEXTDATA_BV_03() runs on MainTestComponent system TestAdapter {
+           	testcase TP_TSP_DSRC_EFCCONTEXTDATA_BV_03() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_DSRC_EFCCONTEXTDATA_BV_03: Verify that the TSP correctly performs the 
