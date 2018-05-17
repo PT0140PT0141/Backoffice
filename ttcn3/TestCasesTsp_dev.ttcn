@@ -3259,10 +3259,11 @@ module EfcInfoExchange_TestCasesTspDev {
     
     group DSRC_EFCCONTEXTDATA {
          group Valid_Behaviour {
-           testcase TP_TSP_DSRC.EFCCONTEXTDATA_BV_01() runs on MainTestComponent system TestAdapter {
+           testcase TP_TSP_DSRC_EFCCONTEXTDATA_BV_01() runs on MainTestComponent system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_DSRC.EFCCONTEXTDATA_BV_01: Verify that the TSP correctly performs the DSRC.EFCCONTEXTDATA transaction with an EFCContextDataADU containing only mandatory context data for a domain type = dsrcContext 
+                  * @desc    TP_TSP_DSRC_EFCCONTEXTDATA_BV_01: Verify that the TSP correctly performs the 
+                  * @desc    DSRC.EFCCONTEXTDATA transaction with an EFCContextDataADU containing only mandatory context data for a domain type = dsrcContext 
                   * @remark  [16986:2016], Clause 7.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/2
                   */                 
                  // Initialisation
@@ -3297,12 +3298,12 @@ module EfcInfoExchange_TestCasesTspDev {
 					} 
 				f_closeDownMtc();                  
                                  
-                } // End of TP_TSP_DSRC.EFCCONTEXTDATA_BV_01
+                } // End of TP_TSP_DSRC_EFCCONTEXTDATA_BV_01
 
-           testcase TP_TSP_DSRC.EFCCONTEXTDATA_BV_02() runs on MainTestComponent system TestAdapter {
+           testcase TP_TSP_DSRC_EFCCONTEXTDATA_BV_02() runs on MainTestComponent system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_DSRC.EFCCONTEXTDATA_BV_02: Verify that the TSP correctly performs the DSRC.EFCCONTEXTDATA transaction with an EFCContextDataADU containing only mandatory context data for a domain type = dsrcClosedContext 
+                  * @desc    TP_TSP_DSRC_EFCCONTEXTDATA_BV_02: Verify that the TSP correctly performs the DSRC.EFCCONTEXTDATA transaction with an EFCContextDataADU containing only mandatory context data for a domain type = dsrcClosedContext 
                   * @remark  [16986:2016], Clause 7.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/2
                   */
                   
@@ -3338,12 +3339,14 @@ module EfcInfoExchange_TestCasesTspDev {
 				} 
 				f_closeDownMtc();                  
                 
-                } // End of TP_TSP_DSRC.EFCCONTEXTDATA_BV_02
+                } // End of TP_TSP_DSRC_EFCCONTEXTDATA_BV_02
 
-           testcase TP_TSP_DSRC.EFCCONTEXTDATA_BV_03() runs on MainTestComponent system TestAdapter {
+           testcase TP_TSP_DSRC_EFCCONTEXTDATA_BV_03() runs on MainTestComponent system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_DSRC.EFCCONTEXTDATA_BV_03: Verify that the TSP correctly performs the DSRC.EFCCONTEXTDATA transaction with an EFCContextDataADU containing mandatory context data plus tariffClassDefinition for a domain type = dsrcClosedContext 
+                  * @desc    TP_TSP_DSRC_EFCCONTEXTDATA_BV_03: Verify that the TSP correctly performs the 
+                  * @desc    DSRC_EFCCONTEXTDATA transaction with an EFCContextDataADU containing mandatory 
+                  * @desc    context data plus tariffClassDefinition for a domain type = dsrcClosedContext 
                   * @remark  [16986:2016], Clause 7.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/2
                   */
                   
@@ -3355,12 +3358,7 @@ module EfcInfoExchange_TestCasesTspDev {
                  	// domainType = dsrcClosedContext 
                  	// dsrcClosedContext with valid values and feeModifiers set to null
                  	// closedSystem with tariffClassDefinition = {valid contents} and all other fields set to null
-				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
-					{modifies mw_aduDsrcClosedContextEfcContextData := {
-					  	feeModifiers := omit,
-					  	closedContext.closedSystem.tariffClassDefinition := closedTariffClassDefinitionTESTER_VALUE
-						}
-					});                 
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit({m_aduEfcContextDataDsrcClosedContextTariffClassDefinition});                 
 				f_sendAndLogApdu(v_apduRespondedTo);                 
                  // Step 2: Wait for positive Ack within DSRC.EFCCONTEXTDATA.TIME1
 				// Set timer
@@ -3376,12 +3374,14 @@ module EfcInfoExchange_TestCasesTspDev {
 				} 
 				f_closeDownMtc();                  
                                   
-                } // End of TP_TSP_DSRC.EFCCONTEXTDATA_BV_03
+                } // End of TP_TSP_DSRC_EFCCONTEXTDATA_BV_03
 
-           testcase TP_TSP_DSRC.EFCCONTEXTDATA_BV_04() runs on MainTestComponent system TestAdapter {
+           testcase TP_TSP_DSRC_EFCCONTEXTDATA_BV_04() runs on MainTestComponent system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_DSRC.EFCCONTEXTDATA_BV_04: Verify that the TSP correctly performs the DSRC.EFCCONTEXTDATA transaction with an EFCContextDataADU containing mandatory context data plus localVehicleClassDefinition for a domain type = dsrcClosedContext 
+                  * @desc    TP_TSP_DSRC_EFCCONTEXTDATA_BV_04: Verify that the TSP correctly performs the 
+                  * @desc    DSRC_EFCCONTEXTDATA transaction with an EFCContextDataADU containing mandatory 
+                  * @desc    context data plus localVehicleClassDefinition for a domain type = dsrcClosedContext 
                   * @remark  [16986:2016], Clause 7.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/2
                   */
                   
@@ -3414,12 +3414,12 @@ module EfcInfoExchange_TestCasesTspDev {
 				} 
 				f_closeDownMtc();                  
                                   
-                } // End of TP_TSP_DSRC.EFCCONTEXTDATA_BV_04
+                } // End of TP_TSP_DSRC_EFCCONTEXTDATA_BV_04
 
-           testcase TP_TSP_DSRC.EFCCONTEXTDATA_BV_05() runs on MainTestComponent system TestAdapter {
+           testcase TP_TSP_DSRC_EFCCONTEXTDATA_BV_05() runs on MainTestComponent system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_DSRC.EFCCONTEXTDATA_BV_05: Verify that the TSP correctly performs the DSRC.EFCCONTEXTDATA transaction with an EFCContextDataADU containing mandatory context data plus timeClassDefinition for a domain type = dsrcClosedContext 
+                  * @desc    TP_TSP_DSRC_EFCCONTEXTDATA_BV_05: Verify that the TSP correctly performs the DSRC.EFCCONTEXTDATA transaction with an EFCContextDataADU containing mandatory context data plus timeClassDefinition for a domain type = dsrcClosedContext 
                   * @remark  [16986:2016], Clause 7.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/2
                   */
                   
@@ -3452,12 +3452,12 @@ module EfcInfoExchange_TestCasesTspDev {
 				} 
 				f_closeDownMtc();                  
                 
-                } // End of TP_TSP_DSRC.EFCCONTEXTDATA_BV_05
+                } // End of TP_TSP_DSRC_EFCCONTEXTDATA_BV_05
 
-           testcase TP_TSP_DSRC.EFCCONTEXTDATA_BV_06() runs on MainTestComponent system TestAdapter {
+           testcase TP_TSP_DSRC_EFCCONTEXTDATA_BV_06() runs on MainTestComponent system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_DSRC.EFCCONTEXTDATA_BV_06: Verify that the TSP correctly performs the DSRC.EFCCONTEXTDATA transaction with an EFCContextDataADU containing mandatory context data plus userClassDefinition for a domain type = dsrcClosedContext 
+                  * @desc    TP_TSP_DSRC_EFCCONTEXTDATA_BV_06: Verify that the TSP correctly performs the DSRC.EFCCONTEXTDATA transaction with an EFCContextDataADU containing mandatory context data plus userClassDefinition for a domain type = dsrcClosedContext 
                   * @remark  [16986:2016], Clause 7.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/2
                   */
                   
@@ -3490,12 +3490,12 @@ module EfcInfoExchange_TestCasesTspDev {
 				} 
 				f_closeDownMtc();                  
                                 
-                } // End of TP_TSP_DSRC.EFCCONTEXTDATA_BV_06
+                } // End of TP_TSP_DSRC_EFCCONTEXTDATA_BV_06
 
-           testcase TP_TSP_DSRC.EFCCONTEXTDATA_BV_07() runs on MainTestComponent system TestAdapter {
+           testcase TP_TSP_DSRC_EFCCONTEXTDATA_BV_07() runs on MainTestComponent system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_DSRC.EFCCONTEXTDATA_BV_07: Verify that the TSP correctly performs the DSRC.EFCCONTEXTDATA transaction with an EFCContextDataADU containing mandatory context data plus feeDefinition for a domain type = dsrcClosedContext 
+                  * @desc    TP_TSP_DSRC_EFCCONTEXTDATA_BV_07: Verify that the TSP correctly performs the DSRC.EFCCONTEXTDATA transaction with an EFCContextDataADU containing mandatory context data plus feeDefinition for a domain type = dsrcClosedContext 
                   * @remark  [16986:2016], Clause 7.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/2
                   */
                   
@@ -3528,16 +3528,16 @@ module EfcInfoExchange_TestCasesTspDev {
 				} 
 				f_closeDownMtc();                  
                 
-                } // End of TP_TSP_DSRC.EFCCONTEXTDATA_BV_07
+                } // End of TP_TSP_DSRC_EFCCONTEXTDATA_BV_07
            
  		} // End of group Valid_Behaviour
          
          group Invalid_Behaviour {
 
-           testcase TP_TSP_DSRC.EFCCONTEXTDATA_BI_01() runs on MainTestComponent system TestAdapter {
+           testcase TP_TSP_DSRC_EFCCONTEXTDATA_BI_01() runs on MainTestComponent system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_DSRC.EFCCONTEXTDATA_BI_01: Verify that the TSP correctly responds to an EFCContextDataADU containing only mandatory context data for a domain type = dsrcContext with a wrong data field 
+                  * @desc    TP_TSP_DSRC_EFCCONTEXTDATA_BI_01: Verify that the TSP correctly responds to an EFCContextDataADU containing only mandatory context data for a domain type = dsrcContext with a wrong data field 
                   * @remark  [16986:2016], Clause 7.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/2
                   */
                   
@@ -3593,12 +3593,12 @@ module EfcInfoExchange_TestCasesTspDev {
 				}				
 				f_closeDownMtc();  			
                 
-                } // End of TP_TSP_DSRC.EFCCONTEXTDATA_BI_01
+                } // End of TP_TSP_DSRC_EFCCONTEXTDATA_BI_01
 
-           testcase TP_TSP_DSRC.EFCCONTEXTDATA_BI_02() runs on MainTestComponent system TestAdapter {
+           testcase TP_TSP_DSRC_EFCCONTEXTDATA_BI_02() runs on MainTestComponent system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_DSRC.EFCCONTEXTDATA_BI_02: Verify that the TSP correctly responds to an EFCContextDataADU containing only mandatory context data for a domain type = dsrcClosedContext with a wrong data field 
+                  * @desc    TP_TSP_DSRC_EFCCONTEXTDATA_BI_02: Verify that the TSP correctly responds to an EFCContextDataADU containing only mandatory context data for a domain type = dsrcClosedContext with a wrong data field 
                   * @remark  [16986:2016], Clause 7.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/2
                   */
                   
@@ -3653,12 +3653,12 @@ module EfcInfoExchange_TestCasesTspDev {
 					}				
 				f_closeDownMtc();  			
                 
-                } // End of TP_TSP_DSRC.EFCCONTEXTDATA_BI_02
+                } // End of TP_TSP_DSRC_EFCCONTEXTDATA_BI_02
 
-           testcase TP_TSP_DSRC.EFCCONTEXTDATA_BI_03() runs on MainTestComponent system TestAdapter {
+           testcase TP_TSP_DSRC_EFCCONTEXTDATA_BI_03() runs on MainTestComponent system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_DSRC.EFCCONTEXTDATA_BI_03: Verify that the TSP responds correctly to an EfcContextDataADU sent earlier than allowed 
+                  * @desc    TP_TSP_DSRC_EFCCONTEXTDATA_BI_03: Verify that the TSP responds correctly to an EfcContextDataADU sent earlier than allowed 
                   * @remark  [16986:2016], Clause 7.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/2
                   */
                   
@@ -3714,11 +3714,11 @@ module EfcInfoExchange_TestCasesTspDev {
 						}
 					}				
 				f_closeDownMtc();  			
-                } // End of TP_TSP_DSRC.EFCCONTEXTDATA_BI_03
+                } // End of TP_TSP_DSRC_EFCCONTEXTDATA_BI_03
            		
         } // End of group Invalid_Behaviour
 
-    } // End of group DSRC.EFCCONTEXTDATA
+    } // End of group DSRC_EFCCONTEXTDATA
     
     group DSRC_BILLINGDETAILS {
          group Valid_Behaviour {

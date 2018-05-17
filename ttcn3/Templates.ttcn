@@ -447,11 +447,6 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				feeModifiers := omit
 			}
 	
-			template EfcContextDataADU mw_aduDsrcClosedContextEfcContextData := {
-				entityOverview := *,
-				domainType := mw_dsrcClosedContext
-			}	
-			
 			type record DsrcClosedContext {
 				ClosedContextDefinition closedContext,
 				FeeModifiers feeModifiers optional
@@ -461,6 +456,46 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				closedContext := ?,
 				feeModifiers := omit
 			}							
+
+			template EfcContextDataADU mw_aduDsrcClosedContextEfcContextData := {
+				entityOverview := omit,
+				domainType:={
+					dsrcClosedContext := mw_dsrcClosedContext
+				}
+			}	
+			
+			template (value) EfcContextDataADU m_aduEfcContextDataDsrcClosedContextTariffClassDefinition := {
+				entityOverview := omit,
+				domainType.dsrcClosedContext := {
+					closedContext:={
+						closedContextType:=ClosedContextType_standAloneClosedSysytem_, 
+						closedSystem:={
+						 	tollContextOverview:=omit,
+							tariffClassDefinition:={
+								tariffClasses:={
+									{
+										tariffClassId:=0,
+										localVehicleClasses:={},
+										timeClasses:=omit,
+										locationClasses:=omit,
+										userClasses:=omit
+									}
+								},
+								tariffClassDefinitionVersion:={
+									basicVersionId:=basicVersionIdTESTER_VALUE
+								}
+							},
+							validFrom:=fx_getUtc()    VersionAndValidity,
+							}
+						 	localVehicleClassDefinition:=omit,
+						 	timeClassDefinition:=omit,
+						 	userClassDefinition:=omit,
+						 	feeDefinition:=omit
+						}
+					}
+				}
+			}	
+			
 		}
 
 		group DSRC_REPORTABNORMALOBE {

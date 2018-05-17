@@ -196,7 +196,6 @@ module EfcInfoExchange_TesterData{
 	 	  	validFrom:=fx_getUtc()
 	 	  }
 	 	};
-		modulepar TariffClassDefinition closedTariffClassDefinitionTESTER_VALUE := omit;
 	 	modulepar LocalVehicleClassDefinition closedLocalVehicleClassDefinitionTESTER_VALUE := omit;
 	 	modulepar  TimeClassDefinition closedTimeClassDefinitionTESTER_VALUE := omit;
 	 	modulepar  UserClassDefinition closedUserClassDefinitionTESTER_VALUE := omit;
