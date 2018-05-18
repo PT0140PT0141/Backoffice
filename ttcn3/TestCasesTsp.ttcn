@@ -2314,21 +2314,11 @@ module EfcInfoExchange_TestCasesTsp {
 				
 				alt {
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(PAYMENTCLAIM_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
+						f_logReceivedThenCheckAndStopTime(PAYMENTCLAIM_TIME1_MIN_TSP); 
 						setverdict(pass);						
 					}
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(PAYMENTCLAIM_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
+						f_logReceivedThenCheckAndStopTime(PAYMENTCLAIM_TIME1_MIN_TSP); 
 						setverdict(pass);
 					}
 				} 
@@ -4929,7 +4919,7 @@ module EfcInfoExchange_TestCasesTsp {
 					}
 				} // End of first alt statement
 
-				//TODO is this not weird? SHould not the Alt statements be nested?
+				//TODO is this not weird? Should not the Alt statements be nested?
                 // Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
                  	// action code = send
                  	// CHOICE forSectionedRoads
@@ -5626,7 +5616,8 @@ module EfcInfoExchange_TestCasesTsp {
 
            testcase TP_TSP_GNSS_PAYMENTANNOUNCEMENT_BV_02() runs on MainTestComponent system TestAdapter {
                   /**
-                  * @desc    TP_TSP_GNSS_PAYMENTANNOUNCEMENT_BV_02: Verify that the TSP correctly performs the GNSS.PAYMENTANNOUCEMENT transaction with actionCode=adjust 
+                  * @desc    TP_TSP_GNSS_PAYMENTANNOUNCEMENT_BV_02: Verify that the TSP correctly performs the 
+                  * @desc    GNSS.PAYMENTANNOUCEMENT transaction with actionCode=adjust 
                   * @remark  [16986:2016], Clause 6.8 and Table A.1/2 AND Table A.2/2 AND Table A.52/4 
                   */
                   
@@ -5638,7 +5629,7 @@ module EfcInfoExchange_TestCasesTsp {
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				
 				// Trigger IUT with GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1_A to send one valid PaymentAnnouncementADU with actionCode = send
-				f_sendAndLogTrigger(GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1_A);												
+				f_sendAndLogTrigger(GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1_A, iutToUseTimers=false);												
 				//  Wait for GNSS.PAYMENTANNOUNCEMENT
 				// PT140 TODO: mw_aduGnssPaymentAnnouncement template to be defined
 				var InfoExchange v_apduToBeReceived := m_apduNoSecInit(
@@ -5648,23 +5639,20 @@ module EfcInfoExchange_TestCasesTsp {
 					});
 					
 					// Wait for PaymentAnnouncementADU within allowed time constraints
-				t_step.start(GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TSP);	
+				t_step.start(TIMEOUT_FOR_SETUP_OF_TRANSACTION);	
 				alt {
 					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();					
-						}
-							
-					// Send Ack within time constraints
-					f_wait(PAYMENTANNOUNCEMENT_TIME1_TC);
-					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
-					// Remember Payment Announcement ID and amount for future usage
-					var integer idReceived := v_apduReceived.infoExchangeContent.adus.PaymentAnnouncementADU.paymentAnnouncementID;
-					var ExtendedPaymentAmount amountReceived := v_apduReceived.infoExchangeContent.adus.PaymentAnnouncementADU.totalamount
- 					} // End of alt statement
+						f_logReceivedWaitAndAcknowledge(PAYMENTANNOUNCEMENT_TIME1_TC);
+						// Remember Payment Announcement ID and amount for future usage
+						var integer idReceived := v_apduReceived.infoExchangeContent.adus.PaymentAnnouncementADU.paymentAnnouncementID;
+						var ExtendedPaymentAmount amountReceived := v_apduReceived.infoExchangeContent.adus.PaymentAnnouncementADU.totalamount
+					}
+ 				} // End of alt statement
 
+				t_step.start(GNSS_PAYMENTANNOUNCEMENT_TIMEB_MAX_TSP);
+				
 				// Step 1: Trigger IUT with GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1_B to send one valid PaymentAnnouncementADU with actionCode = adjust
-				f_sendAndLogTrigger(GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1_B);												
+				f_sendAndLogTrigger(GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1_B, iutToUseTimers=true);												
 				//  Wait for GNSS.PAYMENTANNOUNCEMENT
 				// PT140 TODO: mw_aduGnssPaymentAnnouncement template to be defined
 				var InfoExchange v_apduToBeReceived := m_apduNoSecInit(
@@ -5675,23 +5663,19 @@ module EfcInfoExchange_TestCasesTsp {
 					  	}
 					});
 				// Wait for PaymentAnnouncementADU within allowed time constraints
-				t_step.start(GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TSP);	
+	
 				alt {
 					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();					
-						}
-							
-					// Send Ack within time constraints
-					f_wait(PAYMENTANNOUNCEMENT_TIME1_TC);
-					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
-					// Set test success
-					setverdict(pass);						
- 					} // End of alt statement
+						f_logReceivedWaitAndAcknowledge(GNSS_PAYMENTANNOUNCEMENT_TIME1_TC);
+						f_checkMinimumTStep(GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TSP);
+						// Set test success
+						setverdict(pass);						
+					}
+ 				} // End of alt statement
                	
                	f_closeDownMtc();
                                
-                } // End of TP_TSP_GNSS_PAYMENTANNOUNCEMENT_BV_02                    
+           } // End of TP_TSP_GNSS_PAYMENTANNOUNCEMENT_BV_02                    
 
            testcase TP_TSP_GNSS_PAYMENTANNOUNCEMENT_BV_03() runs on MainTestComponent system TestAdapter {
                   /**

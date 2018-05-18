@@ -5,6 +5,8 @@
  */
 module EfcInfoExchange_InteroperabilityStatement {
  
+     //Time value expressed in seconds
+	modulepar float TIMEOUT_FOR_SETUP_OF_TRANSACTION := 10.0;
  
     /**
      * @desc    Replicate the Interoperability Statement Proforma in TTCN3 code
@@ -145,7 +147,11 @@ module EfcInfoExchange_InteroperabilityStatement {
     modulepar float GNSS_BILLINGDETAILS_TC_TIMEB_MIN_TSP := 0.0;
     modulepar float GNSS_BILLINGDETAILS_TC_PARAM1_MAX_TC := c_veryLongTime;
     modulepar float GNSS_BILLINGDETAILS_TC_PARAM1_MAX_TSP := c_veryLongTime;
-    modulepar float GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC := c_veryLongTime;
+	modulepar float GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC := c_veryLongTime;
+	modulepar float GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC := 0.0;
+	modulepar float GNSS_PAYMENTANNOUNCEMENT_TIMEB_MAX_TC := c_veryLongTime;
+	modulepar float GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TSP := 0.0;
+    modulepar float GNSS_PAYMENTANNOUNCEMENT_TIMEB_MAX_TSP := c_veryLongTime;
     modulepar float GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC := 0.0;
     modulepar float GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TSP := c_veryLongTime;
     modulepar float GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TSP := 0.0;  

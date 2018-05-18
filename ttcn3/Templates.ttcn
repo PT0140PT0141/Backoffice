@@ -514,11 +514,12 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 									}
 								},
 								tariffClassDefinitionVersion:={
-									basicVersionId:=basicVersionIdTESTER_VALUE
+									version:={
+										basicVersionId:=basicVersionIdTESTER_VALUE
+									},
+									validFrom:=fx_getUtc()
 								}
 							},
-							validFrom:=fx_getUtc()    VersionAndValidity,
-							}
 						 	localVehicleClassDefinition:=omit,
 						 	timeClassDefinition:=omit,
 						 	userClassDefinition:=omit,

@@ -100,6 +100,7 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
 			f_addLogEntry("Sent the following APDU to the IUT: " & any2unistr(p_apduToSend));
 		}
 		
+		//TODO sometimes the IUT needs to be mindful of the time interval in which it shall send, but for initialisations NOT
 		function f_sendAndLogTrigger(in Iso16986Trigger iut_Trigger) runs on MainTestComponent {
 		  	mtcAccessPort.send(iut_Trigger);
 		  	f_addLogEntry("Sent the following Trigger to the IUT: " & any2unistr(iut_Trigger));
@@ -143,7 +144,8 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
          * @desc It assumes that the received APDU is stored in the MainTestComponent
          * @desc v_apduReceived and that the MainTestComponent t_step timer 
          * @desc is used and running (otherwise it is set back to 0)
-         */		
+         */	
+         //TODO is not a f_checkMinimumTStep needed here?	
 		function f_logReceivedWaitAndAcknowledge(in float p_wait) runs on MainTestComponent{
 			f_logApduReceivedAndTStep();						         		
 			// Send Ack within time constraints
@@ -176,6 +178,8 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
             	stop
         	};
     	}
+    	
+    	//TODO this function does not seem correct (no return value, parameter declared as "in") - check and update
     	// function to set a variable with the DSRC system description
     	function f_setDsrcContextData(in Iso17575_3AduBody v_ContextDescription)  runs on MainTestComponent {
     	  v_ContextDescription.tollContextOverview := tollContextOverviewTESTER_VALUE;
