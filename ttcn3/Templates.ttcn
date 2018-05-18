@@ -12,6 +12,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 	import from EfcInfoExchange_Pixits all;
 	import from EfcInfoExchange_Ics all;
 	import from EfcInfoExchange_Functions all;
+	import from EfcInfoExchange_TesterData all;
 	
 	//importing ASN.1 data automatically translated into TTCN-3	
 	import from EfcInfoExchange language "ASN.1:1997" all;
@@ -139,6 +140,11 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			p_adus
 	    );
 
+		template InfoExchange mw_apduRequest := m_apduNoSec(mw_apci, Adus:{requestAdus:=?});
+			
+		template InfoExchange mw_apduAuthRequest := m_apduSec(mw_apci, Adus:{requestAdus:=?});
+
+
 		template (value) Adus m_oneAckInAdusStruct(in AckADU p_ackADU):={ackAdus:={p_ackADU}};
 		
 		/**
@@ -245,7 +251,6 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
     
 	group AduTemplates{
 		
-		
 		group USERDETAILS {
 	
 			type record of UserParameterRequest UserParameterRequests;
@@ -261,7 +266,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
         	}
         	
         	template (value) RequestADU m_aduRequestProvideUserDetails(
-        		in template (value) UserParameterRequests p_userParameterRequests
+        		in UserParameterRequests p_userParameterRequests
         	) modifies mw_aduRequestProvideUserDetails := {
         		userDetailsRequest:={
         			requestedADUType := AduType_provideUserDetailsADU_,	
@@ -289,14 +294,9 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
             	listOfUserParameters := *
         	}
         	
-    	
-			template Adus mw_recordOfAduProvideUserDetails := {
-				provideUserDetailsADUs:=? 
-			}
-        				
-			template InfoExchange mw_apduProvideUserDetails := m_apduNoSec(mw_apci, mw_recordOfAduProvideUserDetails);
+   			template InfoExchange mw_apduProvideUserDetails := m_apduNoSec(mw_apci, Adus:{provideUserDetailsADUs:=?});
 			
-			template InfoExchange mw_apduAuthenticatedProvideUserDetails := m_apduSec(mw_apci, mw_recordOfAduProvideUserDetails);
+			template InfoExchange mw_apduAuthProvideUserDetails := m_apduSec(mw_apci, Adus:{provideUserDetailsADUs:=?});
 		}
 
 		group LISTOFUSERS {
@@ -324,6 +324,10 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				originalUserId := EXISTING_USER_ID,
             	userIdList := *
         	}
+
+   			template InfoExchange mw_apduProvideUserIdList := m_apduNoSec(mw_apci, Adus:{provideUserIdListADUs:=?});
+			
+			template InfoExchange mw_apduAuthProvideUserIdList := m_apduSec(mw_apci, Adus:{provideUserIdListADUs:=?});
 			
 		}
 
@@ -361,10 +365,6 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 //		  	  	vatId := *
 //		  	}
 
-			template Adus mw_recordOfAduExceptionList := {
-				exceptionListADUs:=? 
-			}
-			
 			template Adus mw_recordOfOneAduExceptionListBlack := {
 				exceptionListADUs:={mw_aduExceptionListBlack}
 			}
@@ -378,11 +378,9 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			}
 			
 			
-//			template Adus mw_recordOfOneAduExceptionList(ExceptionListADU p_adu) := {
-//				exceptionListADUs:={p_adu}
-//			}
+   			template InfoExchange mw_apduExceptionList := m_apduNoSec(mw_apci, Adus:{exceptionListADUs:=?});
 			
-			template InfoExchange mw_apduExceptionList := m_apduNoSec(mw_apci, mw_recordOfAduExceptionList);
+			template InfoExchange mw_apduAuthExceptionList := m_apduSec(mw_apci, Adus:{exceptionListADUs:=?});
 
 			template InfoExchange mw_apduExceptionListOneBlackList := m_apduNoSec(mw_apci, mw_recordOfOneAduExceptionListBlack);
 
@@ -437,10 +435,21 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				trustObjectStatus := TrustObjectStatus_valid_,
 				trustObject := p_trustObjectCode
 			}
+
+   			template InfoExchange mw_apduTrustObject := m_apduNoSec(mw_apci, Adus:{trustObjectAdus:=?});
+			
+			template InfoExchange mw_apduAuthTrustObject := m_apduSec(mw_apci, Adus:{trustObjectAdus:=?});
 			
 		}
 
-		group PAYMENTCLAIM {}
+		group PAYMENTCLAIM {
+
+   			template InfoExchange mw_apduPaymentClaim := m_apduNoSec(mw_apci, Adus:{paymentClaimADUs:=?});
+			
+			template InfoExchange mw_apduAuthPaymentClaim := m_apduSec(mw_apci, Adus:{paymentClaimADUs:=?});
+			
+		
+		}
 
 		group DSRC_CONTRACTISSUERLIST {		
 			template ContractIssuerListADU mw_aduContractIssuerList := {
@@ -458,6 +467,12 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			template Adus mw_recordOfAduContractIssuerList := {
 				contractIssuerListADUs := ?
 			}
+
+   			template InfoExchange mw_apduContractIssuerList := m_apduNoSec(mw_apci, Adus:{contractIssuerListADUs:=?});
+			
+			template InfoExchange mw_apduAuthContractIssuerList := m_apduSec(mw_apci, Adus:{contractIssuerListADUs:=?});
+
+
 		}
 
 		group DSRC_EFCCONTEXTDATA {						
@@ -498,36 +513,42 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			
 			template (value) EfcContextDataADU m_aduEfcContextDataDsrcClosedContextTariffClassDefinition := {
 				entityOverview := omit,
-				domainType.dsrcClosedContext := {
-					closedContext:={
-						closedContextType:=ClosedContextType_standAloneClosedSysytem_, 
-						closedSystem:={
-						 	tollContextOverview:=omit,
-							tariffClassDefinition:={
-								tariffClasses:={
-									{
-										tariffClassId:=0,
-										localVehicleClasses:={},
-										timeClasses:=omit,
-										locationClasses:=omit,
-										userClasses:=omit
+				domainType:={
+					dsrcClosedContext := {
+						closedContext:={
+							closedContextType:=ClosedContextType_standAloneClosedSysytem_, 
+							closedSystem:={
+							 	tollContextOverview:=omit,
+								tariffClassDefinition:={
+									tariffClasses:={
+										{
+											tariffClassId:=0,
+											localVehicleClasses:={},
+											timeClasses:=omit,
+											locationClasses:=omit,
+											userClasses:=omit
+										}
+									},
+									tariffClassDefinitionVersion:={
+										version:={
+											basicVersionId:=basicVersionIdTESTER_VALUE
+										},
+										validFrom:=fx_getUtc()
 									}
 								},
-								tariffClassDefinitionVersion:={
-									version:={
-										basicVersionId:=basicVersionIdTESTER_VALUE
-									},
-									validFrom:=fx_getUtc()
-								}
-							},
-						 	localVehicleClassDefinition:=omit,
-						 	timeClassDefinition:=omit,
-						 	userClassDefinition:=omit,
-						 	feeDefinition:=omit
+							 	localVehicleClassDefinition:=omit,
+							 	timeClassDefinition:=omit,
+							 	userClassDefinition:=omit,
+							 	feeDefinition:=omit
+							}
 						}
 					}
 				}
 			}	
+
+   			template InfoExchange mw_apduEfcContextData := m_apduNoSec(mw_apci, Adus:{efcContextDataADUs:=?});
+			
+			template InfoExchange mw_apduAuthEfcContextData := m_apduSec(mw_apci, Adus:{efcContextDataADUs:=?});
 			
 		}
 
@@ -540,18 +561,41 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				efcContextMark := ?,
 				abnormalOBEReasonCode := ? length (1..255) //= at least one reason code shall be present in this record of integer
 			}
+
+   			template InfoExchange mw_apduReportAbnormalOBE := m_apduNoSec(mw_apci, Adus:{reportAbnormalOBEADUs:=?});
+			
+			template InfoExchange mw_apduAuthReportAbnormalOBE := m_apduSec(mw_apci, Adus:{reportAbnormalOBEADUs:=?});
+
 		}
 		
 		
-		group DSRC_BILLINGDETAILS{}
+		group BILLINGDETAILS{
+
+			template InfoExchange mw_apduBillingDetails := m_apduNoSec(mw_apci, Adus:{billingDetailsADUs:=?});
+			
+			template InfoExchange mw_apduAuthBillingDetails := m_apduSec(mw_apci, Adus:{billingDetailsADUs:=?});
+		}
 		
-		group GNSS_TOLLDECLARATIONS {}
+		group DSRC_BILLINGDETAILS{
+		}
+		
+		group GNSS_TOLLDECLARATIONS {
+   			template InfoExchange mw_apduTollDeclaration := m_apduNoSec(mw_apci, Adus:{tollDeclarationADUs:=?});
+			
+			template InfoExchange mw_apduAuthTollDeclaration := m_apduSec(mw_apci, Adus:{tollDeclarationADUs:=?});
+		}
 
-		group GNSS_BILLINGDETAILS_TSP{}
+		group GNSS_BILLINGDETAILS_TSP{
+		}
 
-		group GNSS_BILLINGDETAILS_TC {}
+		group GNSS_BILLINGDETAILS_TC {
+		}
 
-		group GNSS_PAYMENTANNOUNCEMENT {}
+		group GNSS_PAYMENTANNOUNCEMENT {
+   			template InfoExchange mw_apduPaymentAnnouncement := m_apduNoSec(mw_apci, Adus:{paymentAnnouncementADUs:=?});
+			
+			template InfoExchange mw_apduAuthPaymentAnnouncement := m_apduSec(mw_apci, Adus:{paymentAnnouncementADUs:=?});
+		}
 
 
 	}
