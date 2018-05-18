@@ -77,7 +77,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Prepare the APDU without authenticator
 				var InfoExchange apduToBeSent := m_apduSecInit(
 						{m_aduRequestProvideUserDetails(v_userParameterRequests), infoExchangeAuthenticator := 1}
-					);
+				);
 
 				// Compute the authenticator and send the APDU
 				apduToBeSent.infoExchangeAuthenticator := fx_computeAuthenticator(apduToBeSent);
@@ -93,12 +93,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// timeout expiration is handled in the altstep branch
 				alt {
 					[]	mtcPort.receive(mw_apduAuthenticatedProvideUserDetails) -> value v_apduReceived{    		                    		
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
 						
 						if (fx_evaluateAuthenticator(v_apduReceived)) {
 							setverdict(pass);
@@ -151,22 +146,13 @@ module EfcInfoExchange_TestCasesTsp {
 				alt {
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
 						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
 						
 						//Set verdict
 						setverdict(pass);
 					}
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
 						
 						//Set verdict
 						setverdict(pass);
@@ -210,23 +196,13 @@ module EfcInfoExchange_TestCasesTsp {
 				
 				alt {
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
 						
 						//Set verdict
 						setverdict(pass);
 					}
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
 						
 						//Set verdict
 						setverdict(pass);
@@ -271,23 +247,13 @@ module EfcInfoExchange_TestCasesTsp {
 				
 				alt {
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
 						
 						//Set verdict
 						setverdict(pass);
 					}
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
 						
 						//Set verdict
 						setverdict(pass);
@@ -332,23 +298,13 @@ module EfcInfoExchange_TestCasesTsp {
 				
 				alt {
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
 						
 						//Set verdict
 						setverdict(pass);
 					}
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
 						
 						//Set verdict
 						setverdict(pass);
@@ -386,13 +342,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// timeout expiration is handled in the altstep branch
 				alt {
 					[] mtcPort.receive(mw_apduProvideUserDetails) -> value v_apduReceived{
-                		                    		
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
 						
 						// Step3: Send DefaultAck with correct identifier
 						f_wait(USERDETAILS_TIME2_MIN_TSP);
@@ -416,23 +366,13 @@ module EfcInfoExchange_TestCasesTsp {
 				
 				alt {
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
 						
 						//Set verdict
 						setverdict(pass);
 					}
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
 						
 						//Set verdict
 						setverdict(pass);
@@ -473,23 +413,13 @@ module EfcInfoExchange_TestCasesTsp {
 				
 				alt {
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
 						
 						//Set verdict
 						setverdict(pass);
 					}
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
 						
 						//Set verdict
 						setverdict(pass);
@@ -535,46 +465,26 @@ module EfcInfoExchange_TestCasesTsp {
 				
 				alt {
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
 						
 						//Set verdict
 						setverdict(pass);
 					}
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
 						
 						//Set verdict
 						setverdict(pass);
 						
 						}
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams3)) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
 						
 						//Set verdict
 						setverdict(pass);
 					}
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams4)) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
 						
 						//Set verdict
 						setverdict(pass);					
@@ -674,23 +584,14 @@ module EfcInfoExchange_TestCasesTsp {
 				
 				alt {
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(TRUSTOBJECTS_TIME2_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
+						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TIME2_MIN_TSP); //t_step is an implicit argument and what we will compare against
 						
 						//Set verdict
 						setverdict(pass);
 					}
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
 						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(TRUSTOBJECTS_TIME2_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
+						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TIME2_MIN_TSP); //t_step is an implicit argument and what we will compare against
 						
 						//Set verdict
 						setverdict(pass);
@@ -698,22 +599,13 @@ module EfcInfoExchange_TestCasesTsp {
 						}
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams3)) -> value v_apduReceived {
 						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(TRUSTOBJECTS_TIME2_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
+						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TIME2_MIN_TSP); //t_step is an implicit argument and what we will compare against
 						
 						//Set verdict
 						setverdict(pass);
 					}
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams4)) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(TRUSTOBJECTS_TIME2_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
+						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TIME2_MIN_TSP); //t_step is an implicit argument and what we will compare against
 						
 						//Set verdict
 						setverdict(pass);					
@@ -738,11 +630,12 @@ module EfcInfoExchange_TestCasesTsp {
 				// Step 1: Send an Initiating_Apdu containing APCI parameter field with apduDate = invalid
 				// and valid RequestADU with requestedADUType=provideUserDetailsADU
 
+				//TODO why define here? Does not seem to be correctly defined... aid should be changed, no?
 				template (value) ApciFields m_apciSendFirstInvalidAid modifies m_apciSendFirst:= {apduDate := 0};
 				// Then send it together with the request ADU
   				f_sendAndLogApdu(
-                             m_apciSendFirstInvalidAid, {m_aduRequestProvideUserDetails(v_userParameterRequests)}
-							);
+                	m_apciSendFirstInvalidAid, {m_aduRequestProvideUserDetails(v_userParameterRequests)}
+				);
                
  
                //Set timer
@@ -757,11 +650,7 @@ module EfcInfoExchange_TestCasesTsp {
 				alt {
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
 						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
 						
 						//Set verdict
 						setverdict(pass);
@@ -810,22 +699,13 @@ module EfcInfoExchange_TestCasesTsp {
 				alt {
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
 						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
 						
 						//Set verdict
 						setverdict(pass);
 					}
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
 						
 						//Set verdict
 						setverdict(pass);
@@ -867,15 +747,10 @@ module EfcInfoExchange_TestCasesTsp {
 				// Step2: Wait for ProvideUserDetailsADU 
 				// Either we receive an APDU containing Provide User Details ADU(s) or the timeout expires
 				// timeout expiration is handled in the altstep branch
+				//TODO the wrong wait time seems to be used (USERDETAILS...)
 				alt {
 					[] mtcPort.receive(mw_apduProvideUserDetails) -> value v_apduReceived{
-                		                    		
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
 						
 						// TODO PT140: Check the ADU record and find the one we are expecting. Either function or template
  
@@ -928,16 +803,9 @@ module EfcInfoExchange_TestCasesTsp {
 
 				alt {
 					[] mtcPort.receive(mw_apduProvideUserDetails(v_apduRespondedTo)) -> value v_apduReceived{
-
-						// Log what we received 					
-						f_logApduReceivedAndTStep();
-
-						// Check whether the ADU arrived too soon: the function will set failure and stop the test if so
-						f_checkMinimumTime(t_step, USERDETAILS_TIME1_MIN_TSP); // 
- 
-						// User Details ADU correctly arrived. Stop timer
-						t_step.stop;
-						                        
+						//TODO the wrong wait time seems to be used
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+ 						                        
 						//Set verdict
 						setverdict(pass);
 						if (sizeof(v_apduReceived.adus.provideUserDetailsADUs) > 1) {
@@ -994,23 +862,13 @@ module EfcInfoExchange_TestCasesTsp {
 				
 				alt {
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
 						
 						//Set verdict
 						setverdict(pass);
 					}
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); 
 						
 						//Set verdict
 						setverdict(pass);
@@ -1065,15 +923,7 @@ module EfcInfoExchange_TestCasesTsp {
 
 				alt {
 					[] mtcPort.receive(mw_apduProvideUserDetails(v_apduRespondedTo)) -> value v_apduReceived{
-
-						// Log what we received 					
-						f_logApduReceivedAndTStep();
-
-						// Check whether the ADU arrived too soon: the function will set failure and stop the test if so
-						f_checkMinimumTime(t_step, USERDETAILS_TIME1_MIN_TSP); // 
- 
-						// User Details ADU correctly arrived. Stop timer
-						t_step.stop;
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); 
 						
                         
 						//Set verdict
@@ -1142,15 +992,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// timeout expiration handling is in the altstep branch	
                 alt {
 					[] mtcPort.receive(mw_apduProvideUserDetails(v_apduRespondedTo)) -> value v_apduReceived{
-
-						// Log what we received 					
-						f_logApduReceivedAndTStep();
-
-						// Check whether the ADU arrived too soon: the function will set failure and stop the test if so
-						f_checkMinimumTime(t_step, USERDETAILS_TIME1_MIN_TSP); // 
- 
-						// User Details ADU correctly arrived. Stop timer
-						t_step.stop;
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); 
 						                        
 						//Set verdict
 						setverdict(pass);
@@ -1223,12 +1065,7 @@ module EfcInfoExchange_TestCasesTsp {
 				
 				alt {
 					[] mtcPort.receive(m_apduNAckRequestSentTooOften(v_apduToSend)) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(LISTOFUSERS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
+						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME1_MIN_TSP); 
 						
 						//Set verdict
 						setverdict(pass);
@@ -1270,15 +1107,7 @@ module EfcInfoExchange_TestCasesTsp {
 
                  alt {
                       [] mtcPort.receive(mw_apduListOfUsers(v_apduRespondedTo)) -> value v_apduReceived {
-                      		
-						// Log what we received 					
-						f_logApduReceivedAndTStep();
-
-						// Check whether the ADU arrived too soon: the function will set failure and stop the test if so
-						f_checkMinimumTime(t_step, USERDETAILS_TIME1_MIN_TSP); // 
- 
-						// User Details ADU correctly arrived. Stop timer
-						t_step.stop;
+						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME1_MIN_TSP); 
 
 						//Set verdict
 						setverdict(pass);
@@ -1339,15 +1168,7 @@ module EfcInfoExchange_TestCasesTsp {
 
                  alt {
                       [] mtcPort.receive(mw_apduListOfUsers(v_apduRespondedTo)) -> value v_apduReceived {
-                      		
-						// Log what we received 					
-						f_logApduReceivedAndTStep();
-
-						// Check whether the ADU arrived too soon: the function will set failure and stop the test if so
-						f_checkMinimumTime(t_step, USERDETAILS_TIME1_MIN_TSP); // 
- 
-						// User Details ADU correctly arrived. Stop timer
-						t_step.stop;
+						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME1_MIN_TSP); 
 
 						//Set verdict
 						setverdict(pass);
@@ -1416,24 +1237,14 @@ module EfcInfoExchange_TestCasesTsp {
 				
 				alt {
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(LISTOFUSERS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
+						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME1_MIN_TSP); 
 						
 						//Set verdict
 						setverdict(pass);
 					}
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();
+						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME1_MIN_TSP); 
 
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(LISTOFUSERS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
-						
 						//Set verdict
 						setverdict(pass);
 					}
@@ -1441,11 +1252,12 @@ module EfcInfoExchange_TestCasesTsp {
 				f_closeDownMtc();  			
 			} // End of TP_TSP_LISTOFUSERS_BI_01
              
-			  testcase TP_TSP_LISTOFUSERS_BI_02() runs on MainTestComponent system TestAdapter {
+			testcase TP_TSP_LISTOFUSERS_BI_02() runs on MainTestComponent system TestAdapter {
              
-                  /**
+                /**
                   * @desc    TP_TSP_LISTOFUSERS_BI_02: Verify that the TSP correctly receives an invalid request ADU with no PAN, LicensePlateNumber, OBEID or ContractSerialNumber present in the userId field 
                   * @remark  [16986:2016], Clause 6.5 and Table A.1/2 AND Table A.7/2  
+                  */
 
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_2_implementedLISTOFUSERS;
@@ -1475,23 +1287,13 @@ module EfcInfoExchange_TestCasesTsp {
 				
 				alt {
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(LISTOFUSERS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
+						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME1_MIN_TSP); 
 						
 						//Set verdict
 						setverdict(pass);
 					}
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(LISTOFUSERS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
+						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME1_MIN_TSP); 
 						
 						//Set verdict
 						setverdict(pass);
@@ -1535,23 +1337,13 @@ module EfcInfoExchange_TestCasesTsp {
 				
 				alt {
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(LISTOFUSERS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
+						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME1_MIN_TSP); 
 						
 						//Set verdict
 						setverdict(pass);
 					}
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(LISTOFUSERS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
+						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME1_MIN_TSP); 
 						
 						//Set verdict
 						setverdict(pass);
@@ -1594,23 +1386,13 @@ module EfcInfoExchange_TestCasesTsp {
 				
 				alt {
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(LISTOFUSERS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
+						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME1_MIN_TSP); 
 						
 						//Set verdict
 						setverdict(pass);
 					}
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(LISTOFUSERS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
+						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME1_MIN_TSP); 
 						
 						//Set verdict
 						setverdict(pass);
@@ -1658,12 +1440,7 @@ module EfcInfoExchange_TestCasesTsp {
 				
 				alt {
 					[] mtcPort.receive(m_apduNAckRequestSentTooOften(v_apduRespondedTo)) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(LISTOFUSERS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
+						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME1_MIN_TSP); 
 						
 						//Set verdict
 						setverdict(pass);
@@ -1695,13 +1472,7 @@ module EfcInfoExchange_TestCasesTsp {
 				//  Wait for EXCEPTIONLIST with LIST_TYPE=BLACK
 				alt {
 					[] mtcPort.receive(mw_apduExceptionListOneBlackList) -> value v_apduReceived {
-						
-						// Log what we received
-						f_logApduReceivedAndTStep();					
-               		
-						// Send Ack within time constraints
-						f_wait(EXCEPTIONLIST_TIME1_TC);
-						f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+						f_logReceivedWaitAndAcknowledge(EXCEPTIONLIST_TIME1_TC);
 					}
 				} // End of first alt statement
 					
@@ -1710,12 +1481,7 @@ module EfcInfoExchange_TestCasesTsp {
 				//  Wait for EXCEPTIONLIST with LIST_TYPE=WHITE
 				alt {
 					[] mtcPort.receive(mw_apduExceptionListOneWhiteList) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();					
-							
-						// Send Ack within time constraints
-						f_wait(EXCEPTIONLIST_TIME1_TC);
-						f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+						f_logReceivedWaitAndAcknowledge(EXCEPTIONLIST_TIME1_TC);
 							
 						// Set test success
 						setverdict(pass);						
@@ -1889,12 +1655,8 @@ module EfcInfoExchange_TestCasesTsp {
 						// PT140 TODO: m_apduTrustObjects to be defined
                  		alt {
                       		[] mtcPort.receive(mw_apduTrustObject(v_apduRequestForTrustObject)) -> value v_apduReceived {
-								// Log what we received 					
-								f_logApduReceivedAndTStep();
-								// Check whether the ADU arrived too soon: the function will set failure and stop the test if so
-								f_checkMinimumTime(t_step, TRUSTOBJECTS_TYPE1_TIME1_MIN_TSP); // 
-								// Trust Object ADU correctly arrived. Stop timer
-								t_step.stop;
+								f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TYPE1_TIME1_MIN_TSP);  
+
                         		// Step #3: Send DefaultACK with correct identifier
 								f_wait(TRUSTOBJECTS_TYPE1_TIME2_MIN_TSP);
 								f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
@@ -2031,21 +1793,11 @@ module EfcInfoExchange_TestCasesTsp {
 				
 				alt {
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(TRUSTOBJECTS_TYPE1_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
+						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TYPE1_TIME1_MIN_TSP);  
 						setverdict(pass);						
 					}
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(TRUSTOBJECTS_TYPE1_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
+						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TYPE1_TIME1_MIN_TSP);  
 						setverdict(pass);
 					}
 				} 
@@ -2079,21 +1831,11 @@ module EfcInfoExchange_TestCasesTsp {
 				
 				alt {
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(TRUSTOBJECTS_TYPE1_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;						
+						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TYPE1_TIME1_MIN_TSP);  
 						setverdict(pass);
 					}
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(TRUSTOBJECTS_TYPE1_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
+						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TYPE1_TIME1_MIN_TSP);  
 						setverdict(pass);
 					}
 				} 
@@ -2156,21 +1898,11 @@ module EfcInfoExchange_TestCasesTsp {
 				
 				alt {
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(TRUSTOBJECTS_TYPE1_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;						
+						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TYPE1_TIME1_MIN_TSP);  
 						setverdict(pass);
 					}
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(TRUSTOBJECTS_TYPE1_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
+						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TYPE1_TIME1_MIN_TSP);  
 						setverdict(pass);
 					}
 				} 
@@ -2215,12 +1947,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// timeout expiration is handled in the altstep branch
 				alt {
 					[] mtcPort.receive(m_apduNAckRequestSentTooOften(v_apduRespondedTo)) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(TRUSTOBJECTS_TYPE1_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;						
+						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TYPE1_TIME1_MIN_TSP);  
 						setverdict(pass);
 					}
 				} 
@@ -2258,12 +1985,7 @@ module EfcInfoExchange_TestCasesTsp {
 				
 				alt {
 					[] mtcPort.receive(m_apduNAckRequestSentTooOften(v_apduRespondedTo)) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(TRUSTOBJECTS_TYPE1_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;						
+						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TYPE1_TIME1_MIN_TSP);  
 						setverdict(pass);
 					}
 				} 
@@ -2303,6 +2025,7 @@ module EfcInfoExchange_TestCasesTsp {
 					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
+						//TODO why no checking of time?
 						t_step.stop;
 					}
 				} 					
@@ -2332,6 +2055,7 @@ module EfcInfoExchange_TestCasesTsp {
 					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
 					  
 						// Log what we received
+						//TODO why no checking of time
 						f_logApduReceivedAndTStep();
 						t_step.stop;
 					}
@@ -3327,7 +3051,7 @@ module EfcInfoExchange_TestCasesTsp {
 					// Only tollContextOverview in ClosedContextDefinition set to a valid value
 				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
 					{modifies mw_aduDsrcClosedContextEfcContextData := {
-					  	closedContext.closedSystem.tollContextOverview := tollContextOverviewTESTER_VALUE
+					  	closedContext.closedSystem.tollContextOverview := tollContextOverviewTESTER_VALUE,
 					  	feeModifiers := omit
 						}
 					});                 
@@ -3562,7 +3286,7 @@ module EfcInfoExchange_TestCasesTsp {
 				f_setDsrcContextData(v_contextData);				
 				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
 					{modifies mw_aduDsrcEfcContextData := {
-					  	iso175753ADU := v_contextData;
+					  	iso175753ADU := v_contextData,
 					  	regimeContextData.feeModifiers := omit
 						}
 					});                 
@@ -3621,7 +3345,7 @@ module EfcInfoExchange_TestCasesTsp {
 					// Only tollContextOverview in ClosedContextDefinition set to a valid value
 				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
 					{modifies mw_aduDsrcClosedContextEfcContextData := {
-					  	closedContext.closedSystem.tollContextOverview := tollContextOverviewTESTER_VALUE
+					  	closedContext.closedSystem.tollContextOverview := tollContextOverviewTESTER_VALUE,
 					  	closedContext.closedContextType := 3, // only 1 or 2 are allowed
 					  	feeModifiers := omit
 						}
@@ -3682,7 +3406,7 @@ module EfcInfoExchange_TestCasesTsp {
 				f_setDsrcContextData(v_contextData);				
 				var InfoExchange v_apduToSend := m_apduNoSecInit(
 					{modifies mw_aduDsrcEfcContextData := {
-					  	iso175753ADU := v_contextData;
+					  	iso175753ADU := v_contextData,
 					  	regimeContextData.feeModifiers := omit
 						}
 					});                 
@@ -3730,10 +3454,10 @@ module EfcInfoExchange_TestCasesTsp {
     group DSRC_BILLINGDETAILS {
          group Valid_Behaviour {
 
-           testcase TP_TSP_DSRC.BILLINGDETAILS_BV_01() runs on MainTestComponent system TestAdapter {
+         	testcase TP_TSP_DSRC_BILLINGDETAILS_BV_01() runs on MainTestComponent system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_DSRC.BILLINGDETAILS_BV_01: Verify that the TSP correctly performs a DSRC.BILLINGDETAILS transaction when a TC sends a single BillingDetailsADU with no optional fields except includedDiscounts and actionCode=send 
+                  * @desc    TP_TSP_DSRC_BILLINGDETAILS_BV_01: Verify that the TSP correctly performs a DSRC.BILLINGDETAILS transaction when a TC sends a single BillingDetailsADU with no optional fields except includedDiscounts and actionCode=send 
                   * @remark  [16986:2016], Clause 7.3.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/3
                   */                  
                  // Initialisation 
@@ -3765,12 +3489,12 @@ module EfcInfoExchange_TestCasesTsp {
 					}
 				} 
 				f_closeDownMtc();                  
-                } // End of TP_TSP_DSRC.BILLINGDETAILS_BV_01
+                } // End of TP_TSP_DSRC_BILLINGDETAILS_BV_01
 
-           testcase TP_TSP_DSRC.BILLINGDETAILS_BV_02() runs on MainTestComponent system TestAdapter {
+           testcase TP_TSP_DSRC_BILLINGDETAILS_BV_02() runs on MainTestComponent system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_DSRC.BILLINGDETAILS_BV_02: Verify that the TSP correctly performs a DSRC.BILLINGDETAILS transaction when the TC provides multiple BillingDetailsADUs with no optional fields  
+                  * @desc    TP_TSP_DSRC_BILLINGDETAILS_BV_02: Verify that the TSP correctly performs a DSRC.BILLINGDETAILS transaction when the TC provides multiple BillingDetailsADUs with no optional fields  
                   * @remark  [16986:2016], Clause 7.3.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/3
                   */
                   
@@ -3840,12 +3564,12 @@ module EfcInfoExchange_TestCasesTsp {
 
 				f_closeDownMtc();  			
                 
-                } // End of TP_TSP_DSRC.BILLINGDETAILS_BV_02
+                } // End of TP_TSP_DSRC_BILLINGDETAILS_BV_02
 
-           testcase TP_TSP_DSRC.BILLINGDETAILS_BV_03() runs on MainTestComponent system TestAdapter {
+           testcase TP_TSP_DSRC_BILLINGDETAILS_BV_03() runs on MainTestComponent system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_DSRC.BILLINGDETAILS_BV_03: Verify that the TSP correctly performs a DSRC.BILLINGDETAILS transaction when the TC sends a single BillingDetailsADU with actionCode = adjust and no optional fields 
+                  * @desc    TP_TSP_DSRC_BILLINGDETAILS_BV_03: Verify that the TSP correctly performs a DSRC.BILLINGDETAILS transaction when the TC sends a single BillingDetailsADU with actionCode = adjust and no optional fields 
                   * @remark  [16986:2016], Clause 7.3.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/3
                   */
                   
@@ -3916,12 +3640,12 @@ module EfcInfoExchange_TestCasesTsp {
 				} 
 				f_closeDownMtc();  			
                           
-           } // End of TP_TSP_DSRC.BILLINGDETAILS_BV_03
+           } // End of TP_TSP_DSRC_BILLINGDETAILS_BV_03
 
-           testcase TP_TSP_DSRC.BILLINGDETAILS_BV_04() runs on MainTestComponent system TestAdapter {
+           testcase TP_TSP_DSRC_BILLINGDETAILS_BV_04() runs on MainTestComponent system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_DSRC.BILLINGDETAILS_BV_05: Verify that the TSP correctly performs a DSRC.BILLINGDETAILS transaction when the TC sends a single BillingDetailsADU with actionCode = revoke and no optional fields 
+                  * @desc    TP_TSP_DSRC_BILLINGDETAILS_BV_05: Verify that the TSP correctly performs a DSRC.BILLINGDETAILS transaction when the TC sends a single BillingDetailsADU with actionCode = revoke and no optional fields 
                   * @remark  [16986:2016], Clause 7.3.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/3
                   */
                   
@@ -3975,16 +3699,16 @@ module EfcInfoExchange_TestCasesTsp {
 				}
 				f_closeDownMtc();  			
 				                 
-                } // End of TP_TSP_DSRC.BILLINGDETAILS_BV_04
+                } // End of TP_TSP_DSRC_BILLINGDETAILS_BV_04
            
  		} // End of group Valid_Behaviour
          
          group Invalid_Behaviour {
 
-           testcase TP_TSP_DSRC.BILLINGDETAILS_BI_01() runs on MainTestComponent system TestAdapter {
+           testcase TP_TSP_DSRC_BILLINGDETAILS_BI_01() runs on MainTestComponent system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_DSRC.BILLINGDETAILS_BI_01: Verify that the TSP correctly responds to a series of BillingDetailsADUs bearing only mandatory fields, each BillingDetailsADU having one mandatory field bearing an incorrect value 
+                  * @desc    TP_TSP_DSRC_BILLINGDETAILS_BI_01: Verify that the TSP correctly responds to a series of BillingDetailsADUs bearing only mandatory fields, each BillingDetailsADU having one mandatory field bearing an incorrect value 
                   * @remark  [16986:2016], Clause 7.3.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/3
                   */
                   
@@ -4050,31 +3774,35 @@ module EfcInfoExchange_TestCasesTsp {
 						f_checkMinimumTStep(BILLINGDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
 						t_step.stop;
 						// Check the issue list presence and contents
-						If ispresent (m_apduNack, NackParams) and
-							if (NackParams == {
-							{1,AduReasonCode_billingDetailsIssuerIdRejected_},
-							{2,AduReasonCode_billingDetailsContextIdRejected_},
-							{3,AduReasonCode_billingDetailsUserIdRejected_}, 
-							{4,AduReasonCode_billingDetailsAmountRejected_}, 
-							{5,AduReasonCode_billingDetailsContextNameRejected_}, 
-							{6,AduReasonCode_billingDetailsAppliedUserClassRejected_}, 
-							{7,AduReasonCode_billingDetailsDeclaredVehicleClassRejected_}, 
-							{8,AduReasonCode_billingDetailsAppliedTimeClassRejected_}, 
-							{9,AduReasonCode_billingDetailsEntranceTimeRejected_}, 
-							{10,AduReasonCode_billingDetailsIntermediateSectionRejected_} 					  
+						if (
+							//TODO what is this? ispresent should only have one argument
+							ispresent(m_apduNack, NackParams) and
+							(NackParams == {
+								{1,AduReasonCode_billingDetailsIssuerIdRejected_},
+								{2,AduReasonCode_billingDetailsContextIdRejected_},
+								{3,AduReasonCode_billingDetailsUserIdRejected_}, 
+								{4,AduReasonCode_billingDetailsAmountRejected_}, 
+								{5,AduReasonCode_billingDetailsContextNameRejected_}, 
+								{6,AduReasonCode_billingDetailsAppliedUserClassRejected_}, 
+								{7,AduReasonCode_billingDetailsDeclaredVehicleClassRejected_}, 
+								{8,AduReasonCode_billingDetailsAppliedTimeClassRejected_}, 
+								{9,AduReasonCode_billingDetailsEntranceTimeRejected_}, 
+								{10,AduReasonCode_billingDetailsIntermediateSectionRejected_} 					  
 							})
-						//Set verdict
-						setverdict(pass);
+						) {
+							//Set verdict
+							setverdict(pass);
+						}
 					}
 				}                  	
 				f_closeDownMtc();  			
                 
-                } // End of TP_TSP_DSRC.BILLINGDETAILS_BI_01
+			} // End of TP_TSP_DSRC_BILLINGDETAILS_BI_01
 
-           testcase TP_TSP_DSRC.BILLINGDETAILS_BI_02() runs on MainTestComponent system TestAdapter {
+           	testcase TP_TSP_DSRC_BILLINGDETAILS_BI_02() runs on MainTestComponent system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_DSRC.BILLINGDETAILS_BI_02: Verify that the TSP correctly responds to a BillingDetailsADU adjusting the fee of a not previously issued BillingDetailsADU 
+                  * @desc    TP_TSP_DSRC_BILLINGDETAILS_BI_02: Verify that the TSP correctly responds to a BillingDetailsADU adjusting the fee of a not previously issued BillingDetailsADU 
                   * @remark  [16986:2016], Clause 7.3.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/3
                   */
                   
@@ -4144,12 +3872,12 @@ module EfcInfoExchange_TestCasesTsp {
 				}				
 				f_closeDownMtc();  			
                 
-                } // End of TP_TSP_DSRC.BILLINGDETAILS_BI_02
+                } // End of TP_TSP_DSRC_BILLINGDETAILS_BI_02
 
-           testcase TP_TSP_DSRC.BILLINGDETAILS_BI_03() runs on MainTestComponent system TestAdapter {
+           testcase TP_TSP_DSRC_BILLINGDETAILS_BI_03() runs on MainTestComponent system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_DSRC.BILLINGDETAILS_BI_03: Verify that the TSP correctly responds to a BillingDetailsADU revoking a not previously issued BillingDetailsADU 
+                  * @desc    TP_TSP_DSRC_BILLINGDETAILS_BI_03: Verify that the TSP correctly responds to a BillingDetailsADU revoking a not previously issued BillingDetailsADU 
                   * @remark  [16986:2016], Clause 7.3.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/3
                   */
                   
@@ -4218,12 +3946,12 @@ module EfcInfoExchange_TestCasesTsp {
 				}
 				f_closeDownMtc();  			
                 
-                } // End of TP_TSP_DSRC.BILLINGDETAILS_BI_03
+                } // End of TP_TSP_DSRC_BILLINGDETAILS_BI_03
 
-           testcase TP_TSP_DSRC.BILLINGDETAILS_BI_04() runs on MainTestComponent system TestAdapter {
+           testcase TP_TSP_DSRC_BILLINGDETAILS_BI_04() runs on MainTestComponent system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_DSRC.BILLINGDETAILS_BI_04: Verify that the TSP responds correctly to a BillingDetailsADU sent earlier than allowed 
+                  * @desc    TP_TSP_DSRC_BILLINGDETAILS_BI_04: Verify that the TSP responds correctly to a BillingDetailsADU sent earlier than allowed 
                   * @remark  [16986:2016], Clause 7.3.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/3
                   */
                   
@@ -4278,20 +4006,20 @@ module EfcInfoExchange_TestCasesTsp {
                 
                 f_closeDownMtc();  			
                 
-                } // End of TP_TSP_DSRC.BILLINGDETAILS_BI_04
+                } // End of TP_TSP_DSRC_BILLINGDETAILS_BI_04
 
 		
         } // End of group Invalid_Behaviour
 
-    } // End of group DSRC.BILLINGDETAILS
+    } // End of group DSRC_BILLINGDETAILS
     
     group DSRC_REPORTABNORMALOBE {
          group Valid_Behaviour {
 
-           testcase TP_TSP_DSRC.REPORTABNORMALOBE_BV_01() runs on MainTestComponent system TestAdapter {
+           testcase TP_TSP_DSRC_REPORTABNORMALOBE_BV_01() runs on MainTestComponent system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_DSRC.REPORTABNORMALOBE_BV_01: Verify that the TSP correctly performs a DSRC.REPORTABNORMALOBE transaction in response to an APDU containing valid ReportAbnormalOBEADUs 
+                  * @desc    TP_TSP_DSRC_REPORTABNORMALOBE_BV_01: Verify that the TSP correctly performs a DSRC.REPORTABNORMALOBE transaction in response to an APDU containing valid ReportAbnormalOBEADUs 
                   * @remark  [16986:2016], Clause 7.4 and Table A.1/2 AND Table A.2/1 AND Table A.26/4
                   */
                   
@@ -4324,17 +4052,17 @@ module EfcInfoExchange_TestCasesTsp {
 				} 
 				f_closeDownMtc();                  
                 
-                } // End of TP_TSP_DSRC.REPORTABNORMALOBE_BV_01
+                } // End of TP_TSP_DSRC_REPORTABNORMALOBE_BV_01
 
 
  		} // End of group Valid_Behaviour
          
          group Invalid_Behaviour {		
 
-           testcase TP_TSP_DSRC.REPORTABNORMALOBE_BI_01() runs on MainTestComponent system TestAdapter {
+           testcase TP_TSP_DSRC_REPORTABNORMALOBE_BI_01() runs on MainTestComponent system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_DSRC.REPORTABNORMALOBE_BI_01: Verify that the TSP correctly responds to an APDU containing one ReportAbnormalOBEADU with no userId field present 
+                  * @desc    TP_TSP_DSRC_REPORTABNORMALOBE_BI_01: Verify that the TSP correctly responds to an APDU containing one ReportAbnormalOBEADU with no userId field present 
                   * @remark  [16986:2016], Clause 7.4 and Table A.1/2 AND Table A.2/1 AND Table A.26/4
                   */
                   
@@ -4383,12 +4111,12 @@ module EfcInfoExchange_TestCasesTsp {
 				}				
 				f_closeDownMtc();  			
                 
-                } // End of TP_TSP_DSRC.REPORTABNORMALOBE_BI_01
+           	} // End of TP_TSP_DSRC_REPORTABNORMALOBE_BI_01
 
-           testcase TP_TSP_DSRC.REPORTABNORMALOBE_BI_02() runs on MainTestComponent system TestAdapter {
+          	testcase TP_TSP_DSRC_REPORTABNORMALOBE_BI_02() runs on MainTestComponent system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_DSRC.REPORTABNORMALOBE_BI_02: Verify that the TSP correctly responds to an APDU containing one ReportAbnormalOBEADU with no value or invalid values in the field userId 
+                  * @desc    TP_TSP_DSRC_REPORTABNORMALOBE_BI_02: Verify that the TSP correctly responds to an APDU containing one ReportAbnormalOBEADU with no value or invalid values in the field userId 
                   * @remark  [16986:2016], Clause 7.4 and Table A.1/2 AND Table A.2/1 AND Table A.26/4
                   */
                   
@@ -4448,12 +4176,12 @@ module EfcInfoExchange_TestCasesTsp {
 					} // End of alt statement				
                	
                	f_closeDownMtc();  			
-                } // End of TP_TSP_DSRC.REPORTABNORMALOBE_BI_02
+                } // End of TP_TSP_DSRC_REPORTBILLINGDETAILS_BI_02
 
-           testcase TP_TSP_DSRC.REPORTABNORMALOBE_BI_03() runs on MainTestComponent system TestAdapter {
+           testcase TP_TSP_DSRC_REPORTBILLINGDETAILS_BI_03() runs on MainTestComponent system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_DSRC.REPORTABNORMALOBE_BI_03: Verify that the TSP correctly responds to an APDU containing one ReportAbnormalOBEADU with no dateAndTime field 
+                  * @desc    TP_TSP_DSRC_REPORTBILLINGDETAILS_BI_03: Verify that the TSP correctly responds to an APDU containing one ReportAbnormalOBEADU with no dateAndTime field 
                   * @remark  [16986:2016], Clause 7.4 and Table A.1/2 AND Table A.2/1 AND Table A.26/4
                   */
                   
@@ -4505,12 +4233,12 @@ module EfcInfoExchange_TestCasesTsp {
                	
                	f_closeDownMtc();  
                                 
-                } // End of TP_TSP_DSRC.REPORTABNORMALOBE_BI_03
+                } // End of TP_TSP_DSRC_REPORTBILLINGDETAILS_BI_03
 
-           testcase TP_TSP_DSRC.REPORTABNORMALOBE_BI_04() runs on MainTestComponent system TestAdapter {
+           testcase TP_TSP_DSRC_REPORTBILLINGDETAILS_BI_04() runs on MainTestComponent system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_DSRC.REPORTABNORMALOBE_BI_04: Verify that the TSP correctly responds to an APDU containing ReportAbnormalOBEADU with no value or invalid values in field dateAndTime 
+                  * @desc    TP_TSP_DSRC_REPORTBILLINGDETAILS_BI_04: Verify that the TSP correctly responds to an APDU containing ReportAbnormalOBEADU with no value or invalid values in field dateAndTime 
                   * @remark  [16986:2016], Clause 7.4 and Table A.1/2 AND Table A.2/1 AND Table A.26/4
                   */
                   
@@ -4530,7 +4258,7 @@ module EfcInfoExchange_TestCasesTsp {
 					}),
 					m_apduNoSecInit({modifies mw_aduReportAbnormalOBE:= {
 					  	userId := EXISTING_USER_ID,
-					  	dateAndTime := now + 1000;
+					  	dateAndTime := fx_getUtc() + 1000,
 					  	abnormalOBEReasonCode := AbnormalOBEReasonCode_reasonNotToBeDisclosed_
 					  	}
 					})	
@@ -4571,12 +4299,12 @@ module EfcInfoExchange_TestCasesTsp {
                	
                	f_closeDownMtc(); 
                 
-                } // End of TP_TSP_DSRC.REPORTABNORMALOBE_BI_04
+                } // End of TP_TSP_DSRC_REPORTBILLINGDETAILS_BI_04
 
-           testcase TP_TSP_DSRC.REPORTABNORMALOBE_BI_05() runs on MainTestComponent system TestAdapter {
+           testcase TP_TSP_DSRC_REPORTBILLINGDETAILS_BI_05() runs on MainTestComponent system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_DSRC.REPORTABNORMALOBE_BI_05: Verify that the TSP correctly responds to an APDU containing one ReportAbnormalOBEADU with no efcContextMark field 
+                  * @desc    TP_TSP_DSRC_REPORTBILLINGDETAILS_BI_05: Verify that the TSP correctly responds to an APDU containing one ReportAbnormalOBEADU with no efcContextMark field 
                   * @remark  [16986:2016], Clause 7.4 and Table A.1/2 AND Table A.2/1 AND Table A.26/4
                   */
                   
@@ -4630,12 +4358,12 @@ module EfcInfoExchange_TestCasesTsp {
                	
                	f_closeDownMtc();
                 
-                } // End of TP_TSP_DSRC.REPORTABNORMALOBE_BI_05
+                } // End of TP_TSP_DSRC_REPORTBILLINGDETAILS_BI_05
 
-           testcase TP_TSP_DSRC.REPORTABNORMALOBE_BI_06() runs on MainTestComponent system TestAdapter {
+           testcase TP_TSP_DSRC_REPORTBILLINGDETAILS_BI_06() runs on MainTestComponent system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_DSRC.REPORTABNORMALOBE_BI_06: Verify that the TSP correctly responds to an APDU containing one ReportAbnormalOBEADU with no value or invalid values in the field efcContextMark 
+                  * @desc    TP_TSP_DSRC_REPORTBILLINGDETAILS_BI_06: Verify that the TSP correctly responds to an APDU containing one ReportAbnormalOBEADU with no value or invalid values in the field efcContextMark 
                   * @remark  [16986:2016], Clause 7.4 and Table A.1/2 AND Table A.2/1 AND Table A.26/4
                   */
                   
@@ -4657,7 +4385,7 @@ module EfcInfoExchange_TestCasesTsp {
 					m_apduNoSecInit({modifies mw_aduReportAbnormalOBE:= {
 					  	userId := EXISTING_USER_ID,
 					  	efcContextMark := 0,
-					  	dateAndTime := now + 1;
+					  	dateAndTime := fx_getUtc() + 1,
 					  	abnormalOBEReasonCode := AbnormalOBEReasonCode_reasonNotToBeDisclosed_
 					  	}
 					})	
@@ -4699,12 +4427,12 @@ module EfcInfoExchange_TestCasesTsp {
                	
                	f_closeDownMtc(); 
                 
-                } // End of TP_TSP_DSRC.REPORTABNORMALOBE_BI_06
+                } // End of TP_TSP_DSRC_REPORTBILLINGDETAILS_BI_06
 
-           testcase TP_TSP_DSRC.REPORTABNORMALOBE_BI_07() runs on MainTestComponent system TestAdapter {
+           testcase TP_TSP_DSRC_REPORTBILLINGDETAILS_BI_07() runs on MainTestComponent system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_DSRC.REPORTABNORMALOBE_BI_07: Verify that the TSP correctly responds to an APDU containing ReportAbnormalOBEADU not containing the abnormalOBEReason field 
+                  * @desc    TP_TSP_DSRC_REPORTBILLINGDETAILS_BI_07: Verify that the TSP correctly responds to an APDU containing ReportAbnormalOBEADU not containing the abnormalOBEReason field 
                   * @remark  [16986:2016], Clause 7.4 and Table A.1/2 AND Table A.2/1 AND Table A.26/4
                   */
                   
@@ -4757,12 +4485,12 @@ module EfcInfoExchange_TestCasesTsp {
                	
                	f_closeDownMtc();
                 
-                } // End of TP_TSP_DSRC.REPORTABNORMALOBE_BI_07
+                } // End of TP_TSP_DSRC_REPORTBILLINGDETAILS_BI_07
 
-           testcase TP_TSP_DSRC.REPORTABNORMALOBE_BI_08() runs on MainTestComponent system TestAdapter {
+           testcase TP_TSP_DSRC_REPORTBILLINGDETAILS_BI_08() runs on MainTestComponent system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_DSRC.REPORTABNORMALOBE_BI_08: Verify that the TSP correctly responds to an APDU containing one ReportAbnormalOBEADU with no value or invalid values in the field abnormalOBEReason 
+                  * @desc    TP_TSP_DSRC_REPORTBILLINGDETAILS_BI_08: Verify that the TSP correctly responds to an APDU containing one ReportAbnormalOBEADU with no value or invalid values in the field abnormalOBEReason 
                   * @remark  [16986:2016], Clause 7.4 and Table A.1/2 AND Table A.2/1 AND Table A.26/4
                   */
                   
@@ -4820,18 +4548,18 @@ module EfcInfoExchange_TestCasesTsp {
 						}
 					}	// End of alt statement	               	
                	f_closeDownMtc();             
-                } // End of TP_TSP_DSRC.REPORTABNORMALOBE_BI_08
+                } // End of TP_TSP_DSRC_REPORTBILLINGDETAILS_BI_08
                
-			testcase TP_TSP_DSRC.REPORTABNORMALOBE_BI_09() runs on MainTestComponent system TestAdapter {
+			testcase TP_TSP_DSRC_REPORTBILLINGDETAILS_BI_09() runs on MainTestComponent system TestAdapter {
                  /**
-                  * @desc    TP_TSP_DSRC.REPORTABNORMALOBE_BI_09: Verify that the TSP responds correctly to a ReportAbnormalOBEADU sent earlier than allowed 
+                  * @desc    TP_TSP_DSRC_REPORTBILLINGDETAILS_BI_09: Verify that the TSP responds correctly to a ReportAbnormalOBEADU sent earlier than allowed 
                   * @remark  [16986:2016], Clause 7.4 and Table A.1/2 AND Table A.2/1 AND Table A.26/4
                   */
                   
                  // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_4_implementedDSRCREPORTABNORMALOBE;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
-                // Send one valid DSRC.REPORTABNORMALOBE
+                // Send one valid DSRC_REPORTBILLINGDETAILS
                  // PT140 TODO : mw_aduReportAbnormalOBE template to be defined
 				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
 					{modifies mw_aduReportAbnormalOBE:= {
@@ -4873,10 +4601,10 @@ module EfcInfoExchange_TestCasesTsp {
 						}
                 	} // End of alt statement               
                 f_closeDownMtc(); 					
-				} // End of  TP_TSP_DSRC.REPORTABNORMALOBE_BI_09             		
+				} // End of  TP_TSP_DSRC_REPORTBILLINGDETAILS_BI_09             		
 			
 		} // End of group Invalid_Behaviour 
-	} // End of group DSRC.REPORTABNORMALOBE
+	} // End of group DSRC_REPORTBILLINGDETAILS
     
     group GNSS_TOLLDECLARATION {
          group Valid_Behaviour {
@@ -4893,44 +4621,34 @@ module EfcInfoExchange_TestCasesTsp {
 				// PT140 TODO: mw_aduGnssTollDeclaration template to be defined
 				// PT140 TODO: way to set or change amount in the Charge report to be defined
 				var InfoExchange v_apduToBeReceived := m_apduNoSecInit(
-					{modifies mw_aduGnssTollDeclaration:= {
-					  	amount := *,
-					  	actionCode := ActionCode_send_,
-					  	}
-					},
-					{modifies mw_aduGnssTollDeclaration:= {
-					  	actionCode := ActionCode_adjust_,
-					  	amount := *,
-						}
-					},
-					{modifies mw_adGnssTollDeclaration := {
-						actionCode := ActionCode_revoke_  
-						}					  
-					});
+					{modifies mw_aduGnssTollDeclaration:= {	amount := *, actionCode := ActionCode_send_	}},
+					{modifies mw_aduGnssTollDeclaration:= {	actionCode := ActionCode_adjust_, amount := *}},
+					{modifies mw_adGnssTollDeclaration := { actionCode := ActionCode_revoke_}}
+				);
 				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1_A);												
 				// Receive the correct adu, send positive ack
 				alt {
 					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();					
-						}
-					// PT140 TODO: verify that the extraction of the tollDeclarationId from the received apdu is correct
-					var TollDeclarationId v_idReceived1 = v_apduReceived.infoExchangeContent.adus.tollDeclarationADUs[1].tollDeclarationId
-					var TollDeclarationId v_idReceived2 = v_apduReceived.infoExchangeContent.adus.tollDeclarationADUs[2].tollDeclarationId
-					var TollDeclarationId v_idReceived3 = v_apduReceived.infoExchangeContent.adus.tollDeclarationADUs[3].tollDeclarationId					
+					
+						// PT140 TODO: verify that the extraction of the tollDeclarationId from the received apdu is correct
+						var TollDeclarationId v_idReceived1 := v_apduReceived.infoExchangeContent.adus.tollDeclarationADUs[1].tollDeclarationId;
+						var TollDeclarationId v_idReceived2 := v_apduReceived.infoExchangeContent.adus.tollDeclarationADUs[2].tollDeclarationId;
+						var TollDeclarationId v_idReceived3 := v_apduReceived.infoExchangeContent.adus.tollDeclarationADUs[3].tollDeclarationId;				
 
-						if ((v_idReceived1 = v_idReceived2) and (v_idReceived1 = v_idReceived3){
+						if ((v_idReceived1 == v_idReceived2) and (v_idReceived1 == v_idReceived3)){
 							setverdict(pass);
 							// Step3: Send DefaultAck with correct identifier and set verdict
 							f_wait(GNSSTOLLDECLARATION_TIME1_TC);
 							f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));							  
-							}
-						else {
+						} else {
 							setverdict(fail)
 						};
- 					} // End of alt statement 
-               	f_closeDownMtc();               
-                } // End of TP_TSP_GNSS_TOLLDECLARATION_BV_01
+					}
+				} // End of alt statement 
+			f_closeDownMtc();               
+            } // End of TP_TSP_GNSS_TOLLDECLARATION_BV_01
            
  		} // End of group Valid_Behaviour
          
@@ -4964,13 +4682,13 @@ module EfcInfoExchange_TestCasesTsp {
 					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();					
-						}
-							
-					// Send Ack within time constraints
-					f_wait(GNSSTOLLDECLARATION_TIME1_TC);
-					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
-					setverdict(pass);						
- 					} // End of alt statement 
+
+						// Send Ack within time constraints
+						f_wait(GNSSTOLLDECLARATION_TIME1_TC);
+						f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+						setverdict(pass);		
+					}				
+ 				} // End of alt statement 
 				
 				// Step 1: Trigger IUT with GNSS.BILLINGDETAILS_TSP_1_A to send  valid BillingDetailsADUs with:
 					// actionCode = send
@@ -5015,12 +4733,12 @@ module EfcInfoExchange_TestCasesTsp {
 					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();					
-						}
-							
-					// Send Ack within time constraints
-					f_wait(GNSSTOLLDECLARATION_TIME1_TC);
-					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
- 					} // End of alt statement 
+
+						// Send Ack within time constraints
+						f_wait(GNSSTOLLDECLARATION_TIME1_TC);
+						f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+					}
+				} // End of alt statement 
 				f_sendAndLogTrigger(GNSS_BILLINGDETAILS_TSP_TR_TSP_1_B1);				
 				
 				//  Wait for GNSS.BILLINGDETAILS
@@ -5033,8 +4751,8 @@ module EfcInfoExchange_TestCasesTsp {
 						// Send NAck within time constraints
 						f_wait(GNSS_BILLINGDETAILS_TSP_TIME1_TC);
 						f_sendAndLogApdu(m_apduNAck(v_apduReceived, billingDetailsAmountRejected));
-						}
- 					} // End of alt statement
+					}
+ 				} // End of alt statement
 
 				// Step 1: Trigger IUT with GNSS.BILLINGDETAILS.TR_TSP_1_B2 to send one APDU containing one valid BillingDetailsADU with:
 				f_sendAndLogTrigger(GNSS_BILLINGDETAILS_TSP_TR_TSP_1_B2);				
@@ -5052,13 +4770,13 @@ module EfcInfoExchange_TestCasesTsp {
 							
 						// Set test success
 						setverdict(pass);						
-						}
- 					} // End of alt statement
+					}
+ 				} // End of alt statement
 				f_closeDownMtc();   						           				                                
-                
-                } // End of TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_02           
+               
+			} // End of TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_02           
 
-           testcase TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_03() runs on MainTestComponent system TestAdapter {
+           	testcase TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_03() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_03: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TSP transaction with revoking a single BillingDetailsADU containing only mandatory fields 
@@ -5082,12 +4800,12 @@ module EfcInfoExchange_TestCasesTsp {
 					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();					
-						}
-							
-					// Send Ack within time constraints
-					f_wait(GNSSTOLLDECLARATION_TIME1_TC);
-					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
- 					} // End of alt statement 
+
+						// Send Ack within time constraints
+						f_wait(GNSSTOLLDECLARATION_TIME1_TC);
+						f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+					}
+ 				} // End of alt statement 
 				f_sendAndLogTrigger(GNSS_BILLINGDETAILS_TSP_TR_TSP_1_B1);				
 				
 				//  Wait for GNSS.BILLINGDETAILS
@@ -5100,8 +4818,8 @@ module EfcInfoExchange_TestCasesTsp {
 						// Send Ack within time constraints
 						f_wait(GNSS_BILLINGDETAILS_TSP_TIME1_TC);
 						f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
-						}
- 					} // End of alt statement
+					}
+ 				} // End of alt statement
 
 				// Step 1: Trigger IUT with GNSS.BILLINGDETAILS.TR_TSP_1_C to send one APDU containing one valid BillingDetailsADU with:
 					// actionCode = ActionCode_revoke_
@@ -5122,22 +4840,21 @@ module EfcInfoExchange_TestCasesTsp {
 							
 						// Set test success
 						setverdict(pass);						
-						}
- 					} // End of alt statement
+					}
+ 				} // End of alt statement
 				f_closeDownMtc();   						           				                                
-				
-                } // End of TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_03           
 
+			} // End of TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_03           
 
  		} // End of group Valid_Behaviour
          
-         group Invalid_Behaviour {
-           // No Test Cases are defined for invalid behaviour.		
+		group Invalid_Behaviour {
+        	// No Test Cases are defined for invalid behaviour.		
         } // End of group Invalid_Behaviour
 
-    } // End of group GNSS.BILLINGDETAILS_TSP
+	} // End of group GNSS.BILLINGDETAILS_TSP
     
-    group GNSS_BILLINGDETAILS_TC {
+	group GNSS_BILLINGDETAILS_TC {
          // Base TCs shall be carried out in addition and prior to the TCs listed below.
          group Valid_Behaviour {
 
@@ -5156,14 +4873,9 @@ module EfcInfoExchange_TestCasesTsp {
 				//  PT140 TODO: Template for Toll Declaration to be defined
 				alt {
 					[] mtcPort.receive(mw_apduTollDeclaration) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();					
-						}
-               		
-					// Send Ack within time constraints
-					f_wait(TOLLDECLARATION_TIME1_TC);
-					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
-					} // End of first alt statement
+						f_logReceivedWaitAndAcknowledge(TOLLDECLARATION_TIME1_TC);
+					}
+				} // End of first alt statement
 
 				
                  // Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
@@ -5171,9 +4883,15 @@ module EfcInfoExchange_TestCasesTsp {
                  	// includedDiscounts in usageList with textDetail field being set according to values specified in Table A.54 of CEN/TS 16986:2016
                  	// PT140 TODO: Correct template to be defined. Using basic BillingDetails template in what follows (to be changed)
 				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
-					{modifies mw_aduBillingDetails:= {
-					  	billingDetailsId := 1, actionCode := ActionCode_send_, includedDiscounts.discounts := 10, includedDiscounts.discountQualifier := DiscountQualifier_userDiscount_ }}
-					});                 
+					{
+						modifies mw_aduBillingDetails:= {
+						  	billingDetailsId := 1, 
+						  	actionCode := ActionCode_send_, 
+						  	includedDiscounts.discounts := 10, 
+						  	includedDiscounts.discountQualifier := DiscountQualifier_userDiscount_ 
+						}
+					}
+				);                 
 				f_sendAndLogApdu(v_apduRespondedTo);                 
                  // Step 2: Wait for positive Ack within GNSS_BILLINGDETAILS_TC_TIME1_MAX_TC
 				// Set timer
@@ -5207,16 +4925,11 @@ module EfcInfoExchange_TestCasesTsp {
 				//  PT140 TODO: Template for Toll Declaration to be defined
 				alt {
 					[] mtcPort.receive(mw_apduTollDeclaration) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();					
-						}
-               		
-					// Send Ack within time constraints
-					f_wait(TOLLDECLARATION_TIME1_TC);
-					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
-					} // End of first alt statement
+						f_logReceivedWaitAndAcknowledge(TOLLDECLARATION_TIME1_TC);
+					}
+				} // End of first alt statement
 
-				
+				//TODO is this not weird? SHould not the Alt statements be nested?
                 // Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
                  	// action code = send
                  	// CHOICE forSectionedRoads
@@ -5258,14 +4971,9 @@ module EfcInfoExchange_TestCasesTsp {
 				//  PT140 TODO: Template for Toll Declaration to be defined
 				alt {
 					[] mtcPort.receive(mw_apduTollDeclaration) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();					
-						}
-               		
-					// Send Ack within time constraints
-					f_wait(TOLLDECLARATION_TIME1_TC);
-					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
-					} // End of first alt statement
+						f_logReceivedWaitAndAcknowledge(TOLLDECLARATION_TIME1_TC);
+					}
+				} // End of first alt statement
 
 				
                 // Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
@@ -5310,14 +5018,9 @@ module EfcInfoExchange_TestCasesTsp {
 				//  PT140 TODO: Template for Toll Declaration to be defined
 				alt {
 					[] mtcPort.receive(mw_apduTollDeclaration) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();					
-						}
-               		
-					// Send Ack within time constraints
-					f_wait(TOLLDECLARATION_TIME1_TC);
-					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
-					} // End of first alt statement
+						f_logReceivedWaitAndAcknowledge(TOLLDECLARATION_TIME1_TC);
+					}
+				} // End of first alt statement
 
 				
                 // Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
@@ -5362,14 +5065,9 @@ module EfcInfoExchange_TestCasesTsp {
 				//  PT140 TODO: Template for Toll Declaration to be defined
 				alt {
 					[] mtcPort.receive(mw_apduTollDeclaration) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();					
-						}
-               		
-					// Send Ack within time constraints
-					f_wait(TOLLDECLARATION_TIME1_TC);
-					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
-					} // End of first alt statement
+						f_logReceivedWaitAndAcknowledge(TOLLDECLARATION_TIME1_TC);
+					}
+				} // End of first alt statement
 
 				
                 // Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
@@ -5414,29 +5112,22 @@ module EfcInfoExchange_TestCasesTsp {
 				//  PT140 TODO: Template for Toll Declaration to be defined
 				alt {
 					[] mtcPort.receive(mw_apduTollDeclaration) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();					
-						}
-               		
-					// Send Ack within time constraints
-					f_wait(TOLLDECLARATION_TIME1_TC);
-					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
-					} // End of first alt statement
+						f_logReceivedWaitAndAcknowledge(TOLLDECLARATION_TIME1_TC);
+					}
+				} // End of first alt statement
 				
                  // Step 1: Send one valid APDU containing a number of valid BillingDetailsADU equal to GNSS.BILLINGDETAILS.TSP.PARAM1_MAX, with
                  	// action code = send 
                  	// no optional fields
                 // Set first element of apdu
-				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
-					{modifies mw_aduBillingDetails:= {
-					  	billingDetailsId := 1, actionCode := ActionCode_send_ }
-					});                 
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit({modifies mw_aduBillingDetails:= {billingDetailsId := 1, actionCode := ActionCode_send_ }});                 
 				// PT140 TODO: Is that a correct setting of an APDU with multiple ADUs?				
 				// Set all remaining elements of apdu
-				for (var integer v_ind := 2, v_ind < (GNSS.BILLINGDETAILS_TSP_PARAM1_MAX - 1), v_ind := v_ind + 1)
+				for (var integer v_ind := 2; v_ind < (GNSS.BILLINGDETAILS_TSP_PARAM1_MAX - 1); v_ind := v_ind + 1){
 						v_apduRespondedTo[v_ind] := m_apduNoSecInit({modifies mw_aduBillingDetails:= {
 					  	billingDetailsId := v_ind, actionCode := ActionCode_send_ }});
 						continue;
+				}
 				
 				f_sendAndLogApdu(v_apduRespondedTo);                 
                  // Step 2: Wait for positive Ack within GNSS_BILLINGDETAILS_TC_TIME1_MAX_TC
@@ -5471,14 +5162,9 @@ module EfcInfoExchange_TestCasesTsp {
 				//  PT140 TODO: Template for Toll Declaration to be defined
 				alt {
 					[] mtcPort.receive(mw_apduTollDeclaration) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();					
-						}
-               		
-					// Send Ack within time constraints
-					f_wait(TOLLDECLARATION_TIME1_TC);
-					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
-					} // End of first alt statement
+						f_logReceivedWaitAndAcknowledge(TOLLDECLARATION_TIME1_TC);
+					}
+				} // End of first alt statement
 
 				
                  // Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
@@ -5487,8 +5173,9 @@ module EfcInfoExchange_TestCasesTsp {
                  	// PT140 TODO: Correct template to be defined. Using basic BillingDetails template in what follows (to be changed)
 				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
 					{modifies mw_aduBillingDetails:= {
-					  	billingDetailsId := 1, actionCode := ActionCode_send_, billingDetailsAmount := 10000}}
-					});                 
+					  	billingDetailsId := 1, actionCode := ActionCode_send_, billingDetailsAmount := 10000}
+					}
+				);                 
 				f_sendAndLogApdu(v_apduRespondedTo);                 
                  // Step 2: Wait for negative Ack within GNSS_BILLINGDETAILS_TC_TIME1_MAX_TC
 				// Set timer
@@ -5563,14 +5250,9 @@ module EfcInfoExchange_TestCasesTsp {
 				//  PT140 TODO: Template for Toll Declaration to be defined
 				alt {
 					[] mtcPort.receive(mw_apduTollDeclaration) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();					
-						}
-               		
-					// Send Ack within time constraints
-					f_wait(TOLLDECLARATION_TIME1_TC);
-					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
-					} // End of first alt statement
+						f_logReceivedWaitAndAcknowledge(TOLLDECLARATION_TIME1_TC);
+					}
+				} // End of first alt statement
 
 				
                  // Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
@@ -5578,9 +5260,10 @@ module EfcInfoExchange_TestCasesTsp {
                  	// includedDiscounts in usageList with textDetail field being set according to values specified in Table A.54 of CEN/TS 16986:2016
                  	// PT140 TODO: Correct template to be defined. Using basic BillingDetails template in what follows (to be changed)
 				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
-					{modifies mw_aduBillingDetails:= {
-					  	billingDetailsId := 1, actionCode := ActionCode_send_, billingDetailsAmount := 45 }}
-					});                 
+					{modifies mw_aduBillingDetails:= 
+						{billingDetailsId := 1, actionCode := ActionCode_send_, billingDetailsAmount := 45 }
+					}
+				);                 
 				f_sendAndLogApdu(v_apduRespondedTo);                 
                  // Step 2: Wait for positive Ack within GNSS_BILLINGDETAILS_TC_TIME1_MAX_TC
 				// Set timer
@@ -5594,9 +5277,10 @@ module EfcInfoExchange_TestCasesTsp {
 					}
 				} 
 				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
-					{modifies mw_aduBillingDetails:= {
-					  	billingDetailsId := 1, actionCode := ActionCode_revoke_ }}
-					});                 
+					{modifies mw_aduBillingDetails:= 
+						{billingDetailsId := 1, actionCode := ActionCode_revoke_ }
+					}
+				);                 
 				f_sendAndLogApdu(v_apduRespondedTo);                 
                  // Step 2: Wait for positive Ack within GNSS_BILLINGDETAILS_TC_TIME1_MAX_TC
 				// Set timer
@@ -5631,14 +5315,9 @@ module EfcInfoExchange_TestCasesTsp {
 				//  PT140 TODO: Template for Toll Declaration to be defined
 				alt {
 					[] mtcPort.receive(mw_apduTollDeclaration) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();					
-						}
-               		
-					// Send Ack within time constraints
-					f_wait(TOLLDECLARATION_TIME1_TC);
-					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
-					} // End of first alt statement
+						f_logReceivedWaitAndAcknowledge(TOLLDECLARATION_TIME1_TC);
+					}
+				} // End of first alt statement
 
 				
                  // Step 1: Send one valid APDU containing 13 valid BillingDetailsADUs, each one with the following parameters respectively set to one incorrect value:
@@ -5682,28 +5361,32 @@ module EfcInfoExchange_TestCasesTsp {
 						f_checkMinimumTStep(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC); //t_step is an implicit argument and what we will compare against
 						t_step.stop;
 						// Check the issue list presence and contents
-						If ispresent (m_apduNack, NackParams) and
-							if (NackParams == {
-							{1,AduReasonCode_billingDetailsIssuerIdRejected_},
-							{2,AduReasonCode_billingDetailsContextIdRejected_},
-							{3,AduReasonCode_billingDetailsUserIdRejected_}, 
-							{4,AduReasonCode_billingDetailsAmountRejected_}, 
-							{5,AduReasonCode_billingDetailsContextNameRejected_}, 
-							{6,AduReasonCode_billingDetailsAppliedUserClassRejected_}, 
-							{7,AduReasonCode_billingDetailsDeclaredVehicleClassRejected_}, 
-							{8,AduReasonCode_billingDetailsAppliedTimeClassRejected_}, 
-							{9,AduReasonCode_billingDetailsEntranceTimeRejected_}, 
-							{10,AduReasonCode_billingDetailsIntermediateSectionRejected_} 					  
+						//TODO ispresent accepts only one argument...
+						if (
+							ispresent(m_apduNack, NackParams) and
+							(NackParams == {
+								{1,AduReasonCode_billingDetailsIssuerIdRejected_},
+								{2,AduReasonCode_billingDetailsContextIdRejected_},
+								{3,AduReasonCode_billingDetailsUserIdRejected_}, 
+								{4,AduReasonCode_billingDetailsAmountRejected_}, 
+								{5,AduReasonCode_billingDetailsContextNameRejected_}, 
+								{6,AduReasonCode_billingDetailsAppliedUserClassRejected_}, 
+								{7,AduReasonCode_billingDetailsDeclaredVehicleClassRejected_}, 
+								{8,AduReasonCode_billingDetailsAppliedTimeClassRejected_}, 
+								{9,AduReasonCode_billingDetailsEntranceTimeRejected_}, 
+								{10,AduReasonCode_billingDetailsIntermediateSectionRejected_} 					  
 							})
+						){
 						//Set verdict
 						setverdict(pass);
 						}
 					}
+				}
 				f_closeDownMtc();  			
                 
-                } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BI_01                     
+			} // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BI_01                     
 
-           testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BI_02() runs on MainTestComponent system TestAdapter {
+           	testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BI_02() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BI_02: Verify that the TSP correctly responds to a BillingDetailsADU adjusting the fee for a BillingDetailsADU that does not exist 
@@ -5719,24 +5402,15 @@ module EfcInfoExchange_TestCasesTsp {
 				//  PT140 TODO: Template for Toll Declaration to be defined
 				alt {
 					[] mtcPort.receive(mw_apduTollDeclaration) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();					
-						}
-               		
-					// Send Ack within time constraints
-					f_wait(TOLLDECLARATION_TIME1_TC);
-					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
-					} // End of first alt statement
+						f_logReceivedWaitAndAcknowledge(TOLLDECLARATION_TIME1_TC);
+					}
+				} // End of first alt statement
 
                  // PT140 TODO : mw_aduBillingDetails template to be defined
-				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
-					{modifies mw_aduBillingDetails:= {
-					  	billingDetailsId := 14, actionCode := ActionCode_adjust_, paymentFeeAmount := 45
-					  	}
-					});                 
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit({modifies mw_aduBillingDetails:= {billingDetailsId := 14, actionCode := ActionCode_adjust_, paymentFeeAmount := 45}});                 
 				f_sendAndLogApdu(v_apduRespondedTo);                 
 
-                 // Step 2: Wait for negative Ack within DSRC.BILLINGDETAILS.TIME1 identifying the APDU containing the BillingDetailsADU numbered 14 and with issueCode= semanticError 
+                 // Step 2: Wait for negative Ack within DSRC_BILLINGDETAILS.TIME1 identifying the APDU containing the BillingDetailsADU numbered 14 and with issueCode= semanticError 
 				//Create parameters for the m_apduNAck			
 				var NAckParams v_nAckParams1 :={{0, AduReasonCode_semanticError_}};
 				var NAckParams v_nAckParams2 :={{1, AduReasonCode_semanticError_},{2,AduReasonCode_semanticError_}};
@@ -5770,9 +5444,9 @@ module EfcInfoExchange_TestCasesTsp {
 				}				
 				f_closeDownMtc();  			
                 
-                } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BI_02           
+           	} // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BI_02           
 
-           testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BI_03() runs on MainTestComponent system TestAdapter {
+           	testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BI_03() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BI_03: Verify that the TSP correctly responds to a BillingDetailsADU
@@ -5785,16 +5459,10 @@ module EfcInfoExchange_TestCasesTsp {
 				f_intialiseMtc(v_runOrNot);                   
 				// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
 				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1);
-				//  PT140 TODO: Template for Toll Declaration to be defined
+				//PT140 TODO: Template for Toll Declaration to be defined
 				alt {
 					[] mtcPort.receive(mw_apduTollDeclaration) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();					
-						}
-               		
-					// Send Ack within time constraints
-					f_wait(TOLLDECLARATION_TIME1_TC);
-					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+						f_logReceivedWaitAndAcknowledge(TOLLDECLARATION_TIME1_TC);
 					} // End of first alt statement
 
                  // PT140 TODO : mw_aduBillingDetails template to be defined
@@ -5859,13 +5527,7 @@ module EfcInfoExchange_TestCasesTsp {
 				//  PT140 TODO: Template for Toll Declaration to be defined
 				alt {
 					[] mtcPort.receive(mw_apduTollDeclaration) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();					
-						}
-               		
-					// Send Ack within time constraints
-					f_wait(TOLLDECLARATION_TIME1_TC);
-					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+						f_logReceivedWaitAndAcknowledge(TOLLDECLARATION_TIME1_TC);
 					} // End of first alt statement
 
                  // PT140 TODO : mw_aduBillingDetails template to be defined

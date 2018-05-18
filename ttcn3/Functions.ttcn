@@ -14,6 +14,7 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
 	import from EfcInfoExchange_Interfaces all;
 	import from EfcInfoExchange_LibUpperTester all;
 	import from EfcInfoExchange_TesterData all;
+	import from EfcInfoExchange_Templates all;
 		
 	//importing ASN.1 data automatically translated into TTCN-3	
 	import from EfcInfoExchange language "ASN.1:1997" all;
@@ -135,6 +136,38 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
 //				};
 //			  
 //		}
+		
+        /**
+         * @desc A kind of ""macro"-function for very common steps.
+         * @desc Calling other functions to log, wait and send Ack 
+         * @desc It assumes that the received APDU is stored in the MainTestComponent
+         * @desc v_apduReceived and that the MainTestComponent t_step timer 
+         * @desc is used and running (otherwise it is set back to 0)
+         */		
+		function f_logReceivedWaitAndAcknowledge(in float p_wait) runs on MainTestComponent{
+			f_logApduReceivedAndTStep();						         		
+			// Send Ack within time constraints
+			f_wait(p_wait);
+			f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+		}
+		
+		/**
+		 * @desc A kind of ""macro"-function for very common steps.
+		 * @desc Calling other functions to log, check time and stop timer 
+		 * @desc It assumes that the received APDU is stored in the MainTestComponent
+		 * @desc v_apduReceived and that the MainTestComponent t_step timer 
+		 * @desc is used and running (otherwise it is set back to 0)
+		 */		
+		function f_logReceivedThenCheckAndStopTime(in float p_timeMin) runs on MainTestComponent{
+			// Log what we received
+			f_logApduReceivedAndTStep();
+
+			//Check minumum time and stop timer
+			f_checkMinimumTStep(p_timeMin); //t_step is an implicit argument and what we will compare against
+			t_step.stop;
+								
+		}
+		
 		  
     	function f_checkMinimumTStep(in float p_timeMin) runs on MainTestComponent {	                      
             if (t_step.read <= p_timeMin) {
