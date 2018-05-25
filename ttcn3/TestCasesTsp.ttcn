@@ -77,7 +77,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Prepare the APDU without authenticator
 				var InfoExchange apduToBeSent := m_apduSecInit(
 						{m_aduRequestProvideUserDetails(v_userParameterRequests), infoExchangeAuthenticator := 1}
-				);
+					);
 
 				// Compute the authenticator and send the APDU
 				apduToBeSent.infoExchangeAuthenticator := fx_computeAuthenticator(apduToBeSent.infoExchangeContent);
@@ -591,7 +591,6 @@ module EfcInfoExchange_TestCasesTsp {
 				// Step 1: Send an Initiating_Apdu containing APCI parameter field with apduDate = invalid
 				// and valid RequestADU with requestedADUType=provideUserDetailsADU
 
-				//TODO why define here? Does not seem to be correctly defined... aid should be changed, no?
 				template (value) ApciFields m_apciSendFirstInvalidAid modifies m_apciSendFirst:= {apduDate := 0};
 				// Then send it together with the request ADU
   				f_sendAndLogApdu(
@@ -760,8 +759,7 @@ module EfcInfoExchange_TestCasesTsp {
 
 				alt {
 					[] mtcPort.receive(mw_apduProvideUserDetails(v_apduRespondedTo)) -> value v_apduReceived{
-						//TODO the wrong wait time seems to be used
-						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP);
+						f_logReceivedThenCheckAndStopTime(0.0);
  						                        
 						// Only one ProvideUserDetailsADU to be received
 						if (sizeof(v_apduReceived.adus.provideUserDetailsADUs) > 1) {
@@ -889,8 +887,8 @@ module EfcInfoExchange_TestCasesTsp {
 						if (not match(
 							v_apduReceived.adus.provideUserDetailsADUs[0],						
 							ProvideUserDetailsADU: modifies mw_aduProvideUserDetails := {
-								statusFlag:=1, //PT140 TODO add userParameterStatus = 1 
-								listOfUserParameters := omit
+								listOfUserParameters.requestedUserParameter := omit,
+								listOfUserParameters.userParameterStatus := 1
 							}
 						)) 
 						{
@@ -955,7 +953,7 @@ module EfcInfoExchange_TestCasesTsp {
 							ProvideUserDetailsADU: modifies mw_aduProvideUserDetails := {
 								userId := omit,
 								statusFlag:=2,
-								listOfUserParameters.useParameterStatus := 3,
+								listOfUserParameters.userParameterStatus := 3,
 								listOfUserParameters := omit
 							}
 						)) {
