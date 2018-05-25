@@ -697,22 +697,30 @@ module EfcInfoExchange_TestCasesTsp {
 				// Step2: Wait for ProvideUserDetailsADU 
 				// Either we receive an APDU containing Provide User Details ADU(s) or the timeout expires
 				// timeout expiration is handled in the altstep branch
-				//TODO the wrong wait time seems to be used (USERDETAILS...)
 				alt {
 					[] mtcPort.receive(mw_apduProvideUserDetails) -> value v_apduReceived{
-						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						f_logReceivedThenCheckAndStopTime(0.0); // No minimum time to be checked
 						
-						// TODO PT140: Check the ADU record and find the one we are expecting. Either function or template
- 
-						//Set verdict
-						setverdict(pass);
- 					    			                              
-						// Step3: Send DefaultAck with correct identifier and set verdict
-						f_wait(USERDETAILS_TIME2_MIN_TSP);
-						f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
-					}
-				} // End of alt statement
-				
+						// Check the ADU record and find the one we are expecting.
+						if (
+							not(ispresent(v_apduReceived.adus.ProvideUserDetailsADU.listOfUserParameters.userParameterStatus.userParameterStatus))
+							)
+							{
+							 	setverdict(fail);
+							 	f_addLogEntry("userParameterStatus field missing") 	
+							};
+						if (
+							not(ispresent(v_apduReceived.adus.ProvideUserDetailsADU.originaluserIdRequest)) and
+							(v_apduReceived.adus.ProvideUserDetailsADU.listOfUserParameters.userParameterStatus == 0) and
+							not(ispresent(v_apduReceived.adus.ProvideUserDetailsADU.listOfUserParameters.userInfoValidityPeriod))
+							)
+							{
+								// Step3: Send DefaultAck with correct identifier and set verdict
+								setverdict(pass);
+ 					    		f_logReceivedWaitAndAcknowledge(USERDETAILS_TIME2_MIN_TSP);
+						  	};
+						}
+					} // End of alt statement				
 				f_closeDownMtc();  
 			
 			} // End of TP_TSP_USERDETAILS_BV_01
@@ -736,9 +744,8 @@ module EfcInfoExchange_TestCasesTsp {
 					};
                 
 				// Step1: send RequestADU
-				// f_SendAPDU does all necessary filling of fields (if not already done in the template), sends the APDU, logs it together with time
 				
-				var InfoExchange v_apduRespondedTo := m_apduNoSecInit({m_aduRequestProvideUserDetails(omit), m_aduRequestProvideUserDetails({})});
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit({m_aduRequestProvideUserDetails(v_userParameterRequests))});
 				f_sendAndLogApdu(
 					m_apduNoSecInit(v_apduRespondedTo)
 				);   	  
@@ -754,10 +761,9 @@ module EfcInfoExchange_TestCasesTsp {
 				alt {
 					[] mtcPort.receive(mw_apduProvideUserDetails(v_apduRespondedTo)) -> value v_apduReceived{
 						//TODO the wrong wait time seems to be used
-						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP);
  						                        
-						//Set verdict
-						setverdict(pass);
+						// Only one ProvideUserDetailsADU to be received
 						if (sizeof(v_apduReceived.adus.provideUserDetailsADUs) > 1) {
 						  setverdict (fail);
 						  f_addLogEntry("Only one ADU expected. " + sizeof(v_apduReceived.adus.provideUserDetailsADUs) + " ADUs received instead.");
@@ -771,16 +777,14 @@ module EfcInfoExchange_TestCasesTsp {
 								}
 							)) {
 							setverdict(fail);
-							f_addLogEntry("Incorrect ADU received: "+v_apduReceived);
+							f_addLogEntry("Incorrect ADU received: expected listOfUserParameters empty and statusFlag = 2 ");
 							stop;
 							}	
 						// Step3: Send DefaultAck with correct identifier
-						f_wait(USERDETAILS_TIME2_MIN_TSP);
-						f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
-						
-					}
-				} // End of alt statement
-				
+						setverdict(pass);						
+						f_logReceivedWaitAndAcknowledge(USERDETAILS_TIME2_MIN_TSP);
+						}
+					} // End of alt statement				
 				f_closeDownMtc();  
 			
 			} // End of TP_TSP_USERDETAILS_BV_02
@@ -802,27 +806,21 @@ module EfcInfoExchange_TestCasesTsp {
 				f_sendAndLogApdu(v_apduRespondedTo);                               
 
 				// Step 2: wait for a Semantic Error code Nack 
-
 				t_step.start(USERDETAILS_TIME1_MAX_TSP);
 
 				// Either we receive an APDU containing Nack with semantic error as error code or the timeout expires
 				// timeout expiration handling is in the altstep branch				
 
-				//Create parameters for the m_apduNAck			
+				//Create parameters for the m_apduNAck and start receive		
 				var NAckParams v_nAckParams1 :={{0, AduReasonCode_invalidADU_}};
-				var NAckParams v_nAckParams2 :={{1, AduReasonCode_invalidADU_},{2,AduReasonCode_invalidADU_}};
-				
+				var NAckParams v_nAckParams2 :={{1, AduReasonCode_invalidADU_},{2,AduReasonCode_invalidADU_}};				
 				alt {
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						
-						//Set verdict
 						setverdict(pass);
 					}
 					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); 
-						
-						//Set verdict
 						setverdict(pass);
 					}
 				} 
@@ -839,8 +837,7 @@ module EfcInfoExchange_TestCasesTsp {
 			  */          
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS;
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
-             
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc             
 
 				// Front End shall initially receive a Request named as Transaction sequence #1
 				// Find a parameter whose value  is not supported by the IUT
@@ -851,18 +848,24 @@ module EfcInfoExchange_TestCasesTsp {
 					v_notSupportedUserDetailsParameter := 0; 
 					v_notSupportedUserDetailsParameter < sizeof(USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS); 
 					v_notSupportedUserDetailsParameter := v_notSupportedUserDetailsParameter + 1
-				) {
+					) {
 					if (
 							match(v_notSupportedUserDetailsParameter, integer:complement(USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS))
 					) {break;}
-				}
-				
-				
-				var InfoExchange v_apduNoSecInit := m_apduNoSecInit(
+					};
+
+				// If IUT implements all possible details, the test cannot be run				
+				if (sizeof(v_notSupportedUserDetailsParameter) == 0) 
 					{
+						setverdict(inconclusive);
+						f_addLogEntry("All user details supported by IUT. Test cannot be executed");
+						stop;
+					};				
+				var InfoExchange v_apduNoSecInit := m_apduNoSecInit(
+						{
 						m_aduRequestProvideUserDetails({v_notSupportedUserDetailsParameter})
-					}
-				);
+						}
+					);
 				f_sendAndLogApdu(v_apduNoSecInit);                              
                                 
 				//Set timer
@@ -876,9 +879,6 @@ module EfcInfoExchange_TestCasesTsp {
 				alt {
 					[] mtcPort.receive(mw_apduProvideUserDetails(v_apduRespondedTo)) -> value v_apduReceived{
 						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); 
-						
-                        
-						//Set verdict
 						setverdict(pass);
 						if (sizeof(v_apduReceived.adus.provideUserDetailsADUs) > 1 )
 						  {
@@ -916,7 +916,6 @@ module EfcInfoExchange_TestCasesTsp {
               * @desc    TP_TSP_USERDETAILS_BI_03: Verify that the TSP correctly receives a RequestADUs of type userDetailsRequest with listOfUsersParametersRequested containing user details that cannot be provided because of missing agreement
               * @remark  [16986:2016], Clause 6.4 and Table A.1/2 AND Table A.7/1  
               */       
-
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
@@ -928,12 +927,10 @@ module EfcInfoExchange_TestCasesTsp {
 					setverdict(inconclusive);
 					f_addLogEntry("Not agreed parameters missing. Test cannot be executed");
 					stop;
-					};
-                
+					};                
 				// Step1: send RequestADU
-				// f_SendAPDU does all necessary filling of fields (if not already done in the template), sends the APDU, logs it together with time
 				
-				var InfoExchange v_apduRespondedTo := m_apduNoSecInit({m_aduRequestProvideUserDetails(omit), m_aduRequestProvideUserDetails({})});
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit({m_aduRequestProvideUserDetails(v_userParameterRequests)});
 				f_sendAndLogApdu(
 					m_apduNoSecInit(v_apduRespondedTo)
 				);   	  
@@ -947,8 +944,6 @@ module EfcInfoExchange_TestCasesTsp {
                 alt {
 					[] mtcPort.receive(mw_apduProvideUserDetails(v_apduRespondedTo)) -> value v_apduReceived{
 						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); 
-						                        
-						//Set verdict
 						setverdict(pass);
 						if (sizeof(v_apduReceived.adus.provideUserDetailsADUs) > 1) {
 						  setverdict (fail);
@@ -976,13 +971,11 @@ module EfcInfoExchange_TestCasesTsp {
             } // End of TP_TSP_USERDETAILS_BI_03
             
             testcase TP_TSP_USERDETAILS_BI_04() runs on MainTestComponent system TestAdapter {
-
              
               /**
               * @desc    TP_TSP_USERDETAILS_BI_04: Verify that a TSP responds correctly to a RequestADU sent earlier than allowed 
               * @remark  [16986:2016], Clause 6.4 and Table A.1/2 AND Table A.7/1  
               */
-
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_2_implementedLISTOFUSERS;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
@@ -1001,8 +994,8 @@ module EfcInfoExchange_TestCasesTsp {
 				f_sendAndLogApdu(
 					m_apduNoSecInit(
 						{m_aduRequestProvideUserDetails(v_userParameterRequests)}
-					)
-				);
+						)
+					);
        			// Send again immediately same ADU with different  valid user
 				var InfoExchange v_apduToSend := m_apduNoSecInit(
 					{modifies m_aduProvideUserDetails:= {
@@ -1010,7 +1003,6 @@ module EfcInfoExchange_TestCasesTsp {
 					  	}
 					});
 				f_sendAndLogApdu(v_apduToSend);
-
                                
 				//Set timer
 				t_step.start(USERDETAILS_TIME1_MAX_TSP);
@@ -1018,15 +1010,12 @@ module EfcInfoExchange_TestCasesTsp {
 				// Step #2: Wait for Nack ADU				 					
 				// Either we receive an APDU containing  Nack or the timeout expires
 				// timeout expiration is handled in the altstep branch
-				
 				alt {
 					[] mtcPort.receive(m_apduNAckRequestSentTooOften(v_apduToSend)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME1_MIN_TSP); 
-						
-						//Set verdict
 						setverdict(pass);
-					}
-                } // End of alt statement
+						}
+                	} // End of alt statement
 				f_closeDownMtc();  			
                 
         	} // End of TP_TSP_USERDETAILS_BI_04
