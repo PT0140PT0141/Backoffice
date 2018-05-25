@@ -760,8 +760,7 @@ module EfcInfoExchange_TestCasesTsp {
 						setverdict(pass);
 						if (sizeof(v_apduReceived.adus.provideUserDetailsADUs) > 1) {
 						  setverdict (fail);
-						  f_addLogEntry("Only one ADU expected. "sizeof(v_apduReceived.adus.provideUserDetailsADUs)" ADUs received instead.");
-						  }
+						  f_addLogEntry("Only one ADU expected. " + sizeof(v_apduReceived.adus.provideUserDetailsADUs) + " ADUs received instead.");
 						  stop;
 						}
 						if (not match(
@@ -772,7 +771,7 @@ module EfcInfoExchange_TestCasesTsp {
 								}
 							)) {
 							setverdict(fail);
-							f_addLogEntry("Incorrect ADU received: "v_apduReceived);
+							f_addLogEntry("Incorrect ADU received: "+v_apduReceived);
 							stop;
 							}	
 						// Step3: Send DefaultAck with correct identifier
@@ -884,7 +883,7 @@ module EfcInfoExchange_TestCasesTsp {
 						if (sizeof(v_apduReceived.adus.provideUserDetailsADUs) > 1 )
 						  {
 							setverdict (fail);
-						  	f_addLogEntry("Only one ADU expected. "sizeof(v_apduReceived.adus.provideUserDetailsADUs)" ADUs received instead.");							
+						  	f_addLogEntry("Only one ADU expected. "+sizeof(v_apduReceived.adus.provideUserDetailsADUs)+" ADUs received instead.");							
 							stop;
 						  }
 						if (not match(
@@ -896,7 +895,7 @@ module EfcInfoExchange_TestCasesTsp {
 						)) 
 						{
 						  setverdict(fail);
-						  f_addLogEntry("Incorrect ADU received: " v_apduReceived);
+						  f_addLogEntry("Incorrect ADU received: "+ v_apduReceived);
 						  stop;
 						  }
 							
@@ -953,7 +952,7 @@ module EfcInfoExchange_TestCasesTsp {
 						setverdict(pass);
 						if (sizeof(v_apduReceived.adus.provideUserDetailsADUs) > 1) {
 						  setverdict (fail);
-						  f_addLogEntry("Only one ADU expected. "sizeof(v_apduReceived.adus.provideUserDetailsADUs)" ADUs received instead.");
+						  f_addLogEntry("Only one ADU expected. " & sizeof(v_apduReceived.adus.provideUserDetailsADUs) & " ADUs received instead.");
 						  stop;
 						}
 						if (not match(
@@ -966,7 +965,7 @@ module EfcInfoExchange_TestCasesTsp {
 							}
 						)) {
 						  setverdict(fail);
-						  f_addLogEntry("Incorrect ADU received: "v_apduReceived);
+						  f_addLogEntry("Incorrect ADU received: " & v_apduReceived);
 						  stop;
 						}
                     }
@@ -1548,7 +1547,7 @@ module EfcInfoExchange_TestCasesTsp {
 				if (ICS_A2_1_isDsrc and isCertificateOrPublicKey and isDsrcKeyRef and isMacMasterKey and isDsrcMasterKey) {setverdict(pass);}			 				
 				if (ICS_A2_2_isGnss and isCertificateOrPublicKey and isDsrcKeyRef) {setverdict(pass);}			 				
 				if (objectsReceived < NUMBER_OF_TRUSTOBJECT_TYPES_SUPPORTED) {
-				  	f_addLogEntry("Expected "NUMBER_OF_TRUSTOBJECT_TYPES_SUPPORTED "Trust objects. Received" objectsReceived);
+				  	f_addLogEntry("Expected " & NUMBER_OF_TRUSTOBJECT_TYPES_SUPPORTED & "Trust objects. Received" & objectsReceived);
 					setverdict(fail);} // We must receive at least as many Trust Objects as supported
 				f_closeDownMtc();              
            } // End of TP_TSP_TRUSTOBJECTS_BV_01
