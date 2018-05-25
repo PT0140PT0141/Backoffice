@@ -64,6 +64,17 @@ module EfcInfoExchange_TestCasesTc {
 	 * @desc test cases for validating correct general behaviour which is required for any transaction types
 	 * @remark TODO PT140: These TCs shall be completed after the transaction TCs are finalized
 	 */
+		testcase TP_TC_Base_BV_01() runs on MainTestComponent system TestAdapter {}
+		testcase TP_TC_Base_BI_01() runs on MainTestComponent system TestAdapter {}
+		testcase TP_TC_Base_BI_02() runs on MainTestComponent system TestAdapter {}
+		testcase TP_TC_Base_BI_03() runs on MainTestComponent system TestAdapter {}
+		testcase TP_TC_Base_BI_04() runs on MainTestComponent system TestAdapter {}
+		testcase TP_TC_Base_BI_05() runs on MainTestComponent system TestAdapter {}
+		testcase TP_TC_Base_BI_06() runs on MainTestComponent system TestAdapter {}
+		testcase TP_TC_Base_BI_07() runs on MainTestComponent system TestAdapter {}
+		testcase TP_TC_Base_BI_08() runs on MainTestComponent system TestAdapter {}
+		testcase TP_TC_Base_BI_09() runs on MainTestComponent system TestAdapter {}
+		testcase TP_TC_Base_BI_10() runs on MainTestComponent system TestAdapter {}
 	} //End group Base TPs
 
 	group USERDETAILS {
@@ -200,7 +211,7 @@ module EfcInfoExchange_TestCasesTc {
 						
 						for (var integer v_loop1 :=0; v_loop1<v_noReqAdusReceived;v_loop1:=v_loop1+1) {	
  							if ( match(v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1], mw_aduRequestProvideUserDetails)) {
-								listOfParametersRequested := v_apduReceived.infoExchangeContent.adus.requestAdus[v_ct].userDetailsRequest.listOfParametersRequested;
+								listOfParametersRequested := v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1].userDetailsRequest.listOfParametersRequested;
 								for (var integer v_loop2 :=0; v_loop2<sizeof(listOfParametersRequested);v_loop2:=v_loop2+1) {
 									if (not (match(listOfParametersRequested[v_loop2], mw_userDetailsSupportedListOfParameters ))) {
 										setverdict(fail);
@@ -784,7 +795,7 @@ module EfcInfoExchange_TestCasesTc {
 
 			} // End testcase TP_TC_DSRC_BILLINGDETAILS_BV_02
 						
-			testcase TP_TC_DSRC_BILLINGDETAILS_BI_03() runs on MainTestComponent system TestAdapter {
+			testcase TP_TC_DSRC_BILLINGDETAILS_BV_03() runs on MainTestComponent system TestAdapter {
 							
                /**
                 * @desc    TP_TC_DSRC_EFCCONTEXTDATA_BV_03: Verify that the TC correctly performs a DSRC.BILLINGDETAILS transaction
@@ -949,7 +960,7 @@ module EfcInfoExchange_TestCasesTc {
                  */
 
 				// Initialisation
- 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A2_1_isDsrc and ICS_A26_1_implementedDSRCCONTRACTISSUERLIST;
+ 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A2_1_isDsrc and ICS_A26_1_implementedDSRCCINTRACTISSUERLIST;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc                        		
                  
                 // Step 1: Send Initiating_Apdu containing one valid RequestADU of type userListRequest
@@ -964,7 +975,7 @@ module EfcInfoExchange_TestCasesTc {
                 // before DSRC.CONTRACTISSUERLIST.TIMEA_MIN has passed
 				f_wait(DSRC_CONTRACTISSUERLIST_TIMEA_MIN_TSP / 2);
 
-				var InfoExchange v_apduToBeSent := m_apduDefault(
+				v_apduToBeSent := m_apduDefault(
 					{modifies mw_recordOfAduContractIssuerList := {
 					  	TESTER_CONTRACT_ISSUER_DATA_VALID_2 // PT140 TODO Testerdata definition
 					  	}
@@ -1239,173 +1250,175 @@ module EfcInfoExchange_TestCasesTc {
 						//Set verdict
 						setverdict(pass)												
 					}								
-				}			 
+				}
+							 
 				f_closeDownMtc();
+			}
               
-			} // End of group Valid_Behaviour
+		} // End of group Valid_Behaviour
 			
-			group Invalid_Behaviour {
-			
-				testcase TP_TC_EXCEPTIONLIST_BI_01() runs on MainTestComponent system TestAdapter {
-														
-                /**
-                 * @desc    TP_TC_EXCEPTIONLIST_BI_01: Verify that the TC correctly responds to an ExceptionListADU for blacklist containing
-                 *			exceptionValidityEnd field
-                 * @remark  [16986:2016], Clause 6.6 and Table A.1/1 AND Table A.7/3
-                 */
-			
- 				// Initialisation
-                 
-				// Start by setting test success
-								
-                // Step 1: Send one Initiating_Apdu containing
-                //		- exactly one valid ExceptionListADU indicating list type BLACK; AND
-				//		- exactly one ExceptionListADU indicating list type BLACK and containing exceptionValidityEnd of any value
-                	
-                // Step 2: Wait for NAck_Apdu with ({2, exceptionListsDateAndTimeRejected(405)})
-                // within the time EXCEPTIONLIST.BLACK_TIME1   				
+		group Invalid_Behaviour {
+		
+			testcase TP_TC_EXCEPTIONLIST_BI_01() runs on MainTestComponent system TestAdapter {
+													
+            /**
+             * @desc    TP_TC_EXCEPTIONLIST_BI_01: Verify that the TC correctly responds to an ExceptionListADU for blacklist containing
+             *			exceptionValidityEnd field
+             * @remark  [16986:2016], Clause 6.6 and Table A.1/1 AND Table A.7/3
+             */
+		
+			// Initialisation
+             
+			// Start by setting test success
+							
+            // Step 1: Send one Initiating_Apdu containing
+            //		- exactly one valid ExceptionListADU indicating list type BLACK; AND
+			//		- exactly one ExceptionListADU indicating list type BLACK and containing exceptionValidityEnd of any value
+            	
+            // Step 2: Wait for NAck_Apdu with ({2, exceptionListsDateAndTimeRejected(405)})
+            // within the time EXCEPTIONLIST.BLACK_TIME1   				
 
-				} // End of TP_TC_EXCEPTIONLIST_BI_01
+			} // End of TP_TC_EXCEPTIONLIST_BI_01
 
-				testcase TP_TC_EXCEPTIONLIST_BI_02() runs on MainTestComponent system TestAdapter {
-														
-                /**
-                 * @desc    TP_TC_EXCEPTIONLIST_BI_02: Verify that the TC correctly responds to an ExceptionListADU for blacklist
-                 *			containing the efcContextMark field
-                 * @remark  [16986:2016], Clause 6.6 and Table A.1/1 AND Table A.7/3
-                 */
-			
- 				// Initialisation
-                 
-				// Start by setting test success
-								
-                // Step 1: Send Initiating_Apdu containing exactly one ExceptionListADU indicating list type BLACK containing
-                //		- efcContextMark of any value
-                	
-                // Step 2: Wait for NAck_Apdu with issueCode=otherReason(5)
-                // within the time EXCEPTIONLIST.BLACK_TIME1   				
+			testcase TP_TC_EXCEPTIONLIST_BI_02() runs on MainTestComponent system TestAdapter {
+													
+            /**
+             * @desc    TP_TC_EXCEPTIONLIST_BI_02: Verify that the TC correctly responds to an ExceptionListADU for blacklist
+             *			containing the efcContextMark field
+             * @remark  [16986:2016], Clause 6.6 and Table A.1/1 AND Table A.7/3
+             */
+		
+			// Initialisation
+             
+			// Start by setting test success
+							
+            // Step 1: Send Initiating_Apdu containing exactly one ExceptionListADU indicating list type BLACK containing
+            //		- efcContextMark of any value
+            	
+            // Step 2: Wait for NAck_Apdu with issueCode=otherReason(5)
+            // within the time EXCEPTIONLIST.BLACK_TIME1   				
 
-				} // End of TP_TC_EXCEPTIONLIST_BI_02
+			} // End of TP_TC_EXCEPTIONLIST_BI_02
 
-				testcase TP_TC_EXCEPTIONLIST_BI_03() runs on MainTestComponent system TestAdapter {
-														
-                /**
-                 * @desc    TP_TC_EXCEPTIONLIST_BI_03: Verify that the TC correctly responds to one APDU
-                 *			containing more than one ExceptionListADU
-                 * @remark  [16986:2016], Clause 6.6 and Table A.1/1 AND Table A.7/3
-                 */
-			
- 				// Initialisation
-                 
-				// Start by setting test success
-								
-                // Step 1: Send Initiating_Apdu containing mre than one ExceptionListADU indicating list type BLACK
-                
-                // Step 2: Wait for NAck_Apdu with issueCode=otherReason(5)
-                // within the time EXCEPTIONLIST.BLACK_TIME1   				
+			testcase TP_TC_EXCEPTIONLIST_BI_03() runs on MainTestComponent system TestAdapter {
+													
+            /**
+             * @desc    TP_TC_EXCEPTIONLIST_BI_03: Verify that the TC correctly responds to one APDU
+             *			containing more than one ExceptionListADU
+             * @remark  [16986:2016], Clause 6.6 and Table A.1/1 AND Table A.7/3
+             */
+		
+			// Initialisation
+             
+			// Start by setting test success
+							
+            // Step 1: Send Initiating_Apdu containing mre than one ExceptionListADU indicating list type BLACK
+            
+            // Step 2: Wait for NAck_Apdu with issueCode=otherReason(5)
+            // within the time EXCEPTIONLIST.BLACK_TIME1   				
 
-				} // End of TP_TC_EXCEPTIONLIST_BI_03
+			} // End of TP_TC_EXCEPTIONLIST_BI_03
 
-				testcase TP_TC_EXCEPTIONLIST_BI_04() runs on MainTestComponent system TestAdapter {
-														
-                /**
-                 * @desc    TP_TC_EXCEPTIONLIST_BI_04: Verify that the TC correctly responds to an ExceptionListADU
-                 *			bearing an incorrect value for exceptionListVersion field
-                 * @remark  [16986:2016], Clause 6.6 and Table A.1/1 AND Table A.7/3
-                 */
-			
- 				// Initialisation
-                 
-				// Start by setting test success
-								
-                // Step 1: Send Initiating_Apdu containing one ExceptionListADU indicating list type BLACK
-                //		- with exceptionListVersion </= 0
-      
-                // Step 2: Wait for NAck_Apdu with issueCode=exceptionListsVersionRejected(400)
-                // within the time EXCEPTIONLIST.BLACK_TIME1   				
+			testcase TP_TC_EXCEPTIONLIST_BI_04() runs on MainTestComponent system TestAdapter {
+													
+            /**
+             * @desc    TP_TC_EXCEPTIONLIST_BI_04: Verify that the TC correctly responds to an ExceptionListADU
+             *			bearing an incorrect value for exceptionListVersion field
+             * @remark  [16986:2016], Clause 6.6 and Table A.1/1 AND Table A.7/3
+             */
+		
+			// Initialisation
+             
+			// Start by setting test success
+							
+            // Step 1: Send Initiating_Apdu containing one ExceptionListADU indicating list type BLACK
+            //		- with exceptionListVersion </= 0
+  
+            // Step 2: Wait for NAck_Apdu with issueCode=exceptionListsVersionRejected(400)
+            // within the time EXCEPTIONLIST.BLACK_TIME1   				
 
-				} // End of TP_TC_EXCEPTIONLIST_BI_04
+			} // End of TP_TC_EXCEPTIONLIST_BI_04
 
-				testcase TP_TC_EXCEPTIONLIST_BI_05() runs on MainTestComponent system TestAdapter {
-														
-                /**
-                 * @desc    TP_TC_EXCEPTIONLIST_BI_05: Verify that the TC correctly responds to an ExceptionListADU
-				 *			bearing an incorrect value for exceptionListType field
-                 * @remark  [16986:2016], Clause 6.6 and Table A.1/1 AND Table A.7/3
-                 */
-			
- 				// Initialisation
-                 
-				// Start by setting test success
-								
-                // Step 1: Send Initiating_Apdu containing one ExceptionListADU indicating exceptionListType = 4
-      
-                // Step 2: Wait for NAck_Apdu with issueCode=exceptionListsTypeRejected(401)
-                // within the time EXCEPTIONLIST.BLACK_TIME1   				
+			testcase TP_TC_EXCEPTIONLIST_BI_05() runs on MainTestComponent system TestAdapter {
+													
+            /**
+             * @desc    TP_TC_EXCEPTIONLIST_BI_05: Verify that the TC correctly responds to an ExceptionListADU
+			 *			bearing an incorrect value for exceptionListType field
+             * @remark  [16986:2016], Clause 6.6 and Table A.1/1 AND Table A.7/3
+             */
+		
+			// Initialisation
+             
+			// Start by setting test success
+							
+            // Step 1: Send Initiating_Apdu containing one ExceptionListADU indicating exceptionListType = 4
+  
+            // Step 2: Wait for NAck_Apdu with issueCode=exceptionListsTypeRejected(401)
+            // within the time EXCEPTIONLIST.BLACK_TIME1   				
 
-				} // End of TP_TC_EXCEPTIONLIST_BI_05
+			} // End of TP_TC_EXCEPTIONLIST_BI_05
 
-				testcase TP_TC_EXCEPTIONLIST_BI_06() runs on MainTestComponent system TestAdapter {
-														
-                /**
-                 * @desc    TP_TC_EXCEPTIONLIST_BI_06: Verify that the TC correctly responds to an ExceptionListADU
-                 *			bearing an incorrect value for userId field
-                 * @remark  [16986:2016], Clause 6.6 and Table A.1/1 AND Table A.7/3
-                 */
-			
- 				// Initialisation
-                 
-				// Start by setting test success
-								
-                // Step 1: Send Initiating_Apdu containing one ExceptionListADU of list type BLACK
-                // and userId = contractSerialNumber present
-      
-                // Step 2: Wait for NAck_Apdu with issueCode=exceptionListsUserIdRejected(402)
-                // within the time EXCEPTIONLIST.BLACK_TIME1   				
+			testcase TP_TC_EXCEPTIONLIST_BI_06() runs on MainTestComponent system TestAdapter {
+													
+            /**
+             * @desc    TP_TC_EXCEPTIONLIST_BI_06: Verify that the TC correctly responds to an ExceptionListADU
+             *			bearing an incorrect value for userId field
+             * @remark  [16986:2016], Clause 6.6 and Table A.1/1 AND Table A.7/3
+             */
+		
+			// Initialisation
+             
+			// Start by setting test success
+							
+            // Step 1: Send Initiating_Apdu containing one ExceptionListADU of list type BLACK
+            // and userId = contractSerialNumber present
+  
+            // Step 2: Wait for NAck_Apdu with issueCode=exceptionListsUserIdRejected(402)
+            // within the time EXCEPTIONLIST.BLACK_TIME1   				
 
-				} // End of TP_TC_EXCEPTIONLIST_BI_06
+			} // End of TP_TC_EXCEPTIONLIST_BI_06
 
-				testcase TP_TC_EXCEPTIONLIST_BI_07() runs on MainTestComponent system TestAdapter {
-														
-                /**
-                 * @desc    TP_TC_EXCEPTIONLIST_BI_07: Verify that the TC correctly responds
-                 *			to an ExceptionListADU with exceptionValidityEnd
-                 * @remark  [16986:2016], Clause 6.6 and Table A.1/1 AND Table A.7/3
-                 */
-			
- 				// Initialisation
-                 
-				// Start by setting test success
-								
-                // Step 1: Send Initiating_Apdu containing one ExceptionListADU of list type BLACK
-                // and and with exceptionValidityEnd present
-      
-                // Step 2: Wait for NAck_Apdu with issueCode=exceptionListsDateAndTimeRejected(405)
-                // within the time EXCEPTIONLIST.BLACK_TIME1   				
+			testcase TP_TC_EXCEPTIONLIST_BI_07() runs on MainTestComponent system TestAdapter {
+													
+            /**
+             * @desc    TP_TC_EXCEPTIONLIST_BI_07: Verify that the TC correctly responds
+             *			to an ExceptionListADU with exceptionValidityEnd
+             * @remark  [16986:2016], Clause 6.6 and Table A.1/1 AND Table A.7/3
+             */
+		
+			// Initialisation
+             
+			// Start by setting test success
+							
+            // Step 1: Send Initiating_Apdu containing one ExceptionListADU of list type BLACK
+            // and and with exceptionValidityEnd present
+  
+            // Step 2: Wait for NAck_Apdu with issueCode=exceptionListsDateAndTimeRejected(405)
+            // within the time EXCEPTIONLIST.BLACK_TIME1   				
 
-				} // End of TP_TC_EXCEPTIONLIST_BI_07
+			} // End of TP_TC_EXCEPTIONLIST_BI_07
 
-				testcase TP_TC_EXCEPTIONLIST_BI_08() runs on MainTestComponent system TestAdapter {
-														
-                /**
-                 * @desc    TP_TC_EXCEPTIONLIST_BI_08: Verify that the TC responds correctly
-                 *			to a RequestADU sent earlier than allowed
-                 * @remark  [16986:2016], Clause 6.6 and Table A.1/1 AND Table A.7/3
-                 */
-			
- 				// Initialisation
-                 
-				// Start by setting test success
-								
-                // Step 1: Send Initiating_Apdu containing one valid ExceptionListADU of list type BLACK
-                
-                // Send second Initiating_Apdu containing one valid ExceptionListADU of list type BLACK
-                // before EXCEPTIONLIST.TIMEA_MIN has passed
+			testcase TP_TC_EXCEPTIONLIST_BI_08() runs on MainTestComponent system TestAdapter {
+													
+            /**
+             * @desc    TP_TC_EXCEPTIONLIST_BI_08: Verify that the TC responds correctly
+             *			to a RequestADU sent earlier than allowed
+             * @remark  [16986:2016], Clause 6.6 and Table A.1/1 AND Table A.7/3
+             */
+		
+			// Initialisation
+             
+			// Start by setting test success
+							
+            // Step 1: Send Initiating_Apdu containing one valid ExceptionListADU of list type BLACK
+            
+            // Send second Initiating_Apdu containing one valid ExceptionListADU of list type BLACK
+            // before EXCEPTIONLIST.TIMEA_MIN has passed
 
-                // Step 2: Wait for NAck_Apdu with issueCode=NAck_requestSentTooOften(10)
-                // within the time EXCEPTIONLIST.BLACK_TIME1   				
+            // Step 2: Wait for NAck_Apdu with issueCode=NAck_requestSentTooOften(10)
+            // within the time EXCEPTIONLIST.BLACK_TIME1   				
 
-			} // End of TP_TC_EXCEPTIONLIST_BI_08
+		} // End of TP_TC_EXCEPTIONLIST_BI_08
 
 		} // End of group Invalid_Behaviour 
 			
@@ -1504,7 +1517,7 @@ module EfcInfoExchange_TestCasesTc {
 		
 		group Invalid_Behaviour {
 		
-			testcase TestCase_TP_TC_TRUSTOBJECTS_BI_01() runs on MainTestComponent system TestAdapter {   
+			testcase TP_TC_TRUSTOBJECTS_BI_01() runs on MainTestComponent system TestAdapter {   
  		
                 /**
                  * @desc    TP_TC_TRUSTOBJECTS_BI_01: Verify that the TC correctly responds to a TrustObjectADU received
@@ -1530,7 +1543,7 @@ module EfcInfoExchange_TestCasesTc {
              
 			} // End of TP_TC_TRUSTOBJECTS_BI_01 
  
- 			testcase TestCase_TP_TC_TRUSTOBJECTS_BI_02() runs on MainTestComponent system TestAdapter {   
+ 			testcase TP_TC_TRUSTOBJECTS_BI_02() runs on MainTestComponent system TestAdapter {   
  		
                 /**
                  * @desc    TP_TC_TRUSTOBJECTS_BI_02: Verify that the TC correctly responds to more than one correct TrustObjectADU
@@ -1550,26 +1563,7 @@ module EfcInfoExchange_TestCasesTc {
              
 			} // End of TP_TC_TRUSTOBJECTS_BI_02 
  
-			testcase TestCase_TP_TC_TRUSTOBJECTS_BI_02() runs on MainTestComponent system TestAdapter {   
- 		
-                /**
-                 * @desc    TP_TC_TRUSTOBJECTS_BI_02: Verify that the TC correctly responds to more than one correct TrustObjectADU
-                 *			in the same APDU without having issued a request
-                 * @remark  [16986:2016], Clause 6.7 and Table A.1/1
-                 * @remark	same as TP_TSP_TRUSTOBJECT_BI_02
-                 */
-                 
-				// Initialisation
-				                  
-                // Step 1: No action in step 1 in this test case
-                  
-				// Step 2: Send Initiating_Apdu containing two TrustObjectADUs with both valid values
-									
-				// Step 3: Wait for NAck_Apdu within TRUSTOBJECTS.TIME2												
-             
-           } // End of TP_TC_TRUSTOBJECTS_BI_02 
-  
-			testcase TestCase_TP_TC_TRUSTOBJECTS_BI_03() runs on MainTestComponent system TestAdapter {   
+			testcase TP_TC_TRUSTOBJECTS_BI_03() runs on MainTestComponent system TestAdapter {   
  		
                 /**
                  * @desc    TP_TC_TRUSTOBJECTS_BI_03: Verify that the TC correctly responds to a request
@@ -1590,7 +1584,7 @@ module EfcInfoExchange_TestCasesTc {
              
            } // End of TP_TC_TRUSTOBJECTS_BI_03 
  
-			testcase TestCase_TP_TC_TRUSTOBJECTS_BI_04() runs on MainTestComponent system TestAdapter {   
+			testcase TP_TC_TRUSTOBJECTS_BI_04() runs on MainTestComponent system TestAdapter {   
  		
                 /**
                  * @desc    TP_TC_TRUSTOBJECTS_BI_04: Verify that the TC correctly responds to a RequestADU sent earlier than allowed
@@ -1607,7 +1601,7 @@ module EfcInfoExchange_TestCasesTc {
              
            } // End of TP_TC_TRUSTOBJECTS_BI_04 
  
-			testcase TestCase_TP_TC_TRUSTOBJECTS_BI_05() runs on MainTestComponent system TestAdapter {   
+			testcase TP_TC_TRUSTOBJECTS_BI_05() runs on MainTestComponent system TestAdapter {   
  		
                 /**
                  * @desc    TP_TC_TRUSTOBJECTS_BI_05: Verify that the TC correctly responds to a TrustObjectADU sent earlier than allowed

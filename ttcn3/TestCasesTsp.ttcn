@@ -745,7 +745,7 @@ module EfcInfoExchange_TestCasesTsp {
                 
 				// Step1: send RequestADU
 				
-				var InfoExchange v_apduRespondedTo := m_apduNoSecInit({m_aduRequestProvideUserDetails(v_userParameterRequests))});
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit({m_aduRequestProvideUserDetails(v_userParameterRequests)});
 				f_sendAndLogApdu(
 					m_apduNoSecInit(v_apduRespondedTo)
 				);   	  
@@ -1947,7 +1947,7 @@ module EfcInfoExchange_TestCasesTsp {
     
     group PAYMENTCLAIM {
          group Valid_Behaviour {
-            testcase TP_TSP_PaymentClaim_BV_01() runs on MainTestComponent system TestAdapter {
+            testcase TP_TSP_PAYMENTCLAIM_BV_01() runs on MainTestComponent system TestAdapter {
                    /**    
 				  * @desc	TP_TSP_PAYMENTCLAIM_BV_01: Verify that a TSP performs the PAYMENTCLAIM transaction correctly when using the actionCode=send 
                   * @remark  [16986:2016], Clause 6.8 and Table A.1/2 AND Table A.7/5 
@@ -2048,7 +2048,7 @@ module EfcInfoExchange_TestCasesTsp {
                 
                 } // End of TP_TSP_PAYMENTCLAIM_BV_01
                 
-            testcase TP_TSP_PaymentClaim_BV_02() runs on MainTestComponent system TestAdapter {
+            testcase TP_TSP_PAYMENTCLAIM_BV_02() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_PAYMENTCLAIM_BV_02: Verify that a TSP performs the PAYMENTCLAIM transaction correctly when using the actionCode=revoke or adjust 
@@ -2180,7 +2180,7 @@ module EfcInfoExchange_TestCasesTsp {
  		} // End of group Valid_Behaviour
          
          group Invalid_Behaviour {
-            testcase TP_TSP_PaymentClaim_BI_01() runs on MainTestComponent system TestAdapter {
+            testcase TP_TSP_PAYMENTCLAIM_BI_01() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_PAYMENTCLAIM_BI_01: Verify that a TSP performs the PAYMENTCLAIM transaction correctly when getting incorrect paymentClaimId 
@@ -2275,7 +2275,7 @@ module EfcInfoExchange_TestCasesTsp {
                 
                 } // End of TP_TSP_PAYMENTCLAIM_BI_01           		
 
-            testcase TP_TSP_PaymentClaim_BI_02() runs on MainTestComponent system TestAdapter {
+            testcase TP_TSP_PAYMENTCLAIM_BI_02() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_PAYMENTCLAIM_BI_02: Verify that a TSP performs the PAYMENTCLAIM transaction correctly when getting incorrect paymentClaimStatus 
@@ -2375,7 +2375,7 @@ module EfcInfoExchange_TestCasesTsp {
 				f_closeDownMtc();                 		          	      
                 } // End of TP_TSP_PAYMENTCLAIM_BI_02           		
 
-            testcase TP_TSP_PaymentClaim_BI_03() runs on MainTestComponent system TestAdapter {
+            testcase TP_TSP_PAYMENTCLAIM_BI_03() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_PAYMENTCLAIM_BI_03: Verify that a TSP performs the PAYMENTCLAIM transaction correctly when getting incorrect referenceDetailsList 
@@ -2440,7 +2440,7 @@ module EfcInfoExchange_TestCasesTsp {
 				f_closeDownMtc();                 		               
                 } // End of TP_TSP_PAYMENTCLAIM_BI_03           		
 
-            testcase TP_TSP_PaymentClaim_BI_04() runs on MainTestComponent system TestAdapter {
+            testcase TP_TSP_PAYMENTCLAIM_BI_04() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_PAYMENTCLAIM_BI_04: Verify that a TSP performs the PAYMENTCLAIM transaction correctly when getting incorrect actionCode 
@@ -2510,7 +2510,7 @@ module EfcInfoExchange_TestCasesTsp {
                 
                 } // End of TP_TSP_PAYMENTCLAIM_BI_04   
 
-            testcase TP_TSP_PaymentClaim_BI_05() runs on MainTestComponent system TestAdapter {
+            testcase TP_TSP_PAYMENTCLAIM_BI_05() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_PAYMENTCLAIM_BI_05: Verify that the TSP correctly performs the PAYMENTCLAIM transaction when receiving a number of PaymenClaimADUs, each of them containing specific errors  
@@ -2723,7 +2723,7 @@ module EfcInfoExchange_TestCasesTsp {
                 
                 } // End of TP_TSP_PAYMENTCLAIM_BI_05   
 
-            testcase TP_TSP_PaymentClaim_BI_06() runs on MainTestComponent system TestAdapter {
+            testcase TP_TSP_PAYMENTCLAIM_BI_06() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_PAYMENTCLAIM_BI_06: Verify that a TSP responds correctly to a PaymentClaimADU sent earlier than allowed  
@@ -2809,10 +2809,10 @@ module EfcInfoExchange_TestCasesTsp {
     
     group DSRC_CONTRACTISSUERLIST {
          group Valid_Behaviour {
-           testcase TP_TSP_CONTRACTISSUERLIST_BV_01() runs on MainTestComponent system TestAdapter {
+           testcase TP_TSP_DSRC_CONTRACTISSUERLIST_BV_01() runs on MainTestComponent system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_CONTRACTISSUERLIST_BV_01: Verify that the TSP correctly performs the DSRC.CONTRACTISSUERLIST transaction with three manufacturerIDs 
+                  * @desc    TP_TSP_DSRC_CONTRACTISSUERLIST_BV_01: Verify that the TSP correctly performs the DSRC.CONTRACTISSUERLIST transaction with three manufacturerIDs 
                   * @remark  [16986:2016], Clause 7.1 and Table A.1/2 AND Table A.2/1 AND Table A.26/1 
                   */
                  // Initialisation
@@ -5093,7 +5093,8 @@ module EfcInfoExchange_TestCasesTsp {
 				alt {
 					[] mtcPort.receive(mw_apduTollDeclaration) -> value v_apduReceived {
 						f_logReceivedWaitAndAcknowledge(TOLLDECLARATION_TIME1_TC);
-					} // End of first alt statement
+					}
+				} // End of first alt statement
 
                  // PT140 TODO : mw_aduBillingDetails template to be defined
 				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
@@ -5146,7 +5147,8 @@ module EfcInfoExchange_TestCasesTsp {
 				alt {
 					[] mtcPort.receive(mw_apduTollDeclaration) -> value v_apduReceived {
 						f_logReceivedWaitAndAcknowledge(TOLLDECLARATION_TIME1_TC);
-					} // End of first alt statement
+					}
+				} // End of first alt statement
 
                  // PT140 TODO : mw_aduBillingDetails template to be defined
 				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
@@ -5246,7 +5248,7 @@ module EfcInfoExchange_TestCasesTsp {
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				
 				// Trigger IUT with GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1_A to send one valid PaymentAnnouncementADU with actionCode = send
-				f_sendAndLogTrigger(GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1_A, iutToUseTimers=false);												
+				f_sendAndLogTrigger(GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1_A, false); //setting iutToUseTimers to "false"												
 				//  Wait for GNSS.PAYMENTANNOUNCEMENT
 				// PT140 TODO: mw_aduGnssPaymentAnnouncement template to be defined
 				var InfoExchange v_apduToBeReceived := m_apduNoSecInit(
@@ -5269,7 +5271,7 @@ module EfcInfoExchange_TestCasesTsp {
 				t_step.start(GNSS_PAYMENTANNOUNCEMENT_TIMEB_MAX_TSP);
 				
 				// Step 1: Trigger IUT with GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1_B to send one valid PaymentAnnouncementADU with actionCode = adjust
-				f_sendAndLogTrigger(GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1_B, iutToUseTimers=true);												
+				f_sendAndLogTrigger(GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1_B, true); //setting iutToUseTimers to "true"												
 				//  Wait for GNSS.PAYMENTANNOUNCEMENT
 				// PT140 TODO: mw_aduGnssPaymentAnnouncement template to be defined
 				var InfoExchange v_apduToBeReceived := m_apduNoSecInit(
@@ -5309,12 +5311,9 @@ module EfcInfoExchange_TestCasesTsp {
 				f_sendAndLogTrigger(GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1_A);												
 				//  Wait for GNSS.PAYMENTANNOUNCEMENT
 				// PT140 TODO: mw_aduGnssPaymentAnnouncement template to be defined
-				var InfoExchange v_apduToBeReceived := m_apduNoSecInit(
-					{modifies mw_aduGnssPaymentAnnouncement:= {
-					  	actionCode := ActionCode_send_
-					  	}
-					});					
-					// Wait for PaymentAnnouncementADU within allowed time constraints
+				var InfoExchange v_apduToBeReceived := m_apduNoSecInit({modifies mw_aduGnssPaymentAnnouncement:= {actionCode := ActionCode_send_}});					
+				
+				// Wait for PaymentAnnouncementADU within allowed time constraints
 				t_step.start(GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TSP);	
 				alt {
 					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
@@ -5354,10 +5353,10 @@ module EfcInfoExchange_TestCasesTsp {
 
  		} // End of group Valid_Behaviour
          
-         group Invalid_Behaviour {
+        group Invalid_Behaviour {
            // No Test Cases are defined for invalid behaviour.		           		
         } // End of group Invalid_Behaviour
 
     } // End of group GNSS.PAYMENTANNOUNCEMENT
-} // End of module Toll_Service_Provider
+}; // End of module Toll_Service_Provider
 

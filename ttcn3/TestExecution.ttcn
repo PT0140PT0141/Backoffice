@@ -169,7 +169,6 @@ module Backoffice_TestExecution {
         execute(TP_TSP_DSRC_BILLINGDETAILS_BI_02());
         execute(TP_TSP_DSRC_BILLINGDETAILS_BI_03());
         execute(TP_TSP_DSRC_BILLINGDETAILS_BI_04());
-        execute(TP_TSP_DSRC_BILLINGDETAILS_BI_05());
         execute(TP_TSP_DSRC_REPORTABNORMALOBE_BV_01());
         execute(TP_TSP_DSRC_REPORTABNORMALOBE_BI_01());
         execute(TP_TSP_DSRC_REPORTABNORMALOBE_BI_02());

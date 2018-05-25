@@ -223,13 +223,6 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			apduAckText := omit,
 			issues := omit
 		}
-    	
-    	
-    	template Adus mw_recordOfAduRequest:= {
-			requestAdus:=? 
-    	}
-    	
-		template InfoExchange mw_apduRequest := m_apduNoSec(mw_apci, mw_recordOfAduRequest);
       
 		template AckADU mw_aduDefaultAck := {
 			apduIdentifier := ?,
