@@ -74,12 +74,8 @@ module EfcInfoExchange_TestCasesTsp {
                // Step 1: Send Initiating APDU containing a valid RequestADU with requestedADUType=provideUserDetailsADU
                // and in addition an infoExchangeAuthenticator = value calculated according to clause 7.3 of EN ISO 12855
 
-				// Prepare the APDU without authenticator
-				var InfoExchange apduToBeSent := m_apduSecInit(
-						{m_aduRequestProvideUserDetails(v_userParameterRequests), infoExchangeAuthenticator := 1}
-						);
-				// Compute the authenticator and send the APDU
-				apduToBeSent.infoExchangeAuthenticator := fx_computeAuthenticator(apduToBeSent.infoExchangeContent);
+				// Prepare the APDU 
+				var InfoExchange apduToBeSent := m_apduSecInit({m_aduRequestProvideUserDetails(v_userParameterRequests)});
                 
 				// send RequestADU
 				f_sendAndLogApdu(apduToBeSent);                                          
@@ -493,7 +489,15 @@ module EfcInfoExchange_TestCasesTsp {
 						}
 					}										
 				} // End of alt statement
+
 				// Only allowed combinations according to profile
+				//TODO PT140 Q to Fausto: Should the conditions not be: 
+
+				//(not(
+				//(ICS_A2_1_isDsrc and (isCertificateOrPublicKey or isDsrcKeyRef or isMacMasterKey or isDsrcMasterKey)) or 
+				//(ICS_A2_2_isGnss and (isCertificateOrPublicKey or isDsrcKeyRef))
+				//))
+
 				if (not (
 					(ICS_A2_1_isDsrc and isCertificateOrPublicKey and isDsrcKeyRef and isMacMasterKey and isDsrcMasterKey) or			 				
 					(ICS_A2_2_isGnss and isCertificateOrPublicKey and isDsrcKeyRef)
@@ -2814,13 +2818,13 @@ module EfcInfoExchange_TestCasesTsp {
                  	// domainType = dsrcClosedContext 
                  	// dsrcClosedContext with valid values and feeModifiers set to null
                  	// closedSystem with tariffClassDefinition = {valid contents} and all other fields set to null
-				var InfoExchange v_apduRespondedTo := m_apduNoSecInit({m_aduEfcContextDataDsrcClosedContextTariffClassDefinition});                 
-				f_sendAndLogApdu(v_apduRespondedTo);                 
+				var InfoExchange v_apduForSending := m_apduNoSecInit({m_aduEfcContextDataDsrcClosedContextTariffClassDefinition});                 
+				f_sendAndLogApdu(v_apduForSending);                 
                  // Step 2: Wait for positive Ack within DSRC.EFCCONTEXTDATA.TIME1
 				// Set timer
                  t_step.start(DSRC_EFCCONTEXTDATA_TIME1_MAX_TSP);                 
 				alt {
-					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {					  
+					[] mtcPort.receive(m_apduDefaultAck(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received
 						f_logReceivedThenCheckAndStopTime(DSRC_EFCCONTEXTDATA_TIME1_MIN_TSP); 
 						setverdict(pass);
@@ -2828,9 +2832,9 @@ module EfcInfoExchange_TestCasesTsp {
 					} // End of Alt statement
 				f_closeDownMtc();                  
                                   
-                } // End of TP_TSP_DSRC_EFCCONTEXTDATA_BV_03
+            } // End of TP_TSP_DSRC_EFCCONTEXTDATA_BV_03
 
-           testcase TP_TSP_DSRC_EFCCONTEXTDATA_BV_04() runs on MainTestComponent system TestAdapter {
+			testcase TP_TSP_DSRC_EFCCONTEXTDATA_BV_04() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_DSRC_EFCCONTEXTDATA_BV_04: Verify that the TSP correctly performs the 
@@ -2843,22 +2847,17 @@ module EfcInfoExchange_TestCasesTsp {
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_2_implementedDSRCEFCCONTEXTDATA;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
-                 // Step 1: Send EFCCONTEXTDATA with:
-                 	// domainType = dsrcClosedContext 
-                 	// dsrcClosedContext with valid values and feeModifiers set to null
-                 	// closedSystem with localVehicleClassDefinition  = {valid contents} and all other fields set to null
-				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
-					{modifies mw_aduDsrcClosedContextEfcContextData := {
-					  	feeModifiers := omit,
-					  	closedContext.closedSystem.localVehicleClassDefinition := closedLocalVehicleClassDefinitionTESTER_VALUE
-						}
-					});                 
-				f_sendAndLogApdu(v_apduRespondedTo);                 
+                // Step 1: Send EFCCONTEXTDATA with:
+                // domainType = dsrcClosedContext 
+                // dsrcClosedContext with valid values and feeModifiers set to null
+                // closedSystem with localVehicleClassDefinition  = {valid contents} and all other fields set to null
+				var InfoExchange v_apduForSending := m_apduNoSecInit({m_aduEfcContextDataDsrcClosedContextLocVehClass});                
+				f_sendAndLogApdu(v_apduForSending);                 
                  // Step 2: Wait for positive Ack within DSRC.EFCCONTEXTDATA.TIME1
 				// Set timer
                  t_step.start(DSRC_EFCCONTEXTDATA_TIME1_MAX_TSP);                 
 				alt {
-					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {					  
+					[] mtcPort.receive(m_apduDefaultAck(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received
 						f_logReceivedThenCheckAndStopTime(DSRC_EFCCONTEXTDATA_TIME1_MIN_TSP); 
 						setverdict(pass);
@@ -2866,7 +2865,7 @@ module EfcInfoExchange_TestCasesTsp {
 					} // End of Alt statement
 				f_closeDownMtc();                  
                                   
-                } // End of TP_TSP_DSRC_EFCCONTEXTDATA_BV_04
+			} // End of TP_TSP_DSRC_EFCCONTEXTDATA_BV_04
 
            testcase TP_TSP_DSRC_EFCCONTEXTDATA_BV_05() runs on MainTestComponent system TestAdapter {
              
