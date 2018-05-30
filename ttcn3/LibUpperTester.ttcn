@@ -43,6 +43,7 @@ module EfcInfoExchange_LibUpperTester {
 		GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1_B,		
 		GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1_C		
 	};
+	
 
     type record Iso16986TriggerRsp {
 		enumerated {TRIGGERED, NOT_TRIGGERED} responseCode,
@@ -66,5 +67,6 @@ module EfcInfoExchange_LibUpperTester {
             stop;
 		} // End of t_wait.timeout
     }
+
     
 }

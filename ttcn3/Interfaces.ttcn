@@ -19,7 +19,8 @@ module EfcInfoExchange_Interfaces language "TTCN-3:2010 Advanced Parameterizatio
      * @desc Defines a message based port which allows to exchange ISO 12855 messages with the IUT
      */
      type port MtcPort message {
-     	inout InfoExchange;
+		in InfoExchange;
+     	out InfoExchange;
      }
      
      /**

@@ -296,7 +296,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
             	listOfUserParameters := *
         	}
         	
-   			template InfoExchange mw_apduProvideUserDetails := m_apduNoSec(mw_apci, Adus:{provideUserDetailsADUs:=?});
+   			template InfoExchange mw_apduProvideUserDetails(InfoExchange p_apduRespondedTo) := m_apduNoSec(m_apciSendResponse(p_apduRespondedTo), Adus:{provideUserDetailsADUs:=?});
 			
 			template InfoExchange mw_apduAuthProvideUserDetails := mw_apduSec(mw_apci, Adus:{provideUserDetailsADUs:=?});
 		}
@@ -550,7 +550,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 					}
 				}
 			}	
-			//TODO Fausto do we need to define localVehicleClassDefinition, timeClassDefinition, userClassDefinition and feeDefinition as well?
+			//TODO Fausto we need to define localVehicleClassDefinition, timeClassDefinition, userClassDefinition and and also check the feeDefinition 
 
 			
 			template (value) EfcContextDataADU m_aduEfcContextDataDsrcClosedContextTariffClassDefinition := m_aduEfcContextDataDsrcClosedContext({},omit,omit,omit);
