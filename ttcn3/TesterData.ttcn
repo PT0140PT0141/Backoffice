@@ -196,9 +196,8 @@ module EfcInfoExchange_TesterData{
 	 	  	validFrom:=fx_getUtc()
 	 	  }
 	 	};
-	 	modulepar  TimeClassDefinition closedTimeClassDefinitionTESTER_VALUE := omit;
-	 	modulepar  UserClassDefinition closedUserClassDefinitionTESTER_VALUE := omit;
-	 	modulepar  FeeDefinition closedFeeDefinitionTESTER_VALUE := omit;
+	 	modulepar ClosedContextLayout closedContextLayoutTESTER_VALUE;
+
 	}		
 	
 } // end module 

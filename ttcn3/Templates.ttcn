@@ -480,20 +480,14 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		group DSRC_EFCCONTEXTDATA {						
 			template EfcContextDataADU mw_aduDsrcEfcContextData := {
 				entityOverview := *,
-				domainType:= mw_dsrcContext
-			}
-
-			type record DsrcContext {
-				record {
-					Iso17575_3AduBody iso175753ADU,
-					FeeModifiers feeModifiers optional
-				} regimeContextData
-			} 
-			
-			//TODO Does this work?
-			template DsrcContext mw_dsrcContext :={
-				iso175753ADU := ?,
-				feeModifiers := omit
+				domainType:={
+					dsrcContext:= {
+						regimeContextData := {
+								iso175753ADU := ?,
+								feeModifiers := omit
+						}
+					}					
+				}
 			}
 	
 			type record DsrcClosedContext {
@@ -514,8 +508,15 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			}	
 			
 			type record of LocalVehicleClassId RecOfLocalVehicleClassId; 
+			type record of TimeClassId RecOfTimeClassId; 
+			type record of UserClassId RecOfUserClassId; 
 			
-			template (value) EfcContextDataADU m_aduEfcContextDataDsrcClosedContext(RecOfLocalVehicleClassId p_ROfLocVehClassId) := {
+			template (value) EfcContextDataADU m_aduEfcContextDataDsrcClosedContext(
+				RecOfLocalVehicleClassId p_ROfLocVehClassId, 
+				template RecOfTimeClassId p_ROfTimeClassId, 
+				template RecOfUserClassId p_ROfUserClassId,
+				template FeeDefinition p_feeDefinition
+			) := {
 				entityOverview := omit,
 				domainType:={
 					dsrcClosedContext := {
@@ -528,9 +529,9 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 										{
 											tariffClassId:=0,
 											localVehicleClasses:=p_ROfLocVehClassId,
-											timeClasses:=omit,
+											timeClasses:=p_ROfTimeClassId,
 											locationClasses:=omit,
-											userClasses:=omit
+											userClasses:=p_ROfUserClassId
 										}
 									},
 									tariffClassDefinitionVersion:={
@@ -543,15 +544,62 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 								localVehicleClassDefinition:=omit,
 								timeClassDefinition:=omit,
 								userClassDefinition:=omit,
-								feeDefinition:=omit
+								feeDefinition:=p_feeDefinition
 							}
 						}
 					}
 				}
 			}	
+			//TODO Fausto do we need to define localVehicleClassDefinition, timeClassDefinition, userClassDefinition and feeDefinition as well?
 
-			template (value) EfcContextDataADU m_aduEfcContextDataDsrcClosedContextTariffClassDefinition := m_aduEfcContextDataDsrcClosedContext({});
-			template (value) EfcContextDataADU m_aduEfcContextDataDsrcClosedContextLocVehClass := m_aduEfcContextDataDsrcClosedContext({1,2,3});
+			
+			template (value) EfcContextDataADU m_aduEfcContextDataDsrcClosedContextTariffClassDefinition := m_aduEfcContextDataDsrcClosedContext({},omit,omit,omit);
+			template (value) EfcContextDataADU m_aduEfcContextDataDsrcClosedContextLocVehClass := m_aduEfcContextDataDsrcClosedContext({1,2,3},omit,omit,omit);
+			template (value) EfcContextDataADU m_aduEfcContextDataDsrcClosedContextTimeClass := m_aduEfcContextDataDsrcClosedContext({},{1,2,3},omit,omit);
+			template (value) EfcContextDataADU m_aduEfcContextDataDsrcClosedContextUserClass := m_aduEfcContextDataDsrcClosedContext({},omit,{1,2,3},omit);
+			template (value) EfcContextDataADU m_aduEfcContextDataDsrcClosedContextFeeDefinition := m_aduEfcContextDataDsrcClosedContext({},omit,omit,m_feeDefinition);
+			
+			template (value) FeeDefinition m_feeDefinition:= {
+				actualPath:={
+					tariffTable:=omit,
+					closedContextLayout :={
+					 	tollOperators:=omit,
+					 	dsrcChargeObjects:={
+					 		{
+								chargeObjectId := {
+									chargeReportFinalRecipient:=omit,
+									chargeObjectDesignation:=1
+								},
+								chargeObjectDescription :="Charge object test description 1",
+								chargeObjectType:=ChargeObjectType_entryAndExit_,
+								tollContext:=TESTER_IDENTIFIER,
+								chargeObjectValidityStart:=omit,
+								chargeObjectValidityEnd:=omit					 			
+					 		},
+							{
+								chargeObjectId := {
+									chargeReportFinalRecipient:=omit,
+									chargeObjectDesignation:=2
+								},
+								chargeObjectDescription :="Charge object test description 2",
+								chargeObjectType:=ChargeObjectType_entryAndExit_,
+								tollContext:=TESTER_IDENTIFIER,
+								chargeObjectValidityStart:=omit,
+								chargeObjectValidityEnd:=omit					 			
+							}					 	}, 
+					 	internalPoints:=omit, 
+					 	interconnectionPoints:=omit,
+					 	closedSections:=omit,
+					 	tollContextLayoutVersion:=	{
+							version:={
+								basicVersionId:=basicVersionIdTESTER_VALUE
+							},
+							validFrom:=fx_getUtc()
+						},
+					 	tollContextAuthenticator:=omit
+					}
+				}
+			}
 
    			template InfoExchange mw_apduEfcContextData := m_apduNoSec(mw_apci, Adus:{efcContextDataADUs:=?});
 			
@@ -561,9 +609,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 
 		group DSRC_REPORTABNORMALOBE {
 			template ReportAbnormalOBEADU mw_adusDsrcReportAbnormalObe := {
-				userId := ? length (1..4), //= at least one element of userId shall be present
-											// TODO PT140: not sure if this works as "length" expression is valid for "records of" only
-											// but userId is a "record" and no "record of" 
+				userId := ? , //TODO Jan check that at least one element of userId is present (use sizeof>0), this needs to be done in the test cases
 				dateAndTime := ?,
 				efcContextMark := ?,
 				abnormalOBEReasonCode := ? length (1..255) //= at least one reason code shall be present in this record of integer

@@ -13,6 +13,7 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
 	//importing other modules
 	import from EfcInfoExchange_Interfaces all;
 	import from EfcInfoExchange_LibUpperTester all;
+	import from EfcInfoExchange_Pixits all;
 	import from EfcInfoExchange_TesterData all;
 	import from EfcInfoExchange_Templates all;
 		
@@ -119,24 +120,24 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
 		function f_logApduReceivedAndTStep() runs on MainTestComponent{
 			f_addLogEntry("At time step value " & any2unistr(t_step.read) & ", sent the following APDU to the IUT: " & c_newLine & any2unistr(v_apduReceived));			
 		}		
-
-//TODO this is never used. Needed somewhere?
-//		function f_userDetailsParameters(out UserParametersRequest v_userParameterRequest)  runs on MainTestComponent {
-//		/**		
-//		 * @desc we want to ask for a random number of parameters randomly chosen among those supported
-//		 * @desc the v_userParameterRequest array will be made of a random number of elements containing randomly picked up
-//		 * @desc parameter identifiers from the list of supported parameters (PIXIT value)
-//		*/
-//				const integer totNoParams := sizeof(USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS);
-//				const integer noParamsToUse := float2int(rnd() * int2float(totNoParams));
-//				var UserParameterRequest v_userParameterRequests[noParamsToUse];   
-//				for (var integer v_ct :=0; v_ct<noParamsToUse;v_ct:=v_ct+1) {
-//					//Note: float2int removes the fractional part and returns just the integer, it is NOT a rounding function. That is why this works
-//					v_userParameterRequests[v_ct] := USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS[float2int(rnd()) * totNoParams];
-//					continue;			
-//				};
-//			  
-//		}
+		
+		type record of UserParameterRequest RecOfUserParameterRequest;
+		
+		function f_userDetailsParameters() runs on MainTestComponent return RecOfUserParameterRequest  {
+		/**		
+		 * @desc we want to ask for a random number of parameters randomly chosen among those supported
+		 * @desc the v_userParameterRequest array will be made of a random number of elements containing randomly picked up
+		 * @desc parameter identifiers from the list of supported parameters (PIXIT value)
+		*/
+				const integer totNoParams := sizeof(USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS);
+				const integer noParamsToUse := float2int(rnd() * int2float(totNoParams));
+				var RecOfUserParameterRequest v_userParameterRequests;   
+				for (var integer v_ct :=0; v_ct<noParamsToUse;v_ct:=v_ct+1) {
+					//Note: float2int removes the fractional part and returns just the integer, it is NOT a rounding function. That is why this works
+					v_userParameterRequests[v_ct] := USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS[float2int(rnd()) * totNoParams];
+				};
+				return v_userParameterRequests;
+		}
 		
         /**
          * @desc A kind of ""macro"-function for very common steps.
