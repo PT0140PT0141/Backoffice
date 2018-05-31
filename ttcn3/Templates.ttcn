@@ -561,7 +561,42 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			
 			template (value) FeeDefinition m_feeDefinition:= {
 				actualPath:={
-					tariffTable:=omit,
+					tariffTable:={
+    					applicablePartitions := {1,2,3}, // Three partitions
+    					tariffs := {
+    							{tariffClass := 1,
+    							chargeUnit.event := 1,
+    							roundingRuleForChargeUnitsUsed := RoundingRule_up_,
+    							basicFeePerChargeUnit := '2978'H, // Units in cents, currency Euro
+    							roundingRuleForFee := RoundingRule_up_,
+    							vat omit,
+    							roundingRuleForVat := omit,
+    							intervalScaleParameters := omit,
+    							offsetFee := omit,
+    							minFee := omit,
+    							thresholdFee := omit,
+   						 		maxFee := omit,
+    							alternativeCurrency := omit
+  								},
+  								{tariffClass := 2,
+    							chargeUnit.event := 2,
+    							roundingRuleForChargeUnitsUsed := RoundingRule_no_,
+    							basicFeePerChargeUnit := '2978'H, // Units in cents, currency Euro
+    							roundingRuleForFee := RoundingRule_no_,
+    							vat omit,
+    							roundingRuleForVat := omit,
+    							intervalScaleParameters := omit,
+    							offsetFee := omit,
+    							minFee := omit,
+    							thresholdFee := omit,
+   						 		maxFee := omit,
+    							alternativeCurrency := omit
+  								}
+  							},
+    					standardCurrency := '2978'H, // Units in cents, currency Euro,
+    					typeOfFee := omit,
+    					tariffTableVersion := {1, fx_getUtc()}
+  						},
 					closedContextLayout :={
 					 	tollOperators:=omit,
 					 	dsrcChargeObjects:={
@@ -604,7 +639,45 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
    			template InfoExchange mw_apduEfcContextData := m_apduNoSec(mw_apci, Adus:{efcContextDataADUs:=?});
 			
 			template InfoExchange mw_apduAuthEfcContextData := mw_apduSec(mw_apci, Adus:{efcContextDataADUs:=?});
-			
+
+			template (value) LocalDefinition m_localDefinition:= 	{
+				localVehicleClasses := {
+					localVehicleClassId := 1,
+    				nominalElements := {
+    					vehicleClasses := {1,2,3},
+    					vehicleTrainAxlesNumbers := omit,
+    					euroValues omit,
+    					copValues omit
+    					},
+    				ordinalElements := omit,
+    				priorityValue := omit
+				},
+    			localVehicleClassVersion := omit			  
+			}		
+		
+			template (value) TimeDefinition m_timeDefinition:= 	{
+				    timeClasses := {
+						timeClassId := 1,
+						nominalElements := omit,
+						ordinalElements := omit,
+						priorityValue := omit
+				    },
+					timeClassDefinitionVersion := omit
+			}
+			template (value) UserDefinition m_userDefinition:= 	{
+				    userClasses := {
+				    	{userClassId := 1,
+						contractTypes := omit,
+						actualNumberOfPassengers := omit,
+						priorityValue omit},
+				    	{userClassId := 2,
+						contractTypes := omit,
+						actualNumberOfPassengers := omit,
+						priorityValue omit}				    	
+					}
+					VersionAndValidity userClassDefinitionVersion optional
+			}		
+		
 		}
 
 		group DSRC_REPORTABNORMALOBE {
