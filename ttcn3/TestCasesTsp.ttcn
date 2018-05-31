@@ -222,9 +222,11 @@ module EfcInfoExchange_TestCasesTsp {
 				apduWrongSender.providerIdentifier := apduWrongSender.providerIdentifier + 1;
 				template (value) ApciFields m_apciSendFirstInvalidAid modifies m_apciSendFirst:= {informationSenderID := apduWrongSender};
 				// Then send it together with the request ADU
-  				f_sendAndLogApdu(
-                             m_apciSendFirstInvalidAid, {m_aduRequestProvideUserDetails(v_userParameterRequests)}
-							);
+				var InfoExchange v_apduForSending := m_apduNoSec(
+					m_apciSendFirstInvalidAid,
+					{m_aduRequestProvideUserDetails(v_userParameterRequests)}
+				); 
+  				f_sendAndLogApdu(v_apduForSending);
                
                //Set timer
 				t_step.start(USERDETAILS_TIME1_MAX_TSP);
@@ -237,11 +239,11 @@ module EfcInfoExchange_TestCasesTsp {
 				var NAckParams v_nAckParams2 :={{1, ApduReasonCode_originatorRejected_},{2, ApduReasonCode_originatorRejected_}}
 				
 				alt {
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAck(v_apduForSending, v_nAckParams1)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(0.0); // No minimum time to check for response
 						setverdict(pass);
 					}
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAck(v_apduForSending, v_nAckParams2)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(0.0); // No minimum time to check for response
 						setverdict(pass);
 					}
@@ -269,9 +271,11 @@ module EfcInfoExchange_TestCasesTsp {
 				apduWrongRecipient.providerIdentifier.providerIdentifier := apduWrongRecipient.providerIdentifier.providerIdentifier + 1;
 				template (value) ApciFields m_apciSendFirstInvalidAid modifies m_apciSendFirst:= {informationrecipientID := apduWrongRecipient};
 				// Then send it together with the request ADU
-  				f_sendAndLogApdu(
-                             m_apciSendFirstInvalidAid, {m_aduRequestProvideUserDetails(v_userParameterRequests)}
-							);
+				var InfoExchange v_apduForSending := m_apduNoSec(
+					m_apciSendFirstInvalidAid,
+					{m_aduRequestProvideUserDetails(v_userParameterRequests)}
+				); 
+  				f_sendAndLogApdu(v_apduForSending);
                
                //Set timer
 				t_step.start(USERDETAILS_TIME1_MAX_TSP);
@@ -284,11 +288,11 @@ module EfcInfoExchange_TestCasesTsp {
 				var NAckParams v_nAckParams2 :={{1, ApduReasonCode_recipientUnknown_},{2, ApduReasonCode_recipientUnknown_}};
 				
 				alt {
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAck(v_apduForSending, v_nAckParams1)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(0.0); // No need to check for minimum response time
 						setverdict(pass);
 					}
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAck(v_apduForSending, v_nAckParams2)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(0.0); // No need to check for minimum response time
 						setverdict(pass);
 					}
@@ -310,11 +314,11 @@ module EfcInfoExchange_TestCasesTsp {
 				var UserParameterRequest v_userParameterRequests := f_userDetailsParameters();                
 
 				// First, get the apdu to be sent in a variable to avoid apduIdentifier to be re-generated, then send the Apdu
-				var InfoExchange apduToBeSent := m_apduNoSecInit(
+				var InfoExchange v_apduForSending := m_apduNoSecInit(
 						{m_aduRequestProvideUserDetails(v_userParameterRequests)}
 					);
 				// send RequestADU
-				f_sendAndLogApdu(apduToBeSent);
+				f_sendAndLogApdu(v_apduForSending);
                                
 				//Set timer
 				t_step.start(USERDETAILS_TIME1_MAX_TSP);
@@ -333,7 +337,7 @@ module EfcInfoExchange_TestCasesTsp {
 				
 				// Step 1: Send exactly the same APDU sent previously, including the same apduIdentifier
 				
-				f_sendAndLogApdu(apduToBeSent);			
+				f_sendAndLogApdu(v_apduForSending);			
 
                //Set timer
 				t_step.start(USERDETAILS_TIME1_MAX_TSP);
@@ -346,11 +350,11 @@ module EfcInfoExchange_TestCasesTsp {
 				var NAckParams v_nAckParams2 :={{1, ApduReasonCode_apduNotOK_},{2, ApduReasonCode_apduNotOK_}};
 				
 				alt {
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAck(v_apduForSending, v_nAckParams1)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
 						setverdict(pass);
 					}
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAck(v_apduForSending, v_nAckParams2)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
 						setverdict(pass);
 					}
@@ -370,11 +374,14 @@ module EfcInfoExchange_TestCasesTsp {
 				var UserParameterRequest v_userParameterRequests := f_userDetailsParameters();                
 				
 				// Step 1: Send Initiating APDU containing a valid RequestADU with APCI parameter field containing nextApduId
-				template (value) ApciFields m_apciSendFirstInvalidAid modifies m_apciSendFirst:= {nextApduId := 1};
+				template (value) ApciFields m_apciSendFirstInvalidAid modifies m_apciSendFirst:= {nextApduId := 1};				
+
 				// Then send it together with the request ADU
-  				f_sendAndLogApdu(
-                             m_apciSendFirstInvalidAid, {m_aduRequestProvideUserDetails(v_userParameterRequests)}
-							);               
+				var InfoExchange v_apduForSending := m_apduNoSec(
+					m_apciSendFirstInvalidAid,
+					{m_aduRequestProvideUserDetails(v_userParameterRequests)}
+				);
+  				f_sendAndLogApdu(v_apduForSending);
                //Set timer
 				t_step.start(USERDETAILS_TIME1_MAX_TSP);
 				
@@ -386,11 +393,11 @@ module EfcInfoExchange_TestCasesTsp {
 				var NAckParams v_nAckParams2 :={{1, ApduReasonCode_apduNotOK_},{2, ApduReasonCode_apduNotOK_}};
 				
 				alt {
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAck(v_apduForSending, v_nAckParams1)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
 						setverdict(pass);
 					}
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAck(v_apduForSending, v_nAckParams2)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
 						setverdict(pass);
 					}
@@ -413,9 +420,11 @@ module EfcInfoExchange_TestCasesTsp {
 				// Step 1: Send Initiating APDU containing a valid RequestADU with APCI parameter field containing inResponseToApduId
 				template (value) ApciFields m_apciSendFirstInvalidAid modifies m_apciSendFirst:= {inResponseToApduId := 1};
 				// Then send it together with the request ADU
-  				f_sendAndLogApdu(
-                             m_apciSendFirstInvalidAid, {m_aduRequestProvideUserDetails(v_userParameterRequests)}
-							);
+				var InfoExchange v_apduForSending := m_apduNoSec(
+					m_apciSendFirstInvalidAid,
+					{m_aduRequestProvideUserDetails(v_userParameterRequests)}
+				);
+  				f_sendAndLogApdu(v_apduForSending);
                //Set timer
 				t_step.start(USERDETAILS_TIME1_MAX_TSP);
 				// Step2: Wait for NAck_Apdu containing ackADU with apduAckCode = sequenceError (4) or apduNotOk (3)
@@ -429,19 +438,19 @@ module EfcInfoExchange_TestCasesTsp {
 
 				// Either apduNotOk or sequenceError error codes may be sent by the IUT
 				alt {
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAck(v_apduForSending, v_nAckParams1)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
 						setverdict(pass);
 						}
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAck(v_apduForSending, v_nAckParams2)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
 						setverdict(pass);
 						}
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams3)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAck(v_apduForSending, v_nAckParams3)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
 						setverdict(pass);
 						}
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams4)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAck(v_apduForSending, v_nAckParams4)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
 						setverdict(pass);					
 						}
@@ -583,9 +592,11 @@ module EfcInfoExchange_TestCasesTsp {
 
 				template (value) ApciFields m_apciSendFirstInvalidAid modifies m_apciSendFirst:= {apduDate := 0};
 				// Then send it together with the request ADU
-  				f_sendAndLogApdu(
-                	m_apciSendFirstInvalidAid, {m_aduRequestProvideUserDetails(v_userParameterRequests)}
+				var InfoExchange v_apduForSending := m_apduNoSec(
+					m_apciSendFirstInvalidAid,
+					{m_aduRequestProvideUserDetails(v_userParameterRequests)}
 				);
+  				f_sendAndLogApdu(v_apduForSending);
 
                //Set timer
 				t_step.start(USERDETAILS_TIME1_MAX_TSP);
@@ -596,7 +607,7 @@ module EfcInfoExchange_TestCasesTsp {
 				//Create parameters for the m_apduNAck			
 				var NAckParams v_nAckParams1 :={{1, ApduReasonCode_apduNotOK_},{2, ApduReasonCode_apduNotOK_}};
 				alt {
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAck(v_apduForSending, v_nAckParams1)) -> value v_apduReceived {
 						// Log what we received
 						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP);
 						setverdict(pass);
@@ -618,17 +629,21 @@ module EfcInfoExchange_TestCasesTsp {
 				
 				// Step 1: Send an Initiating_Apdu containing invalid authenticator
 				// and valid RequestADU with requestedADUType=provideUserDetailsADU
-				
-				var InfoExchange apduToBeSent := m_aduRequestProvideUserDetails(v_userParameterRequest);
-				
+
+				// Set up a correct authenticated apdu to start with		
+				var InfoExchange apduToBeSent := m_apduSec(m_aduRequestProvideUserDetails(v_userParameterRequest));
+
+				// Get the correctly computed authenticator, then corrupt it				
 				var ApduAuthenticator corruptedAuthenticator:= fx_computeAuthenticator(apduToBeSent);
 				var octetstring newAuthenticator := corruptedAuthenticator.authenticatorEfc.tbsAuthenticatorEfc.apduContentDigest.hashedMessageContent;
 				newAuthenticator := int2oct(oct2int(newAuthenticator) + 1, len(newAuthenticator));
 				corruptedAuthenticator.authenticatorEfc.tbsAuthenticatorEfc.apduContentDigest.hashedMessageContent := newAuthenticator;
 				// Then send it together with the request ADU
-  				f_sendAndLogApdu(m_apduSec({
+				var InfoExchange v_apduForSending := m_apduSec({
 				  	infoExchangeContent := apduToBeSent.infoExchangeContent, 				  
-					infoExchangeAuthenticator := corruptedAuthenticator}));
+					infoExchangeAuthenticator := corruptedAuthenticator});
+  				
+  				f_sendAndLogApdu(v_apduForSending);
                         
                //Set timer
 				t_step.start(USERDETAILS_TIME1_MAX_TSP);
@@ -640,12 +655,12 @@ module EfcInfoExchange_TestCasesTsp {
 				var NAckParams v_nAckParams1 :={{0, ApduReasonCode_apduNotOK_}};
 				var NAckParams v_nAckParams2 :={{1, ApduReasonCode_apduNotOK_},{2, ApduReasonCode_apduNotOK_}};
 				alt {
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAck(v_apduForSending, v_nAckParams1)) -> value v_apduReceived {
 						// Log what we received
 						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
 						setverdict(pass);
 						}
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAck(v_apduForSending, v_nAckParams2)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
 						setverdict(pass);
 						}
