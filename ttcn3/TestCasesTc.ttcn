@@ -14,7 +14,7 @@
  *	Base						! open					! open			!
  *	Userdetails					! open					! open			! something available but to be reworked
  *	ListOfUsers					! open					! open			!
- *	ExceptionList				! done					! open			! ready for compile of the BV
+ *	ExceptionList				! done					! done			! ready for compile
  *	TrustObjects				! open					! open			!
  *	PaymentClaim				! open					! none			!
  *	DSRC.ContractIssuerList		! done					! done			! ready for compile
@@ -1151,13 +1151,8 @@ module EfcInfoExchange_TestCasesTc {
 
 				alt {
 					[] mtcPort.receive(m_apduDefaultAck(v_apduToBeSent)) -> value v_apduReceived {
-					  
-						// Log what we received
-						f_logApduReceivedAndTStep();
-						
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
-						t_step.stop;						
+						// Log what we received, check minimum time and stop time
+						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC));
 					}
 				}
 				
@@ -1176,22 +1171,14 @@ module EfcInfoExchange_TestCasesTc {
 
 				alt {
 					[] mtcPort.receive(m_apduDefaultAck(v_apduToBeSent)) -> value v_apduReceived {
-					  
-						// Log what we received
-						f_logApduReceivedAndTStep();
-						
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
-						t_step.stop;						
-
+						// Log what we received, check minimum time and stop time
+						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
 						//Set verdict
-						setverdict(pass);
+						setverdict(pass)												
 					}
 				} 				 
-				f_closeDownMtc();
-                
-			} // End of TP_TC_EXCEPTIONLIST_BV_01
-                                
+				f_closeDownMtc();              
+			} // End of TP_TC_EXCEPTIONLIST_BV_01                              
 
 			testcase TP_TC_EXCEPTIONLIST_BV_02() runs on MainTestComponent system TestAdapter {
 										
@@ -1219,42 +1206,32 @@ module EfcInfoExchange_TestCasesTc {
                 //		- NAck_Apdu with aduReasonCode = semanticError(3000)
               	// if negative Ack or not received set test failure --> is done in altstep
 
-				var NAckParams v_nAckParams1 :={{0, AduReasonCode_semanticError_}};
-				var NAckParams v_nAckParams2 :={{1, AduReasonCode_semanticError_}};
+				// Prepare parameters to be expected in the NAck-APDU
+				var NAckParams v_nAckParams_1 :={{0, AduReasonCode_semanticError_}};
+				var NAckParams v_nAckParams_2 :={{2, AduReasonCode_semanticError_}};
 
 				alt {
 					[] mtcPort.receive(m_apduDefaultAck(v_apduToBeSent)) -> value v_apduReceived {					  
-						// Log what we received
-						f_logApduReceivedAndTStep();						
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(EXCEPTIONLIST_DISCOUNT_TIME1_MIN_TC);
-						t_step.stop;
+						// Log what we received, check minimum time and stop time
+						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_DISCOUNT_TIME1_MIN_TC);
 						//Set verdict
 						setverdict(pass)												
 					}
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {				  
-						// Log what we received
-						f_logApduReceivedAndTStep();						
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(EXCEPTIONLIST_DISCOUNT_TIME1_MIN_TC);
-						t_step.stop;
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams_1)) -> value v_apduReceived {				  
+						// Log what we received, check minimum time and stop time
+						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_DISCOUNT_TIME1_MIN_TC);
 						//Set verdict
 						setverdict(pass)												
 					}
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {				  
-						// Log what we received
-						f_logApduReceivedAndTStep();						
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(EXCEPTIONLIST_DISCOUNT_TIME1_MIN_TC);
-						t_step.stop;
+					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams_2)) -> value v_apduReceived {				  
+						// Log what we received, check minimum time and stop time
+						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_DISCOUNT_TIME1_MIN_TC);
 						//Set verdict
 						setverdict(pass)												
 					}								
-				}
-							 
+				}			 
 				f_closeDownMtc();
-			}
-              
+			}            
 		} // End of group Valid_Behaviour
 			
 		group Invalid_Behaviour {
@@ -1262,140 +1239,287 @@ module EfcInfoExchange_TestCasesTc {
 			testcase TP_TC_EXCEPTIONLIST_BI_01() runs on MainTestComponent system TestAdapter {
 													
             /**
-             * @desc    TP_TC_EXCEPTIONLIST_BI_01: Verify that the TC correctly responds to an ExceptionListADU for blacklist containing
-             *			exceptionValidityEnd field
-             * @remark  [16986:2016], Clause 6.6 and Table A.1/1 AND Table A.7/3
-             */
+            * @desc    TP_TC_EXCEPTIONLIST_BI_01: Verify that the TC correctly responds to an ExceptionListADU for blacklist containing
+            *			exceptionValidityEnd field
+            * @remark  [16986:2016], Clause 6.6 and Table A.1/1 AND Table A.7/3
+            */
 		
-			// Initialisation
-             
-			// Start by setting test success
+				// Initialisation
+ 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A7_3_implementedEXCEPTIONLIST;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc                 
 							
-            // Step 1: Send one Initiating_Apdu containing
-            //		- exactly one valid ExceptionListADU indicating list type BLACK; AND
-			//		- exactly one ExceptionListADU indicating list type BLACK and containing exceptionValidityEnd of any value
-            	
-            // Step 2: Wait for NAck_Apdu with ({2, exceptionListsDateAndTimeRejected(405)})
-            // within the time EXCEPTIONLIST.BLACK_TIME1   				
+            	// Prepare Initiating_Apdu containing
+            	//		- exactly one valid ExceptionListADU indicating list type BLACK; AND
+				//		- exactly one ExceptionListADU indicating list type BLACK and containing exceptionValidityEnd of any value
 
+				var ExceptionListADU v_aduToBeSent := TESTER_EXCEPTIONLIST_ADU_BLACK_INVALID_1;
+	  	
+                var InfoExchange v_apduToBeSent := m_apduNoSecInit(v_aduToBeSent);
+				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+            	
+                // Start timer
+                t_step.start(EXCEPTIONLIST_BLACK_TIME1_MAX_TC);               
+
+            	// Step 2: Wait for NAck_Apdu with ({2, exceptionListsDateAndTimeRejected(405)}) //TODO PT140 to be revised in part 1
+            	// within the time EXCEPTIONLIST.BLACK_TIME1
+              	// if negative Ack or not received set test failure --> is done in altstep
+
+				// Prepare parameters to be expected in the NAck-APDU
+				var NAckParams v_nAckParams_1 := {{0, AduReasonCode_exceptionListsDateAndTimeRejected_}};
+				var NAckParams v_nAckParams_2 := {{1, AduReasonCode_exceptionListsDateAndTimeRejected_}};
+
+				alt {
+					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams_1)) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC); // check for minimum wait time in response
+						setverdict(pass);
+					}
+
+					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams_2)) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC); // check for minimum wait time in response
+						setverdict(pass);
+					}										
+				}
+				f_closeDownMtc();				            	          				
 			} // End of TP_TC_EXCEPTIONLIST_BI_01
 
 			testcase TP_TC_EXCEPTIONLIST_BI_02() runs on MainTestComponent system TestAdapter {
 													
             /**
-             * @desc    TP_TC_EXCEPTIONLIST_BI_02: Verify that the TC correctly responds to an ExceptionListADU for blacklist
-             *			containing the efcContextMark field
-             * @remark  [16986:2016], Clause 6.6 and Table A.1/1 AND Table A.7/3
-             */
-		
-			// Initialisation
-             
-			// Start by setting test success
-							
-            // Step 1: Send Initiating_Apdu containing exactly one ExceptionListADU indicating list type BLACK containing
-            //		- efcContextMark of any value
-            	
-            // Step 2: Wait for NAck_Apdu with issueCode=otherReason(5)
-            // within the time EXCEPTIONLIST.BLACK_TIME1   				
+            * @desc    TP_TC_EXCEPTIONLIST_BI_02: Verify that the TC correctly responds to an ExceptionListADU for blacklist
+            *			containing the efcContextMark field
+            * @remark  [16986:2016], Clause 6.6 and Table A.1/1 AND Table A.7/3
+            */
 
+				// Initialisation
+ 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A7_3_implementedEXCEPTIONLIST;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc                 
+          
+            	// Step 1: Send Initiating_Apdu containing exactly one ExceptionListADU indicating list type BLACK containing
+            	//		- efcContextMark of any value
+               var InfoExchange v_apduToBeSent := m_apduNoSecInit(TESTER_EXCEPTIONLIST_ADU_BLACK_INVALID_2);
+				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+
+                // Start timer
+                t_step.start(EXCEPTIONLIST_BLACK_TIME1_MAX_TC);     
+            	
+            	// Step 2: Wait for NAck_Apdu with issueCode=otherReason(5)
+            	// within the time EXCEPTIONLIST.BLACK_TIME1   				
+              	// if negative Ack or not received set test failure --> is done in altstep
+
+				// Prepare parameters to be expected in the NAck-APDU
+				var NAckParams v_nAckParams_1 := {{0, ApduReasonCode_otherReason_}};
+
+				alt {
+					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams_1)) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC); // check for minimum wait time in response
+						setverdict(pass);
+					}					
+				}
+				f_closeDownMtc();				            	          				
 			} // End of TP_TC_EXCEPTIONLIST_BI_02
 
 			testcase TP_TC_EXCEPTIONLIST_BI_03() runs on MainTestComponent system TestAdapter {
 													
             /**
-             * @desc    TP_TC_EXCEPTIONLIST_BI_03: Verify that the TC correctly responds to one APDU
-             *			containing more than one ExceptionListADU
-             * @remark  [16986:2016], Clause 6.6 and Table A.1/1 AND Table A.7/3
-             */
-		
-			// Initialisation
-             
-			// Start by setting test success
-							
-            // Step 1: Send Initiating_Apdu containing mre than one ExceptionListADU indicating list type BLACK
-            
-            // Step 2: Wait for NAck_Apdu with issueCode=otherReason(5)
-            // within the time EXCEPTIONLIST.BLACK_TIME1   				
+            * @desc    TP_TC_EXCEPTIONLIST_BI_03: Verify that the TC correctly responds to one APDU
+            *			containing more than one ExceptionListADU
+            * @remark  [16986:2016], Clause 6.6 and Table A.1/1 AND Table A.7/3
+            */ 				
 
+				// Initialisation
+ 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A7_3_implementedEXCEPTIONLIST;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc                 
+
+            	// Step 1: Send Initiating_Apdu containing more than one ExceptionListADU indicating list type BLACK
+               	var InfoExchange v_apduToBeSent := m_apduNoSecInit(TESTER_EXCEPTIONLIST_ADU_BLACK_VALID, TESTER_EXCEPTIONLIST_ADU_BLACK_VALID);
+				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+		
+                // Start timer
+                t_step.start(EXCEPTIONLIST_BLACK_TIME1_MAX_TC);               
+            	
+            	// Step 2: Wait for NAck_Apdu with issueCode=otherReason(5)
+            	// within the time EXCEPTIONLIST.BLACK_TIME1     				
+              	// if negative Ack or not received set test failure --> is done in altstep
+
+				// Prepare parameters to be expected in the NAck-APDU
+				var NAckParams v_nAckParams_1 := {{0, ApduReasonCode_otherReason_}};
+
+				alt {
+					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams_1)) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC); // check for minimum wait time in response
+						setverdict(pass);
+					}					
+				}
+				f_closeDownMtc();				            	          				
 			} // End of TP_TC_EXCEPTIONLIST_BI_03
 
 			testcase TP_TC_EXCEPTIONLIST_BI_04() runs on MainTestComponent system TestAdapter {
 													
             /**
-             * @desc    TP_TC_EXCEPTIONLIST_BI_04: Verify that the TC correctly responds to an ExceptionListADU
-             *			bearing an incorrect value for exceptionListVersion field
-             * @remark  [16986:2016], Clause 6.6 and Table A.1/1 AND Table A.7/3
-             */
+            * @desc    TP_TC_EXCEPTIONLIST_BI_04: Verify that the TC correctly responds to an ExceptionListADU
+            *			bearing an incorrect value for exceptionListVersion field
+            * @remark  [16986:2016], Clause 6.6 and Table A.1/1 AND Table A.7/3
+            */
 		
-			// Initialisation
-             
-			// Start by setting test success
-							
-            // Step 1: Send Initiating_Apdu containing one ExceptionListADU indicating list type BLACK
-            //		- with exceptionListVersion </= 0
-  
-            // Step 2: Wait for NAck_Apdu with issueCode=exceptionListsVersionRejected(400)
-            // within the time EXCEPTIONLIST.BLACK_TIME1   				
+				// Initialisation
+ 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A7_3_implementedEXCEPTIONLIST;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc                 
 
+           		// Step 1: Send Initiating_Apdu containing one ExceptionListADU indicating list type BLACK
+            	//		- with exceptionListVersion </= 0
+               	var InfoExchange v_apduToBeSent := m_apduNoSecInit(TESTER_EXCEPTIONLIST_ADU_BLACK_INVALID_3);
+				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+		
+                // Start timer
+                t_step.start(EXCEPTIONLIST_BLACK_TIME1_MAX_TC);               
+            	
+            	// Step 2: Wait for NAck_Apdu with issueCode=exceptionListsVersionRejected(400)
+            	// within the time EXCEPTIONLIST.BLACK_TIME1      				
+              	// if negative Ack or not received set test failure --> is done in altstep
+
+				// Prepare parameters to be expected in the NAck-APDU
+				var NAckParams v_nAckParams_1 := {{0, AduReasonCode_exceptionListsVersionRejected_}};
+				var NAckParams v_nAckParams_2 := {{1, AduReasonCode_exceptionListsVersionRejected_}};
+
+				alt {
+					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams_1)) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC); // check for minimum wait time in response
+						setverdict(pass);
+					}		
+					
+					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams_2)) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC); // check for minimum wait time in response
+						setverdict(pass);
+					}				
+				}
+				f_closeDownMtc();	
 			} // End of TP_TC_EXCEPTIONLIST_BI_04
 
 			testcase TP_TC_EXCEPTIONLIST_BI_05() runs on MainTestComponent system TestAdapter {
 													
             /**
-             * @desc    TP_TC_EXCEPTIONLIST_BI_05: Verify that the TC correctly responds to an ExceptionListADU
-			 *			bearing an incorrect value for exceptionListType field
-             * @remark  [16986:2016], Clause 6.6 and Table A.1/1 AND Table A.7/3
-             */
-		
-			// Initialisation
-             
-			// Start by setting test success
-							
-            // Step 1: Send Initiating_Apdu containing one ExceptionListADU indicating exceptionListType = 4
-  
-            // Step 2: Wait for NAck_Apdu with issueCode=exceptionListsTypeRejected(401)
-            // within the time EXCEPTIONLIST.BLACK_TIME1   				
+            * @desc    TP_TC_EXCEPTIONLIST_BI_05: Verify that the TC correctly responds to an ExceptionListADU
+			*			bearing an incorrect value for exceptionListType field
+            * @remark  [16986:2016], Clause 6.6 and Table A.1/1 AND Table A.7/3
+            */   				
 
+				// Initialisation
+ 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A7_3_implementedEXCEPTIONLIST;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc                 
+
+             	// Step 1: Send Initiating_Apdu containing one ExceptionListADU indicating exceptionListType = 4
+               	var InfoExchange v_apduToBeSent := m_apduNoSecInit(TESTER_EXCEPTIONLIST_ADU_TYPE4_VALID);
+				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+		
+                // Start timer
+                t_step.start(EXCEPTIONLIST_BLACK_TIME1_MAX_TC);   // TODO PT140 to be revised in conjunction with Part1            
+            	
+            	// Step 2: Wait for NAck_Apdu with issueCode=exceptionListsTypeRejected(401)
+            	// within the time EXCEPTIONLIST.BLACK_TIME1
+            	// if negative Ack or not received set test failure --> is done in altstep
+				
+				// Prepare parameters to be expected in the NAck-APDU
+				var NAckParams v_nAckParams_1 := {{0, AduReasonCode_exceptionListsTypeRejected_}};
+				var NAckParams v_nAckParams_2 := {{1, AduReasonCode_exceptionListsTypeRejected_}};
+
+				alt {
+					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams_1)) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC); // check for minimum wait time in response
+						setverdict(pass);
+					}		
+					
+					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams_2)) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC); // check for minimum wait time in response
+						setverdict(pass);
+					}				
+				}
+				f_closeDownMtc();	
 			} // End of TP_TC_EXCEPTIONLIST_BI_05
 
 			testcase TP_TC_EXCEPTIONLIST_BI_06() runs on MainTestComponent system TestAdapter {
 													
             /**
-             * @desc    TP_TC_EXCEPTIONLIST_BI_06: Verify that the TC correctly responds to an ExceptionListADU
-             *			bearing an incorrect value for userId field
-             * @remark  [16986:2016], Clause 6.6 and Table A.1/1 AND Table A.7/3
-             */
-		
-			// Initialisation
-             
-			// Start by setting test success
-							
-            // Step 1: Send Initiating_Apdu containing one ExceptionListADU of list type BLACK
-            // and userId = contractSerialNumber present
-  
-            // Step 2: Wait for NAck_Apdu with issueCode=exceptionListsUserIdRejected(402)
-            // within the time EXCEPTIONLIST.BLACK_TIME1   				
+            * @desc    TP_TC_EXCEPTIONLIST_BI_06: Verify that the TC correctly responds to an ExceptionListADU
+            *			bearing an incorrect value for userId field
+            * @remark  [16986:2016], Clause 6.6 and Table A.1/1 AND Table A.7/3
+            */
+  				
+				// Initialisation
+ 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A7_3_implementedEXCEPTIONLIST;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc                 
 
+	            // Step 1: Send Initiating_Apdu containing one ExceptionListADU of list type BLACK
+    	        // and userId = contractSerialNumber present
+               	var InfoExchange v_apduToBeSent := m_apduNoSecInit(TESTER_EXCEPTIONLIST_ADU_BLACK_INVALID_4);
+				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+		
+                // Start timer
+                t_step.start(EXCEPTIONLIST_BLACK_TIME1_MAX_TC);           
+            	
+            	// Step 2: Wait for NAck_Apdu with issueCode=exceptionListsUserIdRejected(402)
+            	// within the time EXCEPTIONLIST.BLACK_TIME1  
+            	// if negative Ack or not received set test failure --> is done in altstep
+				
+				// Prepare parameters to be expected in the NAck-APDU
+				var NAckParams v_nAckParams_1 := {{0, AduReasonCode_exceptionListsUserIdRejected_}};
+				var NAckParams v_nAckParams_2 := {{1, AduReasonCode_exceptionListsUserIdRejected_}};
+
+				alt {
+					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams_1)) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC); // check for minimum wait time in response
+						setverdict(pass);
+					}		
+					
+					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams_2)) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC); // check for minimum wait time in response
+						setverdict(pass);
+					}				
+				}
+				f_closeDownMtc();	
 			} // End of TP_TC_EXCEPTIONLIST_BI_06
 
 			testcase TP_TC_EXCEPTIONLIST_BI_07() runs on MainTestComponent system TestAdapter {
 													
             /**
-             * @desc    TP_TC_EXCEPTIONLIST_BI_07: Verify that the TC correctly responds
-             *			to an ExceptionListADU with exceptionValidityEnd
-             * @remark  [16986:2016], Clause 6.6 and Table A.1/1 AND Table A.7/3
-             */
-		
-			// Initialisation
-             
-			// Start by setting test success
-							
-            // Step 1: Send Initiating_Apdu containing one ExceptionListADU of list type BLACK
-            // and and with exceptionValidityEnd present
+            * @desc    TP_TC_EXCEPTIONLIST_BI_07: Verify that the TC correctly responds
+            *			to an ExceptionListADU with exceptionValidityEnd
+            * @remark  [16986:2016], Clause 6.6 and Table A.1/1 AND Table A.7/3
+            */
   
-            // Step 2: Wait for NAck_Apdu with issueCode=exceptionListsDateAndTimeRejected(405)
-            // within the time EXCEPTIONLIST.BLACK_TIME1   				
+				// Initialisation
+ 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A7_3_implementedEXCEPTIONLIST;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc                 
+							
+            	// Step 1: Send Initiating_Apdu containing one ExceptionListADU of list type BLACK
+            	// and and with exceptionValidityEnd present
+				var ExceptionListADU v_aduToBeSent := TESTER_EXCEPTIONLIST_ADU_BLACK_INVALID_5;
+	  	
+                var InfoExchange v_apduToBeSent := m_apduNoSecInit(v_aduToBeSent);
+				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+            	
+                // Start timer
+                t_step.start(EXCEPTIONLIST_BLACK_TIME1_MAX_TC);               
 
+            	// Step 2: Wait for NAck_Apdu with issueCode=exceptionListsDateAndTimeRejected(405)
+            	// within the time EXCEPTIONLIST.BLACK_TIME1   				
+              	// if negative Ack or not received set test failure --> is done in altstep
+
+				// Prepare parameters to be expected in the NAck-APDU
+				var NAckParams v_nAckParams_1 := {{0, AduReasonCode_exceptionListsDateAndTimeRejected_}};
+				var NAckParams v_nAckParams_2 := {{1, AduReasonCode_exceptionListsDateAndTimeRejected_}};
+
+				alt {
+					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams_1)) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC); // check for minimum wait time in response
+						setverdict(pass);
+					}
+
+					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams_2)) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC); // check for minimum wait time in response
+						setverdict(pass);
+					}										
+				}
+				f_closeDownMtc();				            	          				
 			} // End of TP_TC_EXCEPTIONLIST_BI_07
 
 			testcase TP_TC_EXCEPTIONLIST_BI_08() runs on MainTestComponent system TestAdapter {
@@ -1404,21 +1528,55 @@ module EfcInfoExchange_TestCasesTc {
              * @desc    TP_TC_EXCEPTIONLIST_BI_08: Verify that the TC responds correctly
              *			to a RequestADU sent earlier than allowed
              * @remark  [16986:2016], Clause 6.6 and Table A.1/1 AND Table A.7/3
-             */
-		
-			// Initialisation
-             
-			// Start by setting test success
+             */  				
+
+				// Initialisation
+				//check if the testcase should be run, activate altsteps on ports, etc 
+ 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A7_3_implementedEXCEPTIONLIST and (EXCEPTIONLIST_BLACK_TIME0_MIN_TC > 0);
+				f_intialiseMtc(v_runOrNot);                 
 							
-            // Step 1: Send Initiating_Apdu containing one valid ExceptionListADU of list type BLACK
+                // Transaction 1
+            	// Step 1: Send Initiating_Apdu containing one valid ExceptionListADU of list type BLACK
             
-            // Send second Initiating_Apdu containing one valid ExceptionListADU of list type BLACK
-            // before EXCEPTIONLIST.TIMEA_MIN has passed
+                // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for black list
+                var InfoExchange v_apduToBeSent := m_apduNoSecInit(TESTER_EXCEPTIONLIST_ADU_BLACK_VALID);
+				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+  	
+                // Start timer
+                t_step.start(EXCEPTIONLIST_BLACK_TIME1_MAX_TC);               
+                // Transaction 1 / Step 2:	
+              	// Wait for Default_Ack_Apdu within time EXCEPTIONLIST.TIME1
+              	// if negative Ack or not received set test failure --> is done in altstep
 
-            // Step 2: Wait for NAck_Apdu with issueCode=NAck_requestSentTooOften(10)
-            // within the time EXCEPTIONLIST.BLACK_TIME1   				
+				alt {
+					[] mtcPort.receive(m_apduDefaultAck(v_apduToBeSent)) -> value v_apduReceived {
+						// Log what we received, check minimum time and stop time
+						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC));
+					}
+				}
+								
+				// Transaction 2
+            	// Step 1: Send second Initiating_Apdu containing one valid ExceptionListADU of list type BLACK
+            	// before TIME0 MIN has passed = immediately after the Ack in Transaction 1 
+            	
+                // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for black list
+                var InfoExchange v_apduToBeSent := m_apduNoSecInit(TESTER_EXCEPTIONLIST_ADU_BLACK_VALID);
+				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+  	
+                // Start timer
+                t_step.start(EXCEPTIONLIST_BLACK_TIME1_MAX_TC);               
 
-		} // End of TP_TC_EXCEPTIONLIST_BI_08
+				// Step 2: Wait for NAck_Apdu with issueCode=NAck_requestSentTooOften(10)
+            	// within the time EXCEPTIONLIST.BLACK_TIME1 
+              	// if negative Ack or not received set test failure --> is done in altstep            	
+
+				alt {
+					[] mtcPort.receive(m_apduNAckRequestSentTooOften(v_apduToBeSent)) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC); // check for minimum wait time in response
+						setverdict(pass);
+					}
+				f_closeDownMtc();				            	          				
+			} // End of TP_TC_EXCEPTIONLIST_BI_08
 
 		} // End of group Invalid_Behaviour 
 			

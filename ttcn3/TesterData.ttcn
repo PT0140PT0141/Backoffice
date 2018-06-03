@@ -90,10 +90,19 @@ module EfcInfoExchange_TesterData{
 			licencePlateNumber := TESTER_LPN_1,
 			obeID := TESTER_OBE_ID_1
 		}			
+
 		modulepar ASNAUX.GeneralizedTime TESTER_ENTRY_VALIDITY_START;
 		modulepar VehicleParameters TESTER_VEHICLE_PARAMETERS;
 		modulepar ASNAUX.UTF8String TESTER_VAT_ID;  
 		modulepar UserId TESTER_USERID_1;
+		modulepar ContractSerialNumber TESTER_CONTRACT_SERIAL_NUMBER_1;
+
+		modulepar UserId TESTER_USERID_INVALID_1 := {
+			pan := TESTER_PAN_1,
+			contractSerialNumber := TESTER_CONTRACT_SERIAL_NUMBER_1,
+			licencePlateNumber := TESTER_LPN_1,
+			obeID := TESTER_OBE_ID_1
+		}		
 		
 		modulepar ExceptionListADU TESTER_EXCEPTIONLIST_ADU_BLACK_VALID := {
 			exceptionListVersion := TESTER_EXCEPTIONLIST_VERSION,
@@ -106,6 +115,95 @@ module EfcInfoExchange_TesterData{
 		  	  	reasonCode := ExceptionListReasonType_notToBeDisclosed_,
 		  	  	entryValidityStart := TESTER_ENTRY_VALIDITY_START,
 		  	  	entryValidityEnd := omit,
+		  	  	vehicleParameters := TESTER_VEHICLE_PARAMETERS,
+		  	  	actionRequested := ExceptionListActionType_rejectOBE_,
+		  	  	efcContextMark := omit,
+		  	  	vatId := TESTER_VAT_ID
+			}}
+		}
+		
+		modulepar ExceptionListADU TESTER_EXCEPTIONLIST_ADU_BLACK_INVALID_! := { //exception list validity end present
+			exceptionListVersion := TESTER_EXCEPTIONLIST_VERSION,
+			exceptionListValidityStart := TESTER_EXCEPTIONLIST_VALIDITY_START,
+			exceptionListValidityEnd := TESTER_EXCEPTIONLIST_VALIDITY_START,
+		  	exceptionListEntries := {{	//Note: this is defined as record of ExceptionListEntry
+		  			userId := TESTER_USERID_1,
+			  		statusType := ExceptionListStatusType_locallyBlocked_,
+		  	  		reasonCode := ExceptionListReasonType_notToBeDisclosed_,
+		  	  		entryValidityStart := TESTER_ENTRY_VALIDITY_START,
+		  	  		entryValidityEnd := omit,
+		  	  		vehicleParameters := TESTER_VEHICLE_PARAMETERS,
+		  	  		actionRequested := ExceptionListActionType_rejectOBE_,
+		  	  		efcContextMark := omit,
+		  	  		vatId := TESTER_VAT_ID
+					}}
+				}		
+
+		modulepar ExceptionListADU TESTER_EXCEPTIONLIST_ADU_BLACK_INVALID_2 := { //EFC-ContextMark present
+			exceptionListVersion := TESTER_EXCEPTIONLIST_VERSION,
+			exceptionListType := ExceptionListType_blackList_,
+		  	exceptionValidityStart := TESTER_EXCEPTIONLIST_VALIDITY_START,
+		  	exceptionValidityEnd := omit,
+		  	exceptionListEntries := {{	//Note: this is defined as record of ExceptionListEntry
+		  	  	userId := TESTER_USERID_1,
+		  	  	statusType := ExceptionListStatusType_locallyBlocked_,
+		  	  	reasonCode := ExceptionListReasonType_notToBeDisclosed_,
+		  	  	entryValidityStart := TESTER_ENTRY_VALIDITY_START,
+		  	  	entryValidityEnd := omit,
+		  	  	vehicleParameters := TESTER_VEHICLE_PARAMETERS,
+		  	  	actionRequested := ExceptionListActionType_rejectOBE_,
+		  	  	efcContextMark := TESTER_EFC_CONTEXT_MARK,
+		  	  	vatId := TESTER_VAT_ID
+			}}
+		}
+
+		modulepar ExceptionListADU TESTER_EXCEPTIONLIST_ADU_BLACK_INVALID_3 := { // exception list version <= 0)
+			exceptionListVersion := 0,
+			exceptionListType := ExceptionListType_blackList_,
+		  	exceptionValidityStart := TESTER_EXCEPTIONLIST_VALIDITY_START,
+		  	exceptionValidityEnd := omit,
+		  	exceptionListEntries := {{	//Note: this is defined as record of ExceptionListEntry
+		  	  	userId := TESTER_USERID_1,
+		  	  	statusType := ExceptionListStatusType_locallyBlocked_,
+		  	  	reasonCode := ExceptionListReasonType_notToBeDisclosed_,
+		  	  	entryValidityStart := TESTER_ENTRY_VALIDITY_START,
+		  	  	entryValidityEnd := omit,
+		  	  	vehicleParameters := TESTER_VEHICLE_PARAMETERS,
+		  	  	actionRequested := ExceptionListActionType_rejectOBE_,
+		  	  	efcContextMark := omit,
+		  	  	vatId := TESTER_VAT_ID
+			}}
+		}
+
+		modulepar ExceptionListADU TESTER_EXCEPTIONLIST_ADU_BLACK_VALID_4 := { //contract serial number present
+			exceptionListVersion := TESTER_EXCEPTIONLIST_VERSION,
+			exceptionListType := ExceptionListType_blackList_,
+		  	exceptionValidityStart := TESTER_EXCEPTIONLIST_VALIDITY_START,
+		  	exceptionValidityEnd := omit,
+		  	exceptionListEntries := {{	//Note: this is defined as record of ExceptionListEntry
+		  	  	userId := TESTER_USERID_INVALID_1,
+		  	  	statusType := ExceptionListStatusType_locallyBlocked_,
+		  	  	reasonCode := ExceptionListReasonType_notToBeDisclosed_,
+		  	  	entryValidityStart := TESTER_ENTRY_VALIDITY_START,
+		  	  	entryValidityEnd := omit,
+		  	  	vehicleParameters := TESTER_VEHICLE_PARAMETERS,
+		  	  	actionRequested := ExceptionListActionType_rejectOBE_,
+		  	  	efcContextMark := omit,
+		  	  	vatId := TESTER_VAT_ID
+			}}
+		}
+
+		modulepar ExceptionListADU TESTER_EXCEPTIONLIST_ADU_BLACK_INVALID_5 := { // exception validity end present
+			exceptionListVersion := TESTER_EXCEPTIONLIST_VERSION,
+			exceptionListType := ExceptionListType_blackList_,
+		  	exceptionValidityStart := TESTER_EXCEPTIONLIST_VALIDITY_START,
+		  	exceptionValidityEnd := omit,
+		  	exceptionListEntries := {{	//Note: this is defined as record of ExceptionListEntry
+		  	  	userId := TESTER_USERID_1,
+		  	  	statusType := ExceptionListStatusType_locallyBlocked_,
+		  	  	reasonCode := ExceptionListReasonType_notToBeDisclosed_,
+		  	  	entryValidityStart := TESTER_ENTRY_VALIDITY_START,
+		  	  	entryValidityEnd := TESTER_ENTRY_VALIDITY_START,
 		  	  	vehicleParameters := TESTER_VEHICLE_PARAMETERS,
 		  	  	actionRequested := ExceptionListActionType_rejectOBE_,
 		  	  	efcContextMark := omit,
@@ -147,7 +245,27 @@ module EfcInfoExchange_TesterData{
 		  	  	efcContextMark := omit,
 		  	  	vatId := TESTER_VAT_ID
 			}}
+		}	
+		
+		modulepar ExceptionListADU TESTER_EXCEPTIONLIST_ADU_TYPE4_VALID := { //No supported type
+			exceptionListVersion := TESTER_EXCEPTIONLIST_VERSION,
+			exceptionListType := ExceptionListType_otherListType2_,
+		  	exceptionValidityStart := TESTER_EXCEPTIONLIST_VALIDITY_START,
+		  	exceptionValidityEnd := omit,
+		  	exceptionListEntries := {{	//Note: this is defined as record of ExceptionListEntry
+		  	  	userId := TESTER_USERID_1,
+		  	  	statusType := ExceptionListStatusType_allApplications_,
+		  	  	reasonCode := omit,
+		  	  	entryValidityStart := TESTER_ENTRY_VALIDITY_START,
+		  	  	entryValidityEnd := omit,
+		  	  	vehicleParameters := TESTER_VEHICLE_PARAMETERS,
+		  	  	actionRequested := ExceptionListActionType_acceptOBE_,
+		  	  	efcContextMark := omit,
+		  	  	vatId := TESTER_VAT_ID
+			}}
 		}		
+		
+			
 	} // end group ExceptionListTesterData		
 	
 	group ProvideUserDetailsData {
