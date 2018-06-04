@@ -442,6 +442,9 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			
 			template InfoExchange mw_apduAuthTrustObject := mw_apduSec(mw_apci, Adus:{trustObjectAdus:=?});
 			
+			template InfoExchange mw_apduRequestOneTrustObject :={
+				//TODO
+			}
 		}
 
 		group PAYMENTCLAIM {
@@ -512,9 +515,12 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			type record of UserClassId RecOfUserClassId; 
 			
 			template (value) EfcContextDataADU m_aduEfcContextDataDsrcClosedContext(
-				RecOfLocalVehicleClassId p_ROfLocVehClassId, 
+				RecOfLocalVehicleClassId p_ROfLocVehClassId,
+				template LocalVehicleClassDefinition p_localVehicleClassDefinition, 
 				template RecOfTimeClassId p_ROfTimeClassId, 
+				template TimeClassDefinition p_timeClassDefinition, 
 				template RecOfUserClassId p_ROfUserClassId,
+				template UserClassDefinition p_userClassDefinition, 
 				template FeeDefinition p_feeDefinition
 			) := {
 				entityOverview := omit,
@@ -541,7 +547,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 										validFrom:=fx_getUtc()
 									}
 								},
-								localVehicleClassDefinition:=omit,
+								localVehicleClassDefinition:= p_localVehicleClassDefinition,
 								timeClassDefinition:=omit,
 								userClassDefinition:=omit,
 								feeDefinition:=p_feeDefinition
@@ -550,14 +556,17 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 					}
 				}
 			}	
-			//TODO Fausto we need to define localVehicleClassDefinition, timeClassDefinition, userClassDefinition and and also check the feeDefinition 
-
 			
-			template (value) EfcContextDataADU m_aduEfcContextDataDsrcClosedContextTariffClassDefinition := m_aduEfcContextDataDsrcClosedContext({},omit,omit,omit);
-			template (value) EfcContextDataADU m_aduEfcContextDataDsrcClosedContextLocVehClass := m_aduEfcContextDataDsrcClosedContext({1,2,3},omit,omit,omit);
-			template (value) EfcContextDataADU m_aduEfcContextDataDsrcClosedContextTimeClass := m_aduEfcContextDataDsrcClosedContext({},{1,2,3},omit,omit);
-			template (value) EfcContextDataADU m_aduEfcContextDataDsrcClosedContextUserClass := m_aduEfcContextDataDsrcClosedContext({},omit,{1,2,3},omit);
-			template (value) EfcContextDataADU m_aduEfcContextDataDsrcClosedContextFeeDefinition := m_aduEfcContextDataDsrcClosedContext({},omit,omit,m_feeDefinition);
+			template (value) EfcContextDataADU m_aduEfcContextDataDsrcClosedContextTariffClassDefinition := 
+				m_aduEfcContextDataDsrcClosedContext({},omit,omit,omit,omit,omit,omit);
+			template (value) EfcContextDataADU m_aduEfcContextDataDsrcClosedContextLocVehClass := 
+				m_aduEfcContextDataDsrcClosedContext({1,2,3},m_localVehicleClassDefinition,omit,omit,omit,omit,omit);
+			template (value) EfcContextDataADU m_aduEfcContextDataDsrcClosedContextTimeClass := 
+				m_aduEfcContextDataDsrcClosedContext({},omit,{1,2,3},m_timeClassDefinition,omit,omit,omit);
+			template (value) EfcContextDataADU m_aduEfcContextDataDsrcClosedContextUserClass := 
+				m_aduEfcContextDataDsrcClosedContext({},omit,omit,omit,{1,2,3},m_userClassDefinition,omit);
+			template (value) EfcContextDataADU m_aduEfcContextDataDsrcClosedContextFeeDefinition := 
+				m_aduEfcContextDataDsrcClosedContext({},omit, omit,omit,omit,omit, m_feeDefinition);
 			
 			template (value) FeeDefinition m_feeDefinition:= {
 				actualPath:={
@@ -565,11 +574,13 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
     					applicablePartitions := {1,2,3}, // Three partitions
     					tariffs := {
     							{tariffClass := 1,
-    							chargeUnit.event := 1,
+    							chargeUnit:={
+    								event := 1
+    							},
     							roundingRuleForChargeUnitsUsed := RoundingRule_up_,
     							basicFeePerChargeUnit := '2978'H, // Units in cents, currency Euro
     							roundingRuleForFee := RoundingRule_up_,
-    							vat omit,
+    							vat:=omit,
     							roundingRuleForVat := omit,
     							intervalScaleParameters := omit,
     							offsetFee := omit,
@@ -579,11 +590,13 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
     							alternativeCurrency := omit
   								},
   								{tariffClass := 2,
-    							chargeUnit.event := 2,
+    							chargeUnit:={
+    								event := 2
+    							},
     							roundingRuleForChargeUnitsUsed := RoundingRule_no_,
     							basicFeePerChargeUnit := '2978'H, // Units in cents, currency Euro
     							roundingRuleForFee := RoundingRule_no_,
-    							vat omit,
+    							vat:=omit,
     							roundingRuleForVat := omit,
     							intervalScaleParameters := omit,
     							offsetFee := omit,
@@ -640,22 +653,22 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			
 			template InfoExchange mw_apduAuthEfcContextData := mw_apduSec(mw_apci, Adus:{efcContextDataADUs:=?});
 
-			template (value) LocalDefinition m_localDefinition:= 	{
+			template (value) LocalVehicleClassDefinition m_localVehicleClassDefinition:= 	{
 				localVehicleClasses := {
 					localVehicleClassId := 1,
     				nominalElements := {
     					vehicleClasses := {1,2,3},
     					vehicleTrainAxlesNumbers := omit,
-    					euroValues omit,
-    					copValues omit
-    					},
+    					euroValues:=omit,
+    					copValues:=omit
+    				},
     				ordinalElements := omit,
     				priorityValue := omit
 				},
     			localVehicleClassVersion := omit			  
 			}		
 		
-			template (value) TimeDefinition m_timeDefinition:= 	{
+			template (value) TimeClassDefinition m_timeClassDefinition:= 	{
 				    timeClasses := {
 						timeClassId := 1,
 						nominalElements := omit,
@@ -664,18 +677,23 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				    },
 					timeClassDefinitionVersion := omit
 			}
-			template (value) UserDefinition m_userDefinition:= 	{
-				    userClasses := {
-				    	{userClassId := 1,
+			
+			template (value) UserClassDefinition m_userClassDefinition:= 	{
+				userClasses := {
+					{
+						userClassId := 1,
 						contractTypes := omit,
 						actualNumberOfPassengers := omit,
-						priorityValue omit},
-				    	{userClassId := 2,
+						priorityValue:=omit
+					},
+				    {
+				    	userClassId := 2,
 						contractTypes := omit,
 						actualNumberOfPassengers := omit,
-						priorityValue omit}				    	
-					}
-					VersionAndValidity userClassDefinitionVersion optional
+						priorityValue:= omit
+					}				    	
+				},
+				userClassDefinitionVersion:=omit
 			}		
 		
 		}

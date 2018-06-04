@@ -232,8 +232,8 @@ module EfcInfoExchange_TestCasesTc {
 				
 				// TODO PT140: prepare in v_adus provideUserDetailsADU not corresponding to requested parameters, that is v_adus is NEVER SET								                   
 				
-				var InfoExchange v_apduProvideUserDetailsSend:=m_apduNoSec(m_apciSendResponse(v_apduReceived), v_adus);
-				f_sendAndLogApdu(v_apduProvideUserDetailsSend);
+				var InfoExchange v_apduToSend:=m_apduNoSec(m_apciSendResponse(v_apduReceived), v_adus);
+				f_sendAndLogApdu(v_apduToSend);
 
 				//Set timer
 				t_step.start(USERDETAILS_TIME2_MAX_TC);
@@ -1152,7 +1152,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(m_apduDefaultAck(v_apduToBeSent)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC));
+						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
 					}
 				}
 				
@@ -1217,13 +1217,13 @@ module EfcInfoExchange_TestCasesTc {
 						//Set verdict
 						setverdict(pass)												
 					}
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams_1)) -> value v_apduReceived {				  
+					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams_1)) -> value v_apduReceived {				  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_DISCOUNT_TIME1_MIN_TC);
 						//Set verdict
 						setverdict(pass)												
 					}
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams_2)) -> value v_apduReceived {				  
+					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams_2)) -> value v_apduReceived {				  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_DISCOUNT_TIME1_MIN_TC);
 						//Set verdict
@@ -1551,7 +1551,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(m_apduDefaultAck(v_apduToBeSent)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC));
+						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
 					}
 				}
 								
@@ -1560,7 +1560,7 @@ module EfcInfoExchange_TestCasesTc {
             	// before TIME0 MIN has passed = immediately after the Ack in Transaction 1 
             	
                 // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for black list
-                var InfoExchange v_apduToBeSent := m_apduNoSecInit(TESTER_EXCEPTIONLIST_ADU_BLACK_VALID);
+                v_apduToBeSent := m_apduNoSecInit(TESTER_EXCEPTIONLIST_ADU_BLACK_VALID);
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
   	
                 // Start timer
@@ -1575,6 +1575,7 @@ module EfcInfoExchange_TestCasesTc {
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
 					}
+				}
 				f_closeDownMtc();				            	          				
 			} // End of TP_TC_EXCEPTIONLIST_BI_08
 

@@ -122,7 +122,7 @@ module EfcInfoExchange_TesterData{
 			}}
 		}
 		
-		modulepar ExceptionListADU TESTER_EXCEPTIONLIST_ADU_BLACK_INVALID_! := { //exception list validity end present
+		modulepar ExceptionListADU TESTER_EXCEPTIONLIST_ADU_BLACK_INVALID_ := { //exception list validity end present
 			exceptionListVersion := TESTER_EXCEPTIONLIST_VERSION,
 			exceptionListValidityStart := TESTER_EXCEPTIONLIST_VALIDITY_START,
 			exceptionListValidityEnd := TESTER_EXCEPTIONLIST_VALIDITY_START,

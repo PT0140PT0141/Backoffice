@@ -461,7 +461,8 @@ module EfcInfoExchange_TestCasesTsp {
 
 			testcase TP_TSP_Base_BI_08() runs on MainTestComponent system TestAdapter {
 				/**
-				 * @desc    TP_TSP_Base_BI_08: Verify that the TSP correctly responds to an APDU which contains an invalid inResponseToApduId value inside  the APCI field 
+				 * @desc    TP_TSP_Base_BI_08: Verify that the TSP correctly responds to an APDU 
+				 * @desc    which contains an invalid inResponseToApduId value inside  the APCI field 
 				 * @remark  [16986:2016], Clause 6.2.1 and Table A.1/2 
 				 */
 				// Initialisation
@@ -476,8 +477,11 @@ module EfcInfoExchange_TestCasesTsp {
 				// Send the IUT a  trigger to send one initial APDU with requestedADUType=trustObjectRequestADU and complete its transaction
 				f_sendAndLogTrigger(TRUSTOBJECTS_TR_1);				
 				//  Wait for request for TrustObjectAdu
+
+				//TODO Change this entire testcase to be besed on the EXCEPTIONLIST transaction instead
+
 				alt {
-					[] mtcPort.receive(mw_apduTrustObject) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduRequestOneTrustObject) -> value v_apduReceived {
 						// Log what we received
 						f_logReceivedWaitAndAcknowledge(0.0);	// Do not wait to send an Ack whichever object received
 
@@ -491,29 +495,22 @@ module EfcInfoExchange_TestCasesTsp {
 							f_addLogEntry("Invalid Trust object purpose received");
 							stop;
 						};
-						if (match(v_apduReceived ,m_apduTrustObjectDsrcKeyRef)){ 
+						if (match(v_apduReceived, m_apduTrustObjectDsrcKeyRef)){ 
 							isDsrcKeyRef:=true;
 						}
-						if (match(v_apduReceived ,m_apduTrustObjectMacMasterKey)) {
+						if (match(v_apduReceived, m_apduTrustObjectMacMasterKey)) {
 							isMacMasterKey:=true;
 						}
-						if (match(v_apduReceived ,m_apduTrustObjectDsrcMasterKey)) {
+						if (match(v_apduReceived, m_apduTrustObjectDsrcMasterKey)) {
 							isDsrcMasterKey:=true;
 						}
 					}										
 				} // End of alt statement
 
-				// Only allowed combinations according to profile
-				//TODO PT140 Q to Fausto: Should the conditions not be: 
-
-				//(not(
-				//(ICS_A2_1_isDsrc and (isCertificateOrPublicKey or isDsrcKeyRef or isMacMasterKey or isDsrcMasterKey)) or 
-				//(ICS_A2_2_isGnss and (isCertificateOrPublicKey or isDsrcKeyRef))
-				//))
-
-				if (not (
-					(ICS_A2_1_isDsrc and isCertificateOrPublicKey and isDsrcKeyRef and isMacMasterKey and isDsrcMasterKey) or			 				
-					(ICS_A2_2_isGnss and isCertificateOrPublicKey and isDsrcKeyRef)
+				
+				if(not(
+					(ICS_A2_1_isDsrc and (isCertificateOrPublicKey or isDsrcKeyRef or isMacMasterKey or isDsrcMasterKey)) or 
+					(ICS_A2_2_isGnss and (isCertificateOrPublicKey or isDsrcKeyRef))
 				)) {
 					setverdict(fail);
 					f_addLogEntry("Invalid combination of Trust Object type and Trust Object purpose");  
@@ -888,7 +885,7 @@ module EfcInfoExchange_TestCasesTsp {
 						  }
 						if (not match(
 							v_apduReceived.adus.provideUserDetailsADUs[0],						
-							ProvideUserDetailsADU: modifies mw_aduProvideUserDetails := {
+							modifies mw_aduProvideUserDetails := {
 								listOfUserParameters.requestedUserParameter := omit,
 								listOfUserParameters.userParameterStatus := 1
 							}
@@ -950,7 +947,7 @@ module EfcInfoExchange_TestCasesTsp {
 						}
 						if (not match(
 							v_apduReceived.adus.provideUserDetailsADUs[0],						
-							ProvideUserDetailsADU: modifies mw_aduProvideUserDetails := {
+							modifies mw_aduProvideUserDetails := {
 								userId := omit,
 								statusFlag:=2,
 								listOfUserParameters.userParameterStatus := 3,
@@ -1467,7 +1464,10 @@ module EfcInfoExchange_TestCasesTsp {
 						f_logApduReceivedAndTStep();	
 						//send Ack whichever object received
 						f_logReceivedWaitAndAcknowledge(v_apduReceived); 							
-						//Read the trustObjectPurpose received and add to set 				
+						//Read the trustObjectPurpose received and add to set 
+						
+						
+										
 						if ((match(v_apduReceived, m_apduTrustObjectCertificateObject)) or 
 						    (match(v_apduReceived, m_apduTrustObjectPublicKeyObject))) 
 							{isCertificateOrPublicKey:=true;}
@@ -1491,12 +1491,20 @@ module EfcInfoExchange_TestCasesTsp {
 				} // End of alt statement
 				// Exiting the alt means that the expected number of Trust Objects have been received
 				label ReceivedAll;
+
+				//TODO Fausto/Jan - update the logic	
+				//This boolean logic could be used
+				//For DSRC: ICS_A2_1_isDsrc and isCertificateOrPublicKey and ((isOtherTrustObject and isTypeCrl) or not isOtherTrustObject) and isDsrcMasterKey and isMacMasterKey and isDsrcKeyRef 
+				//For GNSS: ICS_A2_2_isGnss and isCertificateOrPublicKey and ((isOtherTrustObject and isTypeCrl) or not isOtherTrustObject) and isDsrcKeyRef
+				
 				if (ICS_A2_1_isDsrc and isCertificateOrPublicKey and isDsrcKeyRef and isMacMasterKey and isDsrcMasterKey) {
 					setverdict(pass);
-				}			 				
-				if (ICS_A2_2_isGnss and isCertificateOrPublicKey and isDsrcKeyRef){
+				} else if (ICS_A2_2_isGnss and isCertificateOrPublicKey and isDsrcKeyRef){
 					setverdict(pass);
-				}			 				
+				} else {
+					f_addLogEntry("Did not receive all expected Trust Objects");
+					setverdict(fail);
+				}	 				
 				f_closeDownMtc();              
            } // End of TP_TSP_TRUSTOBJECTS_BV_01
 
@@ -1544,7 +1552,7 @@ module EfcInfoExchange_TestCasesTsp {
 				for (var integer v_trustObjectsReceived :=1; v_trustObjectsReceived<v_trustObjectsToBeSent;v_trustObjectsReceived:=v_trustObjectsReceived+1)
 					{
 						// Prepare a request of a Trust Object by taking allowed type and purpose from the RECEIVED_TRUST_OBJECTS_SUPPORTED Pixit value
-						var InfoExchange v_apduRequestForTrustObject := m_apduNoSecInit( modifies m_aduRequestTrustObjects:={
+						var InfoExchange v_apduRequestForTrustObject := m_apduNoSecInit(modifies m_aduRequestTrustObjects:={
 						  	trustObjectRequest.requestedTrustObject.trustObjectSpec.typeOfTrustObject := SENT_TRUST_OBJECTS_SUPPORTED[v_trustObjectsReceived].trustObjectType,
 						  	trustObjectRequest.requestedTrustObject.trustObjectSpec.purposeOfTrustObject := SENT_TRUST_OBJECTS_SUPPORTED[v_trustObjectsReceived].trustObjectPurpose	
 							}
@@ -3050,8 +3058,8 @@ module EfcInfoExchange_TestCasesTsp {
 					  	closedContext.closedSystem.tollContextOverview := tollContextOverviewTESTER_VALUE,
 					  	closedContext.closedContextType := 3, // only 1 or 2 are allowed
 					  	feeModifiers := omit
-						}
-					});                 
+					}}
+				);                 
 				f_sendAndLogApdu(v_apduRespondedTo);                 
                  // Step 2: Wait for negative Ack within DSRC.EFCCONTEXTDATA.TIME1
 				//Create parameters for the m_apduNAck			
@@ -4928,7 +4936,7 @@ module EfcInfoExchange_TestCasesTsp {
                  // Initialisation 
 				// The IUT is supposedly being prepared with valid test toll declaration data
 					
-				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A2_2_isGnss and ICS_A52_3_implementedGNSSPAYMENTANNOUNCEMENT;
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A2_2_isGnss and ICS_A52_4_implementedGNSSPAYMENTANNOUNCEMENT;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				
 				// Step 1: Trigger IUT with GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1_A to send one valid PaymentAnnouncementADU with actionCode = send
@@ -4936,10 +4944,7 @@ module EfcInfoExchange_TestCasesTsp {
 				//  Wait for GNSS.PAYMENTANNOUNCEMENT
 				// PT140 TODO: mw_aduGnssPaymentAnnouncement template to be defined
 				var InfoExchange v_apduToBeReceived := m_apduNoSecInit(
-					{modifies mw_aduGnssPaymentAnnouncement:= {
-					  	actionCode := ActionCode_send_
-					  	}
-					});
+					{modifies mw_aduGnssPaymentAnnouncement:= {actionCode := ActionCode_send_}});
 					
 				// Wait for PaymentAnnouncementADU within allowed time constraints
 				t_step.start(GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TSP);	
@@ -4963,7 +4968,7 @@ module EfcInfoExchange_TestCasesTsp {
 
 				// The IUT is supposedly being prepared with valid test toll declaration data
 					
-				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A2_2_isGnss and ICS_A52_3_implementedGNSSPAYMENTANNOUNCEMENT;
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A2_2_isGnss and ICS_A52_4_implementedGNSSPAYMENTANNOUNCEMENT;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				
 				// Trigger IUT with GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1_A to send one valid PaymentAnnouncementADU with actionCode = send
@@ -4979,7 +4984,7 @@ module EfcInfoExchange_TestCasesTsp {
 				t_step.start(TIMEOUT_FOR_SETUP_OF_TRANSACTION);	
 				alt {
 					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
-						f_logReceivedWaitAndAcknowledge(PAYMENTANNOUNCEMENT_TIME1_TC);
+						f_logReceivedWaitAndAcknowledge(PAYMENTANNOUNCEMENT_TIME1_MIN_TC);
 						// Remember Payment Announcement ID and amount for future usage
 						var integer idReceived := v_apduReceived.infoExchangeContent.adus.PaymentAnnouncementADU.paymentAnnouncementID;
 						var ExtendedPaymentAmount amountReceived := v_apduReceived.infoExchangeContent.adus.PaymentAnnouncementADU.totalamount
@@ -4994,12 +4999,14 @@ module EfcInfoExchange_TestCasesTsp {
 				//  Wait for GNSS.PAYMENTANNOUNCEMENT
 				// PT140 TODO: mw_aduGnssPaymentAnnouncement template to be defined
 				var InfoExchange v_apduToBeReceived := m_apduNoSecInit(
-					{modifies mw_aduGnssPaymentAnnouncement:= {
-					  	paymentAnnouncementID := idReceived,
-					  	actionCode := ActionCode_adjust_,
-					  	totalamount !=	amountReceived				  	
-					  	}
-					});
+					{
+						modifies mw_aduGnssPaymentAnnouncement:= {
+						  	paymentAnnouncementID := idReceived,
+						  	actionCode := ActionCode_adjust_,
+						  	totalamount :=	amountReceived				  	
+						}
+					}
+				);
 				// Wait for PaymentAnnouncementADU within allowed time constraints
 				alt {
 					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
