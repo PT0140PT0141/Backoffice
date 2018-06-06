@@ -696,6 +696,716 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				userClassDefinitionVersion:=omit
 			}		
 		
+/**
+ * @author  PT0140  
+ * @desc    This module provides common templates for both Toll Charger and Toll Service Provider TCs. Most of these templates shall be used to modify the new ones.
+ * @see     [17154-1:2017]: Test suite structure and test purpose
+ * @see     Electronic fee collection — Evaluation of implementation for conformity to CEN/TS 16986 — Part 1: Test suite structure and purposes
+ * @remark  See Annex C - Data structures
+ * @version $id$
+ */
+module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization" {
+
+	//importing other modules
+	import from EfcInfoExchange_Pixits all;
+	import from EfcInfoExchange_Ics all;
+	import from EfcInfoExchange_Functions all;
+	import from EfcInfoExchange_TesterData all;
+	
+	//importing ASN.1 data automatically translated into TTCN-3	
+	import from EfcInfoExchange language "ASN.1:1997" all;
+	/**
+     * @desc    [17575-1:2016], Charging
+     * @see     Annex A (normative) EFC data type specifications
+     */
+    import from EfcAutonomousCharging language "ASN.1:1997" all;
+    /**
+     * @desc    [17575-3:2016], Context data
+     * @see     A.2 Data specifications
+     */
+    import from EfcAutonomousContextData language "ASN.1:1997" all;
+    /**
+     * @desc    Electronic fee collection (EFC) — Application interface definition for autonomous systems — Part 4: Roaming
+     * @see     Annex A (normative) EFC data type specifications
+     */
+    import from EfcDsrcApplication language "ASN.1:1997" all;
+    /**
+     * @desc    TTCN-3 does not support ASN.1 parameterization (ETSI ES 201 873-7 V4.5.1 Clause 10)
+     *          Common_Parametrised_Asn1_Data TTCN-3 module is a workaround
+     */
+
+	//importing ASN.1 data manually translated into TTCN-3
+	import from EfcInfoExchange_ParameterisedAsn1Data all;  
+    import from Common_ParametrisedAsn1Data all;
+	import from EfcInfoExchangeProfile all;
+    
+    group ApduTemplates {
+        
+        /**
+         * @desc    Generic template for InfoExchange structure, without authentication     
+         */
+    	template InfoExchange m_apduNoSec(in template ApciFields p_apci, in template Adus p_adus):={
+    	  infoExchangeContent:={
+    	  	apci:=p_apci,
+    	  	adus:=p_adus
+    	  },
+    	  infoExchangeAuthenticator := omit
+    	}
+    	
+        
+        /**
+         * @desc    Generic template for InfoExchange structure, with authentication     
+         */
+    	template InfoExchange mw_apduSec(in template ApciFields p_apci, in template Adus p_adus):={
+    	  infoExchangeContent:={
+    	  	apci:=p_apci,
+    	  	adus:=p_adus
+    	  },
+    	  infoExchangeAuthenticator := *
+    	}
+    
+    	/**
+         * @desc Generic template for ApciFields 
+         */
+    	template ApciFields mw_apci := { 
+    		aidIdentifier := 1, // 12855 Protocol Version number 
+    		apduOriginator := ?, // Source of the content of the APDU 
+    		informationSenderID := ?, // Sender of this content 
+    		informationrecipientID := ?,  
+    		apduIdentifier := ?,
+    		previousApduId := *,
+    		nextApduId := omit,
+    		inResponseToApduId := *, 
+    		apduDate :=  ?
+    	}
+    	
+    	/**
+         * @desc Template for ApciFields sent by the Tester     
+         */
+    	template ApciFields mw_apciSend modifies mw_apci:= {			
+    		apduOriginator := APDU_ORIGINATOR_FOR_TESTER,  
+    		informationSenderID := INFORMATION_SENDER_ID_FOR_TESTER, 
+    		informationrecipientID := INFORMATION_SENDER_ID_FOR_IUT,
+    		previousApduId:=omit,
+    		//apduIdentifier shall be a unique identifier for each given apduOriginator that is assigned by the apduOriginator. 
+    		//It is used to either acknowledge or request retransmission of a previously issued APDU.
+    		apduIdentifier := float2int(rnd()) * 65535
+    	}
+    	  	
+
+    	/**
+    	 * 
+		* @desc Template for ApciFields for APDUs sent by the Tester as a response     
+		*/
+	   template (value) ApciFields m_apciSendResponse(in InfoExchange p_apduBeingRespondedTo) modifies mw_apciSend:= {			
+			inResponseToApduId := {
+				apduOriginator:=p_apduBeingRespondedTo.infoExchangeContent.apci.apduOriginator,
+				apduIdentifier:=p_apduBeingRespondedTo.infoExchangeContent.apci.apduIdentifier
+			},
+			// TODO PT140: Check whether the function is evaluated at run time. If not, time  has to be set within the test case
+		   	apduDate:=fx_getUtc()
+	   }
+    	
+    	/**
+    	 * 
+         * @desc Template for ApciFields for initiating APDUs sent by the Tester     
+         */
+    	template (value) ApciFields m_apciSendFirst modifies mw_apciSend:= {			
+    		inResponseToApduId := omit,
+    		apduDate:=fx_getUtc()
+    	}
+    	
+    	/**
+    	 * 
+    	 * @desc Corresponds to the event Initiating_Apdu desribed in test purposes.
+    	 * @desc Definition: "An APDU with the APCI-fields set to informationRecipientId = Tester identifier and apduDate = valid date, 
+    	 * @desc optional fields on all levels not present" 
+    	 */ 
+    	template (value) InfoExchange m_apduNoSecInit(in Adus p_adus) := m_apduNoSec(
+     		m_apciSendFirst, 
+     		p_adus
+     	);
+
+    	template (value) InfoExchange m_apduSecInit(in Adus p_adus):={
+    	  infoExchangeContent:={
+    	  	apci:=m_apciSendFirst,
+    	  	adus:=p_adus
+    	  },
+    	  infoExchangeAuthenticator := fx_computeAuthenticator({apci:=m_apciSendFirst,adus:=p_adus})
+    	}
+
+
+    	/**
+    	 * 
+    	 * @desc Corresponds to the event Default_Apdu described in test purposes.
+		 * @desc Definition: "An APDU with the APCI-fields set to informationRecipientId = Tester identifier, 
+		 * @desc inResponseToApduId = the apduId of the APDU carrying the ADU that is being responded to and 
+		 * @desc apduDate = valid date, other optional fields on all levels not present" 
+    	 */ 
+		template (value) InfoExchange m_apduDefault(in InfoExchange p_apduToRespondTo, in Adus p_adus) := m_apduNoSec(
+			m_apciSendResponse(p_apduToRespondTo), 
+			p_adus
+	    );
+
+		template InfoExchange mw_apduRequest := m_apduNoSec(mw_apci, Adus:{requestAdus:=?});
+			
+		template InfoExchange mw_apduAuthRequest := mw_apduSec(mw_apci, Adus:{requestAdus:=?});
+
+
+		template (value) Adus m_oneAckInAdusStruct(in AckADU p_ackADU):={ackAdus:={p_ackADU}};
+		
+		/**
+		 * 
+		 * @desc Corresponds to the event Default_Ack_Apdu described in test purposes.
+		 * @desc Definition: "Default_Apdu containing one AckADU containing {apduAckCode =: apduOK(2)}, with issues being not present" 
+		 */ 
+		template (value) InfoExchange m_apduDefaultAck(in InfoExchange p_apduToAck) := m_apduDefault(
+			p_apduToAck, 
+			m_oneAckInAdusStruct(m_aduDefaultAck(p_apduToAck))
+		);
+
+		/**
+		 * 
+		 * @desc Corresponds to the event NAck_Apdu described in test purposes.
+    	 * @desc Definition: "NAck_Apdu(zero or more sets of Param defined as {aduPosition, aduReasonCode}) 
+    	 * @desc "Default_Apdu containing one AckADU containing {apduAckCode= apduOK(2), issues containing one 
+    	 * @desc element for each Param set containing {issueADUStruct=aduPosition, issueCode = aduReasonCode }}"
+    	 * @desc NOTE	the NAck_Apdu definition assumes that there are some valid ADUs in the APDU it is 
+    	 * @desc responding to (otherwise an apduAckCode  = apduNotOK(3) might have been a feasible answer)
+		 */ 
+		template (value) InfoExchange m_apduNAck(in InfoExchange p_apduToAck, in NAckParams p_nAckParams) := m_apduDefault(
+			p_apduToAck, 
+			m_oneAckInAdusStruct(m_aduNAck(p_apduToAck, p_nAckParams))
+	    );
+
+		type record of record {
+			NumberOfADUStruct issueADUStruct,
+			ASNAUX.UTF8String issueLocation length (0 .. 512) optional,
+			ASNAUX.UTF8String issueContent length (0 .. 1024) optional,
+			AduReasonCode issueCode,
+			ASNAUX.UTF8String issueText length (0 .. 1024) optional
+	  	}  NAckParams;
+	  	
+		/**
+		 * 
+		 * @desc Construct with one issueCode value, to be used when creating customised m_apduNAck)
+		 */ 		
+	 	template (value) NAckParams m_nAckParamsSingle(
+			in NumberOfADUStruct p_issueADUStruct, 
+			in AduReasonCode p_issueCode
+		):={
+			{
+				issueADUStruct:=p_issueADUStruct,
+				issueLocation := omit,
+				issueContent := omit,
+				issueCode := p_issueCode,
+				issueText:= omit
+			}
+		};
+	  	
+
+		template AckADU m_aduNAck(in InfoExchange p_apduToAck, in NAckParams p_nAckParams) := {
+			apduIdentifier := p_apduToAck.infoExchangeContent.apci.apduIdentifier,
+			explicitlyAckedAdus := omit,
+			apduAckCode := ApduReasonCode_apduNotOK_ ,
+			apduAckText := omit,
+			issues := p_nAckParams
+		}
+    	
+			
+		/**
+		 * 
+		 * @desc Corresponds to the event NAck_requestSentTooOften described in test purposes.
+		 * @desc Definition: "Default_Apdu containing one AckADU containing {apduAckCode= requestSentTooOften(10)}" 
+		 */ 
+		template (value) InfoExchange m_apduNAckRequestSentTooOften(in InfoExchange p_apduToAck) := m_apduDefault(
+			p_apduToAck,
+			m_oneAckInAdusStruct(m_aduAckRequestSentTooOften(p_apduToAck))			
+		);
+
+		template AckADU m_aduAckRequestSentTooOften(in InfoExchange p_apduToAck) := {
+			apduIdentifier := p_apduToAck.infoExchangeContent.apci.apduIdentifier,
+			explicitlyAckedAdus := omit,
+			apduAckCode := ApduReasonCode_requestSentTooOften_ ,
+			apduAckText := omit,
+			issues := omit
+		}
+      
+		template AckADU mw_aduDefaultAck := {
+			apduIdentifier := ?,
+			explicitlyAckedAdus := omit,
+			apduAckCode := ?,
+			apduAckText := omit,
+			issues := *
+		}
+
+		template AckADU m_aduDefaultAck(in InfoExchange p_apduToAck) := {
+			apduIdentifier := p_apduToAck.infoExchangeContent.apci.apduIdentifier,
+			explicitlyAckedAdus := omit,
+			apduAckCode := ApduReasonCode_apduOK_ ,
+			apduAckText := omit,
+			issues := omit
+		}
+
+    }
+    
+	group AduTemplates{
+		
+		group USERDETAILS {
+	
+			type record of UserParameterRequest UserParameterRequests;
+
+    		template RequestADU mw_aduRequestProvideUserDetails := {
+        		userDetailsRequest :={	
+            	  	requestedADUType                := AduType_provideUserDetailsADU_,
+            	  	userId                          := ?,
+            		listOfParametersRequested       := ?,
+            		userDetailsRequestReason        := *,
+            		userInfoValidityPeriod          := *
+        		}
+        	}
+        	
+        	template (value) RequestADU m_aduRequestProvideUserDetails(
+        		in UserParameterRequests p_userParameterRequests
+        	) modifies mw_aduRequestProvideUserDetails := {
+        		userDetailsRequest:={
+        			requestedADUType := AduType_provideUserDetailsADU_,	
+            	  	userId := EXISTING_USER_ID,
+					listOfParametersRequested := p_userParameterRequests,
+            		userDetailsRequestReason := omit,
+            		userInfoValidityPeriod := omit
+        		}
+        	}
+        	       			
+//        	template ProvideUserDetailsADU mw_userDetailsPrivacy_apduIdentifier := {
+//                originaluserIdRequest := DEFINED_USERID,
+//                userId := *,
+//                statusFlag := * ,
+//                listOfUserParameters.UserParameterResponse := omit,
+//                listOfUserParameters.userParameterResponse := *,
+//                listOfUserParameters.userParameterStatus := 2,
+//                listOfUserParameters.userInfoValidityPeriod := omit
+//        	}
+        	
+        	template ProvideUserDetailsADU mw_aduProvideUserDetails := {
+            	originaluserIdRequest := EXISTING_USER_ID,
+            	userId := ?, 
+            	statusFlag := * ,
+            	listOfUserParameters := *
+        	}
+        	
+   			template InfoExchange mw_apduProvideUserDetails(InfoExchange p_apduRespondedTo) := m_apduNoSec(m_apciSendResponse(p_apduRespondedTo), Adus:{provideUserDetailsADUs:=?});
+			
+			template InfoExchange mw_apduAuthProvideUserDetails := mw_apduSec(mw_apci, Adus:{provideUserDetailsADUs:=?});
+		}
+
+		group LISTOFUSERS {
+		  	
+		  	template RequestADU mw_aduRequestListOfUsers := {
+		  		userListRequest :={
+		  			requestedADUType	:= AduType_provideUserIdListADU_,
+      				userIdRequestType	:= ?,
+      				userId				:= ?,
+					userIdRequestTime	:= ?
+				}
+			}
+		  	
+		  	template (value) RequestADU m_aduRequestListOfUsers := {
+	  			userListRequest :={
+	  				requestedADUType	:= AduType_provideUserIdListADU_,
+  					userIdRequestType	:= 0,
+  					userId				:= EXISTING_USER_ID,
+					userIdRequestTime	:= fx_getUtc() 
+				}
+			}
+
+			template ProvideUserIdListADU mw_aduProvideUserIdList := {
+				originalUserIdRequestType := UserIdRequestType_allUserIdsToGivenCustomer_,
+				originalUserId := EXISTING_USER_ID,
+            	userIdList := *
+        	}
+
+   			template InfoExchange mw_apduProvideUserIdList := m_apduNoSec(mw_apci, Adus:{provideUserIdListADUs:=?});
+			
+			template InfoExchange mw_apduAuthProvideUserIdList := mw_apduSec(mw_apci, Adus:{provideUserIdListADUs:=?});
+			
+		}
+
+		group EXCEPTIONLIST {
+		  	template ExceptionListADU mw_aduExceptionList := {
+		  	  	exceptionListVersion := ?,
+				exceptionListType := (ExceptionListType_blackList_, ExceptionListType_whiteList_, ExceptionListType_discountedList_),
+		  	  	exceptionValidityStart := ?,
+		  	  	exceptionValidityEnd := omit,
+		  	  	exceptionListEntries := ?
+		  	}
+
+			template ExceptionListADU mw_aduExceptionListBlack modifies mw_aduExceptionList := {
+				exceptionListType := ExceptionListType_blackList_
+			}		  	
+
+			template ExceptionListADU mw_aduExceptionListWhite modifies mw_aduExceptionList := {
+				exceptionListType := ExceptionListType_whiteList_
+			}		  	
+
+			template ExceptionListADU mw_aduExceptionListDiscounted modifies mw_aduExceptionList := {
+				exceptionListType := ExceptionListType_discountedList_
+			}		  	
+			
+// Not needed currently
+//		  	template ExceptionListEntry mw_exceptionListEntry := {
+//		  	  	userId := ?,
+//		  	  	statusType := ?,
+//		  	  	reasonCode := ?,
+//		  	  	entryValidityStart := ?,
+//		  	  	entryValidityEnd := omit,
+//		  	  	vehicleParameters := *,
+//		  	  	actionRequested := ?,
+//		  	  	efcContextMark := omit,
+//		  	  	vatId := *
+//		  	}
+
+			template Adus mw_recordOfOneAduExceptionListBlack := {
+				exceptionListADUs:={mw_aduExceptionListBlack}
+			}
+			
+			template Adus mw_recordOfOneAduExceptionListWhite := {
+				exceptionListADUs:={mw_aduExceptionListWhite} 
+			}
+			
+			template Adus mw_recordOfOneAduExceptionListDiscounted := {
+				exceptionListADUs:={mw_aduExceptionListDiscounted} 
+			}
+			
+			
+   			template InfoExchange mw_apduExceptionList := m_apduNoSec(mw_apci, Adus:{exceptionListADUs:=?});
+			
+			template InfoExchange mw_apduAuthExceptionList := mw_apduSec(mw_apci, Adus:{exceptionListADUs:=?});
+
+			template InfoExchange mw_apduExceptionListOneBlackList := m_apduNoSec(mw_apci, mw_recordOfOneAduExceptionListBlack);
+
+			template InfoExchange mw_apduExceptionListOneWhiteList := m_apduNoSec(mw_apci, mw_recordOfOneAduExceptionListWhite);
+
+			template InfoExchange mw_apduExceptionListOneDiscountedList := m_apduNoSec(mw_apci, mw_recordOfOneAduExceptionListDiscounted);
+
+
+//			template InfoExchange mw_apduExceptionListOneBlackList modifies mw_apduExceptionList := {
+//				infoExchangeContent.adus.exceptionListADUs := {
+//					modifies mw_aduExceptionList:= {
+//						exceptionListType := ExceptionListType_blackList_ 
+//					}
+//				}
+//			}
+//			
+//			template InfoExchange mw_apduExceptionListOneWhiteList modifies mw_apduExceptionList := {
+//				infoExchangeContent.adus.exceptionListADUs := {modifies mw_aduExceptionList:= {exceptionListType := ExceptionListType_whiteList_ }}
+//			}
+//			
+//
+		}
+		
+		group TRUSTOBJECTS {
+			
+			type record of TrustObjectPurposes RecOfTrustObjectPurposes; 	
+
+			//note that an APDU containing TrustObjects is only allowed to carry ONE TrustObjectADU
+			template (value) InfoExchange m_apduTrustObjectResponse(
+				in InfoExchange p_apduBeingRespondedTo, 
+				in RecOfTrustObjectPurposes p_recOfTrustObjectPurposes,
+				in TrustObjectCode p_trustObjectCode			
+			) := m_apduNoSec(
+				m_apciSendResponse(p_apduBeingRespondedTo),
+				Adus: {
+					trustObjectAdus:={
+						m_aduTrustObject(
+							p_recOfTrustObjectPurposes,
+							p_trustObjectCode
+						)
+					}
+				}
+			);
+			
+			template (value) TrustObjectADU m_aduTrustObject(
+				RecOfTrustObjectPurposes p_recOfTrustObjectPurposes,
+				TrustObjectCode p_trustObjectCode
+			) := {
+				trustObjectID := float2int(rnd()),
+				purposesOfTrustObject := p_recOfTrustObjectPurposes,
+				startValidity := fx_getUtc(),
+				endValidity := omit,
+				trustObjectStatus := TrustObjectStatus_valid_,
+				trustObject := p_trustObjectCode
+			}
+
+   			template InfoExchange mw_apduTrustObject := m_apduNoSec(mw_apci, Adus:{trustObjectAdus:=?});
+			
+			template InfoExchange mw_apduAuthTrustObject := mw_apduSec(mw_apci, Adus:{trustObjectAdus:=?});
+
+			// PT140 Generic Request for Trust Object (only code of the request specified in the RequestADU)			
+			template InfoExchange mw_apduRequestTrustObject := m_apduNoSec(mw_apci, Adus:{requestAdus:= {
+			  requestedADUType := 3,
+			  requestedTrustObject :{trustObjectSpec := omit}
+			} });
+			
+			template InfoExchange mw_apduRequestTrustObjectCertificate := m_apduNoSec(mw_apci, Adus:{requestAdus:= {
+			  requestedADUType := 3,
+			  requestedTrustObject :{trustObjectSpec := {
+			    typeOfTrustObject := TrustObjectTypes_certificate_,
+			    purposesOfTrustObject := *}}
+			}});
+			
+			template InfoExchange mw_apduRequestTrustObjectPublicKey := m_apduNoSec(mw_apci, Adus:{requestAdus:= {
+			  requestedADUType := 3,
+			  requestedTrustObject :{trustObjectSpec := {
+			    typeOfTrustObject := TrustObjectTypes_publicKey_,
+			    purposesOfTrustObject := *}}
+			}});
+			
+			template InfoExchange mw_apduRequestTrustObjectGeneric := m_apduNoSec(mw_apci, Adus:{requestAdus:= mw_apduRequestTrustObject});
+			
+			template InfoExchange m_apduTrustObjectSymmetricKey := m_apduNoSec(mw_apci, Adus:{requestAdus:= {
+			  requestedADUType := 3,
+			  requestedTrustObject :{trustObjectSpec := {
+			    typeOfTrustObject := {TrustObjectTypes_symmetricKey_, TrustObjectTypes_encryptedSymmetricKey_},
+			    purposesOfTrustObject := *}}
+			}});
+			
+		}
+
+		group PAYMENTCLAIM {
+
+   			template InfoExchange mw_apduPaymentClaim := m_apduNoSec(mw_apci, Adus:{paymentClaimADUs:=?});
+			
+			template InfoExchange mw_apduAuthPaymentClaim := mw_apduSec(mw_apci, Adus:{paymentClaimADUs:=?});
+			
+		
+		}
+
+		group DSRC_CONTRACTISSUERLIST {		
+			template ContractIssuerListADU mw_aduContractIssuerList := {
+				efcContextMark := ?,
+				equipmentClass := ?,
+				manufacturerID := ?,
+				uniquePartOfPAN := ?,
+				typeOfEFCApplication := ?,
+				securityLevel := ?,
+				acCrKeyReference := ?,
+				authKeyRererence := ?,
+				validFrom := ?
+			} 		
+		
+			template Adus mw_recordOfAduContractIssuerList := {
+				contractIssuerListADUs := ?
+			}
+
+   			template InfoExchange mw_apduContractIssuerList := m_apduNoSec(mw_apci, Adus:{contractIssuerListADUs:=?});
+			
+			template InfoExchange mw_apduAuthContractIssuerList := mw_apduSec(mw_apci, Adus:{contractIssuerListADUs:=?});
+
+
+		}
+
+		group DSRC_EFCCONTEXTDATA {						
+			template EfcContextDataADU mw_aduDsrcEfcContextData := {
+				entityOverview := *,
+				domainType:={
+					dsrcContext:= {
+						regimeContextData := {
+								iso175753ADU := ?,
+								feeModifiers := omit
+						}
+					}					
+				}
+			}
+	
+			type record DsrcClosedContext {
+				ClosedContextDefinition closedContext,
+				FeeModifiers feeModifiers optional
+			} 
+			
+			template DsrcClosedContext mw_dsrcClosedContext :={
+				closedContext := ?,
+				feeModifiers := omit
+			}							
+
+			template EfcContextDataADU mw_aduDsrcClosedContextEfcContextData := {
+				entityOverview := omit,
+				domainType:={
+					dsrcClosedContext := mw_dsrcClosedContext
+				}
+			}	
+			
+			type record of LocalVehicleClassId RecOfLocalVehicleClassId; 
+			type record of TimeClassId RecOfTimeClassId; 
+			type record of UserClassId RecOfUserClassId; 
+			
+			template (value) EfcContextDataADU m_aduEfcContextDataDsrcClosedContext(
+				RecOfLocalVehicleClassId p_ROfLocVehClassId, 
+				template RecOfTimeClassId p_ROfTimeClassId, 
+				template RecOfUserClassId p_ROfUserClassId,
+				template FeeDefinition p_feeDefinition
+			) := {
+				entityOverview := omit,
+				domainType:={
+					dsrcClosedContext := {
+						closedContext:={
+							closedContextType:=ClosedContextType_standAloneClosedSysytem_, 
+							closedSystem:={
+								tollContextOverview:=omit,
+								tariffClassDefinition:={
+									tariffClasses:={
+										{
+											tariffClassId:=0,
+											localVehicleClasses:=p_ROfLocVehClassId,
+											timeClasses:=p_ROfTimeClassId,
+											locationClasses:=omit,
+											userClasses:=p_ROfUserClassId
+										}
+									},
+									tariffClassDefinitionVersion:={
+										version:={
+											basicVersionId:=basicVersionIdTESTER_VALUE
+										},
+										validFrom:=fx_getUtc()
+									}
+								},
+								localVehicleClassDefinition:=omit,
+								timeClassDefinition:=omit,
+								userClassDefinition:=omit,
+								feeDefinition:=p_feeDefinition
+							}
+						}
+					}
+				}
+			}	
+			//TODO Fausto we need to define localVehicleClassDefinition, timeClassDefinition, userClassDefinition and and also check the feeDefinition 
+
+			
+			template (value) EfcContextDataADU m_aduEfcContextDataDsrcClosedContextTariffClassDefinition := m_aduEfcContextDataDsrcClosedContext({},omit,omit,omit);
+			template (value) EfcContextDataADU m_aduEfcContextDataDsrcClosedContextLocVehClass := m_aduEfcContextDataDsrcClosedContext({1,2,3},omit,omit,omit);
+			template (value) EfcContextDataADU m_aduEfcContextDataDsrcClosedContextTimeClass := m_aduEfcContextDataDsrcClosedContext({},{1,2,3},omit,omit);
+			template (value) EfcContextDataADU m_aduEfcContextDataDsrcClosedContextUserClass := m_aduEfcContextDataDsrcClosedContext({},omit,{1,2,3},omit);
+			template (value) EfcContextDataADU m_aduEfcContextDataDsrcClosedContextFeeDefinition := m_aduEfcContextDataDsrcClosedContext({},omit,omit,m_feeDefinition);
+			
+			template (value) FeeDefinition m_feeDefinition:= {
+				actualPath:={
+					tariffTable:={
+    					applicablePartitions := {1,2,3}, // Three partitions
+    					tariffs := {
+    							{tariffClass := 1,
+    							chargeUnit.event := 1,
+    							roundingRuleForChargeUnitsUsed := RoundingRule_up_,
+    							basicFeePerChargeUnit := '2978'H, // Units in cents, currency Euro
+    							roundingRuleForFee := RoundingRule_up_,
+    							vat omit,
+    							roundingRuleForVat := omit,
+    							intervalScaleParameters := omit,
+    							offsetFee := omit,
+    							minFee := omit,
+    							thresholdFee := omit,
+   						 		maxFee := omit,
+    							alternativeCurrency := omit
+  								},
+  								{tariffClass := 2,
+    							chargeUnit.event := 2,
+    							roundingRuleForChargeUnitsUsed := RoundingRule_no_,
+    							basicFeePerChargeUnit := '2978'H, // Units in cents, currency Euro
+    							roundingRuleForFee := RoundingRule_no_,
+    							vat omit,
+    							roundingRuleForVat := omit,
+    							intervalScaleParameters := omit,
+    							offsetFee := omit,
+    							minFee := omit,
+    							thresholdFee := omit,
+   						 		maxFee := omit,
+    							alternativeCurrency := omit
+  								}
+  							},
+    					standardCurrency := '2978'H, // Units in cents, currency Euro,
+    					typeOfFee := omit,
+    					tariffTableVersion := {1, fx_getUtc()}
+  						},
+					closedContextLayout :={
+					 	tollOperators:=omit,
+					 	dsrcChargeObjects:={
+					 		{
+								chargeObjectId := {
+									chargeReportFinalRecipient:=omit,
+									chargeObjectDesignation:=1
+								},
+								chargeObjectDescription :="Charge object test description 1",
+								chargeObjectType:=ChargeObjectType_entryAndExit_,
+								tollContext:=TESTER_IDENTIFIER,
+								chargeObjectValidityStart:=omit,
+								chargeObjectValidityEnd:=omit					 			
+					 		},
+							{
+								chargeObjectId := {
+									chargeReportFinalRecipient:=omit,
+									chargeObjectDesignation:=2
+								},
+								chargeObjectDescription :="Charge object test description 2",
+								chargeObjectType:=ChargeObjectType_entryAndExit_,
+								tollContext:=TESTER_IDENTIFIER,
+								chargeObjectValidityStart:=omit,
+								chargeObjectValidityEnd:=omit					 			
+							}					 	}, 
+					 	internalPoints:=omit, 
+					 	interconnectionPoints:=omit,
+					 	closedSections:=omit,
+					 	tollContextLayoutVersion:=	{
+							version:={
+								basicVersionId:=basicVersionIdTESTER_VALUE
+							},
+							validFrom:=fx_getUtc()
+						},
+					 	tollContextAuthenticator:=omit
+					}
+				}
+			}
+
+   			template InfoExchange mw_apduEfcContextData := m_apduNoSec(mw_apci, Adus:{efcContextDataADUs:=?});
+			
+			template InfoExchange mw_apduAuthEfcContextData := mw_apduSec(mw_apci, Adus:{efcContextDataADUs:=?});
+
+			template (value) LocalDefinition m_localDefinition:= 	{
+				localVehicleClasses := {
+					localVehicleClassId := 1,
+    				nominalElements := {
+    					vehicleClasses := {1,2,3},
+    					vehicleTrainAxlesNumbers := omit,
+    					euroValues omit,
+    					copValues omit
+    					},
+    				ordinalElements := omit,
+    				priorityValue := omit
+				},
+    			localVehicleClassVersion := omit			  
+			}		
+		
+			template (value) TimeDefinition m_timeDefinition:= 	{
+				    timeClasses := {
+						timeClassId := 1,
+						nominalElements := omit,
+						ordinalElements := omit,
+						priorityValue := omit
+				    },
+					timeClassDefinitionVersion := omit
+			}
+			template (value) UserDefinition m_userDefinition:= 	{
+				    userClasses := {
+				    	{userClassId := 1,
+						contractTypes := omit,
+						actualNumberOfPassengers := omit,
+						priorityValue omit},
+				    	{userClassId := 2,
+						contractTypes := omit,
+						actualNumberOfPassengers := omit,
+						priorityValue omit}				    	
+					}
+					VersionAndValidity userClassDefinitionVersion optional
+			}		
+		
 		}
 
 		group DSRC_REPORTABNORMALOBE {
