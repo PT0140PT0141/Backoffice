@@ -517,7 +517,6 @@ module EfcInfoExchange_TestCasesTsp {
 				template (value) ApciFields m_apciSendInvalidInResponse modifies m_apciSendFirst:= {inResponseToApduId := v_invalidInResponse};							  
 				
 				// Step 1: Send Initiating APDU containing a valid TrustObjectADU with inResponseToApduId not equal to the value of the previously sent APDU
-				// PT140 TODO: parmeterise the m_aduTrustObject in the following if's
 				// Answer with the correct requested Trust Object, but using the incorrect inResponseToApduId in the apci
 						if (isCertificate) 
 							{f_sendAndLogApdu(m_apciSendInvalidInResponse, m_aduTrustObject(v_receivedPurposes,certificateTESTER_VALUE));}										

@@ -406,66 +406,6 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 //
 		}
 		
-		group TRUSTOBJECTS {
-			type record of TrustObjectPurposes RecOfTrustObjectPurposes; 	
-
-			//note that an APDU containing TrustObjects is only allowed to carry ONE TrustObjectADU
-			template (value) InfoExchange m_apduTrustObjectResponse(
-				in InfoExchange p_apduBeingRespondedTo, 
-				in RecOfTrustObjectPurposes p_recOfTrustObjectPurposes,
-				in TrustObjectCode p_trustObjectCode			
-			) := m_apduNoSec(
-				m_apciSendResponse(p_apduBeingRespondedTo),
-				Adus: {
-					trustObjectAdus:={
-						m_aduTrustObject(
-							p_recOfTrustObjectPurposes,
-							p_trustObjectCode
-						)
-					}
-				}
-			);
-			
-		group TRUSTOBJECTS {
-			type record of TrustObjectPurposes RecOfTrustObjectPurposes; 	
-
-			//note that an APDU containing TrustObjects is only allowed to carry ONE TrustObjectADU
-			template (value) InfoExchange m_apduTrustObjectResponse(
-				in InfoExchange p_apduBeingRespondedTo, 
-				in RecOfTrustObjectPurposes p_recOfTrustObjectPurposes,
-				in TrustObjectCode p_trustObjectCode			
-			) := m_apduNoSec(
-				m_apciSendResponse(p_apduBeingRespondedTo),
-				Adus: {
-					trustObjectAdus:={
-						m_aduTrustObject(
-							p_recOfTrustObjectPurposes,
-							p_trustObjectCode
-						)
-					}
-				}
-			);
-			
-			template (value) TrustObjectADU m_aduTrustObject(
-				RecOfTrustObjectPurposes p_recOfTrustObjectPurposes,
-				TrustObjectCode p_trustObjectCode
-			) := {
-				trustObjectID := float2int(rnd()),
-				purposesOfTrustObject := p_recOfTrustObjectPurposes,
-				startValidity := fx_getUtc(),
-				endValidity := omit,
-				trustObjectStatus := TrustObjectStatus_valid_,
-				trustObject := p_trustObjectCode
-			}
-
-   			template InfoExchange mw_apduTrustObject := m_apduNoSec(mw_apci, Adus:{trustObjectAdus:=?});
-			
-			template InfoExchange mw_apduAuthTrustObject := mw_apduSec(mw_apci, Adus:{trustObjectAdus:=?});
-			
-			template InfoExchange mw_apduRequestOneTrustObject :={
-				//TODO
-			}
-		}
 
 		group PAYMENTCLAIM {
 
