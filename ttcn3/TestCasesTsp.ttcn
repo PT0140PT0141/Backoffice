@@ -486,7 +486,7 @@ module EfcInfoExchange_TestCasesTsp {
 						if (match(v_apduReceived, m_apduRequestTrustObjectCertificate)) {isCertificate:=true;}
 						if (match(v_apduReceived, m_apduRequestTrustObjectPublicKey)) {isPublicKey:=true;}
 						if (match(v_apduReceived, m_apduRequestTrustObjectGeneric)) {isCertificateRevocationList := true;}
-						if (match(v_apduReceived ,m_apduTrustObjectSymmetricKey)) {isMacMasterOrDsrcKey:=true;}
+						if (match(v_apduReceived, m_apduTrustObjectSymmetricKey)) {isMacMasterOrDsrcKey:=true;}
 					}										
 				} // End of alt statement
 
@@ -499,7 +499,7 @@ module EfcInfoExchange_TestCasesTsp {
 					f_addLogEntry("Invalid combination of Trust Object type and Trust Object purpose");  
 					stop;}			 				
 				
-				// Get the apduId from the received apdu and modify it to an invalid value (add one)
+				// Get the apduId from the received apdu and modify it to an invalid value (by adding one)
 				var EfcDsrcApplication.Provider v_receivedProvider := v_apduReceived.infoExchangeContent.apci.apduOriginator;
 				var integer v_invalidReceivedApduId := v_apduReceived.infoExchangeContent.apci.apduIdentifier + 1;
 				var record v_invalidInResponse := {v_ReceivedProvider, v_invalidReceivedApduId};
@@ -518,20 +518,20 @@ module EfcInfoExchange_TestCasesTsp {
 				
 				// Step 1: Send Initiating APDU containing a valid TrustObjectADU with inResponseToApduId not equal to the value of the previously sent APDU
 				// PT140 TODO: parmeterise the m_aduTrustObject in the following if's
-				// Answer with the requested Trust Object, altering the inResponseToApduId field to a zero value
+				// Answer with the correct requested Trust Object, but using the incorrect inResponseToApduId in the apci
 						if (isCertificate) 
 							{f_sendAndLogApdu(m_apciSendInvalidInResponse, m_aduTrustObject(v_receivedPurposes,certificateTESTER_VALUE));}										
 						if (isPublicKey) 
 							{f_sendAndLogApdu(m_apciSendInvalidInResponse, m_aduTrustObject(v_receivedPurposes,publicKeyTESTER_VALUE));}										
 						if (isCertificateRevocationList) 
 							{f_sendAndLogApdu(m_apciSendInvalidInResponse, modifies m_aduTrustObject := ({TrustObjectPurposes_certRevocationListing_},certificateRevocationListTESTER_VALUE));}										
-				// PT140 TODO: How to decide whether MAC or DSRC key is to be sent? No way to specify it in the request (bug in the base standard???) 
+				// PT140 According to the current version of the 12855 or 16986, there is no way to request a MAC or DSRC key is to be sent. Using symmetric key provisionally 
 						if (isMacMasterOrDsrcKey) {
 						  if (v_encryptedKey) {
-							f_sendAndLogApdu(m_apciSendInvalidInResponse, m_aduTrustObject(v_receivedPurposes,???????));
+							f_sendAndLogApdu(m_apciSendInvalidInResponse, m_aduTrustObject(v_receivedPurposes,symmetricKeyEncryptedTESTER_VALUE));
 						    }
 						else {
-							f_sendAndLogApdu(m_apciSendInvalidInResponse, m_aduTrustObject(v_receivedPurposes,???????));						  
+							f_sendAndLogApdu(m_apciSendInvalidInResponse, m_aduTrustObject(v_receivedPurposes,symmetricKeyTESTER_VALUE));						  
 							}
 						} 							
                //Set timer
@@ -585,10 +585,10 @@ module EfcInfoExchange_TestCasesTsp {
 				// Step 1: Send an Initiating_Apdu containing APCI parameter field with apduDate = invalid
 				// and valid RequestADU with requestedADUType=provideUserDetailsADU
 
-				template (value) ApciFields m_apciSendFirstInvalidAid modifies m_apciSendFirst:= {apduDate := 0};
+				template (value) ApciFields m_apciSendFirstInvalid modifies m_apciSendFirst:= {apduDate := 0};
 				// Then send it together with the request ADU
 				var InfoExchange v_apduForSending := m_apduNoSec(
-					m_apciSendFirstInvalidAid,
+					m_apciSendFirstInvalid,
 					{m_aduRequestProvideUserDetails(v_userParameterRequests)}
 				);
   				f_sendAndLogApdu(v_apduForSending);
@@ -629,14 +629,17 @@ module EfcInfoExchange_TestCasesTsp {
 				var InfoExchange apduToBeSent := m_apduSec(m_aduRequestProvideUserDetails(v_userParameterRequest));
 
 				// Get the correctly computed authenticator, then corrupt it				
-				var ApduAuthenticator corruptedAuthenticator:= fx_computeAuthenticator(apduToBeSent);
-				var octetstring newAuthenticator := corruptedAuthenticator.authenticatorEfc.tbsAuthenticatorEfc.apduContentDigest.hashedMessageContent;
-				newAuthenticator := int2oct(oct2int(newAuthenticator) + 1, len(newAuthenticator));
-				corruptedAuthenticator.authenticatorEfc.tbsAuthenticatorEfc.apduContentDigest.hashedMessageContent := newAuthenticator;
-				// Then send it together with the request ADU
+				var ApduAuthenticator correctAuthenticator:= fx_computeAuthenticator(apduToBeSent);
+				// First, get the value to be corrupted from the complex authenticator field
+				var octetstring corruptedAuthenticator := correctAuthenticator.authenticatorEfc.tbsAuthenticatorEfc.apduContentDigest.hashedMessageContent;
+				// Then, convert it to integer, add 1, and convert back to binary
+				corruptedAuthenticator := int2oct(oct2int(corruptedAuthenticator) + 1, len(corruptedAuthenticator));
+				// Finally, substitute the corrupted part into the correct authenticator
+				correctAuthenticator.authenticatorEfc.tbsAuthenticatorEfc.apduContentDigest.hashedMessageContent := corruptedAuthenticator;
+				// Then send it together with the request ADU. The name correctAuthenticator now identifies a corrupted authenticator
 				var InfoExchange v_apduForSending := m_apduSec({
 				  	infoExchangeContent := apduToBeSent.infoExchangeContent, 				  
-					infoExchangeAuthenticator := corruptedAuthenticator});
+					infoExchangeAuthenticator := correctAuthenticator});
   				
   				f_sendAndLogApdu(v_apduForSending);
                         
