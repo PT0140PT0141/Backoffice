@@ -153,10 +153,9 @@ module EfcInfoExchange_TesterData{
 	group TrustObjectTesterData {
 	 	modulepar TrustObjectCode certificateTESTER_VALUE;
 	 	modulepar TrustObjectCode publicKeyTESTER_VALUE;
-    	modulepar TrustObjectCode dsrcMasterKeysTESTER_VALUE;
-    	modulepar TrustObjectCode macMasterKeyTESTER_VALUE;
-    	modulepar TrustObjectCode dsrcKeyRefTESTER_VALUE;
-    	modulepar TrustObjectCode certificateRevocationListTESTER_VALUE;
+    		modulepar TrustObjectCode symmetricKeyTESTER_VALUE;
+    		modulepar TrustObjectCode symmetricKeyEncryptedTESTER_VALUE;
+    		modulepar TrustObjectCode certificateRevocationListTESTER_VALUE;
 	}	
 
 	group ProvideUserDetailsData {
