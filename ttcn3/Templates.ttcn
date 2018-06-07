@@ -426,6 +426,26 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				}
 			);
 			
+		group TRUSTOBJECTS {
+			type record of TrustObjectPurposes RecOfTrustObjectPurposes; 	
+
+			//note that an APDU containing TrustObjects is only allowed to carry ONE TrustObjectADU
+			template (value) InfoExchange m_apduTrustObjectResponse(
+				in InfoExchange p_apduBeingRespondedTo, 
+				in RecOfTrustObjectPurposes p_recOfTrustObjectPurposes,
+				in TrustObjectCode p_trustObjectCode			
+			) := m_apduNoSec(
+				m_apciSendResponse(p_apduBeingRespondedTo),
+				Adus: {
+					trustObjectAdus:={
+						m_aduTrustObject(
+							p_recOfTrustObjectPurposes,
+							p_trustObjectCode
+						)
+					}
+				}
+			);
+			
 			template (value) TrustObjectADU m_aduTrustObject(
 				RecOfTrustObjectPurposes p_recOfTrustObjectPurposes,
 				TrustObjectCode p_trustObjectCode
@@ -1141,12 +1161,14 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			
 			template InfoExchange mw_apduAuthTrustObject := mw_apduSec(mw_apci, Adus:{trustObjectAdus:=?});
 
-			// PT140 Generic Request for Trust Object (only code of the request specified in the RequestADU)			
+			// Generic Request for Trust Object, to receive any requestADU per Trust Objects 			
 			template InfoExchange mw_apduRequestTrustObject := m_apduNoSec(mw_apci, Adus:{requestAdus:= {
 			  requestedADUType := 3,
-			  requestedTrustObject :{trustObjectSpec := omit}
+			  requestedTrustObject := *
 			} });
 			
+			
+			// Request for a Certificate Trust Object
 			template InfoExchange mw_apduRequestTrustObjectCertificate := m_apduNoSec(mw_apci, Adus:{requestAdus:= {
 			  requestedADUType := 3,
 			  requestedTrustObject :{trustObjectSpec := {
@@ -1154,15 +1176,21 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			    purposesOfTrustObject := *}}
 			}});
 			
+			// Request for a Public Key Trust Object			
 			template InfoExchange mw_apduRequestTrustObjectPublicKey := m_apduNoSec(mw_apci, Adus:{requestAdus:= {
 			  requestedADUType := 3,
 			  requestedTrustObject :{trustObjectSpec := {
 			    typeOfTrustObject := TrustObjectTypes_publicKey_,
 			    purposesOfTrustObject := *}}
 			}});
+
+			// Generic Trust Object is requested though a requestADU carrying only the type of ADU requested			
+			template InfoExchange mw_apduRequestTrustObjectGeneric := m_apduNoSec(mw_apci, Adus:{requestAdus:= {
+			  requestedADUType := 3,
+			  requestedTrustObject :{trustObjectSpec := omit}
+			}});
 			
-			template InfoExchange mw_apduRequestTrustObjectGeneric := m_apduNoSec(mw_apci, Adus:{requestAdus:= mw_apduRequestTrustObject});
-			
+			// Request for a Symmetric Key Trust Object
 			template InfoExchange m_apduTrustObjectSymmetricKey := m_apduNoSec(mw_apci, Adus:{requestAdus:= {
 			  requestedADUType := 3,
 			  requestedTrustObject :{trustObjectSpec := {
