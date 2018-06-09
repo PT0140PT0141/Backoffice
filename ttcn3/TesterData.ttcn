@@ -152,10 +152,22 @@ module EfcInfoExchange_TesterData{
 
 	group TrustObjectTesterData {
 	 	modulepar TrustObjectCode certificateTESTER_VALUE;
-	 	modulepar TrustObjectCode publicKeyTESTER_VALUE;
-    	modulepar TrustObjectCode symmetricKeyTESTER_VALUE;
-    	modulepar TrustObjectCode symmetricKeyEncryptedTESTER_VALUE;
-    	modulepar TrustObjectCode certificateRevocationListTESTER_VALUE;
+	 	modulepar PublicKeyObject publicKeyTESTER_VALUE;
+    	modulepar DsrcKeyObject symmetricKeyTESTER_VALUE;
+    	modulepar DsrcKeyObject symmetricKeyEncryptedTESTER_VALUE;
+    	modulepar DsrcKeyRef dsrcKeyRefObjectTESTER_VALUE := {
+    	 	eFCContextMark := TESTER_EFC_CONTEXT_MARK,
+    	 	keyRef := 0,
+    	 	referenceType := ReferenceType_cCCAuthenticationKeyRef_ 
+    	};
+    	modulepar CertificateObject certificateTESTER_OBJECT := {
+    	  certificateType := CertificateType_certTcHTTPS_,
+    	  certificate := certificateTESTER_VALUE
+    	};
+		modulepar GenericTrustObject invalidTESTERGenericObject := {
+		  typeOfTrustObject := TrustObjectTypes_certificate_,
+		  genericTrustObject := certificateTESTER_VALUE
+		};   
 	}	
 
 	group ProvideUserDetailsData {
