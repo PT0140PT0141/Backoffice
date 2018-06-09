@@ -689,18 +689,79 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				trustObject := p_trustObjectCode
 			}
 
-   			template InfoExchange mw_apduTrustObject := m_apduNoSec(mw_apci, Adus:{trustObjectAdus:=?});
+			template (value) TrustObjectADU m_aduTrustObjectInvalidStatus:= {
+				trustObjectID := float2int(rnd()),
+				purposesOfTrustObject := {TrustObjectPurposes_dSRCCharging_,TrustObjectPurposes_dSRCAC_,TrustObjectPurposes_oBEInterrogation_,TrustObjectPurposes_oBEInterrogationAC_},
+				startValidity := fx_getUtc(),
+				endValidity := omit,
+				trustObjectStatus := 5,
+				trustObject := dsrcKeyRefObjectTESTER_VALUE
+			}
+
 			
+   			// General template to receive Trust Objects
+   			template InfoExchange mw_apduTrustObject := m_apduNoSec(mw_apci, Adus:{trustObjectAdus:=?});
+   			
+			// General template to receive Trust Objects on a secure connection
 			template InfoExchange mw_apduAuthTrustObject := mw_apduSec(mw_apci, Adus:{trustObjectAdus:=?});
 
-			// Generic Request for Trust Object, to receive any requestADU per Trust Objects 			
+			// Template for a generic object. According to the profile, only certificate revocation lists can be sent as generic trust objects
+   			template InfoExchange m_apduTrustObjectGeneric := m_apduNoSec(mw_apci, Adus:{m_aduTrustObject(*, GenericTrustObject:{
+   				typeOfTrustObject := TrustObjectTypes_crl_,
+   				genericTrustObject := *
+   				})});
+
+			// Template for a certificate object
+   			template InfoExchange m_apduTrustObjectCertificate := m_apduNoSec(mw_apci, Adus:{m_aduTrustObject(*, CertificateObject:{
+   				certificateType := *,
+   				certificate := *
+   				})});
+			
+			// Template for a public key object
+   			template InfoExchange m_apduTrustObjectPublicKey := m_apduNoSec(mw_apci, Adus:{m_aduTrustObject(*, PublicKeyObject:{
+   				publicKeyType := *,
+   				serialNumber := *,
+   				issuer := *,
+   				algorithmIdentifier := *,
+   				publicKey := *
+   				})});
+			
+			// Template for a Dsrc key object
+   			template InfoExchange m_apduTrustObjectDsrcKey := m_apduNoSec(mw_apci, Adus:{m_aduTrustObject(*, DsrcKeyObject:{   			  
+   				encryptionKeyId := *,
+   				timestamp := *,
+   				dsrcKeys := *
+   				})});
+
+			// Template for a Mac Key object
+   			template InfoExchange m_apduTrustObjectMacKey := m_apduNoSec(mw_apci, Adus:{m_aduTrustObject(*, MacKeyObject:{
+   				serialNumber := *,
+   				issuer := *,
+   				timestamp := *,
+   				algorithmIdentifier := *,
+   				masterKeyRef := *,
+   				encrKey := *,
+   				kVC := *
+   				})});
+
+			// Template for a Dsrc keyRef object
+   			template InfoExchange m_apduTrustObjectDsrcKeyRef := m_apduNoSec(mw_apci, Adus:{m_aduTrustObject(*, DsrcKeyObject:{   			  
+   				eFCContextMark := *,
+   				keyRef := *,
+   				referenceType := *
+   				})});
+
+			// PT140 TODO to be defined Generic Request for Trust Object with one parameter as apduToBeRespondedTo, and another as TrustObjectCode
+			template InfoExchange m_apduRequestTrustObject := ();
+						
+			// Generic received Request for Trust Object, to receive a requestADU for any Trust Object 			
 			template InfoExchange mw_apduRequestTrustObject := m_apduNoSec(mw_apci, Adus:{requestAdus:= {
 			  requestedADUType := 3,
 			  requestedTrustObject := *
 			} });
 			
 			
-			// Request for a Certificate Trust Object
+			// Received Request for a Certificate Trust Object
 			template InfoExchange mw_apduRequestTrustObjectCertificate := m_apduNoSec(mw_apci, Adus:{requestAdus:= {
 			  requestedADUType := 3,
 			  requestedTrustObject :{trustObjectSpec := {
@@ -708,7 +769,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			    purposesOfTrustObject := *}}
 			}});
 			
-			// Request for a Public Key Trust Object			
+			// Received Request for a Public Key Trust Object			
 			template InfoExchange mw_apduRequestTrustObjectPublicKey := m_apduNoSec(mw_apci, Adus:{requestAdus:= {
 			  requestedADUType := 3,
 			  requestedTrustObject :{trustObjectSpec := {
@@ -716,13 +777,13 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			    purposesOfTrustObject := *}}
 			}});
 
-			// Generic Trust Object is requested though a requestADU carrying only the type of ADU requested			
+			// Received Generic Trust Object is requested though a requestADU carrying only the type of ADU requested			
 			template InfoExchange mw_apduRequestTrustObjectGeneric := m_apduNoSec(mw_apci, Adus:{requestAdus:= {
 			  requestedADUType := 3,
 			  requestedTrustObject :{trustObjectSpec := omit}
 			}});
 			
-			// Request for a Symmetric Key Trust Object
+			// Received Request for a Symmetric Key Trust Object
 			template InfoExchange m_apduTrustObjectSymmetricKey := m_apduNoSec(mw_apci, Adus:{requestAdus:= {
 			  requestedADUType := 3,
 			  requestedTrustObject :{trustObjectSpec := {
