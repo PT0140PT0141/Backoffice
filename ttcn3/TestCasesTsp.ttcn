@@ -1474,6 +1474,8 @@ module EfcInfoExchange_TestCasesTsp {
 				var boolean isMacMasterKey := false;
 				var boolean isDsrcMasterKey := false;
 				var boolean isCertificateRevocationList := false;
+				var boolean isDsrcKey:=false;
+				
 				var integer objectsReceived := 0;
 				// Step 1: Trigger IUT with TRUSTOBJECTS_TR_2
 				f_sendAndLogTrigger(TRUSTOBJECTS_TR_2);
@@ -1481,6 +1483,9 @@ module EfcInfoExchange_TestCasesTsp {
 				//  Wait for TRUSTOBJECTS
 				// We expect to receive as many APDUs containing TRUSTOBJECTS ADUs as the number of declared supported trust objects
 				// PT140 TODO: No timeout set, so risk to wait indifinetely to receive all APDUs. Alternative is to set a PIXIT timeout parameter
+				//TODO Fausto normally using "match" with a template named m_xyz is strange since 
+				//TODO the "m_" implies that there are NO matching mechanisms in the template, ie it is a constant value
+				//TODO Update accordingly?
 				alt {
 					[] mtcPort.receive(mw_apduTrustObject) -> value v_apduReceived {
 						// Log what we received
@@ -1500,6 +1505,7 @@ module EfcInfoExchange_TestCasesTsp {
 							{isMacMasterKey:=true;}
 						if (match(v_apduReceived, m_apduTrustObjectDsrcKey)) 
 							{isDsrcKey:=true;}
+	
 						objectsReceived := objectsReceived + 1; // Count the number of trust objects received
 						if (objectsReceived == sizeof(SENT_TRUST_OBJECTS_SUPPORTED)) {
 						  	goto ReceivedAll;
