@@ -47,6 +47,7 @@ module EfcInfoExchange_TestCasesTsp {
     import from EfcInfoExchange_Pixits all;
     import from EfcInfoExchange_Ics all;
     import from EfcInfoExchange_Templates all;
+	import from EfcInfoExchange_TesterData all;
     import from EfcInfoExchangeProfile all;
     
     
@@ -461,7 +462,9 @@ module EfcInfoExchange_TestCasesTsp {
 
 			testcase TP_TSP_Base_BI_08() runs on MainTestComponent system TestAdapter {
 				/**
-				 * @desc    TP_TSP_Base_BI_08: Verify that the TSP correctly responds to an APDU which contains an invalid inResponseToApduId value inside  the APCI field 
+				 * @desc    TP_TSP_Base_BI_08: Verify that the TSP correctly responds to an APDU which 
+				 * @desc    contains an invalid inResponseToApduId value inside  the APCI field 
+				 * @desc 	with regards to timers this is a TYPE2 transaction (see explanation 2 in CEN/TS 16986:2016 B.6)
 				 * @remark  [16986:2016], Clause 6.2.1 and Table A.1/2 
 				 */
 				// Initialisation
@@ -497,17 +500,19 @@ module EfcInfoExchange_TestCasesTsp {
 				)) {
 					setverdict(fail);
 					f_addLogEntry("Invalid combination of Trust Object type and Trust Object purpose");  
-					stop;}			 				
+					stop;
+				}			 				
 				
 				// Get the apduId from the received apdu and modify it to an invalid value (by adding one)
 				var EfcDsrcApplication.Provider v_receivedProvider := v_apduReceived.infoExchangeContent.apci.apduOriginator;
 				var integer v_invalidReceivedApduId := v_apduReceived.infoExchangeContent.apci.apduIdentifier + 1;
-				var record v_invalidInResponse := {v_ReceivedProvider, v_invalidReceivedApduId};
+				var RelatedApduId v_invalidInResponse := {v_receivedProvider, v_invalidReceivedApduId};
 				
+
 				// Get the requested purposes to send back
-				var record v_receivedPurposes := v_apduReceived.adus.requestAdus.trustObjectRequest.requestedTrustObject.trustObjectSpec.purposesOfTrustObject
+				var RecOfTrustObjectPurposes v_receivedPurposes := v_apduReceived.adus.requestAdus.trustObjectRequest.requestedTrustObject.trustObjectSpec.purposesOfTrustObject;
 				// Get the received Trust Object type to decide whether to send an encrypted or not encrypted DSRC key
-				var integer v_receivedType := v_apduReceived.adus.requestAdus.trustObjectRequest.requestedTrustObject.trustObjectSpec.trustObjectSpec.typeOfTrustObject
+				var integer v_receivedType := v_apduReceived.adus.requestAdus.trustObjectRequest.requestedTrustObject.trustObjectSpec.trustObjectSpec.typeOfTrustObject;
 
 				if (v_receivedType == TrustObjectTypes_symmetricKey_) {v_encryptedKey := false;}
 				if (v_receivedType == TrustObjectTypes_encryptedSymmetricKey_) {v_encryptedKey := true;}
@@ -518,23 +523,33 @@ module EfcInfoExchange_TestCasesTsp {
 				
 				// Step 1: Send Initiating APDU containing a valid TrustObjectADU with inResponseToApduId not equal to the value of the previously sent APDU
 				// Answer with the correct requested Trust Object, but using the incorrect inResponseToApduId in the apci
-						if (isCertificate) 
-							{f_sendAndLogApdu(m_apciSendInvalidInResponse, m_aduTrustObject(v_receivedPurposes,certificateTESTER_VALUE));}										
-						if (isPublicKey) 
-							{f_sendAndLogApdu(m_apciSendInvalidInResponse, m_aduTrustObject(v_receivedPurposes,publicKeyTESTER_VALUE));}										
-						if (isCertificateRevocationList) 
-							{f_sendAndLogApdu(m_apciSendInvalidInResponse, modifies m_aduTrustObject := ({TrustObjectPurposes_certRevocationListing_},certificateRevocationListTESTER_VALUE));}										
-				// PT140 According to the current version of the 12855 or 16986, there is no way to request a MAC or DSRC key is to be sent. Using symmetric key provisionally 
-						if (isMacMasterOrDsrcKey) {
-						  if (v_encryptedKey) {
-							f_sendAndLogApdu(m_apciSendInvalidInResponse, m_aduTrustObject(v_receivedPurposes,symmetricKeyEncryptedTESTER_VALUE));
-						    }
-						else {
-							f_sendAndLogApdu(m_apciSendInvalidInResponse, m_aduTrustObject(v_receivedPurposes,symmetricKeyTESTER_VALUE));						  
-							}
-						} 							
+				var TrustObjectADU v_aduTrustObject;
+					if (isCertificate) {v_aduTrustObject:= m_aduTrustObject(v_receivedPurposes,certificateTESTER_VALUE)};									
+					if (isPublicKey)   {v_aduTrustObject:= m_aduTrustObject(v_receivedPurposes,publicKeyTESTER_VALUE)};								
+					//TODO Fausto: Not sure why we use {TrustObjectPurposes_certRevocationListing_} here while using v_receivedPurposes in other cases, but I guess both works...
+					if (isCertificateRevocationList) {v_aduTrustObject:= m_aduTrustObject({TrustObjectPurposes_certRevocationListing_}, certificateRevocationListTESTER_VALUE)};
+					//TODO PT140 According to the current version of the 12855 or 16986, there is no way to request a MAC or DSRC key is to be sent. Using symmetric key provisionally 
+					if (isMacMasterOrDsrcKey) {
+						if (v_encryptedKey) {v_aduTrustObject:= m_aduTrustObject(v_receivedPurposes,symmetricKeyEncryptedTESTER_VALUE)}
+					} else { 
+						v_aduTrustObject:= m_aduTrustObject(v_receivedPurposes,symmetricKeyTESTER_VALUE);
+					}
+					 							
+				template (value) ApciFields m_apciInvalidInRespTo modifies m_apciSendFirst:= {
+					inResponseToApduId := {
+						TESTER_IDENTIFIER,
+						0
+					}
+				};
+				
+				var InfoExchange v_apduForSending := m_apduNoSec(
+					m_apciInvalidInRespTo,
+					{v_aduTrustObject}
+				);
+				f_sendAndLogApdu(v_apduForSending);
+				
                //Set timer
-				t_step.start(TRUSTOBJECT_TIME1_MAX_TSP);
+				t_step.start(TRUSTOBJECTS_TYPE2_TIME1_MAX_TSP);
 				
 				// Step2: Wait for NAck_Apdu containing ackADU with apduAckCode = sequenceError (4) or apduNotOk (3)
 				// Timeout expiration is handled in the altstep branch
@@ -547,25 +562,25 @@ module EfcInfoExchange_TestCasesTsp {
 								
 				// Either apduNotOk or sequenceError error codes may be sent by the IUT				
 				alt {
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TIME2_MIN_TSP);
+					[] mtcPort.receive(m_apduNAck(v_apduForSending, v_nAckParams1)) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TYPE2_TIME2_MIN_TSP);
 						setverdict(pass);
-						}
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+					}
+					[] mtcPort.receive(m_apduNAck(v_apduForSending, v_nAckParams2)) -> value v_apduReceived {
 						// Log what we received
-						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TIME2_MIN_TSP);
+						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TYPE2_TIME2_MIN_TSP);
 						setverdict(pass);
-						}
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams3)) -> value v_apduReceived {
+					}
+					[] mtcPort.receive(m_apduNAck(v_apduForSending, v_nAckParams3)) -> value v_apduReceived {
 						// Log what we received
-						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TIME2_MIN_TSP);
+						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TYPE2_TIME2_MIN_TSP);
 						setverdict(pass);
-						}
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams4)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TIME2_MIN_TSP);
+					}
+					[] mtcPort.receive(m_apduNAck(v_apduForSending, v_nAckParams4)) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TYPE2_TIME2_MIN_TSP);
 						setverdict(pass);					
-						}
-					} // End of Alt statement 
+					}
+				} // End of Alt statement 
 				f_closeDownMtc(); 		
 				
 			} //End of TP_TSP_Base_BI_08
@@ -584,10 +599,10 @@ module EfcInfoExchange_TestCasesTsp {
 				// Step 1: Send an Initiating_Apdu containing APCI parameter field with apduDate = invalid
 				// and valid RequestADU with requestedADUType=provideUserDetailsADU
 
-				template (value) ApciFields m_apciSendFirstInvalid modifies m_apciSendFirst:= {apduDate := 0};
+				template (value) ApciFields m_apciSendFirstInvalidDate modifies m_apciSendFirst:= {apduDate := 0};
 				// Then send it together with the request ADU
 				var InfoExchange v_apduForSending := m_apduNoSec(
-					m_apciSendFirstInvalid,
+					m_apciSendFirstInvalidDate,
 					{m_aduRequestProvideUserDetails(v_userParameterRequests)}
 				);
   				f_sendAndLogApdu(v_apduForSending);
@@ -627,18 +642,18 @@ module EfcInfoExchange_TestCasesTsp {
 				// Set up a correct authenticated apdu to start with		
 				var InfoExchange apduToBeSent := m_apduSec(m_aduRequestProvideUserDetails(v_userParameterRequest));
 
-				// Get the correctly computed authenticator, then corrupt it				
-				var ApduAuthenticator correctAuthenticator:= fx_computeAuthenticator(apduToBeSent);
+				// Get a correctly computed authenticator, then corrupt it				
+				var ApduAuthenticator authenticator:= fx_computeAuthenticator(apduToBeSent);
 				// First, get the value to be corrupted from the complex authenticator field
-				var octetstring corruptedAuthenticator := correctAuthenticator.authenticatorEfc.tbsAuthenticatorEfc.apduContentDigest.hashedMessageContent;
-				// Then, convert it to integer, add 1, and convert back to binary
-				corruptedAuthenticator := int2oct(oct2int(corruptedAuthenticator) + 1, len(corruptedAuthenticator));
+				var octetstring hashedMessageContent := authenticator.authenticatorEfc.tbsAuthenticatorEfc.apduContentDigest.hashedMessageContent;
+				// Then add 1
+				var octetstring corruptedhashedMessageContent := corruptedhashedMessageContent+'01'O;
 				// Finally, substitute the corrupted part into the correct authenticator
-				correctAuthenticator.authenticatorEfc.tbsAuthenticatorEfc.apduContentDigest.hashedMessageContent := corruptedAuthenticator;
+				authenticator.authenticatorEfc.tbsAuthenticatorEfc.apduContentDigest.hashedMessageContent := corruptedhashedMessageContent;
 				// Then send it together with the request ADU. The name correctAuthenticator now identifies a corrupted authenticator
 				var InfoExchange v_apduForSending := m_apduSec({
 				  	infoExchangeContent := apduToBeSent.infoExchangeContent, 				  
-					infoExchangeAuthenticator := correctAuthenticator});
+					infoExchangeAuthenticator := authenticator});
   				
   				f_sendAndLogApdu(v_apduForSending);
                         
@@ -739,7 +754,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Check if there are parameters that are privacy bound
 				// If not, exit test
 				if (sizeof (v_userParameterRequests) == 0) {
-					setverdict(inconclusive);
+					setverdict(inconc);
 					f_addLogEntry("Privacy bound parameters missing. Test cannot be executed");
 					stop;
 					};
@@ -856,7 +871,7 @@ module EfcInfoExchange_TestCasesTsp {
 
 				// If IUT implements all possible details, the test cannot be run				
 				if (sizeof(v_notSupportedUserDetailsParameter) == 0) {
-					setverdict(inconclusive);
+					setverdict(inconc);
 					f_addLogEntry("All user details supported by IUT. Test cannot be executed");
 					stop;
 				};				
@@ -886,8 +901,10 @@ module EfcInfoExchange_TestCasesTsp {
 						if (not match(
 							v_apduReceived.adus.provideUserDetailsADUs[0],						
 							ProvideUserDetailsADU: modifies mw_aduProvideUserDetails := {
-								listOfUserParameters.requestedUserParameter := omit,
-								listOfUserParameters.userParameterStatus := 1
+								listOfUserParameters:= {
+									requestedUserParameter := omit,
+									userParameterStatus := 1
+								}
 							}
 						)) 
 						{
@@ -921,7 +938,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Check if there are parameters that are privacy bound
 				// If not, exit test
 				if (sizeof (v_userParameterRequests) == 0) {
-					setverdict(inconclusive);
+					setverdict(inconc);
 					f_addLogEntry("Not agreed parameters missing. Test cannot be executed");
 					stop;
 					};                
@@ -948,10 +965,14 @@ module EfcInfoExchange_TestCasesTsp {
 						if (not match(
 							v_apduReceived.adus.provideUserDetailsADUs[0],						
 							ProvideUserDetailsADU: modifies mw_aduProvideUserDetails := {
+								//TODO Fausto we are not allowed to omit userId, it is not optional
 								userId := omit,
 								statusFlag:=2,
-								listOfUserParameters.userParameterStatus := 3,
-								listOfUserParameters := omit
+								listOfUserParameters:={
+									userParameterStatus := 3
+								}
+								//TODO Fausto: set the user status or omit? which one is the way to go
+								//listOfUserParameters := omit
 							}
 						)) {
 						  setverdict(fail);
@@ -1019,7 +1040,8 @@ module EfcInfoExchange_TestCasesTsp {
              testcase TP_TSP_LISTOFUSERS_BV_01() runs on MainTestComponent system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_LISTOFUSERS_BV_01: Verify that the TSP correctly receives an APDU containing valid RequestADUs and provides valid ProvideUserIdListADUs with available user Id data 
+                  * @desc    TP_TSP_LISTOFUSERS_BV_01: Verify that the TSP correctly receives an APDU containing valid 
+				  * @desc    RequestADUs and provides valid ProvideUserIdListADUs with available user Id data 
                   * @remark  [16986:2016], Clause 6.5 and Table A.1/2 AND Table A.7/2  
                   */
 				// Initialisation
@@ -1060,8 +1082,8 @@ module EfcInfoExchange_TestCasesTsp {
                         // Step #3: Send DefaultACK with correct identifier                        
 						f_logReceivedWaitAndAcknowledge(LISTOFUSERS_TIME2_MIN_TSP);
 						
-                      	}
-                    } // End of alt statement
+                 	}
+                 } // End of alt statement
 				
 				f_closeDownMtc();  
 
@@ -1391,7 +1413,8 @@ module EfcInfoExchange_TestCasesTsp {
            testcase TP_TSP_EXCEPTIONLIST_BV_02() runs on MainTestComponent system TestAdapter {
              
               /**
-              * @desc    TP_TSP_EXCEPTIONLIST_BV_02: Verify that the TSP correctly performs an EXCEPTIONLIST transaction for discounted users 
+              * @desc    TP_TSP_EXCEPTIONLIST_BV_02: Verify that the TSP correctly performs an EXCEPTIONLIST 
+			  * @desc    transaction for discounted users 
               * @remark  [16986:2016], Clause 6.6 and Table A.1/2 AND Table A.7/3 
               */
 				// Initialisation
@@ -1409,14 +1432,14 @@ module EfcInfoExchange_TestCasesTsp {
                			if (not ispresent(v_apduReceived.adus.ExceptionListADU.exceptionListEntries.ExceptionListEntry.vatId)) {
                				// Send NAck within time constraints
 							var NAckParams v_nAckParams1 :={0, AduReasonCode_invalidADU_};
-							f_wait(EXCEPTIONLIST_TIME1_TC);
+							f_wait(EXCEPTIONLIST_DISCOUNT_TIME1_MIN_TC);
 							f_addLogEntry("No vatId present");
 							f_sendAndLogApdu(m_apduNAck(v_apduReceived, v_nAckParams1));   
                				setverdict(fail);
                				}               				
                			else {
 							// Send Ack within time constraints
-							f_logReceivedWaitAndAcknowledge(EXCEPTIONLIST_TIME1_TC);
+							f_logReceivedWaitAndAcknowledge(EXCEPTIONLIST_DISCOUNT_TIME1_MIN_TC);
 							setverdict(pass);
                				};
 						} 
@@ -1475,7 +1498,7 @@ module EfcInfoExchange_TestCasesTsp {
 							{isDsrcKeyRef:=true;}
 						if (match(v_apduReceived ,m_apduTrustObjectMacKey)) 
 							{isMacMasterKey:=true;}
-						if (match(v_apduReceived ,m_apduTrustObjectDsrcKey)) 
+						if (match(v_apduReceived, m_apduTrustObjectDsrcKey)) 
 							{isDsrcKey:=true;}
 						objectsReceived := objectsReceived + 1; // Count the number of trust objects received
 						if (objectsReceived == sizeof(SENT_TRUST_OBJECTS_SUPPORTED)) {
@@ -1538,12 +1561,19 @@ module EfcInfoExchange_TestCasesTsp {
 				for (var integer v_trustObjectsReceived :=1; v_trustObjectsReceived<v_trustObjectsToBeSent;v_trustObjectsReceived:=v_trustObjectsReceived+1)
 					{
 						// Prepare a request of a Trust Object by taking allowed type and purpose from the RECEIVED_TRUST_OBJECTS_SUPPORTED Pixit value
-						var InfoExchange v_apduRequestForTrustObject := m_apduNoSec(mw_apci, Adus:{requestAdus:= {
-							requestedADUType := 3,
-							requestedTrustObject :{trustObjectSpec := {
-			    			typeOfTrustObject := SENT_TRUST_OBJECTS_SUPPORTED[v_trustObjectsReceived].trustObjectType,
-			    			purposesOfTrustObject := SENT_TRUST_OBJECTS_SUPPORTED[v_trustObjectsReceived].trustObjectPurpose}}
-							}});
+						var InfoExchange v_apduRequestForTrustObject := m_apduNoSec(
+							mw_apci, Adus:{
+								requestAdus:= {
+									requestedADUType:= 3,
+									requestedTrustObject:={
+										trustObjectSpec:={
+											typeOfTrustObject := SENT_TRUST_OBJECTS_SUPPORTED[v_trustObjectsReceived].trustObjectType,
+					    					purposesOfTrustObject := SENT_TRUST_OBJECTS_SUPPORTED[v_trustObjectsReceived].trustObjectPurpose
+					    				}
+									}
+								}
+							}
+						);
 						f_sendAndLogApdu(v_apduRequestForTrustObject);
 
 						// Set timer

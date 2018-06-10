@@ -10,7 +10,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 
 	//importing other modules
 	import from EfcInfoExchange_Pixits all;
-	import from EfcInfoExchange_Ics all;
+//	import from EfcInfoExchange_Ics all;
 	import from EfcInfoExchange_Functions all;
 	import from EfcInfoExchange_TesterData all;
 	
@@ -20,7 +20,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
      * @desc    [17575-1:2016], Charging
      * @see     Annex A (normative) EFC data type specifications
      */
-    import from EfcAutonomousCharging language "ASN.1:1997" all;
+//    import from EfcAutonomousCharging language "ASN.1:1997" all;
     /**
      * @desc    [17575-3:2016], Context data
      * @see     A.2 Data specifications
@@ -30,7 +30,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
      * @desc    Electronic fee collection (EFC) — Application interface definition for autonomous systems — Part 4: Roaming
      * @see     Annex A (normative) EFC data type specifications
      */
-    import from EfcDsrcApplication language "ASN.1:1997" all;
+//    import from EfcDsrcApplication language "ASN.1:1997" all;
     /**
      * @desc    TTCN-3 does not support ASN.1 parameterization (ETSI ES 201 873-7 V4.5.1 Clause 10)
      *          Common_Parametrised_Asn1_Data TTCN-3 module is a workaround
@@ -38,7 +38,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 
 	//importing ASN.1 data manually translated into TTCN-3
 	import from EfcInfoExchange_ParameterisedAsn1Data all;  
-    import from Common_ParametrisedAsn1Data all;
+//    import from Common_ParametrisedAsn1Data all;
 	import from EfcInfoExchangeProfile all;
     
     group ApduTemplates {
@@ -500,12 +500,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 											userClasses:=p_ROfUserClassId
 										}
 									},
-									tariffClassDefinitionVersion:={
-										version:={
-											basicVersionId:=basicVersionIdTESTER_VALUE
-										},
-										validFrom:=fx_getUtc()
-									}
+									tariffClassDefinitionVersion:=m_basicVersionValidFromNow
 								},
 								localVehicleClassDefinition:= p_localVehicleClassDefinition,
 								timeClassDefinition:=omit,
@@ -516,6 +511,13 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 					}
 				}
 			};	
+			
+			template (value) VersionAndValidity m_basicVersionValidFromNow :={
+				version:={
+					basicVersionId:=basicVersionIdTESTER_VALUE
+				},
+				validFrom:=fx_getUtc()
+			}			
 			
 			template (value) EfcContextDataADU m_aduEfcContextDataDsrcClosedContextTariffClassDefinition := 
 				m_aduEfcContextDataDsrcClosedContext({},omit,omit,omit,omit,omit,omit);
@@ -528,112 +530,97 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			template (value) EfcContextDataADU m_aduEfcContextDataDsrcClosedContextFeeDefinition := 
 				m_aduEfcContextDataDsrcClosedContext({},omit, omit,omit,omit,omit, m_feeDefinition);
 			
-			template (value) FeeDefinition m_feeDefinition:= {
+			template (value) FeeDefinition m_feeDefinition:={
 				actualPath:={
-					tariffTable:={
-    					applicablePartitions := {1,2,3}, // Three partitions
-    					tariffs := {
-    							{tariffClass := 1,
-    							chargeUnit:={
-    								event := 1
-    							},
-    							roundingRuleForChargeUnitsUsed := RoundingRule_up_,
-    							basicFeePerChargeUnit := '2978'H, // Units in cents, currency Euro
-    							roundingRuleForFee := RoundingRule_up_,
-    							vat:=omit,
-    							roundingRuleForVat := omit,
-    							intervalScaleParameters := omit,
-    							offsetFee := omit,
-    							minFee := omit,
-    							thresholdFee := omit,
-   						 		maxFee := omit,
-    							alternativeCurrency := omit
-  								},
-  								{tariffClass := 2,
-    							chargeUnit:={
-    								event := 2
-    							},
-    							roundingRuleForChargeUnitsUsed := RoundingRule_no_,
-    							basicFeePerChargeUnit := '2978'H, // Units in cents, currency Euro
-    							roundingRuleForFee := RoundingRule_no_,
-    							vat:=omit,
-    							roundingRuleForVat := omit,
-    							intervalScaleParameters := omit,
-    							offsetFee := omit,
-    							minFee := omit,
-    							thresholdFee := omit,
-   						 		maxFee := omit,
-    							alternativeCurrency := omit
-  								}
-  							},
-    					standardCurrency := '2978'H, // Units in cents, currency Euro,
-    					typeOfFee := omit,
-    					tariffTableVersion := {1, fx_getUtc()}
-  						},
-					closedContextLayout :={
-					 	tollOperators:=omit,
-					 	dsrcChargeObjects:={
-					 		{
-								chargeObjectId := {
-									chargeReportFinalRecipient:=omit,
-									chargeObjectDesignation:=1
-								},
-								chargeObjectDescription :="Charge object test description 1",
-								chargeObjectType:=ChargeObjectType_entryAndExit_,
-								tollContext:=TESTER_IDENTIFIER,
-								chargeObjectValidityStart:=omit,
-								chargeObjectValidityEnd:=omit					 			
-					 		},
-							{
-								chargeObjectId := {
-									chargeReportFinalRecipient:=omit,
-									chargeObjectDesignation:=2
-								},
-								chargeObjectDescription :="Charge object test description 2",
-								chargeObjectType:=ChargeObjectType_entryAndExit_,
-								tollContext:=TESTER_IDENTIFIER,
-								chargeObjectValidityStart:=omit,
-								chargeObjectValidityEnd:=omit					 			
-							}					 	}, 
-					 	internalPoints:=omit, 
-					 	interconnectionPoints:=omit,
-					 	closedSections:=omit,
-					 	tollContextLayoutVersion:=	{
-							version:={
-								basicVersionId:=basicVersionIdTESTER_VALUE
-							},
-							validFrom:=fx_getUtc()
-						},
-					 	tollContextAuthenticator:=omit
-					}
+					tariffTable:=m_tariffTable,
+					closedContextLayout:=m_closedContextLayout
 				}
 			}
+
+			template (value) TariffTable m_tariffTable:={
+				applicablePartitions := {1,2,3}, // Three partitions
+				tariffs:={m_tariff(1,1),m_tariff(2,2)},
+				standardCurrency := '2978'O, // Units in cents, currency Euro,
+				typeOfFee := omit,
+				tariffTableVersion := m_basicVersionValidFromNow
+			}
+			
+			template (value) Tariff m_tariff(in TariffClassId p_tariffClass,in Int1 p_chargeUnitEvent):={
+				tariffClass := p_tariffClass,
+				chargeUnit:={
+					event := p_chargeUnitEvent
+				},
+				roundingRuleForChargeUnitsUsed := RoundingRule_up_,
+				basicFeePerChargeUnit := 5, // Units in cents, currency Euro
+				roundingRuleForFee := RoundingRule_up_,
+				vat:=omit,
+				roundingRuleForVat := omit,
+				intervalScaleParameters := omit,
+				offsetFee := omit,
+				minFee := omit,
+				thresholdFee := omit,
+				maxFee := omit,
+				alternativeCurrency := omit
+			}		
+			
+			template (value) ClosedContextLayout m_closedContextLayout:={
+				tollOperators:=omit,
+				dsrcChargeObjects:={
+					m_dsrcChargeObject(1,"Charge object test description 1"),
+					m_dsrcChargeObject(2,"Charge object test description 2")
+				},
+				internalPoints:=omit, 
+				interconnectionPoints:=omit,
+				closedSections:=omit,
+				tollContextLayoutVersion:=m_basicVersionValidFromNow,
+				tollContextAuthenticator:=omit
+			}
+
+			template (value) DSRCChargeObject m_dsrcChargeObject(
+				in EfcInfoExchange.Int4 p_chargeObjectDesignation,
+				in UTF8String p_chargeObjectDescription
+			):={
+				chargeObjectId := {
+					chargeReportFinalRecipient:=omit,
+					chargeObjectDesignation:=p_chargeObjectDesignation
+				},
+				chargeObjectDescription :=p_chargeObjectDescription,
+				chargeObjectType:=ChargeObjectType_entryAndExit_,
+				tollContext:=TESTER_IDENTIFIER,
+				chargeObjectValidityStart:=omit,
+				chargeObjectValidityEnd:=omit					 						 	
+			} 
+			
 
    			template InfoExchange mw_apduEfcContextData := m_apduNoSec(mw_apci, Adus:{efcContextDataADUs:=?});
 			
 			template InfoExchange mw_apduAuthEfcContextData := mw_apduSec(mw_apci, Adus:{efcContextDataADUs:=?});
 
-			template (value) LocalVehicleClassDefinition m_localVehicleClassDefinition:= 	{
+			template (value) LocalVehicleClassDefinition m_localVehicleClassDefinition:={
 				localVehicleClasses := {
-					localVehicleClassId := 1,
-    				nominalElements := {
-    					vehicleClasses := {1,2,3},
-    					vehicleTrainAxlesNumbers := omit,
-    					euroValues:=omit,
-    					copValues:=omit
-    				},
-    				ordinalElements := omit,
-    				priorityValue := omit
+					{
+						localVehicleClassId := 1,
+	    				nominalElements := {
+	    					vehicleClasses := {1,2,3},
+	    					vehicleTrainAxlesNumbers := omit,
+	    					euroValues:=omit,
+	    					copValues:=omit
+	    				},
+	    				ordinalElements := omit,
+	    				priorityValue := omit
+					}
 				},
     			localVehicleClassVersion := omit			  
 			}
 		
 			template (value) TimeClassDefinition m_timeClassDefinition:= 	{
 				    timeClasses := {
-						timeClassId := 1,
-						nominalElements := omit,
-						ordinalElements := omit,
-						priorityValue := omit
+				    	{
+							timeClassId := 1,
+							nominalElements := omit,
+							ordinalElements := omit,
+							priorityValue := omit
+				    	}
 				    },
 					timeClassDefinitionVersion := omit
 			}
@@ -751,7 +738,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
    				referenceType := *
    				})});
 
-			// PT140 TODO to be defined Generic Request for Trust Object with one parameter as apduToBeRespondedTo, and another as TrustObjectCode
+			// PT140 TODO to be defined Generic Request for Trust Object with one parameter as apduToBeRespondedTo, and another as TrustObjectCode - Ulrik: still needed? not used anywhere... 
 			template InfoExchange m_apduRequestTrustObject := ();
 						
 			// Generic received Request for Trust Object, to receive a requestADU for any Trust Object 			
@@ -762,34 +749,58 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			
 			
 			// Received Request for a Certificate Trust Object
-			template InfoExchange mw_apduRequestTrustObjectCertificate := m_apduNoSec(mw_apci, Adus:{requestAdus:= {
-			  requestedADUType := 3,
-			  requestedTrustObject :{trustObjectSpec := {
-			    typeOfTrustObject := TrustObjectTypes_certificate_,
-			    purposesOfTrustObject := *}}
-			}});
+			template InfoExchange mw_apduRequestTrustObjectCertificate := m_apduNoSec(
+				mw_apci, 
+				Adus:{
+					requestAdus:={
+						requestedADUType := 3,
+						requestedTrustObject:={
+							trustObjectSpec :={
+								typeOfTrustObject := TrustObjectTypes_certificate_,
+								purposesOfTrustObject := *
+							}
+						}
+					}
+				}
+			);
 			
 			// Received Request for a Public Key Trust Object			
-			template InfoExchange mw_apduRequestTrustObjectPublicKey := m_apduNoSec(mw_apci, Adus:{requestAdus:= {
-			  requestedADUType := 3,
-			  requestedTrustObject :{trustObjectSpec := {
-			    typeOfTrustObject := TrustObjectTypes_publicKey_,
-			    purposesOfTrustObject := *}}
-			}});
+			template InfoExchange mw_apduRequestTrustObjectPublicKey := m_apduNoSec(
+				mw_apci, 
+				Adus:{
+					requestAdus:={
+						requestedADUType := 3,
+						requestedTrustObject:={
+							trustObjectSpec:={
+								typeOfTrustObject:= TrustObjectTypes_publicKey_,
+								purposesOfTrustObject := *
+							}
+						}
+					}
+				}
+			);
 
 			// Received Generic Trust Object is requested though a requestADU carrying only the type of ADU requested			
 			template InfoExchange mw_apduRequestTrustObjectGeneric := m_apduNoSec(mw_apci, Adus:{requestAdus:= {
 			  requestedADUType := 3,
-			  requestedTrustObject :{trustObjectSpec := omit}
+			  requestedTrustObject:={trustObjectSpec := omit}
 			}});
 			
 			// Received Request for a Symmetric Key Trust Object
-			template InfoExchange m_apduTrustObjectSymmetricKey := m_apduNoSec(mw_apci, Adus:{requestAdus:= {
-			  requestedADUType := 3,
-			  requestedTrustObject :{trustObjectSpec := {
-			    typeOfTrustObject := {TrustObjectTypes_symmetricKey_, TrustObjectTypes_encryptedSymmetricKey_},
-			    purposesOfTrustObject := *}}
-			}});
+			template InfoExchange m_apduTrustObjectSymmetricKey := m_apduNoSec(
+				mw_apci, 
+				Adus:{
+					requestAdus:={
+						requestedADUType := 3,
+						requestedTrustObject:={
+							trustObjectSpec:={
+								typeOfTrustObject:={TrustObjectTypes_symmetricKey_, TrustObjectTypes_encryptedSymmetricKey_},
+							    purposesOfTrustObject := *
+							}
+						}
+					}
+				}
+			);
 			
 		}
 
