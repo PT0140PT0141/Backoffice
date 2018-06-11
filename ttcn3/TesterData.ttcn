@@ -151,7 +151,9 @@ module EfcInfoExchange_TesterData{
 	} // end group ExceptionListTesterData		
 
 	group TrustObjectTesterData {
-	 	modulepar TrustObjectCode certificateTESTER_VALUE;
+		modulepar TrustObjectCode certificateRevocationListTESTER_VALUE;
+		modulepar octetstring certificateTESTER_VALUE;
+	 	modulepar octetstring genericTrustObjectTESTER_VALUE;
 	 	modulepar PublicKeyObject publicKeyTESTER_VALUE;
     	modulepar DsrcKeyObject symmetricKeyTESTER_VALUE;
     	modulepar DsrcKeyObject symmetricKeyEncryptedTESTER_VALUE;
@@ -166,7 +168,7 @@ module EfcInfoExchange_TesterData{
     	};
 		modulepar GenericTrustObject invalidTESTERGenericObject := {
 		  typeOfTrustObject := TrustObjectTypes_certificate_,
-		  genericTrustObject := certificateTESTER_VALUE
+		  genericTrustObject := genericTrustObjectTESTER_VALUE
 		};   
 	}	
 

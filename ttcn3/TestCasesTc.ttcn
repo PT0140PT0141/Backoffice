@@ -292,7 +292,7 @@ module EfcInfoExchange_TestCasesTc {
 						
 						for (var integer v_loop1 :=0; v_loop1<v_noReqAdusReceived;v_loop1:=v_loop1+1) {	
  							if ( match(v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1], mw_aduRequestProvideUserDetails)) {
-								listOfParametersRequested := v_apduReceived.infoExchangeContent.adus.requestAdus[v_ct].userDetailsRequest.listOfParametersRequested;
+								listOfParametersRequested := v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1].userDetailsRequest.listOfParametersRequested;
 								for (var integer v_loop2 :=0; v_loop2<sizeof(listOfParametersRequested);v_loop2:=v_loop2+1) {
 									if (not (match(listOfParametersRequested[v_loop2], mw_userDetailsSupportedListOfParameters ))) {
 										setverdict(fail);
@@ -313,8 +313,8 @@ module EfcInfoExchange_TestCasesTc {
 				
 				// TODO PT140: prepare in v_adus provideUserDetailsADU with no Status Flag being present								                   
 				
-				var InfoExchange v_apduProvideUserDetailsSend:=m_apduNoSec(m_apciSendResponse(v_apduReceived), v_adus);
-				f_sendAndLogApdu(v_apduProvideUserDetailsSend);
+				var InfoExchange v_apduForSending:=m_apduNoSec(m_apciSendResponse(v_apduReceived), v_adus);
+				f_sendAndLogApdu(v_apduForSending);
 
 				//Set timer
 				t_step.start(USERDETAILS_TIME2_MAX_TC);
@@ -323,7 +323,7 @@ module EfcInfoExchange_TestCasesTc {
 				var NAckParams v_nAckParams1 :=m_nAckParamsSingle(0, AduReasonCode_invalidADU_);
 						
 				alt {
-					[] mtcPort.receive(m_apduNAck(v_apduToSend, v_nAckParams1)) -> value v_apduReceived{
+					[] mtcPort.receive(m_apduNAck(v_apduForSending, v_nAckParams1)) -> value v_apduReceived{
              		                    		
 						// Log what we received
 						f_logApduReceivedAndTStep();
