@@ -476,7 +476,8 @@ module EfcInfoExchange_TestCasesTsp {
 				var boolean isMacMasterOrDsrcKey := false;
 				var boolean isCertificateRevocationList := false;
 				var boolean v_encryptedKey;
-				// Send the IUT a  trigger to send one initial APDU with requestedADUType=trustObjectRequestADU and complete its transaction
+				// Send the IUT a  trigger to send one initial APDU with requestedADUType=trustObjectRequestADU and 
+				// complete its transaction
 				f_sendAndLogTrigger(TRUSTOBJECTS_TR_1);				
 
 				//  Wait for request for TrustObjectAdu
@@ -484,6 +485,8 @@ module EfcInfoExchange_TestCasesTsp {
 					[] mtcPort.receive(mw_apduRequestTrustObject) -> value v_apduReceived {
 						// Log what we received
 						f_logReceivedWaitAndAcknowledge(0.0);	// Do not wait to send an Ack whichever object received
+						
+						//TODO Fausto it should NOT send an Ack here. You just received a RequestADU
 
 						//Read the trustObjectPurpose received and set corresponding boolean			
 						if (match(v_apduReceived, m_apduRequestTrustObjectCertificate)) {isCertificate:=true;}
@@ -634,7 +637,7 @@ module EfcInfoExchange_TestCasesTsp {
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS and ICS_A3_3_useAuthenticator;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
-				var UserParameterRequest v_userParameterRequests := f_userDetailsParameters();                
+				var UserParameterRequest v_userParameterRequest := f_userDetailsParameters();                
 				
 				// Step 1: Send an Initiating_Apdu containing invalid authenticator
 				// and valid RequestADU with requestedADUType=provideUserDetailsADU

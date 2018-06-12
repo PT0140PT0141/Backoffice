@@ -372,7 +372,7 @@ module EfcInfoExchange_TestCasesTc {
 						
 						for (var integer v_loop1 :=0; v_loop1<v_noReqAdusReceived;v_loop1:=v_loop1+1) {	
  							if ( match(v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1], mw_aduRequestProvideUserDetails)) {
-								listOfParametersRequested := v_apduReceived.infoExchangeContent.adus.requestAdus[v_ct].userDetailsRequest.listOfParametersRequested;
+								listOfParametersRequested := v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1].userDetailsRequest.listOfParametersRequested;
 								for (var integer v_loop2 :=0; v_loop2<sizeof(listOfParametersRequested);v_loop2:=v_loop2+1) {
 									if (not (match(listOfParametersRequested[v_loop2], mw_userDetailsSupportedListOfParameters ))) {
 										setverdict(fail);
@@ -393,8 +393,8 @@ module EfcInfoExchange_TestCasesTc {
 				
 				// TODO PT140: prepare in v_adus provideUserDetailsADU with Status Flag = 1..5 and no listOfUserParameters begin present								                   
 				
-				var InfoExchange v_apduProvideUserDetailsSend:=m_apduNoSec(m_apciSendResponse(v_apduReceived), v_adus);
-				f_sendAndLogApdu(v_apduProvideUserDetailsSend);
+				var InfoExchange v_apduForSending:=m_apduNoSec(m_apciSendResponse(v_apduReceived), v_adus);
+				f_sendAndLogApdu(v_apduForSending);
 
 				//Set timer
 				t_step.start(USERDETAILS_TIME2_MAX_TC);
@@ -403,7 +403,7 @@ module EfcInfoExchange_TestCasesTc {
 				var NAckParams v_nAckParams1 :=m_nAckParamsSingle(0, AduReasonCode_invalidADU_);
 						
 				alt {
-					[] mtcPort.receive(m_apduNAck(v_apduToSend, v_nAckParams1)) -> value v_apduReceived{
+					[] mtcPort.receive(m_apduNAck(v_apduForSending, v_nAckParams1)) -> value v_apduReceived{
              		                    		
 						// Log what we received
 						f_logApduReceivedAndTStep();
@@ -452,7 +452,7 @@ module EfcInfoExchange_TestCasesTc {
 						
 						for (var integer v_loop1 :=0; v_loop1<v_noReqAdusReceived;v_loop1:=v_loop1+1) {	
  							if ( match(v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1], mw_aduRequestProvideUserDetails)) {
-								listOfParametersRequested := v_apduReceived.infoExchangeContent.adus.requestAdus[v_ct].userDetailsRequest.listOfParametersRequested;
+								listOfParametersRequested := v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1].userDetailsRequest.listOfParametersRequested;
 								for (var integer v_loop2 :=0; v_loop2<sizeof(listOfParametersRequested);v_loop2:=v_loop2+1) {
 									if (not (match(listOfParametersRequested[v_loop2], mw_userDetailsSupportedListOfParameters ))) {
 										setverdict(fail);
@@ -473,8 +473,8 @@ module EfcInfoExchange_TestCasesTc {
 				
 				// TODO PT140: prepare in v_adus provideUserDetailsADU with Status Flag /= 1..5 and listOfUserParameters begin present								                   
 				
-				var InfoExchange v_apduProvideUserDetailsSend:=m_apduNoSec(m_apciSendResponse(v_apduReceived), v_adus);
-				f_sendAndLogApdu(v_apduProvideUserDetailsSend);
+				var InfoExchange v_apduForSending:=m_apduNoSec(m_apciSendResponse(v_apduReceived), v_adus);
+				f_sendAndLogApdu(v_apduForSending);
 
 				//Set timer
 				t_step.start(USERDETAILS_TIME2_MAX_TC);
@@ -483,7 +483,7 @@ module EfcInfoExchange_TestCasesTc {
 				var NAckParams v_nAckParams1 :=m_nAckParamsSingle(0, AduReasonCode_invalidADU_);
 						
 				alt {
-					[] mtcPort.receive(m_apduNAck(v_apduToSend, v_nAckParams1)) -> value v_apduReceived{
+					[] mtcPort.receive(m_apduNAck(v_apduForSending, v_nAckParams1)) -> value v_apduReceived{
              		                    		
 						// Log what we received
 						f_logApduReceivedAndTStep();
@@ -532,7 +532,7 @@ module EfcInfoExchange_TestCasesTc {
 						
 						for (var integer v_loop1 :=0; v_loop1<v_noReqAdusReceived;v_loop1:=v_loop1+1) {	
  							if ( match(v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1], mw_aduRequestProvideUserDetails)) {
-								listOfParametersRequested := v_apduReceived.infoExchangeContent.adus.requestAdus[v_ct].userDetailsRequest.listOfParametersRequested;
+								listOfParametersRequested := v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1].userDetailsRequest.listOfParametersRequested;
 								for (var integer v_loop2 :=0; v_loop2<sizeof(listOfParametersRequested);v_loop2:=v_loop2+1) {
 									if (not (match(listOfParametersRequested[v_loop2], mw_userDetailsSupportedListOfParameters ))) {
 										setverdict(fail);
@@ -553,8 +553,8 @@ module EfcInfoExchange_TestCasesTc {
 				
 				// TODO PT140: prepare in v_adus provideUserDetailsADU with invalid parameters in UserParameterResponse field								                   
 				
-				var InfoExchange v_apduProvideUserDetailsSend:=m_apduNoSec(m_apciSendResponse(v_apduReceived), v_adus);
-				f_sendAndLogApdu(v_apduProvideUserDetailsSend);
+				var InfoExchange v_apduForSending:=m_apduNoSec(m_apciSendResponse(v_apduReceived), v_adus);
+				f_sendAndLogApdu(v_apduForSending);
 
 				//Set timer
 				t_step.start(USERDETAILS_TIME2_MAX_TC);
@@ -563,7 +563,7 @@ module EfcInfoExchange_TestCasesTc {
 				var NAckParams v_nAckParams1 :=m_nAckParamsSingle(0, AduReasonCode_invalidADU_);
 						
 				alt {
-					[] mtcPort.receive(m_apduNAck(v_apduToSend, v_nAckParams1)) -> value v_apduReceived{
+					[] mtcPort.receive(m_apduNAck(v_apduForSending, v_nAckParams1)) -> value v_apduReceived{
              		                    		
 						// Log what we received
 						f_logApduReceivedAndTStep();
@@ -850,7 +850,7 @@ module EfcInfoExchange_TestCasesTc {
                  */
  
  				// Initialisation
- 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A2_1_isDsrc and ICS_A26_1_implementedDSRCCINTRACTISSUERLIST;
+ 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A2_1_isDsrc and ICS_A26_1_implementedDSRCCONTRACTISSUERLIST;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
                                 		              
                 // Step 1:
@@ -960,7 +960,7 @@ module EfcInfoExchange_TestCasesTc {
                  */
 
 				// Initialisation
- 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A2_1_isDsrc and ICS_A26_1_implementedDSRCCINTRACTISSUERLIST;
+ 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A2_1_isDsrc and ICS_A26_1_implementedDSRCCONTRACTISSUERLIST;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc                        		
                  
                 // Step 1: Send Initiating_Apdu containing one valid RequestADU of type userListRequest
@@ -1874,17 +1874,19 @@ module EfcInfoExchange_TestCasesTc {
                 // Step 1:
                 // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for discounted user list
                 // TODO Jan: Define tester ADUs
-                var InfoExchange v_apduToBeSent := m_apduNoSecInit(
-                	TESTER_GNSS_TOLLDECLARATION_ADU_VALID_SEND_1,
-                	TESTER_GNSS_TOLLDECLARATION_ADU_VALID_SEND_2,
-                	TESTER_GNSS_TOLLDECLARATION_ADU_VALID_SEND_3,  
-                	TESTER_GNSS_TOLLDECLARATION_ADU_VALID_SEND_4,
-                	TESTER_GNSS_TOLLDECLARATION_ADU_VALID_SEND_5,
-                	TESTER_GNSS_TOLLDECLARATION_ADU_VALID_SEND_6,
-                	TESTER_GNSS_TOLLDECLARATION_ADU_VALID_SEND_7,
-                	TESTER_GNSS_TOLLDECLARATION_ADU_VALID_SEND_8,
-                	TESTER_GNSS_TOLLDECLARATION_ADU_VALID_SEND_9,
-                	TESTER_GNSS-TOLLDECLARATION_ADU_VALID_SEND_10)                	                	                	                	                	                	              	
+                var InfoExchange v_apduToBeSent := m_apduNoSecInit({
+					m_aduTollDeclaration(1,1),
+					m_aduTollDeclaration(2,2),
+					m_aduTollDeclaration(3,3),
+					m_aduTollDeclaration(4,4),
+					m_aduTollDeclaration(5,5),
+					m_aduTollDeclaration(6,6),
+					m_aduTollDeclaration(7,7),
+					m_aduTollDeclaration(8,8),
+					m_aduTollDeclaration(9,9),
+					m_aduTollDeclaration(10,10)
+                });
+                	               	                	                	                	                	                	              	
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
                 // Start timer
                 t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
@@ -1901,7 +1903,6 @@ module EfcInfoExchange_TestCasesTc {
 						setverdict(pass)												
 					}
 				}			 
-
 
 			} // End testcase TP_TC_GNSS_TOLLDECLARATION_BV_01
 
