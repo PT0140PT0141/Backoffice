@@ -21,7 +21,7 @@
  *	DSRC.EFCContextData			! done					! none			! ready for compile 
  *	DSRC.BillingDetails			! partially done		! none			! 
  *	DSRC.ReportAbnormalOBE		! done					! none			! ready for compile
- *	GNSS.TollDeclaration		! open					! open			!
+ *	GNSS.TollDeclaration		! open					! open			! in progress
  *	GNSS.BillingDetails.TSP		! open					! open			!
  *	GNSS.BillingDEtails.TC		! open					! none			!
  *	GNSS.PaymentAnnouncement	! open					! open			!
@@ -1859,10 +1859,10 @@ module EfcInfoExchange_TestCasesTc {
                 *			with actionCode = send
                 * @remark  [16986:2016], Clause 8.1 and Table A.1/1 AND Table A.2/2 AND Table A.52/3
                 */
- 
+
   				// Initialisation
-                 
-				// Start by setting test success
+ 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A2_2_isGnss and ICS_A52_3_implementedGNSSTOLLDECLARATION;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc 
 								
                 // Step 1:
                 // Send valid Initiating_Apdu containing 10 ADUs of type TollDeclarationADU containing
@@ -1871,11 +1871,37 @@ module EfcInfoExchange_TestCasesTc {
 				//		- valid chargeReportUsageStatementList fields; and
 				//		- valid usageStatement fields, and
 				//		- actionCode = send
+                // Step 1:
+                // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for discounted user list
+                // TODO Jan: Define tester ADUs
+                var InfoExchange v_apduToBeSent := m_apduNoSecInit(
+                	TESTER_GNSS_TOLLDECLARATION_ADU_VALID_SEND_1,
+                	TESTER_GNSS_TOLLDECLARATION_ADU_VALID_SEND_2,
+                	TESTER_GNSS_TOLLDECLARATION_ADU_VALID_SEND_3,  
+                	TESTER_GNSS_TOLLDECLARATION_ADU_VALID_SEND_4,
+                	TESTER_GNSS_TOLLDECLARATION_ADU_VALID_SEND_5,
+                	TESTER_GNSS_TOLLDECLARATION_ADU_VALID_SEND_6,
+                	TESTER_GNSS_TOLLDECLARATION_ADU_VALID_SEND_7,
+                	TESTER_GNSS_TOLLDECLARATION_ADU_VALID_SEND_8,
+                	TESTER_GNSS_TOLLDECLARATION_ADU_VALID_SEND_9,
+                	TESTER_GNSS-TOLLDECLARATION_ADU_VALID_SEND_10)                	                	                	                	                	                	              	
+				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+                // Start timer
+                t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
                 
                 // Step 2:
                 // Wait for Default_Ack_Apdu within GNSS.TOLLDECLARARTION.TIME1             
                 // use template for Default_Ack_Apdu
                 // if not received or received outside specification or time constraints set test fail
+				alt {
+					[] mtcPort.receive(m_apduDefaultAck(v_apduToBeSent)) -> value v_apduReceived {					  
+						// Log what we received, check minimum time and stop time
+						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
+						//Set verdict
+						setverdict(pass)												
+					}
+				}			 
+
 
 			} // End testcase TP_TC_GNSS_TOLLDECLARATION_BV_01
 
