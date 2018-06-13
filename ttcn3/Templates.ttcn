@@ -30,7 +30,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
      * @desc    Electronic fee collection (EFC) — Application interface definition for autonomous systems — Part 4: Roaming
      * @see     Annex A (normative) EFC data type specifications
      */
-//    import from EfcDsrcApplication language "ASN.1:1997" all;
+    import from EfcDsrcApplication language "ASN.1:1997" all;
     /**
      * @desc    TTCN-3 does not support ASN.1 parameterization (ETSI ES 201 873-7 V4.5.1 Clause 10)
      *          Common_Parametrised_Asn1_Data TTCN-3 module is a workaround
@@ -38,7 +38,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 
 	//importing ASN.1 data manually translated into TTCN-3
 	import from EfcInfoExchange_ParameterisedAsn1Data all;  
-//    import from Common_ParametrisedAsn1Data all;
+    import from Common_ParametrisedAsn1Data all;
 	import from EfcInfoExchangeProfile all;
     
     group ApduTemplates {
@@ -545,7 +545,10 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				tariffTableVersion := m_basicVersionValidFromNow
 			}
 			
-			template (value) Tariff m_tariff(in TariffClassId p_tariffClass,in Int1 p_chargeUnitEvent):={
+			template (value) Tariff m_tariff(
+				in TariffClassId p_tariffClass,
+				in EfcAutonomousContextData.Int1 p_chargeUnitEvent
+			):={
 				tariffClass := p_tariffClass,
 				chargeUnit:={
 					event := p_chargeUnitEvent
@@ -664,10 +667,10 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				}
 			);
 			
-			template (value) TrustObjectADU m_aduTrustObject(
-				RecOfTrustObjectPurposes p_recOfTrustObjectPurposes,
-				TrustObjectCode p_trustObjectCode
-			) := {
+			template TrustObjectADU mw_aduTrustObject(
+				template RecOfTrustObjectPurposes p_recOfTrustObjectPurposes,
+				template TrustObjectCode p_trustObjectCode
+			):={
 				trustObjectID := float2int(rnd()),
 				purposesOfTrustObject := p_recOfTrustObjectPurposes,
 				startValidity := fx_getUtc(),
@@ -676,15 +679,19 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				trustObject := p_trustObjectCode
 			}
 
-			template (value) TrustObjectADU m_aduTrustObjectInvalidStatus:= {
+			template (value) TrustObjectADU m_aduTrustObject(RecOfTrustObjectPurposes p_recOfTrustObjectPurposes,
+				TrustObjectCode p_trustObjectCode
+			):=mw_aduTrustObject(p_recOfTrustObjectPurposes,p_trustObjectCode);
+			
+			template TrustObjectADU m_aduTrustObjectInvalidStatus:= {
 				trustObjectID := float2int(rnd()),
 				purposesOfTrustObject := {TrustObjectPurposes_dSRCCharging_,TrustObjectPurposes_dSRCAC_,TrustObjectPurposes_oBEInterrogation_,TrustObjectPurposes_oBEInterrogationAC_},
 				startValidity := fx_getUtc(),
 				endValidity := omit,
 				trustObjectStatus := 5,
-				trustObject := dsrcKeyRefObjectTESTER_VALUE
+				trustObject := {dsrcKeyRef:=dsrcKeyRefObjectTESTER_VALUE}
 			}
-
+			
 			
    			// General template to receive Trust Objects
    			template InfoExchange mw_apduTrustObject := m_apduNoSec(mw_apci, Adus:{trustObjectAdus:=?});
@@ -692,60 +699,50 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			// General template to receive Trust Objects on a secure connection
 			template InfoExchange mw_apduAuthTrustObject := mw_apduSec(mw_apci, Adus:{trustObjectAdus:=?});
 
+			//template for building templates
+			template InfoExchange mw_apduTrustObjectProtoTemp(template TrustObjectCode p_trustObjectCode) := m_apduNoSec(
+   				mw_apci, 
+   				Adus:{trustObjectAdus:={mw_aduTrustObject(?,p_trustObjectCode)}
+   				}
+   			);
+			
 			// Template for a generic object. According to the profile, only certificate revocation lists can be sent as generic trust objects
-   			template InfoExchange m_apduTrustObjectGeneric := m_apduNoSec(mw_apci, Adus:{m_aduTrustObject(*, GenericTrustObject:{
-   				typeOfTrustObject := TrustObjectTypes_crl_,
-   				genericTrustObject := *
-   				})});
+   			template InfoExchange mw_apduTrustObjectGeneric := mw_apduTrustObjectProtoTemp(mw_genericTrustObject);
+
+			template TrustObjectCode mw_genericTrustObject:={
+				otherTrustObject:={
+					typeOfTrustObject := TrustObjectTypes_crl_,
+					genericTrustObject := ?
+				}
+			}
+
 
 			// Template for a certificate object
-   			template InfoExchange m_apduTrustObjectCertificate := m_apduNoSec(mw_apci, Adus:{m_aduTrustObject(*, CertificateObject:{
-   				certificateType := *,
-   				certificate := *
-   				})});
+   			template InfoExchange mw_apduTrustObjectCertificate:=mw_apduTrustObjectProtoTemp(TrustObjectCode:{certificate:=?});
 			
 			// Template for a public key object
-   			template InfoExchange m_apduTrustObjectPublicKey := m_apduNoSec(mw_apci, Adus:{m_aduTrustObject(*, PublicKeyObject:{
-   				publicKeyType := *,
-   				serialNumber := *,
-   				issuer := *,
-   				algorithmIdentifier := *,
-   				publicKey := *
-   				})});
+   			template InfoExchange mw_apduTrustObjectPublicKey := mw_apduTrustObjectProtoTemp(TrustObjectCode:{publicKey:=?});
 			
 			// Template for a Dsrc key object
-   			template InfoExchange m_apduTrustObjectDsrcKey := m_apduNoSec(mw_apci, Adus:{m_aduTrustObject(*, DsrcKeyObject:{   			  
-   				encryptionKeyId := *,
-   				timestamp := *,
-   				dsrcKeys := *
-   				})});
+   			template InfoExchange mw_apduTrustObjectDsrcKey := mw_apduTrustObjectProtoTemp(TrustObjectCode:{dsrcMasterKeys:=?});
 
 			// Template for a Mac Key object
-   			template InfoExchange m_apduTrustObjectMacKey := m_apduNoSec(mw_apci, Adus:{m_aduTrustObject(*, MacKeyObject:{
-   				serialNumber := *,
-   				issuer := *,
-   				timestamp := *,
-   				algorithmIdentifier := *,
-   				masterKeyRef := *,
-   				encrKey := *,
-   				kVC := *
-   				})});
+   			template InfoExchange mw_apduTrustObjectMacKey := mw_apduTrustObjectProtoTemp(TrustObjectCode:{macMasterKey:=?});
 
 			// Template for a Dsrc keyRef object
-   			template InfoExchange m_apduTrustObjectDsrcKeyRef := m_apduNoSec(mw_apci, Adus:{m_aduTrustObject(*, DsrcKeyObject:{   			  
-   				eFCContextMark := *,
-   				keyRef := *,
-   				referenceType := *
-   				})});
+   			template InfoExchange mw_apduTrustObjectDsrcKeyRef:=mw_apduTrustObjectProtoTemp(TrustObjectCode:{dsrcKeyRef:=?});
 
 			// PT140 TODO to be defined Generic Request for Trust Object with one parameter as apduToBeRespondedTo, and another as TrustObjectCode - Ulrik: still needed? not used anywhere... 
 			template InfoExchange m_apduRequestTrustObject := ();
 						
 			// Generic received Request for Trust Object, to receive a requestADU for any Trust Object 			
-			template InfoExchange mw_apduRequestTrustObject := m_apduNoSec(mw_apci, Adus:{requestAdus:= {
-			  requestedADUType := 3,
-			  requestedTrustObject := *
-			} });
+			template InfoExchange mw_apduRequestTrustObject := m_apduNoSec(
+				mw_apci, 
+				Adus:{requestAdus:={
+					requestedADUType := 3,
+					requestedTrustObject := ?
+				}}
+			);
 			
 			
 			// Received Request for a Certificate Trust Object
@@ -768,17 +765,22 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			template InfoExchange mw_apduRequestTrustObjectPublicKey := m_apduNoSec(
 				mw_apci, 
 				Adus:{
-					requestAdus:={
-						requestedADUType := 3,
-						requestedTrustObject:={
-							trustObjectSpec:={
-								typeOfTrustObject:= TrustObjectTypes_publicKey_,
-								purposesOfTrustObject := *
-							}
+					requestAdus:={{mw_aduRequestTrustObjectPublicKey}}
+				}
+			);
+
+			template RequestADU mw_aduRequestTrustObjectPublicKey:={
+				trustObjectRequest:={
+					requestedADUType := 3,
+					requestedTrustObject:={
+						trustObjectId:=?,
+						trustObjectSpec:={
+							typeOfTrustObject:= TrustObjectTypes_publicKey_,
+							purposesOfTrustObject := *
 						}
 					}
 				}
-			);
+			}
 
 			// Received Generic Trust Object is requested though a requestADU carrying only the type of ADU requested			
 			template InfoExchange mw_apduRequestTrustObjectGeneric := m_apduNoSec(mw_apci, Adus:{requestAdus:= {
@@ -840,44 +842,48 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 					declarationId:=p_declarationId
 				},
 				gnssTollDeclaration:={
-					chargeReport:={
-						protocolVersion:=AidIdentifier_iso17575_1_2016_,
-						obeId:={
-							manufacturerId:=1,		//TODO Jan Check correct values of this number, does it need to be in a modulepar?
-							equipmentObuId:='01'O	//TODO Jan Check correct values of this number, does it need to be in a modulepar?
-						},
-						vehicleLPNr:={
-							countryCode:='0000000001'B,//TODO Jan Check correct values of this number, does it need to be in a modulepar?
-							alphabetIndicator:=latinAlphabetNo1(1),//TODO Jan Check correct values of this number, does it need to be in a modulepar?
-							licencePlateNumber:='001122'O //TODO Jan Check correct values of this number, does it need to be in a modulepar?
-						},
-						paymentMeans:={
-							personalAccountNumber:='00000001'O,//TODO Jan Check correct values of this number, does it need to be in a modulepar?
-							paymentMeansExpiryDate:={
-								year:=2100,
-								month:=1,
-								day:=1
-							},  
-							pamentMeansUsageControl:='01'O //TODO Jan Check correct values of this number, does it need to be in a modulepar?
-						},
-						tollContext:=TESTER_IDENTIFIER,//TODO Jan Check correct values of this number,
-						serviceProviderContract:={
-							contractProvider:=TESTER_IDENTIFIER,//TODO Jan Check correct values of this number
-							typeOfContract:='01'O, //TODO Jan Check what is a valid value for typeOfContract
-							contextVersion:=1
-						},
-						usageStatementList:={
-							{
-								usageStatementId:=1,
-								tollContext:= TESTER_IDENTIFIER//TODO Jan Check correct values of this number, shall be identical to attribute tollContext of Chargereport
-								//TODO Jan need to figure which way to use charge objects to use here below. I think one needs to be chosen
-								//TODO Jan WARNING there are several PARAMS that needs to be taken into account here GNSS.TOLLDECLARATION.PARAM1-2-3-4-5_MAX
-								//	        AggregatedSingleTariffClassSession  aggregatedSingleTariffClassSession optional,
-								//	        set of DetectedChargeObject         listOfChargeObjects optional,
-								//	        ListOfRawUsageData                  listOfRawUsageData optional,
-							}
-						},
-						chargeReportCounter:=p_chargeReportCounter
+					{
+						chargeReport:={
+							protocolVersion:=AidIdentifier_iso17575_1_2016_,
+							obeId:={
+								manufacturerId:=1,		//TODO Jan Check correct values of this number, does it need to be in a modulepar?
+								equipmentObuId:='01'O	//TODO Jan Check correct values of this number, does it need to be in a modulepar?
+							},
+							vehicleLPNr:={
+								countryCode:='0000000001'B,//TODO Jan Check correct values of this number, does it need to be in a modulepar?
+								alphabetIndicator:=latinAlphabetNo1,//TODO Jan Check correct values of this number, does it need to be in a modulepar?
+								licencePlateNumber:='001122001122'O //TODO Jan Check correct values of this number, does it need to be in a modulepar?
+							},
+							paymentMeans:={
+								personalAccountNumber:='00000000000000000001'O,//TODO Jan Check correct values of this number, does it need to be in a modulepar?
+								paymentMeansExpiryDate:={
+									year:=2100,
+									month:=1,
+									day:=1
+								},  
+								pamentMeansUsageControl:='0001'O //TODO Jan Check correct values of this number, does it need to be in a modulepar?
+							},
+							tollContext:=TESTER_IDENTIFIER,//TODO Jan Check correct values of this number,
+							serviceProviderContract:={
+								contractProvider:=TESTER_IDENTIFIER,//TODO Jan Check correct values of this number
+								typeOfContract:='0001'O, //TODO Jan Check what is a valid value for typeOfContract
+								contextVersion:=1
+							},
+							usageStatementList:={
+								{
+									usageStatement:={
+										usageStatementId:=1,
+										tollContext:= TESTER_IDENTIFIER//TODO Jan Check correct values of this number, shall be identical to attribute tollContext of Chargereport
+										//TODO Jan need to figure which way to use charge objects to use here below. I think one needs to be chosen
+										//TODO Jan WARNING there are several PARAMS that needs to be taken into account here GNSS.TOLLDECLARATION.PARAM1-2-3-4-5_MAX
+										//	        AggregatedSingleTariffClassSession  aggregatedSingleTariffClassSession optional,
+										//	        set of DetectedChargeObject         listOfChargeObjects optional,
+										//	        ListOfRawUsageData                  listOfRawUsageData optional,
+									}
+								}
+							},
+							chargeReportCounter:=p_chargeReportCounter
+						}
 					}
 				},
 				actionCode:=omit
@@ -890,45 +896,51 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			template TollDeclarationADU mw_aduTollDeclaration := {
 				tollDeclarationId := ?, // shall be present 
 				gnssTollDeclaration := {
-					chargeReport := {
-						protocolVersion := AidIdentifier_iso17575_1_2016_,
-						obeId := ?, // mandatory in ISO 16986
-						vehicleLPNr := ?, // mandatory in ISO 16986
-						paymentMeans := ?, // mandatory in IS 16896
-						serviceProviderContract := ?, // mandatory in ISO 12855
-						tollContext:= ?, // can be Tester or IUT Id
-						chargeReportFinalRecipient := omit, // shall not be used in ISO 16986 
-						timeOfReport := omit, // shall not be used
-						reportPeriod := *, // may or may not be present
-						versionId := := *, // may or may not be present
-						usageStatement := ?, // shall be present in ISO 16986
-						sumVatForThisSession := omit, // shall not be used in ISO 16986 
-						accountStatus := omit, // shall not be used in ISO 16986
-						chargeReportCounter := ?, // mandatory in ISO 16986
-						mileage := omit, // shall not be used in ISO 16986
-						listOfCccAttributes := omit // shall not be used in IS 16986
+					{
+						chargeReport := {
+							protocolVersion:= AidIdentifier_iso17575_1_2016_,
+							obeId := ?, // mandatory in ISO 16986
+							vehicleLPNr := ?, // mandatory in ISO 16986
+							paymentMeans := ?, // mandatory in IS 16896
+							serviceProviderContract := ?, // mandatory in ISO 12855
+							tollContext:= ?, // can be Tester or IUT Id
+							chargeReportFinalRecipient := omit, // shall not be used in ISO 16986 
+							timeOfReport := omit, // shall not be used
+							reportPeriod := *, // may or may not be present
+							versionId := *, // may or may not be present
+							usageStatementList := ?, // shall be present in ISO 16986 
+							sumVatForThisSession := omit, // shall not be used in ISO 16986 
+							accountStatus := omit, // shall not be used in ISO 16986
+							chargeReportCounter := ?, // mandatory in ISO 16986
+							mileage := omit, // shall not be used in ISO 16986
+							listOfCccAttributes := omit // shall not be used in IS 16986
+						}
 					}
 				},
-				actionCode:= ? // may be send, revoke or adjust
+				actionCode:= (ActionCode_send_, ActionCode_revoke_ ,ActionCode_adjust_ )
 			}
 
-// this is a template which can be used be the tester
-// omitted fields accdoring to ISO16986 rules are not present
-// parameters allow the tester to modify data per invividual TollDeclaration ADU
-// can be used for valid and invalid Toll Declarations 
+ 
+
+			// this is a template which can be used be the tester
+			// omitted fields accdoring to ISO16986 rules are not present
+			// parameters allow the tester to modify data per invividual TollDeclaration ADU
+			// can be used for valid and invalid Toll Declarations 
 
 			template (value) TollDeclarationADU m_aduTollDeclarationToSend (
 				in TollDeclarationId p_tollDeclarationId,
-				in OBEId p_obeId,
+				in ObeId p_obeId,
 				in VehicleLicencePlateNumber p_vehicleLPNr,
 				in PaymentMeans p_paymentMeans,
 				in EFC_ContextMark p_serviceProviderContract,
 				in Provider p_tollContext,
-				in UsageStatement p_usageStatament,
+				in UsageStatement p_usageStatement,
 				in EfcAutonomousContextData.Int4 p_chargeReportCounter,
-				in ActionCode p_actionCode) modifies mw_TollDeclaration := {
-					tollDeclarationId := p_tollDeclarationId, // shall be present 
-					gnssTollDeclaration := {
+				in ActionCode p_actionCode) 
+			modifies mw_aduTollDeclaration:={
+				tollDeclarationId := p_tollDeclarationId, // shall be present 
+				gnssTollDeclaration := {
+					{
 						chargeReport := {
 							protocolVersion := AidIdentifier_iso17575_1_2016_,
 							obeId := p_obeId, // mandatory in ISO 16986
@@ -937,63 +949,58 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 							serviceProviderContract := p_serviceProviderContract, // mandatory in ISO 12855
 							tollContext:= p_tollContext, // shall be Tester
 							reportPeriod := omit, // Tester decides this shall not be present
-							versionId := := omit, // Tester decides this shall not be present
-							usageStatement := p_usageStatament, // shall be present in ISO 16986
+							versionId := omit, // Tester decides this shall not be present
+							usageStatement := p_usageStatement, // shall be present in ISO 16986
 							chargeReportCounter := p_chargeReportCounter // mandatory in ISO 16986
 						}
-					},
-					actionCode:= p_actionCode // may be send, revoke or adjust
-				}
+					}
+				},
+				actionCode:= p_actionCode // may be send, revoke or adjust
+			}
 
-// Below you find a modified tenplate for Toll Declaration ADUs to be sent by the Tester
-// all for the same vehicle, same LPN, same PaymentMeans, same TSP contract, same context
-// but different Id and usage Statement 
-// of course all Tester data are to be defined in module TesterData
-
+			// Below you find a modified template for Toll Declaration ADUs to be sent by the Tester
+			// all for the same vehicle, same LPN, same PaymentMeans, same TSP contract, same context
+			// but different Id and usage Statement 
+			// of course all Tester data are to be defined in module TesterData
+			// TODO Jan review. I changed the definition to avoid duplication and potential inconsistencies
 			template (value) TollDeclarationADU m_aduTollDeclarationToSendOneObe (
 				in TollDeclarationId p_tollDeclarationId,
-				in UsageStatement p_usageStatament,
+				in UsageStatement p_usageStatement,
 				in EfcAutonomousContextData.Int4 p_chargeReportCounter,
-				in ActionCode p_actionCode) modifies mw_TollDeclaration := {
-					tollDeclarationId := p_tollDeclarationId, // shall be present 
-					gnssTollDeclaration := {
-						chargeReport := {
-							protocolVersion := AidIdentifier_iso17575_1_2016_,
-							obeId := TESTER_OBE_VALID_1,
-							vehicleLPNr := TESTER_LPN_VALID_1,
-							paymentMeans := TESTER_PAYMENT_MEANS_1,
-							serviceProviderContract := TESTER_SERVICE_PROVIDER_CONTRACT,
-							tollContext:= TESTER_TOLL_CONTEXT,
-							reportPeriod := omit, // Tester decides this shall not be present
-							versionId := := omit, // Tester decides this shall not be present
-							usageStatement := p_usageStatament, // shall be present in ISO 16986
-							chargeReportCounter := p_chargeReportCounter // mandatory in ISO 16986
-						}
-					},
-					actionCode:= p_actionCode // may be send, revoke or adjust
-				}
+				in ActionCode p_actionCode
+			):=m_aduTollDeclarationToSend(
+				p_tollDeclarationId,
+				TESTER_OBE_VALID_1,
+				TESTER_LPN_VALID_1,
+				TESTER_PAYMENT_MEANS_1,
+				TESTER_SERVICE_PROVIDER_CONTRACT,
+				TESTER_TOLL_CONTEXT,
+				p_usageStatement,
+				p_chargeReportCounter,
+				p_actionCode
+			) 
 
 // Below an example for an TollDeclarationADU containing three valid TollDeclarationADU with tester data
 // shall be moved e.g. to module test case TC
 // of course all Tester data are to be defined in module TesterData
 
-var InfoExchange v_apduToBeSent := m_apduNoSecInit({
-					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 1},
-						TESTER_USEAGE_STATEMENT_VALID_1,
-						1,
-						Action_Code_send_),
-					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 2},
-						TESTER_USEAGE_STATEMENT_VALID_2,
-						2,
-						Action_Code_send_),
-					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 3},
-						TESTER_USEAGE_STATEMENT_VALID_3,
-						3,
-						Action_Code_send_)							
-                });
+//var InfoExchange v_apduToBeSent := m_apduNoSecInit({
+//					m_aduTollDeclarationToSendOneObe(
+//						{TESTER_IDENTIFIER, 1},
+//						TESTER_USEAGE_STATEMENT_VALID_1,
+//						1,
+//						Action_Code_send_),
+//					m_aduTollDeclarationToSendOneObe(
+//						{TESTER_IDENTIFIER, 2},
+//						TESTER_USEAGE_STATEMENT_VALID_2,
+//						2,
+//						Action_Code_send_),
+//					m_aduTollDeclarationToSendOneObe(
+//						{TESTER_IDENTIFIER, 3},
+//						TESTER_USEAGE_STATEMENT_VALID_3,
+//						3,
+//						Action_Code_send_)							
+//                });
 
 		// Relevant data types below, for easy reference		
 		//
