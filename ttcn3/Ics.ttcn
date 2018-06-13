@@ -18,7 +18,7 @@ module EfcInfoExchange_Ics {
     modulepar boolean ICS_A7_3_implementedEXCEPTIONLIST := true;
 	modulepar boolean ICS_A7_4_implementedTRUSTOBJECTSElectronicTransfer:=true; 
     modulepar boolean ICS_A7_5_implementedPAYMENTCLAIM := true;
-    modulepar boolean ICS_A26_1_implementedDSRCCINTRACTISSUERLIST := true; 
+    modulepar boolean ICS_A26_1_implementedDSRCCONTRACTISSUERLIST := true; 
     modulepar boolean ICS_A26_2_implementedDSRCEFCCONTEXTDATA := true; 
     modulepar boolean ICS_A26_3_implementedDSRCBILLINGDETAILS := true; 
     modulepar boolean ICS_A26_4_implementedDSRCREPORTABNORMALOBE := true;

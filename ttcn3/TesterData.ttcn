@@ -150,6 +150,7 @@ module EfcInfoExchange_TesterData{
 		}		
 	} // end group ExceptionListTesterData		
 
+
 	group TrustObjectTesterData {
 		modulepar TrustObjectCode certificateRevocationListTESTER_VALUE;
 		modulepar octetstring certificateTESTER_VALUE;

@@ -20,7 +20,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
      * @desc    [17575-1:2016], Charging
      * @see     Annex A (normative) EFC data type specifications
      */
-//    import from EfcAutonomousCharging language "ASN.1:1997" all;
+    import from EfcAutonomousCharging language "ASN.1:1997" all;
     /**
      * @desc    [17575-3:2016], Context data
      * @see     A.2 Data specifications
@@ -833,6 +833,290 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
    			template InfoExchange mw_apduTollDeclaration := m_apduNoSec(mw_apci, Adus:{tollDeclarationADUs:=?});
 			
 			template InfoExchange mw_apduAuthTollDeclaration := mw_apduSec(mw_apci, Adus:{tollDeclarationADUs:=?});
+
+			template (value) TollDeclarationADU m_aduTollDeclaration(in integer p_declarationId, in EfcAutonomousContextData.Int4 p_chargeReportCounter):={
+				tollDeclarationId:={
+					issuerId:=TESTER_IDENTIFIER,
+					declarationId:=p_declarationId
+				},
+				gnssTollDeclaration:={
+					chargeReport:={
+						protocolVersion:=AidIdentifier_iso17575_1_2016_,
+						obeId:={
+							manufacturerId:=1,		//TODO Jan Check correct values of this number, does it need to be in a modulepar?
+							equipmentObuId:='01'O	//TODO Jan Check correct values of this number, does it need to be in a modulepar?
+						},
+						vehicleLPNr:={
+							countryCode:='0000000001'B,//TODO Jan Check correct values of this number, does it need to be in a modulepar?
+							alphabetIndicator:=latinAlphabetNo1(1),//TODO Jan Check correct values of this number, does it need to be in a modulepar?
+							licencePlateNumber:='001122'O //TODO Jan Check correct values of this number, does it need to be in a modulepar?
+						},
+						paymentMeans:={
+							personalAccountNumber:='00000001'O,//TODO Jan Check correct values of this number, does it need to be in a modulepar?
+							paymentMeansExpiryDate:={
+								year:=2100,
+								month:=1,
+								day:=1
+							},  
+							pamentMeansUsageControl:='01'O //TODO Jan Check correct values of this number, does it need to be in a modulepar?
+						},
+						tollContext:=TESTER_IDENTIFIER,//TODO Jan Check correct values of this number,
+						serviceProviderContract:={
+							contractProvider:=TESTER_IDENTIFIER,//TODO Jan Check correct values of this number
+							typeOfContract:='01'O, //TODO Jan Check what is a valid value for typeOfContract
+							contextVersion:=1
+						},
+						usageStatementList:={
+							{
+								usageStatementId:=1,
+								tollContext:= TESTER_IDENTIFIER//TODO Jan Check correct values of this number, shall be identical to attribute tollContext of Chargereport
+								//TODO Jan need to figure which way to use charge objects to use here below. I think one needs to be chosen
+								//TODO Jan WARNING there are several PARAMS that needs to be taken into account here GNSS.TOLLDECLARATION.PARAM1-2-3-4-5_MAX
+								//	        AggregatedSingleTariffClassSession  aggregatedSingleTariffClassSession optional,
+								//	        set of DetectedChargeObject         listOfChargeObjects optional,
+								//	        ListOfRawUsageData                  listOfRawUsageData optional,
+							}
+						},
+						chargeReportCounter:=p_chargeReportCounter
+					}
+				},
+				actionCode:=omit
+			}
+
+// different approach which may hopefully supprt re-useability and flexibility
+// @Ulrik: please have a look into this one
+// Below this shall be a generic template which can be used as base for sending and receiving TollDeclaration ADUs
+
+			template TollDeclarationADU mw_aduTollDeclaration := {
+				tollDeclarationId := ?, // shall be present 
+				gnssTollDeclaration := {
+					chargeReport := {
+						protocolVersion := AidIdentifier_iso17575_1_2016_,
+						obeId := ?, // mandatory in ISO 16986
+						vehicleLPNr := ?, // mandatory in ISO 16986
+						paymentMeans := ?, // mandatory in IS 16896
+						serviceProviderContract := ?, // mandatory in ISO 12855
+						tollContext:= ?, // can be Tester or IUT Id
+						chargeReportFinalRecipient := omit, // shall not be used in ISO 16986 
+						timeOfReport := omit, // shall not be used
+						reportPeriod := *, // may or may not be present
+						versionId := := *, // may or may not be present
+						usageStatement := ?, // shall be present in ISO 16986
+						sumVatForThisSession := omit, // shall not be used in ISO 16986 
+						accountStatus := omit, // shall not be used in ISO 16986
+						chargeReportCounter := ?, // mandatory in ISO 16986
+						mileage := omit, // shall not be used in ISO 16986
+						listOfCccAttributes := omit // shall not be used in IS 16986
+					}
+				},
+				actionCode:= ? // may be send, revoke or adjust
+			}
+
+// this is a template which can be used be the tester
+// omitted fields accdoring to ISO16986 rules are not present
+// parameters allow the tester to modify data per invividual TollDeclaration ADU
+// can be used for valid and invalid Toll Declarations 
+
+			template (value) TollDeclarationADU m_aduTollDeclarationToSend (
+				in TollDeclarationId p_tollDeclarationId,
+				in OBEId p_obeId,
+				in VehicleLicencePlateNumber p_vehicleLPNr,
+				in PaymentMeans p_paymentMeans,
+				in EFC_ContextMark p_serviceProviderContract,
+				in Provider p_tollContext,
+				in UsageStatement p_usageStatament,
+				in EfcAutonomousContextData.Int4 p_chargeReportCounter,
+				in ActionCode p_actionCode) modifies mw_TollDeclaration := {
+					tollDeclarationId := p_tollDeclarationId, // shall be present 
+					gnssTollDeclaration := {
+						chargeReport := {
+							protocolVersion := AidIdentifier_iso17575_1_2016_,
+							obeId := p_obeId, // mandatory in ISO 16986
+							vehicleLPNr := p_vehicleLPNr, // mandatory in ISO 16986
+							paymentMeans := p_paymentMeans, // mandatory in IS 16896
+							serviceProviderContract := p_serviceProviderContract, // mandatory in ISO 12855
+							tollContext:= p_tollContext, // shall be Tester
+							reportPeriod := omit, // Tester decides this shall not be present
+							versionId := := omit, // Tester decides this shall not be present
+							usageStatement := p_usageStatament, // shall be present in ISO 16986
+							chargeReportCounter := p_chargeReportCounter // mandatory in ISO 16986
+						}
+					},
+					actionCode:= p_actionCode // may be send, revoke or adjust
+				}
+
+// Below you find a modified tenplate for Toll Declaration ADUs to be sent by the Tester
+// all for the same vehicle, same LPN, same PaymentMeans, same TSP contract, same context
+// but different Id and usage Statement 
+// of course all Tester data are to be defined in module TesterData
+
+			template (value) TollDeclarationADU m_aduTollDeclarationToSendOneObe (
+				in TollDeclarationId p_tollDeclarationId,
+				in UsageStatement p_usageStatament,
+				in EfcAutonomousContextData.Int4 p_chargeReportCounter,
+				in ActionCode p_actionCode) modifies mw_TollDeclaration := {
+					tollDeclarationId := p_tollDeclarationId, // shall be present 
+					gnssTollDeclaration := {
+						chargeReport := {
+							protocolVersion := AidIdentifier_iso17575_1_2016_,
+							obeId := TESTER_OBE_VALID_1,
+							vehicleLPNr := TESTER_LPN_VALID_1,
+							paymentMeans := TESTER_PAYMENT_MEANS_1,
+							serviceProviderContract := TESTER_SERVICE_PROVIDER_CONTRACT,
+							tollContext:= TESTER_TOLL_CONTEXT,
+							reportPeriod := omit, // Tester decides this shall not be present
+							versionId := := omit, // Tester decides this shall not be present
+							usageStatement := p_usageStatament, // shall be present in ISO 16986
+							chargeReportCounter := p_chargeReportCounter // mandatory in ISO 16986
+						}
+					},
+					actionCode:= p_actionCode // may be send, revoke or adjust
+				}
+
+// Below an example for an TollDeclarationADU containing three valid TollDeclarationADU with tester data
+// shall be moved e.g. to module test case TC
+// of course all Tester data are to be defined in module TesterData
+
+var InfoExchange v_apduToBeSent := m_apduNoSecInit({
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 1},
+						TESTER_USEAGE_STATEMENT_VALID_1,
+						1,
+						Action_Code_send_),
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 2},
+						TESTER_USEAGE_STATEMENT_VALID_2,
+						2,
+						Action_Code_send_),
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 3},
+						TESTER_USEAGE_STATEMENT_VALID_3,
+						3,
+						Action_Code_send_)							
+                });
+
+		// Relevant data types below, for easy reference		
+		//
+		//		type record TollDeclarationId {
+		//		  EfcDsrcApplication.Provider issuerId,
+		//		  integer declarationId
+		//		}
+		//				
+		//		type record TollDeclarationADU {
+		//		  TollDeclarationId tollDeclarationId,
+		//		  record of union {
+		//			ChargeReport chargeReport,
+		//			EfcAutonomousCharging.AuthenticatedChargeReport authenticatedChargeReport
+		//		  } gnssTollDeclaration,
+		//		  ActionCode actionCode optional
+		//		}
+		//		
+		//		type record ChargeReport {
+		//	        EfcAutonomousCharging.AidIdentifier protocolVersion,
+		//	        ObeId                               obeId optional,
+		//	        VehicleLicencePlateNumber           vehicleLPNr optional,
+		//	        PaymentMeans                        paymentMeans optional, 
+		//	        EFC_ContextMark                     serviceProviderContract,
+		//	        Provider                            tollContext optional,
+		//	        Provider                            chargeReportFinalRecipient optional,
+		//			ASNAUX.GeneralizedTime              timeOfReport optional,
+		//	        Period                              reportPeriod optional,
+		//	        VersionId                           versionInfo optional,
+		//			record of union {
+		//				UsageStatement usageStatement,
+		//				AuthenticatedUsageStatement authenticatedUsageStatement
+		//			} usageStatementList,
+		//			PaymentFee                          sumVatForThisSession optional,
+		//	        AccountStatus                       accountStatus optional,
+		//	        EfcAutonomousContextData.Int4       chargeReportCounter optional,
+		//	        Distance                            mileage optional,
+		//	        set of CccAttributes                listOfCccAttributes optional
+		//		}
+		//		
+		//		type record EFC_ContextMark {
+		//			Provider contractProvider,
+		//			octetstring typeOfContract length (2),
+		//			integer contextVersion (
+		//			0 .. 127, 
+		//			?
+		//			)
+		//		}
+		//		
+		//		type record UsageStatement {
+		//			EfcDsrcApplication.Int2				usageStatementId optional,
+		//	        Provider                            tollContext optional,
+		//	        Provider                            chargeReportFinalRecipient optional,
+		//	        AggregatedFee                       aggregatedFee optional,
+		//	        PaymentFee                          sumVat optional,
+		//	        AggregatedSingleTariffClassSession  aggregatedSingleTariffClassSession optional,
+		//	        set of DetectedChargeObject         listOfChargeObjects optional,
+		//	        ListOfDsrcUsageData                 listOfDsrcUsageData optional,
+		//	        ListOfRawUsageData                  listOfRawUsageData optional,
+		//	        boolean                             noUsage optional,
+		//	        octetstring                         additionalUsageInformation optional
+		//	    }
+		//
+		//		ObeId ::= SEQUENCE {
+		//			manufacturerId			Int2, 			-- see ObeConfiguration in 14906
+		//			equipmentObuId			EquipmentOBUId
+		//		}
+				
+		//		LPN::= SEQUENCE {
+		//			countryCode CountryCode,
+		//			alphabetIndicator ENUMERATED {
+		//				latinAlphabetNo1 (1), -- encoded as 00 00 00'B
+		//				latinAlphabetNo2 (2), -- encoded as 00 00 01'B etc
+		//				latinAlphabetNo3 (3),
+		//				latinAlphabetNo4 (4),
+		//				latinCyrillicAlphabet (5),
+		//				latinArabicAlphabet (6),
+		//				latinGreekAlphabet (7),
+		//				latinHebrewAlphabet (8),
+		//				latinAlphabetNo5 (9),
+		//				latinAlphabetNo6 (10),
+		//				twoOctetBMP (11),
+		//				fourOctetCanonical (12),
+		//				reservedForUse1 (13),
+		//				reservedForUse2 (14),
+		//				reservedForUse3 (15),
+		//				reservedForUse4 (16),
+		//				reservedForUse5 (17),
+		//				reservedForUse6 (18),
+		//				reservedForUse7 (19),
+		//				reservedForUse8 (20),
+		//				reservedForUse9 (21),
+		//				reservedForUse10 (22),
+		//				reservedForUse11 (23),
+		//				reservedForUse12 (24),
+		//				reservedForUse13 (25),
+		//				reservedForUse14 (26),
+		//				reservedForUse15 (27),
+		//				reservedForUse16 (28),
+		//				reservedForUse17 (29),
+		//				reservedForUse18 (30),
+		//				reservedForUse19 (31),
+		//				reservedForUse20 (32),
+		//				reservedForUse21 (33)
+		//			} -- 6 bits, latinAlphabetNo1 recommended -- ,
+		//			-- refer to Annex E for conversion from LatinAlphabetNo 2
+		//			-- and 5 to Latin AlphabetNo1
+		//			licencePlateNumber OCTET STRING
+		//		}
+		//
+		//  type record PaymentMeans {
+		//    PersonalAccountNumber personalAccountNumber,
+		//    DateCompact paymentMeansExpiryDate,
+		//    octetstring pamentMeansUsageControl length (2)
+		//  }
+		//
+		//	DateCompact::= SEQUENCE {
+		//		year INTEGER (1990..2117),
+		//		month INTEGER (0..12), -- Value zero shall not be used
+		//		-- except with 1990 - see below.
+		//		day INTEGER (0..31) -- Value zero shall not be used
+		//		-- except with 1990 � see below.
+		//	}	
+    
 		}
 
 		group GNSS_BILLINGDETAILS_TSP{
