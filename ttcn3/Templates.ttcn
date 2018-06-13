@@ -882,7 +882,119 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				},
 				actionCode:=omit
 			}
-	
+
+// different approach which may hopefully supprt re-useability and flexibility
+// @Ulrik: please have a look into this one
+// Below this shall be a generic template which can be used as base for sending and receiving TollDeclaration ADUs
+
+			template TollDeclarationADU mw_aduTollDeclaration := {
+				tollDeclarationId := ?, // shall be present 
+				gnssTollDeclaration := {
+					chargeReport := {
+						protocolVersion := AidIdentifier_iso17575_1_2016_,
+						obeId := ?, // mandatory in ISO 16986
+						vehicleLPNr := ?, // mandatory in ISO 16986
+						paymentMeans := ?, // mandatory in IS 16896
+						serviceProviderContract := ?, // mandatory in ISO 12855
+						tollContext:= ?, // can be Tester or IUT Id
+						chargeReportFinalRecipient := omit, // shall not be used in ISO 16986 
+						timeOfReport := omit, // shall not be used
+						reportPeriod := *, // may or may not be present
+						versionId := := *, // may or may not be present
+						usageStatement := ?, // shall be present in ISO 16986
+						sumVatForThisSession := omit, // shall not be used in ISO 16986 
+						accountStatus := omit, // shall not be used in ISO 16986
+						chargeReportCounter := ?, // mandatory in ISO 16986
+						mileage := omit, // shall not be used in ISO 16986
+						listOfCccAttributes := omit // shall not be used in IS 16986
+					}
+				},
+				actionCode:= ? // may be send, revoke or adjust
+			}
+
+// this is a template which can be used be the tester
+// omitted fields accdoring to ISO16986 rules are not present
+// parameters allow the tester to modify data per invividual TollDeclaration ADU
+// can be used for valid and invalid Toll Declarations 
+
+			template (value) TollDeclarationADU m_aduTollDeclarationToSend (
+				in TollDeclarationId p_tollDeclarationId,
+				in OBEId p_obeId,
+				in VehicleLicencePlateNumber p_vehicleLPNr,
+				in PaymentMeans p_paymentMeans,
+				in EFC_ContextMark p_serviceProviderContract,
+				in Provider p_tollContext,
+				in UsageStatement p_usageStatament,
+				in EfcAutonomousContextData.Int4 p_chargeReportCounter,
+				in ActionCode p_actionCode) modifies mw_TollDeclaration := {
+					tollDeclarationId := p_tollDeclarationId, // shall be present 
+					gnssTollDeclaration := {
+						chargeReport := {
+							protocolVersion := AidIdentifier_iso17575_1_2016_,
+							obeId := p_obeId, // mandatory in ISO 16986
+							vehicleLPNr := p_vehicleLPNr, // mandatory in ISO 16986
+							paymentMeans := p_paymentMeans, // mandatory in IS 16896
+							serviceProviderContract := p_serviceProviderContract, // mandatory in ISO 12855
+							tollContext:= p_tollContext, // shall be Tester
+							reportPeriod := omit, // Tester decides this shall not be present
+							versionId := := omit, // Tester decides this shall not be present
+							usageStatement := p_usageStatament, // shall be present in ISO 16986
+							chargeReportCounter := p_chargeReportCounter // mandatory in ISO 16986
+						}
+					},
+					actionCode:= p_actionCode // may be send, revoke or adjust
+				}
+
+// Below you find a modified tenplate for Toll Declaration ADUs to be sent by the Tester
+// all for the same vehicle, same LPN, same PaymentMeans, same TSP contract, same context
+// but different Id and usage Statement 
+// of course all Tester data are to be defined in module TesterData
+
+			template (value) TollDeclarationADU m_aduTollDeclarationToSendOneObe (
+				in TollDeclarationId p_tollDeclarationId,
+				in UsageStatement p_usageStatament,
+				in EfcAutonomousContextData.Int4 p_chargeReportCounter,
+				in ActionCode p_actionCode) modifies mw_TollDeclaration := {
+					tollDeclarationId := p_tollDeclarationId, // shall be present 
+					gnssTollDeclaration := {
+						chargeReport := {
+							protocolVersion := AidIdentifier_iso17575_1_2016_,
+							obeId := TESTER_OBE_VALID_1,
+							vehicleLPNr := TESTER_LPN_VALID_1,
+							paymentMeans := TESTER_PAYMENT_MEANS_1,
+							serviceProviderContract := TESTER_SERVICE_PROVIDER_CONTRACT,
+							tollContext:= TESTER_TOLL_CONTEXT,
+							reportPeriod := omit, // Tester decides this shall not be present
+							versionId := := omit, // Tester decides this shall not be present
+							usageStatement := p_usageStatament, // shall be present in ISO 16986
+							chargeReportCounter := p_chargeReportCounter // mandatory in ISO 16986
+						}
+					},
+					actionCode:= p_actionCode // may be send, revoke or adjust
+				}
+
+// Below an example for an TollDeclarationADU containing three valid TollDeclarationADU with tester data
+// shall be moved e.g. to module test case TC
+// of course all Tester data are to be defined in module TesterData
+
+var InfoExchange v_apduToBeSent := m_apduNoSecInit({
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 1},
+						TESTER_USEAGE_STATEMENT_VALID_1,
+						1,
+						Action_Code_send_),
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 2},
+						TESTER_USEAGE_STATEMENT_VALID_2,
+						2,
+						Action_Code_send_),
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 3},
+						TESTER_USEAGE_STATEMENT_VALID_3,
+						3,
+						Action_Code_send_)							
+                });
+
 		// Relevant data types below, for easy reference		
 		//
 		//		type record TollDeclarationId {
