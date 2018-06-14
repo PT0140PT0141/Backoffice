@@ -43,7 +43,7 @@ module EfcInfoExchange_TestCasesTc {
      * @desc    TTCN-3 does not support ASN.1 parameterization (ETSI ES 201 873-7 V4.5.1 Clause 10)
      * @remark	Common_Parameterised_Asn1_Data TTCN-3 module is a workaround
      */
-    import from Common_ParametrisedAsn1Data all;
+    import from LibEfc_Common_Parameterised_Asn1_Data all;
     import from EfcInfoExchange_Interfaces all;
     import from EfcInfoExchange_Functions all;
     import from EfcInfoExchange_Pixits all;
