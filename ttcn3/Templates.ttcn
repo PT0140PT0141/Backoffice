@@ -922,8 +922,6 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				actionCode:= (ActionCode_send_, ActionCode_revoke_ ,ActionCode_adjust_ )
 			}
 
- 
-
 			// this is a template which can be used be the tester
 			// omitted fields accdoring to ISO16986 rules are not present
 			// parameters allow the tester to modify data per invividual TollDeclaration ADU
@@ -965,6 +963,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			// but different Id and usage Statement 
 			// of course all Tester data are to be defined in module TesterData
 			// TODO Jan review. I changed the definition to avoid duplication and potential inconsistencies
+			// TODO Jan check possibility for inserting a list of Charge Reports in one ADU ...  
 			template (value) TollDeclarationADU m_aduTollDeclarationToSendOneObe (
 				in TollDeclarationId p_tollDeclarationId,
 				in UsageStatement p_usageStatement,
@@ -982,27 +981,20 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				p_actionCode
 			) 
 
-// Below an example for an TollDeclarationADU containing three valid TollDeclarationADU with tester data
-// shall be moved e.g. to module test case TC
-// of course all Tester data are to be defined in module TesterData
-
-//var InfoExchange v_apduToBeSent := m_apduNoSecInit({
-//					m_aduTollDeclarationToSendOneObe(
-//						{TESTER_IDENTIFIER, 1},
-//						TESTER_USEAGE_STATEMENT_VALID_1,
-//						1,
-//						Action_Code_send_),
-//					m_aduTollDeclarationToSendOneObe(
-//						{TESTER_IDENTIFIER, 2},
-//						TESTER_USEAGE_STATEMENT_VALID_2,
-//						2,
-//						Action_Code_send_),
-//					m_aduTollDeclarationToSendOneObe(
-//						{TESTER_IDENTIFIER, 3},
-//						TESTER_USEAGE_STATEMENT_VALID_3,
-//						3,
-//						Action_Code_send_)							
-//                });
+			// Below this is a generic template for a UsageStatement
+			template UsageStatement mw_usageStatement := {
+				usageStatementId := ?, // mandatory in ISO 16986
+				tollContext := ?, // mandatory in ISO 16986
+				chargeReportFinalRecipient := omit, // shall not be used in ISO 16986
+				aggregatedFee := omit, // shall not be used in ISO 16986
+				sumVat := omit, // shall not be used in ISO 16986
+				aggregatedSingleTariffClassSession := *, // TC may use it, but mandatory for TSP
+				listOfChargeObjects := *, // TC may use it, but mandatory for TSP
+				listOfDsrcUsageData := omit, // shall not be used in ISO 16986
+				listOfRawUsageData := *,// TC may use it, but mandatory for TSP
+				noUsage := omit, // shall not be used in ISO 16986
+				additionalUsageInformation := *
+			}
 
 		// Relevant data types below, for easy reference		
 		//
