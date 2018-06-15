@@ -910,7 +910,11 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 							timeOfReport := omit, // shall not be used
 							reportPeriod := *, // may or may not be present
 							versionId := *, // may or may not be present
-							usageStatementList := ?, // shall be present in ISO 16986 
+							usageStatementList := { // shall be present in ISO 16986
+								{
+									usageStatement : = ?
+								}
+							}, 
 							sumVatForThisSession := omit, // shall not be used in ISO 16986 
 							accountStatus := omit, // shall not be used in ISO 16986
 							chargeReportCounter := ?, // mandatory in ISO 16986
