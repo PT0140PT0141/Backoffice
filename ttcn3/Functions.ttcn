@@ -22,7 +22,7 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
 
 	//importing ASN.1 data manually translated into TTCN-3
 	import from EfcInfoExchange_ParameterisedAsn1Data all;
-	import from Common_ParametrisedAsn1Data all;
+	import from LibEfc_Common_Parameterised_Asn1_Data all;
 
     group External {
 		external function fx_computeAuthenticator(in InfoExchangeContent p_InfoExchange) return ApduAuthenticator;
@@ -98,13 +98,13 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
 
         function f_sendAndLogApdu(in InfoExchange p_apduToSend) runs on MainTestComponent {
         	mtcPort.send(p_apduToSend);   	  
-			f_addLogEntry("Sent the following APDU to the IUT: " & any2unistr(p_apduToSend));
+			f_addLogEntry("At time step value " & any2unistr(t_step.read) & " sent the following APDU to the IUT: " & any2unistr(p_apduToSend));
 		}
 		
 		//TODO sometimes the IUT needs to be mindful of the time interval in which it shall send, but for initialisations NOT
 		function f_sendAndLogTrigger(in Iso16986Trigger iut_Trigger) runs on MainTestComponent {
 		  	mtcAccessPort.send(iut_Trigger);
-		  	f_addLogEntry("Sent the following Trigger to the IUT: " & any2unistr(iut_Trigger));
+		  	f_addLogEntry("At time step value " & any2unistr(t_step.read) & " sent the following Trigger to the IUT: " & any2unistr(iut_Trigger));
 		}
            
     	function f_addLogEntry(in charstring p_text){
@@ -118,7 +118,7 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
          * @desc is used and running (otherwise it is set back to 0)
          */		
 		function f_logApduReceivedAndTStep() runs on MainTestComponent{
-			f_addLogEntry("At time step value " & any2unistr(t_step.read) & ", sent the following APDU to the IUT: " & c_newLine & any2unistr(v_apduReceived));			
+			f_addLogEntry("At time step value " & any2unistr(t_step.read) & ", tester received the following APDU: " & c_newLine & any2unistr(v_apduReceived));			
 		}		
 		
 		type record of UserParameterRequest RecOfUserParameterRequest;

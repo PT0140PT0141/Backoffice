@@ -17,7 +17,7 @@ module EfcInfoExchange_TesterData{
 	
 	//importing ASN.1 data manually translated into TTCN-3
 	import from EfcInfoExchange_ParameterisedAsn1Data all;
-	import from Common_ParametrisedAsn1Data all;
+	import from LibEfc_Common_Parameterised_Asn1_Data all;
 	
 	modulepar Provider TESTER_IDENTIFIER;
 	

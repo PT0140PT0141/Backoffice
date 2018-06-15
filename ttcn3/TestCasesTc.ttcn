@@ -15,13 +15,13 @@
  *	Userdetails					! open					! open			! something available but to be reworked
  *	ListOfUsers					! open					! open			!
  *	ExceptionList				! done					! done			! ready for compile
- *	TrustObjects				! open					! open			!
+ *	TrustObjects				! open					! open			! to be "copied" from test cases TSP
  *	PaymentClaim				! open					! none			!
  *	DSRC.ContractIssuerList		! done					! done			! ready for compile
  *	DSRC.EFCContextData			! done					! none			! ready for compile 
  *	DSRC.BillingDetails			! partially done		! none			! 
  *	DSRC.ReportAbnormalOBE		! done					! none			! ready for compile
- *	GNSS.TollDeclaration		! open					! open			! in progress
+ *	GNSS.TollDeclaration		! open					! open			! done but need to check List of ChargeReports in template
  *	GNSS.BillingDetails.TSP		! open					! open			!
  *	GNSS.BillingDEtails.TC		! open					! none			!
  *	GNSS.PaymentAnnouncement	! open					! open			!
@@ -43,7 +43,7 @@ module EfcInfoExchange_TestCasesTc {
      * @desc    TTCN-3 does not support ASN.1 parameterization (ETSI ES 201 873-7 V4.5.1 Clause 10)
      * @remark	Common_Parameterised_Asn1_Data TTCN-3 module is a workaround
      */
-    import from Common_ParametrisedAsn1Data all;
+    import from LibEfc_Common_Parameterised_Asn1_Data all;
     import from EfcInfoExchange_Interfaces all;
     import from EfcInfoExchange_Functions all;
     import from EfcInfoExchange_Pixits all;
@@ -1871,22 +1871,63 @@ module EfcInfoExchange_TestCasesTc {
 				//		- valid chargeReportUsageStatementList fields; and
 				//		- valid usageStatement fields, and
 				//		- actionCode = send
-                // Step 1:
-                // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for discounted user list
-                // TODO Jan: Define tester ADUs
-                var InfoExchange v_apduToBeSent := m_apduNoSecInit({
-					m_aduTollDeclaration(1,1),
-					m_aduTollDeclaration(2,2),
-					m_aduTollDeclaration(3,3),
-					m_aduTollDeclaration(4,4),
-					m_aduTollDeclaration(5,5),
-					m_aduTollDeclaration(6,6),
-					m_aduTollDeclaration(7,7),
-					m_aduTollDeclaration(8,8),
-					m_aduTollDeclaration(9,9),
-					m_aduTollDeclaration(10,10)
-                });
-                	               	                	                	                	                	                	              	
+
+                // Prepare and send one Initiating_Apdu containing exactly ten TollDeclarationADUs with actionCode = send                // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for discounted user list
+                // TODO Jan: Define tester data required inside the module TesterData               
+
+				var InfoExchange v_apduToBeSent := m_apduNoSecInit({
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 1},
+						TESTER_USAGE_STATEMENT_VALID_1,
+						1,
+						Action_Code_send_),
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 2},
+						TESTER_USAGE_STATEMENT_VALID_2,
+						2,
+						Action_Code_send_),
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 3},
+						TESTER_USAGE_STATEMENT_VALID_3,
+						3,
+						Action_Code_send_),							
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 4},
+						TESTER_USAGE_STATEMENT_VALID_4,
+						4,
+						Action_Code_send_),
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 5},
+						TESTER_USAGE_STATEMENT_VALID_5,
+						5,
+						Action_Code_send_),
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 6},
+						TESTER_USAGE_STATEMENT_VALID_6
+						6,
+						Action_Code_send_),
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 7},
+						TESTER_USAGE_STATEMENT_VALID_7,
+						7,
+						Action_Code_send_),
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 8},
+						TESTER_USAGE_STATEMENT_VALID_8,
+						8,
+						Action_Code_send_),
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 9},
+						TESTER_USAGE_STATEMENT_VALID_9,
+						9,
+						Action_Code_send_),
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 10},
+						TESTER_USAGE_STATEMENT_VALID_10,
+						10,
+						Action_Code_send_)
+				});
+				                	               	                	                	                	                	                	              	
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
                 // Start timer
                 t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
@@ -1902,8 +1943,8 @@ module EfcInfoExchange_TestCasesTc {
 						//Set verdict
 						setverdict(pass)												
 					}
-				}			 
-
+				}	
+				f_closeDownMtc();						 
 			} // End testcase TP_TC_GNSS_TOLLDECLARATION_BV_01
 
 			testcase TP_TC_GNSS_TOLLDECLARATION_BV_02() runs on MainTestComponent system TestAdapter {
@@ -1913,23 +1954,90 @@ module EfcInfoExchange_TestCasesTc {
                 *			with actionCode = revoke
                 * @remark  [16986:2016], Clause 8.1 and Table A.1/1 AND Table A.2/2 AND Table A.52/3
                 */
- 
+
   				// Initialisation
-                 
-				// Start by setting test success
+ 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A2_2_isGnss and ICS_A52_3_implementedGNSSTOLLDECLARATION;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc 
 				
+                // Step 1:
                 // Send valid Initiating_Apdu containing 10 ADUs of type TollDeclarationADU containing
                 // gnssTollDeclarations containing different combinations of valid and IUT declared values within
 				//		- valid chargeReport fields; and
 				//		- valid chargeReportUsageStatementList fields; and
 				//		- valid usageStatement fields, and
 				//		- actionCode = send 
+
+                // Prepare and send one Initiating_Apdu containing exactly ten TollDeclarationADUs with actionCode = send
+
+				var InfoExchange v_apduToBeSent := m_apduNoSecInit({
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 1},
+						TESTER_USAGE_STATEMENT_VALID_1,
+						1,
+						Action_Code_send_),
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 2},
+						TESTER_USAGE_STATEMENT_VALID_2,
+						2,
+						Action_Code_send_),
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 3},
+						TESTER_USAGE_STATEMENT_VALID_3,
+						3,
+						Action_Code_send_),							
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 4},
+						TESTER_USAGE_STATEMENT_VALID_4,
+						4,
+						Action_Code_send_),
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 5},
+						TESTER_USAGE_STATEMENT_VALID_5,
+						5,
+						Action_Code_send_),
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 6},
+						TESTER_USAGE_STATEMENT_VALID_6
+						6,
+						Action_Code_send_),
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 7},
+						TESTER_USAGE_STATEMENT_VALID_7,
+						7,
+						Action_Code_send_),
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 8},
+						TESTER_USAGE_STATEMENT_VALID_8,
+						8,
+						Action_Code_send_),
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 9},
+						TESTER_USAGE_STATEMENT_VALID_9,
+						9,
+						Action_Code_send_),
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 10},
+						TESTER_USAGE_STATEMENT_VALID_10,
+						10,
+						Action_Code_send_)
+				});
+				                	               	                	                	                	                	                	              	
+				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+                // Start timer
+                t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
 				
                 // Wait for Default_Ack_Apdu within GNSS.TOLLDECLARARTION.TIME1             
                 // use template for Default_Ack_Apdu
                 // if not received or received outside specification or time constraints set test fail 
-								
-                // Step 1:
+
+				alt {
+					[] mtcPort.receive(m_apduDefaultAck(v_apduToBeSent)) -> value v_apduReceived {					  
+						// Log what we received, check minimum time and stop time
+						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);												
+					}
+				}
+											
+                // Step 2:
                 // Send valid Initiating_Apdu containing 10 ADUs of type TollDeclarationADU containing
                 // gnssTollDeclarations with tollDeclarationId = same value as already received toll declarations and
                 // containing different combinations of valid and IUT declared values within
@@ -1937,12 +2045,81 @@ module EfcInfoExchange_TestCasesTc {
 				//		- valid chargeReportUsageStatementList fields; and
 				//		- valid usageStatement fields, and
 				//		- actionCode = revoke
-                
-                // Step 2:
+                             
+                // Send second Initiating_Apdu containing ten valid TollDeclarationADUs with actionCode = revoke
+                // before GNSS_TOLLDECLARATIONS_TIMEA_MIN_TSP has passed
+				f_wait(GNSS_TOLLDECLARATIONS_TIMEA_MIN_TSP / 2);
+
+                // Prepare and send one Initiating_Apdu containing exactly ten TollDeclarationADUs with actionCode = revoke
+                // Note that it is required to send again with same TollDeclarationId,
+                // same TollDeclarations and same Charge Report Id
+				var InfoExchange v_apduToBeSent := m_apduNoSecInit({
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 1},
+						TESTER_USAGE_STATEMENT_VALID_1,
+						1,
+						Action_Code_revoke_),
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 2},
+						TESTER_USAGE_STATEMENT_VALID_2,
+						2,
+						Action_Code_revoke_),
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 3},
+						TESTER_USAGE_STATEMENT_VALID_3,
+						3,
+						Action_Code_revoke_),							
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 4},
+						TESTER_USAGE_STATEMENT_VALID_4,
+						4,
+						Action_Code_revoke_),
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 5},
+						TESTER_USAGE_STATEMENT_VALID_5,
+						5,
+						Action_Code_revoke_),
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 6},
+						TESTER_USAGE_STATEMENT_VALID_6
+						6,
+						Action_Code_revoke_),
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 7},
+						TESTER_USAGE_STATEMENT_VALID_7,
+						7,
+						Action_Code_revoke_),
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 8},
+						TESTER_USAGE_STATEMENT_VALID_8,
+						8,
+						Action_Code_revoke_),
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 9},
+						TESTER_USAGE_STATEMENT_VALID_9,
+						9,
+						Action_Code_revoke_),
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 10},
+						TESTER_USAGE_STATEMENT_VALID_10,
+						10,
+						Action_Code_revoke_)
+				});
+				                
+                // Step 3:
                 // Wait for Default_Ack_Apdu within GNSS.TOLLDECLARARTION.TIME1             
                 // use template for Default_Ack_Apdu
                 // if not received or received outside specification or time constraints set test fail
 
+				alt {
+					[] mtcPort.receive(m_apduDefaultAck(v_apduToBeSent)) -> value v_apduReceived {					  
+						// Log what we received, check minimum time and stop time
+						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);												
+						//Set verdict
+						setverdict(pass)												
+					}					
+				}
+				f_closeDownMtc();				
 			} // End testcase TP_TC_GNSS_TOLLDECLARATION_BV_02
 
 			testcase TP_TC_GNSS_TOLLDECLARATION_BV_03() runs on MainTestComponent system TestAdapter {
@@ -1952,23 +2129,90 @@ module EfcInfoExchange_TestCasesTc {
                 *			with actionCode = adjust
                 * @remark  [16986:2016], Clause 8.1 and Table A.1/1 AND Table A.2/2 AND Table A.52/3
                 */
- 
+
   				// Initialisation
-                 
-				// Start by setting test success
+ 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A2_2_isGnss and ICS_A52_3_implementedGNSSTOLLDECLARATION;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc 
 				
+				// Step 1:
                 // Send valid Initiating_Apdu containing 10 ADUs of type TollDeclarationADU containing
                 // gnssTollDeclarations containing different combinations of valid and IUT declared values within
 				//		- valid chargeReport fields; and
 				//		- valid chargeReportUsageStatementList fields; and
 				//		- valid usageStatement fields, and
 				//		- actionCode = send 
-				
-                // Wait for Default_Ack_Apdu within GNSS.TOLLDECLARARTION.TIME1             
-                // use template for Default_Ack_Apdu
-                // if not received or received outside specification or time constraints set test fail 
+
+               // Prepare and send one Initiating_Apdu containing exactly ten TollDeclarationADUs with actionCode = send
+
+				var InfoExchange v_apduToBeSent := m_apduNoSecInit({
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 1},
+						TESTER_USAGE_STATEMENT_VALID_1,
+						1,
+						Action_Code_send_),
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 2},
+						TESTER_USAGE_STATEMENT_VALID_2,
+						2,
+						Action_Code_send_),
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 3},
+						TESTER_USAGE_STATEMENT_VALID_3,
+						3,
+						Action_Code_send_),							
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 4},
+						TESTER_USAGE_STATEMENT_VALID_4,
+						4,
+						Action_Code_send_),
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 5},
+						TESTER_USAGE_STATEMENT_VALID_5,
+						5,
+						Action_Code_send_),
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 6},
+						TESTER_USAGE_STATEMENT_VALID_6
+						6,
+						Action_Code_send_),
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 7},
+						TESTER_USAGE_STATEMENT_VALID_7,
+						7,
+						Action_Code_send_),
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 8},
+						TESTER_USAGE_STATEMENT_VALID_8,
+						8,
+						Action_Code_send_),
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 9},
+						TESTER_USAGE_STATEMENT_VALID_9,
+						9,
+						Action_Code_send_),
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 10},
+						TESTER_USAGE_STATEMENT_VALID_10,
+						10,
+						Action_Code_send_)
+				});
+				                	               	                	                	                	                	                	              	
+				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+                // Start timer
+                t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
 								
-                // Step 1:
+                // Wait for NAck_Apdu within GNSS.TOLLDECLARARTION.TIME1             
+                // if not received or received outside specification or time constraints set test fail 
+				// TODO JAN / PT140: below Ack to be preplaced by a negative ack according to the specifications of is16986
+				// for this case of adjusting TollDeclarationADUs
+				alt {
+					[] mtcPort.receive(m_apduDefaultAck(v_apduToBeSent)) -> value v_apduReceived {					  
+						// Log what we received, check minimum time and stop time
+						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);												
+					}
+				}
+								
+                // Step 2:
                 // Send valid Initiating_Apdu containing 10 ADUs of type TollDeclarationADU containing
                 // gnssTollDeclarations with tollDeclarationId = same value as already received toll declarations and
                 // containing different combinations of valid and IUT declared values within
@@ -1976,14 +2220,81 @@ module EfcInfoExchange_TestCasesTc {
 				//		- valid chargeReportUsageStatementList fields; and
 				//		- valid usageStatement fields, and
 				//		- actionCode = adjust
-                
-                // Step 2:
+
+                // Send second Initiating_Apdu containing ten valid TollDeclarationADUs with actionCode = adjust
+                // before GNSS_TOLLDECLARATIONS_TIMEA_MIN_TSP has passed
+				f_wait(GNSS_TOLLDECLARATIONS_TIMEA_MIN_TSP / 2);
+				
+                // Prepare and send one Initiating_Apdu containing exactly ten TollDeclarationADUs with actionCode = adjust
+                // Note that it is required to send again with same TollDeclarationId,
+                // but "corrected" TollDeclarations and a new Charge Report Id
+				var InfoExchange v_apduToBeSent := m_apduNoSecInit({
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 1},
+						TESTER_USAGE_STATEMENT_VALID_11,
+						11,
+						Action_Code_adjust_),
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 2},
+						TESTER_USAGE_STATEMENT_VALID_12,
+						12,
+						Action_Code_adjust_),
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 3},
+						TESTER_USAGE_STATEMENT_VALID_13,
+						13,
+						Action_Code_adjust_),							
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 4},
+						TESTER_USAGE_STATEMENT_VALID_14,
+						14,
+						Action_Code_adjust_),
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 5},
+						TESTER_USAGE_STATEMENT_VALID_15,
+						15,
+						Action_Code_adjust_),
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 6},
+						TESTER_USAGE_STATEMENT_VALID_16
+						16,
+						Action_Code_adjust_),
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 7},
+						TESTER_USAGE_STATEMENT_VALID_17,
+						17,
+						Action_Code_adjust_),
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 8},
+						TESTER_USAGE_STATEMENT_VALID_18,
+						18,
+						Action_Code_adjust_),
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 9},
+						TESTER_USAGE_STATEMENT_VALID_19,
+						19,
+						Action_Code_adjust_),
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 10},
+						TESTER_USAGE_STATEMENT_VALID_20,
+						20,
+						Action_Code_adjust_)
+				});
+				
+                // Step 3:
                 // Wait for Default_Ack_Apdu within GNSS.TOLLDECLARARTION.TIME1             
                 // use template for Default_Ack_Apdu
                 // if not received or received outside specification or time constraints set test fail
-
+				alt {
+					[] mtcPort.receive(m_apduDefaultAck(v_apduToBeSent)) -> value v_apduReceived {					  
+						// Log what we received, check minimum time and stop time
+						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);												
+						//Set verdict
+						setverdict(pass)												
+					}
+				}
+				f_closeDownMtc();				
 			} // End testcase TP_TC_GNSS_TOLLDECLARATION_BV_03
-			
 		} // End of Valid_Behaviour
 		
 		group Invalid_Behaviour {
@@ -1998,21 +2309,64 @@ module EfcInfoExchange_TestCasesTc {
                 */
  
   				// Initialisation
-                 
-				// Start by setting test success
+ 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A2_2_isGnss and ICS_A52_3_implementedGNSSTOLLDECLARATION;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc 
 								
                 // Step 1:
-                // Send Initiating_Apdu containing one TollDeclarationADU
+                // Send Initiating_Apdu containing TollDeclarationADUs
                 // with valid and IUT declared values but exceeding GNSS.TOLLDECLARATION.PARAM1_MAX
+
+               // Prepare and send an Initiating_Apdu with PARAM1_MAX + 1 TollDeclarationADUs with actionCode = send
+
+				var InfoExchange v_apduToBeSent;
+				var Adus v_adusToBeSent; //List of ADUs to be sent 
+				var UsageStatement v_usageStatementToBeSent;
+
+				for (var integer v_loop := 0; v_loop = GNSS_TOLLDECLARATIONS_PARAM1_MAX_TC; v_loop := loop + 1) {	
+ 					v_usageStatementToBeSent := {
+						usageStatementId := v_loop,
+						tollContext := TESTER_TOLL_CONTEXT,
+						aggregatedSingleTariffClassSession := TESTER_SINGLE_TARIFF_CLASS_SESSION,
+						listOfChargeObjects TESTER_LIST_OF_CHARGE_OBJECTS,
+						listOfRawUsageData := TESTER_LIST_OF_RAW_USAGE_DATA,
+						additionalUsageInformation := omit
+					};
+ 					v_adusToBeSent[v_loop] := m_aduTollDeclarationToSendOneObe(
+							{TESTER_IDENTIFIER, v_loop},
+							v_usageStatementToBeSent,
+							v_loop,
+							Action_Code_send_);
+				};		
+ 					
+				var InfoExchange v_apduToBeSent := m_apduNoSecInit(v_adusToBeSent);
+				                	               	                	                	                	                	                	              	
+				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+                // Start timer
+                t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
                 
                 // Step 2:
                 // Wait for NAck_Apdu with
                 //		- ({0,semanticError(3000)}) OR
-                //		- ({1,semanticError(3000)}) 
+                //		- ({n,semanticError(3000)}) 
                 // within GNSS.TOLLDECLARARTION.TIME1             
-                // use template for NAck_Apdus
                 // if not received or received outside specification or time constraints set test fail
+                
+                // Prepare parameters to be expected in the NAck-APDU
+				var NAckParams v_nAckParams_1 := {{0, AduReasonCode_semanticError_}};
+				var NAckParams v_nAckParams_2 := {{GNSS_TOLLDECLARATIONS_PARAM1_MAX_TC, AduReasonCode_semanticError_}};
 
+				alt {
+					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams_1)) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
+						setverdict(pass);
+					}
+
+					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams_2)) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
+						setverdict(pass);
+					}
+				}
+				f_closeDownMtc();				            	          				                
 			} // End testcase TP_TC_GNSS_TOLLDECLARATION_BI_01
 		
 			testcase TP_TC_GNSS_TOLLDECLARATION_BI_02() runs on MainTestComponent system TestAdapter {
@@ -2025,9 +2379,10 @@ module EfcInfoExchange_TestCasesTc {
                 */
  
   				// Initialisation
-                 
-				// Start by setting test success
+ 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A2_2_isGnss and ICS_A52_3_implementedGNSSTOLLDECLARATION;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc 
 				
+                // Step 1: 
                 // Send valid Initiating_Apdu containing exactly one ADU of type TollDeclarationADU containing
                 // gnssTollDeclarations containing valid and IUT declared values within
 				//		- valid chargeReport fields; and
@@ -2035,11 +2390,31 @@ module EfcInfoExchange_TestCasesTc {
 				//		- valid usageStatement fields, and
 				//		- actionCode = send 
 				
+                // Prepare and send one Initiating_Apdu containing exactly one TollDeclarationADUs with actionCode = send
+
+				var InfoExchange v_apduToBeSent := m_apduNoSecInit({
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 1},
+						TESTER_USAGE_STATEMENT_VALID_1,
+						1,
+						Action_Code_send_)
+					});
+
+				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+                // Start timer
+                t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
+				
                 // Wait for Default_Ack_Apdu within GNSS.TOLLDECLARARTION.TIME1             
-                // use template for Default_Ack_Apdu
                 // if not received or received outside specification or time constraints set test fail 
+
+				alt {
+					[] mtcPort.receive(m_apduDefaultAck(v_apduToBeSent)) -> value v_apduReceived {					  
+						// Log what we received, check minimum time and stop time
+						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);												
+					}
+				}
 								
-                // Step 1:
+                // Step 2:
                 // Send valid Initiating_Apdu containing exactly one ADU of type TollDeclarationADU containing
                 // a gnssTollDeclaration with tollDeclarationId /= the value as already received toll declaration and
 				// containing valid and IUT declared values for
@@ -2047,15 +2422,44 @@ module EfcInfoExchange_TestCasesTc {
 				//		- chargeReportUsageStatementList and
 				//		- usageStatement; and
 				//		- actionCode = revoke
+
+                // Send second Initiating_Apdu containing one valid TollDeclarationADUs with actionCode = revoke
+                // before GNSS_TOLLDECLARATIONS_TIMEA_MIN_TSP has passed
+				f_wait(GNSS_TOLLDECLARATIONS_TIMEA_MIN_TSP / 2);
+
+                // Prepare and send one Initiating_Apdu containing exactly one TollDeclarationADUs with actionCode = revoke
+                // same TollDeclarations and same Charge Report Id
+				var InfoExchange v_apduToBeSent := m_apduNoSecInit({
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 2},
+						TESTER_USAGE_STATEMENT_VALID_2,
+						2,
+						Action_Code_revoke_)
+					});
                 
-                // Step 2:
+                // Step 3:
                 // Wait for NAck_Apdu with
                 //		- ({0,semanticError(3000)}) OR
                 //		- ({1,semanticError(3000)}) 
                 // within GNSS.TOLLDECLARARTION.TIME1             
-                // use template for NAck_Apdus
                 // if not received or received outside specification or time constraints set test fail
 
+                // Prepare parameters to be expected in the NAck-APDU
+				var NAckParams v_nAckParams_1 := {{0, AduReasonCode_semanticError_}};
+				var NAckParams v_nAckParams_2 := {{1, AduReasonCode_semanticError_}};
+
+				alt {
+					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams_1)) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
+						setverdict(pass);
+					}
+
+					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams_2)) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
+						setverdict(pass);
+					}
+				}
+				f_closeDownMtc();				            	          				                
 			} // End testcase TP_TC_GNSS_TOLLDECLARATION_BI_02
 
 			testcase TP_TC_GNSS_TOLLDECLARATION_BI_03() runs on MainTestComponent system TestAdapter {
@@ -2068,9 +2472,10 @@ module EfcInfoExchange_TestCasesTc {
                 */
  
   				// Initialisation
-                 
-				// Start by setting test success
+ 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A2_2_isGnss and ICS_A52_3_implementedGNSSTOLLDECLARATION;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc 
 				
+                // Step 1: 
                 // Send valid Initiating_Apdu containing exactly one ADU of type TollDeclarationADU containing
                 // gnssTollDeclarations containing valid and IUT declared values within
 				//		- valid chargeReport fields; and
@@ -2078,11 +2483,31 @@ module EfcInfoExchange_TestCasesTc {
 				//		- valid usageStatement fields, and
 				//		- actionCode = send 
 				
+                // Prepare and send one Initiating_Apdu containing exactly one TollDeclarationADUs with actionCode = send
+
+				var InfoExchange v_apduToBeSent := m_apduNoSecInit({
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 1},
+						TESTER_USAGE_STATEMENT_VALID_1,
+						1,
+						Action_Code_send_)
+					});
+
+				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+                // Start timer
+                t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
+				
                 // Wait for Default_Ack_Apdu within GNSS.TOLLDECLARARTION.TIME1             
-                // use template for Default_Ack_Apdu
                 // if not received or received outside specification or time constraints set test fail 
+
+				alt {
+					[] mtcPort.receive(m_apduDefaultAck(v_apduToBeSent)) -> value v_apduReceived {					  
+						// Log what we received, check minimum time and stop time
+						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);												
+					}
+				}
 								
-                // Step 1:
+                // Step 2:
                 // Send valid Initiating_Apdu containing exactly one ADU of type TollDeclarationADU containing
                 // a gnssTollDeclaration with tollDeclarationId /= the value as already received toll declaration and
 				// containing valid and IUT declared values for
@@ -2090,15 +2515,44 @@ module EfcInfoExchange_TestCasesTc {
 				//		- chargeReportUsageStatementList and
 				//		- usageStatement; and
 				//		- actionCode = adjust
+
+                // Send second Initiating_Apdu containing one valid TollDeclarationADUs with actionCode = revoke
+                // before GNSS_TOLLDECLARATIONS_TIMEA_MIN_TSP has passed
+				f_wait(GNSS_TOLLDECLARATIONS_TIMEA_MIN_TSP / 2);
+
+                // Prepare and send one Initiating_Apdu containing exactly one TollDeclarationADUs with actionCode = revoke
+                // same TollDeclarations and same Charge Report Id
+				var InfoExchange v_apduToBeSent := m_apduNoSecInit({
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 2},
+						TESTER_USAGE_STATEMENT_VALID_2,
+						2,
+						Action_Code_adjust_)
+					});
                 
-                // Step 2:
+                // Step 3:
                 // Wait for NAck_Apdu with
                 //		- ({0,semanticError(3000)}) OR
                 //		- ({1,semanticError(3000)}) 
                 // within GNSS.TOLLDECLARARTION.TIME1             
-                // use template for NAck_Apdus
                 // if not received or received outside specification or time constraints set test fail
 
+                // Prepare parameters to be expected in the NAck-APDU
+				var NAckParams v_nAckParams_1 := {{0, AduReasonCode_semanticError_}};
+				var NAckParams v_nAckParams_2 := {{1, AduReasonCode_semanticError_}};
+
+				alt {
+					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams_1)) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
+						setverdict(pass);
+					}
+
+					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams_2)) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
+						setverdict(pass);
+					}
+				}
+				f_closeDownMtc();				            	          				                
 			} // End testcase TP_TC_GNSS_TOLLDECLARATION_BI_03
 
 			testcase TP_TC_GNSS_TOLLDECLARATION_BI_04() runs on MainTestComponent system TestAdapter {
@@ -2110,21 +2564,48 @@ module EfcInfoExchange_TestCasesTc {
                 */
  
   				// Initialisation
-                 
-				// Start by setting test success
-								
-                // Step 1:
+ 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A2_2_isGnss and ICS_A52_3_implementedGNSSTOLLDECLARATION;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc 
+				
+                // Step 1: 
                 // Send Initiating_Apdu containing two TollDeclarationADU containing
 				//		- tollDeclarationId = same values in the two toll declarations, and
 				//		- gnssTollDeclarations with valid and IUT declared values, and
 				//		- actionCode = send
+				
+                // Prepare and send one Initiating_Apdu containing exactly one TollDeclarationADUs with actionCode = send
+
+				var InfoExchange v_apduToBeSent := m_apduNoSecInit({
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 1},
+						TESTER_USAGE_STATEMENT_VALID_1,
+						1,
+						Action_Code_send_),
+					m_aduTollDeclarationToSendOneObe(
+						{TESTER_IDENTIFIER, 1},
+						TESTER_USAGE_STATEMENT_VALID_1,
+						2,
+						Action_Code_send_),
+					});
+				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
                 
-                // Step 2:
+                // Start timer
+                t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
+				
                 // Wait for NAck_Apdu with apduAckCode = apduNotOK (3)
                 // within GNSS.TOLLDECLARARTION.TIME1             
-                // use template for NAck_Apdu
-                // if not received or received outside specification or time constraints set test fail
+                // if not received or received outside specification or time constraints set test fail 
 
+                // Prepare parameters to be expected in the NAck-APDU
+				var NAckParams v_nAckParams := {{0, ApduReasonCode_apduNotOK_}};
+
+				alt {
+					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
+						setverdict(pass);
+					}
+				}
+				f_closeDownMtc();				            	          				                
 			} // End testcase TP_TC_GNSS_TOLLDECLARATION_BI_04
                		
 			testcase TP_TC_GNSS_TOLLDECLARATION_BI_05() runs on MainTestComponent system TestAdapter {
@@ -2135,21 +2616,48 @@ module EfcInfoExchange_TestCasesTc {
                 * @remark  [16986:2016], Clause 8.1 and Table A.1/1 AND Table A.2/2 AND Table A.52/3
                 */
  
-  				// Initialisation
-                 
-				// Start by setting test success
-								
-                // Step 1:
+ 				// Initialisation
+ 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A2_2_isGnss and ICS_A52_3_implementedGNSSTOLLDECLARATION;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc 
+				
+                // Step 1: 
                 // Send Initiating_Apdu containing exactly one TollDeclarationADU containing
 				//		- gnssTollDeclaration of Choice AuthenticatedChargeReport, and
 				//		- actionCode = send
+				
+                // Prepare and send one Initiating_Apdu containing exactly one TollDeclaratioN
+                // of Choice AuthenticatedChargeReport with actionCode = send
+                // TODO define TESTER_AUTHENTICATED_CHARGE_REPORT in module TesterData
+
+				var TollDeclarationADU v_aduTollDeclarationAuthenticatedChargeReport := {
+					tollDeclarationId := {TESTER_IDENTIFIER, 1}, 
+					gnssTollDeclaration := {
+						authenticatedChargeReport := TESTER_AUTHENTICATED_CHARGE_REPORT
+					},
+				actionCode:= ActionCode_send_
+				};
+				
+				var InfoExchange v_apduToBeSent := m_apduNoSecInit({v_aduTollDeclarationAuthenticatedChargeReportm});
+
+				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
                 
-                // Step 2:
+                // Start timer
+                t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
+				
                 // Wait for NAck_Apdu with apduAckCode = apduNotOK (3)
                 // within GNSS.TOLLDECLARARTION.TIME1             
-                // use template for NAck_Apdu
                 // if not received or received outside specification or time constraints set test fail
 
+                // Prepare parameters to be expected in the NAck-APDU
+				var NAckParams v_nAckParams := {{0, ApduReasonCode_apduNotOK_}};
+
+				alt {
+					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
+						setverdict(pass);
+					}
+				}
+				f_closeDownMtc();				            	          				                								
 			} // End testcase TP_TC_GNSS_TOLLDECLARATION_BI_05
 
 			testcase TP_TC_GNSS_TOLLDECLARATION_BI_06() runs on MainTestComponent system TestAdapter {
@@ -2161,20 +2669,58 @@ module EfcInfoExchange_TestCasesTc {
                 */
  
   				// Initialisation
-                 
-				// Start by setting test success
+ 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A2_2_isGnss and ICS_A52_3_implementedGNSSTOLLDECLARATION;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc 
 								
                 // Step 1:
                 // Send Initiating_Apdu containing exactly one TollDeclarationADU containing with
                 //		- more than GNSS.TOLLDECLARATION.PARAM2_MAX chargeReports containing valid and IUT declared values;
 				//		- actionCode = send
+
+				// Prepare and send an Initiating_Apdu with PARAM2_MAX + 1 TollDeclarationADUs with actionCode = send
+
+				var InfoExchange v_apduToBeSent;
+				var Adus v_adusToBeSent; //List of ADUs to be sent
+				// TODO: revise because of only one ADU required 
+				var UsageStatement v_usageStatementToBeSent;
+
+				for (var integer v_loop := 0; v_loop = GNSS_TOLLDECLARATIONS_PARAM2_MAX_TC; v_loop := loop + 1) {	
+ 					v_usageStatementToBeSent := {
+						usageStatementId := v_loop,
+						tollContext := TESTER_TOLL_CONTEXT,
+						aggregatedSingleTariffClassSession := TESTER_SINGLE_TARIFF_CLASS_SESSION,
+						listOfChargeObjects TESTER_LIST_OF_CHARGE_OBJECTS,
+						listOfRawUsageData := TESTER_LIST_OF_RAW_USAGE_DATA,
+						additionalUsageInformation := omit
+					};
+ 					v_adusToBeSent[v_loop] := m_aduTollDeclarationToSendOneObe( 
+							{TESTER_IDENTIFIER, v_loop}, // TODO: is the assumption correct that one TD contains one ChargeReport?
+							v_usageStatementToBeSent,
+							v_loop,
+							Action_Code_send_);
+				};		
+ 					
+				var InfoExchange v_apduToBeSent := m_apduNoSecInit(v_adusToBeSent);
+				                	               	                	                	                	                	                	              	
+				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+                // Start timer
+                t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
                 
                 // Step 2:
-                // Wait for NAck_Apdu with (with issues= �)
+                // Wait for NAck_Apdu with (with issues= NULL)
                 // within GNSS.TOLLDECLARARTION.TIME1             
-                // use template for NAck_Apdu
                 // if not received or received outside specification or time constraints set test fail
+                
+                // Prepare parameters to be expected in the NAck-APDU
+				var NAckParams v_nAckParams := {{0, ApduReasonCode_apduNotOK_}};
 
+				alt {
+					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
+						setverdict(pass);
+					}
+				}
+				f_closeDownMtc();				            	          				                								
 			} // End testcase TP_TC_GNSS_TOLLDECLARATION_BI_06
 
 			testcase TP_TC_GNSS_TOLLDECLARATION_BI_07() runs on MainTestComponent system TestAdapter {
@@ -2185,23 +2731,56 @@ module EfcInfoExchange_TestCasesTc {
                 * @remark  [16986:2016], Clause 8.1 and Table A.1/1 AND Table A.2/2 AND Table A.52/3
                 */
  
-  				// Initialisation
-                 
-				// Start by setting test success
-								
-                // Step 1:
+ 				// Initialisation
+ 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A2_2_isGnss and ICS_A52_3_implementedGNSSTOLLDECLARATION;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc 
+				
+                // Step 1: 
                 // Send Initiating_Apdu containing exactly one TollDeclarationADU containing with
                 //		- with valid and IUT declared values, and
-                //		- actionCode = �
+                //		- actionCode = NULL
+				
+                // Prepare and send one Initiating_Apdu containing exactly one TollDeclaration
+                // with actionCode = NULL
+
+				template (value) TollDeclarationADU m_aduTollDeclarationToSendOneObeOtherActionCodes
+					modifies m_aduTollDeclarationToSendOneObe:={actionCode := ?); // to allow any value for actionCode
+
+				var InfoExchange v_apduToBeSent := m_apduNoSecInit({
+					m_aduTollDeclarationToSendOneObeOtherActionCodes(
+						{TESTER_IDENTIFIER, 1},
+						TESTER_USAGE_STATEMENT_VALID_1,
+						1,
+						null)
+					});
+
+				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
                 
-                // Step 2:
+                // Start timer
+                t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
+				
                 // Wait for NAck_Apdu with
                 //		- ({0,semanticError(3000)}) OR
                 //		- ({1,semanticError(3000)}) 
                 // within GNSS.TOLLDECLARARTION.TIME1             
-                // use template for NAck_Apdus
                 // if not received or received outside specification or time constraints set test fail
 
+                // Prepare parameters to be expected in the NAck-APDU
+				var NAckParams v_nAckParams_1 := {{0, AduReasonCode_semanticError_}};
+				var NAckParams v_nAckParams_2 := {{1, AduReasonCode_semanticError_}};
+
+				alt {
+					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams_1)) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
+						setverdict(pass);
+					}
+
+					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams_2)) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
+						setverdict(pass);
+					}
+				}
+				f_closeDownMtc();				            	          				                
 			} // End testcase TP_TC_GNSS_TOLLDECLARATION_BI_07
 	                		
 			testcase TP_TC_GNSS_TOLLDECLARATION_BI_08() runs on MainTestComponent system TestAdapter {
@@ -2212,23 +2791,56 @@ module EfcInfoExchange_TestCasesTc {
                 * @remark  [16986:2016], Clause 8.1 and Table A.1/1 AND Table A.2/2 AND Table A.52/3
                 */
  
-  				// Initialisation
-                 
-				// Start by setting test success
-								
-                // Step 1:
+				// Initialisation
+ 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A2_2_isGnss and ICS_A52_3_implementedGNSSTOLLDECLARATION;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc 
+				
+                // Step 1: 
                 // Send Initiating_Apdu containing exactly one TollDeclarationADU containing with
                 //		- with valid and IUT declared values, and
                 //		- actionCode /= {send, revoke, adjust}
+				
+                // Prepare and send one Initiating_Apdu containing exactly one TollDeclaration
+                // with actionCode = 4
+
+				template (value) TollDeclarationADU m_aduTollDeclarationToSendOneObeOtherActionCodes
+					modifies m_aduTollDeclarationToSendOneObe:={actionCode := ?); // to allow any value for actionCode
+
+				var InfoExchange v_apduToBeSent := m_apduNoSecInit({
+					m_aduTollDeclarationToSendOneObeOtherActionCodes(
+						{TESTER_IDENTIFIER, 1},
+						TESTER_USAGE_STATEMENT_VALID_1,
+						1,
+						ActionCode_resend_) // other actionCode = 4
+					});
+
+				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
                 
-                // Step 2:
+                // Start timer
+                t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
+				
                 // Wait for NAck_Apdu with
                 //		- ({0,actionCodeNotSupported(3010)}) OR
                 //		- ({1,actionCodeNotSupported(3010)}) 
                 // within GNSS.TOLLDECLARARTION.TIME1             
-                // use template for NAck_Apdus
                 // if not received or received outside specification or time constraints set test fail
 
+                // Prepare parameters to be expected in the NAck-APDU
+				var NAckParams v_nAckParams_1 := {{0, AduReasonCode_actionCodeNotSupported_}};
+				var NAckParams v_nAckParams_2 := {{1, AduReasonCode_actionCodeNotSupported_}};
+
+				alt {
+					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams_1)) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
+						setverdict(pass);
+					}
+
+					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams_2)) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
+						setverdict(pass);
+					}
+				}
+				f_closeDownMtc();				            	          				                
 			} // End testcase TP_TC_GNSS_TOLLDECLARATION_BI_08
 
 			testcase TP_TC_GNSS_TOLLDECLARATION_BI_09() runs on MainTestComponent system TestAdapter {
