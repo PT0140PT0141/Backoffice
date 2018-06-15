@@ -1578,28 +1578,31 @@ module EfcInfoExchange_TestCasesTsp {
 				for (var integer v_trustObjectsReceived :=1; v_trustObjectsReceived<v_trustObjectsToBeSent;v_trustObjectsReceived:=v_trustObjectsReceived+1)
 					{
 						// Prepare a request of a Trust Object by taking allowed type and purpose from the RECEIVED_TRUST_OBJECTS_SUPPORTED Pixit value
+						
+						var integer v_requestedTrustObjectType := SENT_TRUST_OBJECTS_SUPPORTED[v_trustObjectsReceived].trustObjectType;
+						var TrustObjectPurposes v_requestedTrustObjectPurposes := SENT_TRUST_OBJECTS_SUPPORTED[v_trustObjectsReceived].trustObjectPurpose
+						
 						var InfoExchange v_apduRequestForTrustObject := m_apduNoSec(
 							mw_apci, Adus:{
 								requestAdus:= {
 									requestedADUType:= 3,
 									requestedTrustObject:={
 										trustObjectSpec:={
-											typeOfTrustObject := SENT_TRUST_OBJECTS_SUPPORTED[v_trustObjectsReceived].trustObjectType,
-					    					purposesOfTrustObject := SENT_TRUST_OBJECTS_SUPPORTED[v_trustObjectsReceived].trustObjectPurpose
+											typeOfTrustObject := v_requestedTrustObjectType,
+					    					purposesOfTrustObject := v_requestedTrustObjectPurposes
 					    				}
 									}
 								}
 							}
 						);
 						f_sendAndLogApdu(v_apduRequestForTrustObject);
-
+			
 						// Set timer
                 		 t_step.start(TRUSTOBJECTS_TYPE1_TIME1_MAX_TSP);
 						// Step #2: Wait for TrustObjects ADU
 						// Either we receive an APDU containing  TrustObject or the timeout expires
-						// PT140 TODO: m_apduTrustObjects to be defined
                  		alt {
-                      		[] mtcPort.receive(mw_apduTrustObject(v_apduRequestForTrustObject)) -> value v_apduReceived {
+                      		[] mtcPort.receive(mw_apduTrustObject) -> value v_apduReceived {
 								f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TYPE1_TIME1_MIN_TSP);  
 
                         		// Step #3: Send DefaultACK with correct identifier
@@ -1627,11 +1630,10 @@ module EfcInfoExchange_TestCasesTsp {
 				// Step 1: Trigger IUT with TRUSTOBJECTS_TR_1
 				f_sendAndLogTrigger(TRUSTOBJECTS_TR_1);
 				//  Wait for request for TRUSTOBJECTS
-				// PT140 TODO: loop in all available types of trustobject requested supported by the IUT by repeating receive
-				// Set timer
+				// Loop in all available types of trustobject requested supported by the IUT by repeating receive
 				var integer v_expectedTrustObjectRequests := sizeof(SENT_TRUST_OBJECTS_SUPPORTED);
 				var integer v_receivedTrustObjects := 0;
-				
+				// Set timer
                 t_step.start(TRUSTOBJECTS_TYPE1_TIME1_MAX_TSP);                 
 				alt {
 					[] mtcPort.receive(mw_apduRequestTrustObjects) -> value v_apduReceived {
@@ -1780,7 +1782,6 @@ module EfcInfoExchange_TestCasesTsp {
            } // End of TP_TSP_TRUSTOBJECTS_BI_02
 
            testcase TP_TSP_TRUSTOBJECTS_BI_03() runs on MainTestComponent system TestAdapter {
- 		// PT140 TODO: The whole logic of this test case completely revised (previous logic commented)        
               /**
               * @desc    TP_TSP_TRUSTOBJECTS_BI_03: Verify that the TSP correctly responds to a not supported Trust Object
               * @remark  [16986:2016], Clause 6.6 and Table A.1/2 
@@ -1823,7 +1824,6 @@ module EfcInfoExchange_TestCasesTsp {
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_4_implementedTRUSTOBJECTSElectronicTransfer;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
-				// PT140 TODO: mw_aduTrustObject template to be defined
 				// Step1: send RequestADU by specifying the type of trustobject
 				// Prepare a request of a Trust Object by taking allowed type and purpose from the SENT_TRUST_OBJECTS_SUPPORTED Pixit value
 				var InfoExchange v_apduRequestForTrustObject := m_apduNoSec(mw_apci, Adus:{requestAdus:= {
@@ -2020,7 +2020,6 @@ module EfcInfoExchange_TestCasesTsp {
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_5_implementedPAYMENTCLAIM and ICS_A26_3_implementedDSRCBILLINGDETAILS;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				                  
-                // PT 140: TODO It is not possible to send two PAYMENTCLAM Adus in the same APDU as stated in the TSS&TP
                  // Send one preset Billing Details
                  // PT140 TODO : mw_aduBillingDetails template and related fields to be defined
 
@@ -4767,7 +4766,6 @@ module EfcInfoExchange_TestCasesTsp {
 						// Log what we received
 						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC);
 						// Check the issue list presence and contents
-						//TODO ispresent accepts only one argument...
 						if (
 							ispresent(v_apduReceived.adus.ackAdus[1].issues) and
 							(v_apduReceived.adus.ackAdus[1].issues == {
