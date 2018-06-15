@@ -929,7 +929,9 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			// this is a template which can be used be the tester
 			// omitted fields accdoring to ISO16986 rules are not present
 			// parameters allow the tester to modify data per invividual TollDeclaration ADU
-			// can be used for valid and invalid Toll Declarations 
+			// can be used for valid and invalid Toll Declarations
+			// allows for one TollDeclaration / Charge Report and one UsageStatement 
+			// TODO Jan: to be revised to allow for a list for charge repprts and a list of usage statements  
 
 			template (value) TollDeclarationADU m_aduTollDeclarationToSend (
 				in TollDeclarationId p_tollDeclarationId,
@@ -954,7 +956,11 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 							tollContext:= p_tollContext, // shall be Tester
 							reportPeriod := omit, // Tester decides this shall not be present
 							versionId := omit, // Tester decides this shall not be present
-							usageStatement := p_usageStatement, // shall be present in ISO 16986
+							usageStatementList := {
+								{
+								usageStatement := p_usageStatement // shall be present in ISO 16986
+								}
+							},
 							chargeReportCounter := p_chargeReportCounter // mandatory in ISO 16986
 						}
 					}
