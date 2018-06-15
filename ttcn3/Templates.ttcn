@@ -981,6 +981,30 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				p_actionCode
 			) 
 
+			// below this is a generic template for a ChargeReprt
+			template ChargeReport mw_chargeReport := {
+				protocolVersion:= AidIdentifier_iso17575_1_2016_,
+				obeId := ?, // mandatory in ISO 16986
+				vehicleLPNr := ?, // mandatory in ISO 16986
+				paymentMeans := ?, // mandatory in IS 16896
+				serviceProviderContract := ?, // mandatory in ISO 12855
+				tollContext:= ?, // can be Tester or IUT Id
+				chargeReportFinalRecipient := omit, // shall not be used in ISO 16986 
+				timeOfReport := omit, // shall not be used
+				reportPeriod := *, // may or may not be present
+				versionId := *, // may or may not be present
+				usageStatementList := {  // shall be present in ISO 16986
+					{
+						usageStatement := ?
+					}
+				}, 
+				sumVatForThisSession := omit, // shall not be used in ISO 16986 
+				accountStatus := omit, // shall not be used in ISO 16986
+				chargeReportCounter := ?, // mandatory in ISO 16986
+				mileage := omit, // shall not be used in ISO 16986
+				listOfCccAttributes := omit // shall not be used in IS 16986
+			}
+			
 			// Below this is a generic template for a UsageStatement
 			template UsageStatement mw_usageStatement := {
 				usageStatementId := ?, // mandatory in ISO 16986
