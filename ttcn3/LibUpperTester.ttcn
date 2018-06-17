@@ -8,29 +8,35 @@ module EfcInfoExchange_LibUpperTester {
 	import from EfcInfoExchange_Interfaces {type MainTestComponent;};
 	import from EfcInfoExchange_Functions all;
 
+	// TODO PT140: For below marked trigger we shall check if the "special triggers" are used
+	// in the test cases or the "gerenic triggers".
+	// Part 2 indicates that no generic triggers are used
+	 
+
 	type enumerated Iso16986Trigger {
-		USERDETAILS_TR_TC_1, 
-		LISTOFUSERS_TR_TC_1, 
-		EXCEPTIONLIST_TR_TSP_1_A,
+		USERDETAILS_TR_TC_1_A, // see comment above
+		LISTOFUSERS_TR_TC_1_A, // see comment above
+		EXCEPTIONLIST_TR_TSP_1_A, // see cpomment above
 		EXCEPTIONLIST_TR_TSP_1_B,
 		EXCEPTIONLIST_TR_TSP_1_C,		 
-		TRUSTOBJECTS_TR_1, 
-		TRUSTOBJECTS_TR_2, 
-		PAYMENTCLAIM_TR_TC_1_A,
+		TRUSTOBJECTS_TR_1_A, // see comment above 
+		TRUSTOBJECTS_TR_2_A,  // see comment above
+		PAYMENTCLAIM_TR_TC_1_A, 
 		PAYMENTCLAIM_TR_TC_1_B,
 		PAYMENTCLAIM_TR_TC_1_C,
-		DSRC_CONTRACTISSUERLIST_TR_TSP_1,
+		DSRC_CONTRACTISSUERLIST_TR_TSP_1_A,  // see comment above
 		DSRC_EFCCONTEXTDATA_TR_TC_1_A,
 		DSRC_EFCCONTEXTDATA_TR_TC_1_B,
 		DSRC_BILLINGDETAILS_TR_TC_1_A,
 		DSRC_BILLINGDETAILS_TR_TC_1_B,
 		DSRC_BILLINGDETAILS_TR_TC_1_C,
-		DSRC_REPORTABNORMALOBE_TR_TC_1,
+		DSRC_REPORTABNORMALOBE_TR_TC_1_A, // see comment above
 		GNSS_TOLLDECLARATION_TR_TSP_1_A,
 		GNSS_TOLLDECLARATION_TR_TSP_1_B1, // One Billing Details
 		GNSS_TOLLDECLARATION_TR_TSP_1_B2, // One Billing Details, same as previous, code=adjust
 		GNSS_BILLINGDETAILS_TSP_TR_TSP_1_A,
-		GNSS_BILLINGDETAILS_TSP_TR_TSP_1_B,
+		GNSS_BILLINGDETAILS_TSP_TR_TSP_1_B1,
+		GNSS_BILLINGDETAILS_TSP_TR_TSP_1_B2, // TODO PT140: really used? Is present in Part 1		
 		GNSS_BILLINGDETAILS_TSP_TR_TSP_1_C,
 		GNSS_BILLINGDETAILS_TSP_TR_TSP_1_D,
 		GNSS_BILLINGDETAILS_TSP_TR_TSP_1_E,
