@@ -18,8 +18,6 @@ module EfcInfoExchange_Pixits {
     modulepar ExtendedPaymentAmount MAX_ACCEPTED_BILLINGDETAILS_AMOUNT;
     
 	//For APDUs sent from the IUT...
-	modulepar Provider APDU_ORIGINATOR_FOR_TESTER; //value of the InfoExchange.infoExchangeContent.apci.apduOriginator
-	modulepar Provider INFORMATION_SENDER_ID_FOR_TESTER;	//value of the InfoExchange.infoExchangeContent.apci.informationSenderID
     modulepar Provider APDU_ORIGINATOR_FOR_IUT; //value of the InfoExchange.infoExchangeContent.apci.apduOriginator
     modulepar Provider INFORMATION_SENDER_ID_FOR_IUT;	//value of the InfoExchange.infoExchangeContent.apci.informationSenderID
 
@@ -27,9 +25,9 @@ module EfcInfoExchange_Pixits {
     modulepar UserId EMPTYLIST_USER_ID; // Valid user, with no other associated UserIds for LISTOFUSERS transactions
     modulepar UserId WRONG_USER_ID; // Wrong (not existing) user
     
-    modulepar Provider MANUFACTURERID1; // Valid ManufacturerID for ContractIssuerList trasactions
-    modulepar Provider MANUFACTURERID2; // Valid ManufacturerID for ContractIssuerList trasactions
-    modulepar Provider MANUFACTURERID3; // Valid ManufacturerID for ContractIssuerList trasactions
+    modulepar Provider MANUFACTURERID1; // Valid ManufacturerID for ContractIssuerList transactions
+    modulepar Provider MANUFACTURERID2; // Valid ManufacturerID for ContractIssuerList transactions
+    modulepar Provider MANUFACTURERID3; // Valid ManufacturerID for ContractIssuerList transactions
   
     
     type record of UserParameterRequest RecordOfUserParameterRequest;

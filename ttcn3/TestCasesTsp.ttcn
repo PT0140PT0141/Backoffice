@@ -518,7 +518,7 @@ module EfcInfoExchange_TestCasesTsp {
 				var TrustObjectADU v_aduTrustObject;
 					if (isCertificate) {v_aduTrustObject:= m_aduTrustObject(v_receivedPurposes,certificateTESTER_VALUE)};									
 					if (isPublicKey)   {v_aduTrustObject:= m_aduTrustObject(v_receivedPurposes,publicKeyTESTER_VALUE)};								
-					if (isCertificateRevocationList) {v_aduTrustObject:= m_aduTrustObject(v_receivedPurposes, certificateRevocationListTESTER_VALUE)};
+					if (isCertificateRevocationList) {v_aduTrustObject:= m_aduTrustObject(v_receivedPurposes, TD_CERT_REVOKE_LIST)};
 					//TODO PT140 According to the current version of the 12855 or 16986, there is no way to request a MAC or DSRC key is to be sent. Using symmetric key provisionally 
 					if (isMacMasterOrDsrcKey) {
 						if (v_encryptedKey) {v_aduTrustObject:= m_aduTrustObject(v_receivedPurposes,symmetricKeyEncryptedTESTER_VALUE)}
@@ -529,7 +529,7 @@ module EfcInfoExchange_TestCasesTsp {
 				//Prepare a faulty inRepsonseTo-field. The originator is set to the Tester value which CANNOT be correct.
 				template (value) ApciFields m_apciInvalidInRespTo modifies m_apciSendFirst:= {
 					inResponseToApduId := {
-						TESTER_IDENTIFIER,
+						TD_IDENTIFIER,
 						0
 					}
 				};
@@ -1659,21 +1659,21 @@ module EfcInfoExchange_TestCasesTsp {
 							v_apduToSend := m_apduTrustObjectResponse(
 								v_apduReceived, 
 								v_requestedTrustObjectPurposesRecords,
-								TESTER_CERTIFICATE_OBJECT			
+								TD_CERTIFICATE_OBJECT			
 								);
 							};
 						if (v_requestedTrustObjectType == TrustObjectTypes_publicKey_){
 							v_apduToSend := m_apduTrustObjectResponse(
 								v_apduReceived, 
 								v_requestedTrustObjectPurposesRecords,
-								TESTER_PUBLICKEY_OBJECT
+								TD_PUBLICKEY_OBJECT
 								);                 												
 							};
 						if (v_requestedTrustObjectType == TrustObjectTypes_symmetricKey_){
 							v_apduToSend := m_apduTrustObjectResponse(
 								v_apduReceived, 
 								v_requestedTrustObjectPurposesRecords,
-								TESTER_DSRCKEY_OBJECT
+								TD_DSRCKEY_OBJECT
 								);                 												
 							};
 						f_sendAndLogApdu(v_apduToSend);                 

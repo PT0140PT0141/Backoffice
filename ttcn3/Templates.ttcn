@@ -82,22 +82,37 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
     	}
     	
     	/**
-         * @desc Template for ApciFields sent by the Tester     
+         * @desc Generic template for ApciFields sent 
          */
     	template ApciFields mw_apciSend modifies mw_apci:= {			
+			apduIdentifier := float2int(rnd()) * 65535,
+			//apduIdentifier shall be a unique identifier for each given apduOriginator that is assigned by the apduOriginator. 
+    		//It is used to either acknowledge or request retransmission of a previously issued APDU.
+			previousApduId:=omit
+    	}
+    	  	
+    	/**
+         * @desc Template for ApciFields sent by the Tester     
+         */
+    	template ApciFields mw_apciSendTester modifies mw_apci:= {			
     		apduOriginator := APDU_ORIGINATOR_FOR_TESTER,  
     		informationSenderID := INFORMATION_SENDER_ID_FOR_TESTER, 
-    		informationrecipientID := INFORMATION_SENDER_ID_FOR_IUT,
-    		previousApduId:=omit,
-    		//apduIdentifier shall be a unique identifier for each given apduOriginator that is assigned by the apduOriginator. 
-    		//It is used to either acknowledge or request retransmission of a previously issued APDU.
-    		apduIdentifier := float2int(rnd()) * 65535
+    		informationrecipientID := INFORMATION_SENDER_ID_FOR_IUT
+    	}
+    	  	
+    	/**
+         * @desc Template for ApciFields sent by the IUT     
+         */
+    	template ApciFields mw_apciSendIut modifies mw_apci:= {			
+    		apduOriginator := APDU_ORIGINATOR_FOR_IUT,  
+    		informationSenderID := INFORMATION_SENDER_ID_FOR_IUT, 
+    		informationrecipientID := INFORMATION_SENDER_ID_FOR_TESTER
     	}
     	  	
 
     	/**
     	 * 
-		* @desc Template for ApciFields for APDUs sent by the Tester as a response     
+		* @desc Template for ApciFields for APDUs sent as a response     
 		*/
 	   template (value) ApciFields m_apciSendResponse(in InfoExchange p_apduBeingRespondedTo) modifies mw_apciSend:= {			
 			inResponseToApduId := {
@@ -112,29 +127,54 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
     	 * 
          * @desc Template for ApciFields for initiating APDUs sent by the Tester     
          */
-    	template (value) ApciFields m_apciSendFirst modifies mw_apciSend:= {			
+    	template (value) ApciFields m_apciSendFirstTester modifies mw_apciSendTester:= {			
     		inResponseToApduId := omit,
     		apduDate:=fx_getUtc()
     	}
+
+		/**
+		 * 
+		 * @desc Matching template for ApciFields for initiating APDUs sent by the IUT
+		 */
+		template ApciFields mw_apciSendFirstIut modifies mw_apciSendIut:= {			
+			inResponseToApduId := omit,
+			apduDate:=?
+		}
     	
+		/**
+		 * 
+		 * @desc Corresponds to the event Initiating_Apdu desribed in test purposes in the cases where the Tester is the initiator of the transaction
+		 * @desc Definition: "An APDU with the APCI-fields set to informationRecipientId = Tester identifier and apduDate = valid date, 
+		 * @desc optional fields on all levels not present" 
+		 */ 
+		template (value) InfoExchange m_apduNoSecInitTester(in Adus p_adus) := m_apduNoSec(
+			m_apciSendFirstTester, 
+			p_adus
+		);
+
     	/**
     	 * 
-    	 * @desc Corresponds to the event Initiating_Apdu desribed in test purposes.
+    	 * @desc Corresponds to the event Initiating_Apdu desribed in test purposes in the cases where the IUT is the initiator of the transaction
     	 * @desc Definition: "An APDU with the APCI-fields set to informationRecipientId = Tester identifier and apduDate = valid date, 
     	 * @desc optional fields on all levels not present" 
     	 */ 
-    	template (value) InfoExchange m_apduNoSecInit(in Adus p_adus) := m_apduNoSec(
-     		m_apciSendFirst, 
+    	template InfoExchange mw_apduNoSecInitIut(in Adus p_adus) := m_apduNoSec(
+     		mw_apciSendFirstIut, 
      		p_adus
      	);
 
-    	template (value) InfoExchange m_apduSecInit(in Adus p_adus):={
+    	template (value) InfoExchange m_apduSecInitTester(in Adus p_adus):={
     	  infoExchangeContent:={
-    	  	apci:=m_apciSendFirst,
+    	  	apci:=m_apciSendFirstTester,
     	  	adus:=p_adus
     	  },
-    	  infoExchangeAuthenticator := fx_computeAuthenticator({apci:=m_apciSendFirst,adus:=p_adus})
+    	  infoExchangeAuthenticator := fx_computeAuthenticator({apci:=m_apciSendFirstTester,adus:=p_adus})
     	}
+
+    	template InfoExchange mw_apduSecInitIut(in Adus p_adus) := mw_apduSec(
+     		mw_apciSendFirstIut, 
+     		p_adus
+     	);
 
 
     	/**
@@ -589,7 +629,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				},
 				chargeObjectDescription :=p_chargeObjectDescription,
 				chargeObjectType:=ChargeObjectType_entryAndExit_,
-				tollContext:=TESTER_IDENTIFIER,
+				tollContext:=TD_IDENTIFIER,
 				chargeObjectValidityStart:=omit,
 				chargeObjectValidityEnd:=omit					 						 	
 			} 
@@ -840,7 +880,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 
 			template (value) TollDeclarationADU m_aduTollDeclaration(in integer p_declarationId, in EfcAutonomousContextData.Int4 p_chargeReportCounter):={
 				tollDeclarationId:={
-					issuerId:=TESTER_IDENTIFIER,
+					issuerId:=TD_IDENTIFIER,
 					declarationId:=p_declarationId
 				},
 				gnssTollDeclaration:={
@@ -865,9 +905,9 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 								},  
 								pamentMeansUsageControl:='0001'O //TODO Jan Check correct values of this number, does it need to be in a modulepar?
 							},
-							tollContext:=TESTER_IDENTIFIER,//TODO Jan Check correct values of this number,
+							tollContext:=TD_IDENTIFIER,//TODO Jan Check correct values of this number,
 							serviceProviderContract:={
-								contractProvider:=TESTER_IDENTIFIER,//TODO Jan Check correct values of this number
+								contractProvider:=TD_IDENTIFIER,//TODO Jan Check correct values of this number
 								typeOfContract:='0001'O, //TODO Jan Check what is a valid value for typeOfContract
 								contextVersion:=1
 							},
@@ -875,7 +915,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 								{
 									usageStatement:={
 										usageStatementId:=1,
-										tollContext:= TESTER_IDENTIFIER//TODO Jan Check correct values of this number, shall be identical to attribute tollContext of Chargereport
+										tollContext:= TD_IDENTIFIER//TODO Jan Check correct values of this number, shall be identical to attribute tollContext of Chargereport
 										//TODO Jan need to figure which way to use charge objects to use here below. I think one needs to be chosen
 										//TODO Jan WARNING there are several PARAMS that needs to be taken into account here GNSS.TOLLDECLARATION.PARAM1-2-3-4-5_MAX
 										//	        AggregatedSingleTariffClassSession  aggregatedSingleTariffClassSession optional,
@@ -912,7 +952,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 							versionId := *, // may or may not be present
 							usageStatementList := { // shall be present in ISO 16986
 								{
-									usageStatement : = ?
+									usageStatement := ?
 								}
 							}, 
 							sumVatForThisSession := omit, // shall not be used in ISO 16986 
@@ -974,18 +1014,18 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			// of course all Tester data are to be defined in module TesterData
 			// TODO Jan review. I changed the definition to avoid duplication and potential inconsistencies
 			// TODO Jan check possibility for inserting a list of Charge Reports in one ADU ...  
-			template (value) TollDeclarationADU m_aduTollDeclarationToSendOneObe (
+			template (value) TollDeclarationADU m_aduTollDeclarationToSendOneObe(
 				in TollDeclarationId p_tollDeclarationId,
 				in UsageStatement p_usageStatement,
 				in EfcAutonomousContextData.Int4 p_chargeReportCounter,
 				in ActionCode p_actionCode
 			):=m_aduTollDeclarationToSend(
 				p_tollDeclarationId,
-				TESTER_OBE_VALID_1,
-				TESTER_LPN_VALID_1,
-				TESTER_PAYMENT_MEANS_1,
-				TESTER_SERVICE_PROVIDER_CONTRACT,
-				TESTER_TOLL_CONTEXT,
+				TD_OBE_ID_1,
+				TD_LPN_1,
+				TD_PAYMENT_MEANS_1,
+				TD_SERVICE_PROVIDER_CONTRACT,
+				TD_TOLL_CONTEXT,
 				p_usageStatement,
 				p_chargeReportCounter,
 				p_actionCode
@@ -996,7 +1036,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				protocolVersion:= AidIdentifier_iso17575_1_2016_,
 				obeId := ?, // mandatory in ISO 16986
 				vehicleLPNr := ?, // mandatory in ISO 16986
-				paymentMeans := ?, // mandatory in IS 16896
+				paymentMeans := ?, // mandatory in ISO 16896
 				serviceProviderContract := ?, // mandatory in ISO 12855
 				tollContext:= ?, // can be Tester or IUT Id
 				chargeReportFinalRecipient := omit, // shall not be used in ISO 16986 

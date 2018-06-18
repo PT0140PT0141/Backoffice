@@ -857,9 +857,9 @@ module EfcInfoExchange_TestCasesTc {
                 // Prepare and send Initiating_Apdu containing three ContractIssuerListADUs with differing manufacturerID values
 				var InfoExchange v_apduToBeSent := m_apduNoSecInit(
 					{modifies mw_recordOfAduContractIssuerList := {
-					  	TESTER_CONTRACT_ISSUER_DATA_VALID_1,
-					  	TESTER_CONTRACT_ISSUER_DATA_VALID_2,
-					  	TESTER_CONTRACT_ISSUER_DATA_VALID_3
+					  	TD_CONTRACT_ISSUER_DATA_VALID_1,
+					  	TD_CONTRACT_ISSUER_DATA_VALID_2,
+					  	TD_CONTRACT_ISSUER_DATA_VALID_3
 					  	}
 					});                 
 				f_sendAndLogApdu(v_apduToBeSent);                     
@@ -908,9 +908,9 @@ module EfcInfoExchange_TestCasesTc {
 
 				var InfoExchange v_apduToBeSent := m_apduNoSecInit(
 					{modifies mw_recordOfAduContractIssuerList := {
-					  	TESTER_CONTRACT_ISSUER_DATA_INVALID_1,
-					  	TESTER_CONTRACT_ISSUER_DATA_INVALID_2,
-					  	TESTER_CONTRACT_ISSUER_DATA_INVALID_3
+					  	TD_CONTRACT_ISSUER_DATA_INVALID_1,
+					  	TD_CONTRACT_ISSUER_DATA_INVALID_2,
+					  	TD_CONTRACT_ISSUER_DATA_INVALID_3
 					  	}
 					});                 
 				f_sendAndLogApdu(v_apduToBeSent); 
@@ -966,7 +966,7 @@ module EfcInfoExchange_TestCasesTc {
                 // Step 1: Send Initiating_Apdu containing one valid RequestADU of type userListRequest
 				var InfoExchange v_apduToBeSent := m_apduNoSecInit(
 					{modifies mw_recordOfAduContractIssuerList := {
-					  	TESTER_CONTRACT_ISSUER_DATA_VALID_1
+					  	TD_CONTRACT_ISSUER_DATA_VALID_1
 					  	}
 					});                 
 				f_sendAndLogApdu(v_apduToBeSent);                     
@@ -977,7 +977,7 @@ module EfcInfoExchange_TestCasesTc {
 
 				v_apduToBeSent := m_apduDefault(
 					{modifies mw_recordOfAduContractIssuerList := {
-					  	TESTER_CONTRACT_ISSUER_DATA_VALID_2 // PT140 TODO Testerdata definition
+					  	TD_CONTRACT_ISSUER_DATA_VALID_2 // PT140 TODO Testerdata definition
 					  	}
 					});                 
 				f_sendAndLogApdu(v_apduToBeSent); 
@@ -1140,7 +1140,7 @@ module EfcInfoExchange_TestCasesTc {
 							
                 // Step 1 / loop 1 for black list:
                 // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for black list
-                var InfoExchange v_apduToBeSent := m_apduNoSecInit(TESTER_EXCEPTIONLIST_ADU_BLACK_VALID);
+                var InfoExchange v_apduToBeSent := m_apduNoSecInit(TD_EXCEPTIONLIST_ADU_BLACK_VALID);
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
   	
                 // Start timer
@@ -1160,7 +1160,7 @@ module EfcInfoExchange_TestCasesTc {
 				
 				// Step 2 / loop 2 for white list:
                 // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for white list
-                v_apduToBeSent := m_apduNoSecInit(TESTER_EXCEPTIONLIST_ADU_WHITE_VALID);
+                v_apduToBeSent := m_apduNoSecInit(TD_EXCEPTIONLIST_ADU_WHITE_VALID);
 				f_sendAndLogApdu(v_apduToBeSent);                	
   	
                 // Start timer
@@ -1195,7 +1195,7 @@ module EfcInfoExchange_TestCasesTc {
 							
                 // Step 1:
                 // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for discounted user list
-                var InfoExchange v_apduToBeSent := m_apduNoSecInit(TESTER_EXCEPTIONLIST_ADU_DISCOUNTED_VALID);
+                var InfoExchange v_apduToBeSent := m_apduNoSecInit(TD_EXCEPTIONLIST_ADU_DISCOUNTED_VALID);
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
   	
                 // Start timer
@@ -1252,7 +1252,7 @@ module EfcInfoExchange_TestCasesTc {
             	//		- exactly one valid ExceptionListADU indicating list type BLACK; AND
 				//		- exactly one ExceptionListADU indicating list type BLACK and containing exceptionValidityEnd of any value
 
-				var ExceptionListADU v_aduToBeSent := TESTER_EXCEPTIONLIST_ADU_BLACK_INVALID_1;
+				var ExceptionListADU v_aduToBeSent := TD_EXCEPTIONLIST_ADU_BLACK_INVALID_1;
 	  	
                 var InfoExchange v_apduToBeSent := m_apduNoSecInit(v_aduToBeSent);
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
@@ -1296,7 +1296,7 @@ module EfcInfoExchange_TestCasesTc {
           
             	// Step 1: Send Initiating_Apdu containing exactly one ExceptionListADU indicating list type BLACK containing
             	//		- efcContextMark of any value
-               var InfoExchange v_apduToBeSent := m_apduNoSecInit(TESTER_EXCEPTIONLIST_ADU_BLACK_INVALID_2);
+               var InfoExchange v_apduToBeSent := m_apduNoSecInit(TD_EXCEPTIONLIST_ADU_BLACK_INVALID_2);
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
 
                 // Start timer
@@ -1331,7 +1331,7 @@ module EfcInfoExchange_TestCasesTc {
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc                 
 
             	// Step 1: Send Initiating_Apdu containing more than one ExceptionListADU indicating list type BLACK
-               	var InfoExchange v_apduToBeSent := m_apduNoSecInit(TESTER_EXCEPTIONLIST_ADU_BLACK_VALID, TESTER_EXCEPTIONLIST_ADU_BLACK_VALID);
+               	var InfoExchange v_apduToBeSent := m_apduNoSecInit(TD_EXCEPTIONLIST_ADU_BLACK_VALID, TD_EXCEPTIONLIST_ADU_BLACK_VALID);
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
 		
                 // Start timer
@@ -1367,7 +1367,7 @@ module EfcInfoExchange_TestCasesTc {
 
            		// Step 1: Send Initiating_Apdu containing one ExceptionListADU indicating list type BLACK
             	//		- with exceptionListVersion </= 0
-               	var InfoExchange v_apduToBeSent := m_apduNoSecInit(TESTER_EXCEPTIONLIST_ADU_BLACK_INVALID_3);
+               	var InfoExchange v_apduToBeSent := m_apduNoSecInit(TD_EXCEPTIONLIST_ADU_BLACK_INVALID_3);
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
 		
                 // Start timer
@@ -1408,7 +1408,7 @@ module EfcInfoExchange_TestCasesTc {
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc                 
 
              	// Step 1: Send Initiating_Apdu containing one ExceptionListADU indicating exceptionListType = 4
-               	var InfoExchange v_apduToBeSent := m_apduNoSecInit(TESTER_EXCEPTIONLIST_ADU_TYPE4_VALID);
+               	var InfoExchange v_apduToBeSent := m_apduNoSecInit(TD_EXCEPTIONLIST_ADU_TYPE4_VALID);
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
 		
                 // Start timer
@@ -1450,7 +1450,7 @@ module EfcInfoExchange_TestCasesTc {
 
 	            // Step 1: Send Initiating_Apdu containing one ExceptionListADU of list type BLACK
     	        // and userId = contractSerialNumber present
-               	var InfoExchange v_apduToBeSent := m_apduNoSecInit(TESTER_EXCEPTIONLIST_ADU_BLACK_INVALID_4);
+               	var InfoExchange v_apduToBeSent := m_apduNoSecInit(TD_EXCEPTIONLIST_ADU_BLACK_INVALID_4);
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
 		
                 // Start timer
@@ -1492,7 +1492,7 @@ module EfcInfoExchange_TestCasesTc {
 							
             	// Step 1: Send Initiating_Apdu containing one ExceptionListADU of list type BLACK
             	// and and with exceptionValidityEnd present
-				var ExceptionListADU v_aduToBeSent := TESTER_EXCEPTIONLIST_ADU_BLACK_INVALID_5;
+				var ExceptionListADU v_aduToBeSent := TD_EXCEPTIONLIST_ADU_BLACK_INVALID_5;
 	  	
                 var InfoExchange v_apduToBeSent := m_apduNoSecInit(v_aduToBeSent);
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
@@ -1539,7 +1539,7 @@ module EfcInfoExchange_TestCasesTc {
             	// Step 1: Send Initiating_Apdu containing one valid ExceptionListADU of list type BLACK
             
                 // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for black list
-                var InfoExchange v_apduToBeSent := m_apduNoSecInit(TESTER_EXCEPTIONLIST_ADU_BLACK_VALID);
+                var InfoExchange v_apduToBeSent := m_apduNoSecInit(TD_EXCEPTIONLIST_ADU_BLACK_VALID);
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
   	
                 // Start timer
@@ -1560,7 +1560,7 @@ module EfcInfoExchange_TestCasesTc {
             	// before TIME0 MIN has passed = immediately after the Ack in Transaction 1 
             	
                 // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for black list
-                v_apduToBeSent := m_apduNoSecInit(TESTER_EXCEPTIONLIST_ADU_BLACK_VALID);
+                v_apduToBeSent := m_apduNoSecInit(TD_EXCEPTIONLIST_ADU_BLACK_VALID);
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
   	
                 // Start timer
@@ -1877,53 +1877,53 @@ module EfcInfoExchange_TestCasesTc {
 
 				var InfoExchange v_apduToBeSent := m_apduNoSecInit({
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 1},
-						TESTER_USAGE_STATEMENT_VALID_1,
+						{TD_IDENTIFIER, 1},
+						TD_USAGE_STATEMENT_VALID_1,
 						1,
 						Action_Code_send_),
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 2},
-						TESTER_USAGE_STATEMENT_VALID_2,
+						{TD_IDENTIFIER, 2},
+						TD_USAGE_STATEMENT_VALID_2,
 						2,
 						Action_Code_send_),
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 3},
-						TESTER_USAGE_STATEMENT_VALID_3,
+						{TD_IDENTIFIER, 3},
+						TD_USAGE_STATEMENT_VALID_3,
 						3,
 						Action_Code_send_),							
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 4},
-						TESTER_USAGE_STATEMENT_VALID_4,
+						{TD_IDENTIFIER, 4},
+						TD_USAGE_STATEMENT_VALID_4,
 						4,
 						Action_Code_send_),
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 5},
-						TESTER_USAGE_STATEMENT_VALID_5,
+						{TD_IDENTIFIER, 5},
+						TD_USAGE_STATEMENT_VALID_5,
 						5,
 						Action_Code_send_),
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 6},
-						TESTER_USAGE_STATEMENT_VALID_6
+						{TD_IDENTIFIER, 6},
+						TD_USAGE_STATEMENT_VALID_6
 						6,
 						Action_Code_send_),
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 7},
-						TESTER_USAGE_STATEMENT_VALID_7,
+						{TD_IDENTIFIER, 7},
+						TD_USAGE_STATEMENT_VALID_7,
 						7,
 						Action_Code_send_),
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 8},
-						TESTER_USAGE_STATEMENT_VALID_8,
+						{TD_IDENTIFIER, 8},
+						TD_USAGE_STATEMENT_VALID_8,
 						8,
 						Action_Code_send_),
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 9},
-						TESTER_USAGE_STATEMENT_VALID_9,
+						{TD_IDENTIFIER, 9},
+						TD_USAGE_STATEMENT_VALID_9,
 						9,
 						Action_Code_send_),
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 10},
-						TESTER_USAGE_STATEMENT_VALID_10,
+						{TD_IDENTIFIER, 10},
+						TD_USAGE_STATEMENT_VALID_10,
 						10,
 						Action_Code_send_)
 				});
@@ -1971,53 +1971,53 @@ module EfcInfoExchange_TestCasesTc {
 
 				var InfoExchange v_apduToBeSent := m_apduNoSecInit({
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 1},
-						TESTER_USAGE_STATEMENT_VALID_1,
+						{TD_IDENTIFIER, 1},
+						TD_USAGE_STATEMENT_VALID_1,
 						1,
 						Action_Code_send_),
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 2},
-						TESTER_USAGE_STATEMENT_VALID_2,
+						{TD_IDENTIFIER, 2},
+						TD_USAGE_STATEMENT_VALID_2,
 						2,
 						Action_Code_send_),
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 3},
-						TESTER_USAGE_STATEMENT_VALID_3,
+						{TD_IDENTIFIER, 3},
+						TD_USAGE_STATEMENT_VALID_3,
 						3,
 						Action_Code_send_),							
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 4},
-						TESTER_USAGE_STATEMENT_VALID_4,
+						{TD_IDENTIFIER, 4},
+						TD_USAGE_STATEMENT_VALID_4,
 						4,
 						Action_Code_send_),
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 5},
-						TESTER_USAGE_STATEMENT_VALID_5,
+						{TD_IDENTIFIER, 5},
+						TD_USAGE_STATEMENT_VALID_5,
 						5,
 						Action_Code_send_),
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 6},
-						TESTER_USAGE_STATEMENT_VALID_6
+						{TD_IDENTIFIER, 6},
+						TD_USAGE_STATEMENT_VALID_6
 						6,
 						Action_Code_send_),
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 7},
-						TESTER_USAGE_STATEMENT_VALID_7,
+						{TD_IDENTIFIER, 7},
+						TD_USAGE_STATEMENT_VALID_7,
 						7,
 						Action_Code_send_),
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 8},
-						TESTER_USAGE_STATEMENT_VALID_8,
+						{TD_IDENTIFIER, 8},
+						TD_USAGE_STATEMENT_VALID_8,
 						8,
 						Action_Code_send_),
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 9},
-						TESTER_USAGE_STATEMENT_VALID_9,
+						{TD_IDENTIFIER, 9},
+						TD_USAGE_STATEMENT_VALID_9,
 						9,
 						Action_Code_send_),
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 10},
-						TESTER_USAGE_STATEMENT_VALID_10,
+						{TD_IDENTIFIER, 10},
+						TD_USAGE_STATEMENT_VALID_10,
 						10,
 						Action_Code_send_)
 				});
@@ -2055,53 +2055,53 @@ module EfcInfoExchange_TestCasesTc {
                 // same TollDeclarations and same Charge Report Id
 				var InfoExchange v_apduToBeSent := m_apduNoSecInit({
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 1},
-						TESTER_USAGE_STATEMENT_VALID_1,
+						{TD_IDENTIFIER, 1},
+						TD_USAGE_STATEMENT_VALID_1,
 						1,
 						Action_Code_revoke_),
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 2},
-						TESTER_USAGE_STATEMENT_VALID_2,
+						{TD_IDENTIFIER, 2},
+						TD_USAGE_STATEMENT_VALID_2,
 						2,
 						Action_Code_revoke_),
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 3},
-						TESTER_USAGE_STATEMENT_VALID_3,
+						{TD_IDENTIFIER, 3},
+						TD_USAGE_STATEMENT_VALID_3,
 						3,
 						Action_Code_revoke_),							
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 4},
-						TESTER_USAGE_STATEMENT_VALID_4,
+						{TD_IDENTIFIER, 4},
+						TD_USAGE_STATEMENT_VALID_4,
 						4,
 						Action_Code_revoke_),
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 5},
-						TESTER_USAGE_STATEMENT_VALID_5,
+						{TD_IDENTIFIER, 5},
+						TD_USAGE_STATEMENT_VALID_5,
 						5,
 						Action_Code_revoke_),
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 6},
-						TESTER_USAGE_STATEMENT_VALID_6
+						{TD_IDENTIFIER, 6},
+						TD_USAGE_STATEMENT_VALID_6
 						6,
 						Action_Code_revoke_),
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 7},
-						TESTER_USAGE_STATEMENT_VALID_7,
+						{TD_IDENTIFIER, 7},
+						TD_USAGE_STATEMENT_VALID_7,
 						7,
 						Action_Code_revoke_),
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 8},
-						TESTER_USAGE_STATEMENT_VALID_8,
+						{TD_IDENTIFIER, 8},
+						TD_USAGE_STATEMENT_VALID_8,
 						8,
 						Action_Code_revoke_),
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 9},
-						TESTER_USAGE_STATEMENT_VALID_9,
+						{TD_IDENTIFIER, 9},
+						TD_USAGE_STATEMENT_VALID_9,
 						9,
 						Action_Code_revoke_),
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 10},
-						TESTER_USAGE_STATEMENT_VALID_10,
+						{TD_IDENTIFIER, 10},
+						TD_USAGE_STATEMENT_VALID_10,
 						10,
 						Action_Code_revoke_)
 				});
@@ -2146,53 +2146,53 @@ module EfcInfoExchange_TestCasesTc {
 
 				var InfoExchange v_apduToBeSent := m_apduNoSecInit({
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 1},
-						TESTER_USAGE_STATEMENT_VALID_1,
+						{TD_IDENTIFIER, 1},
+						TD_USAGE_STATEMENT_VALID_1,
 						1,
 						Action_Code_send_),
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 2},
-						TESTER_USAGE_STATEMENT_VALID_2,
+						{TD_IDENTIFIER, 2},
+						TD_USAGE_STATEMENT_VALID_2,
 						2,
 						Action_Code_send_),
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 3},
-						TESTER_USAGE_STATEMENT_VALID_3,
+						{TD_IDENTIFIER, 3},
+						TD_USAGE_STATEMENT_VALID_3,
 						3,
 						Action_Code_send_),							
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 4},
-						TESTER_USAGE_STATEMENT_VALID_4,
+						{TD_IDENTIFIER, 4},
+						TD_USAGE_STATEMENT_VALID_4,
 						4,
 						Action_Code_send_),
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 5},
-						TESTER_USAGE_STATEMENT_VALID_5,
+						{TD_IDENTIFIER, 5},
+						TD_USAGE_STATEMENT_VALID_5,
 						5,
 						Action_Code_send_),
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 6},
-						TESTER_USAGE_STATEMENT_VALID_6
+						{TD_IDENTIFIER, 6},
+						TD_USAGE_STATEMENT_VALID_6
 						6,
 						Action_Code_send_),
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 7},
-						TESTER_USAGE_STATEMENT_VALID_7,
+						{TD_IDENTIFIER, 7},
+						TD_USAGE_STATEMENT_VALID_7,
 						7,
 						Action_Code_send_),
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 8},
-						TESTER_USAGE_STATEMENT_VALID_8,
+						{TD_IDENTIFIER, 8},
+						TD_USAGE_STATEMENT_VALID_8,
 						8,
 						Action_Code_send_),
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 9},
-						TESTER_USAGE_STATEMENT_VALID_9,
+						{TD_IDENTIFIER, 9},
+						TD_USAGE_STATEMENT_VALID_9,
 						9,
 						Action_Code_send_),
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 10},
-						TESTER_USAGE_STATEMENT_VALID_10,
+						{TD_IDENTIFIER, 10},
+						TD_USAGE_STATEMENT_VALID_10,
 						10,
 						Action_Code_send_)
 				});
