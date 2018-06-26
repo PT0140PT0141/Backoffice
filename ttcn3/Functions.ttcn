@@ -73,6 +73,9 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
             // Activate UpperTester altstep
             activate(a_upperTester());
             
+            //Start transaction timer for cheking timeouts
+            t_transaction.start;
+            
             f_addLogEntry("Initialisations performed. Test case starting.");
 			
     	} 
