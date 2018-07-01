@@ -646,7 +646,7 @@ module EfcInfoExchange_TestCasesTc {
                 // containing a EFCContextDataADU as the only ADU, with
                 //		- domainType = dsrcContext;
                 //		- the values of all fields in EFCContextDataADU being within the range specified by the IUT
-				f_sendAndLogTrigger(DSRC_EFCCONTEXTDATA_TR_TC_1_A);
+				f_sendAndLogTrigger(DSRC_EFCCONTEXTDATA_TR_TC_1_DSRC_OPEN;
 
 				//  Wait for apdu containing domain type = dsrcContext
                  // PT140 TODO : mw_aduDsrcEfcContext template to be defined
@@ -686,7 +686,7 @@ module EfcInfoExchange_TestCasesTc {
                 // containing a EFCContextDataADU as the only ADU, with
                 //		- domainType = dsrcClosedContext;
                 //		- the values of all fields in EFCContextDataADU being within the range specified by the IUT
-				f_sendAndLogTrigger(DSRC_EFCCONTEXTDATA_TR_TC_1_B);
+				f_sendAndLogTrigger(DSRC_EFCCONTEXTDATA_TR_TC_1_DSRC_CLOSED);
 
 				//  Wait for apdu containing domain type = dsrcClosedContext
                  // PT140 TODO : mw_aduDsrcEfcContext template to be defined
@@ -736,7 +736,7 @@ module EfcInfoExchange_TestCasesTc {
                 // containing all valid permutations of present and not present optional fields and choices that are used
                 // in the IUT implementation, all with actionCode = send
 
-				f_sendAndLogTrigger(DSRC_BILLINGDETAILS_TR_TC_1_A);
+				f_sendAndLogTrigger(DSRC_BILLINGDETAILS_TR_TC_1_SEND);
 
                  // PT140 TODO : mw_adusDsrcBillingDetails template to be defined
 				var InfoExchange v_apduToBeReceived := {
@@ -772,12 +772,12 @@ module EfcInfoExchange_TestCasesTc {
                  
 				// Start by setting test success
 				
-				// Trigger a first BILLINGDETAILS transaction with DSRC.BILLINGDETAILS_TR_TC_1
+				// Trigger a first BILLINGDETAILS transaction with DSRC.BILLINGDETAILS_TR_TC_1_ADJUST
 				// receive the BillingetailsADU
 				// send a negative Ack (except of issueCode "acceptedWithWarning")
 				
 								
-                // Step 1: Tigger IUT with DSRC.BILLINGDETAILS_TR_TC_1 to send valid Initiating_Apdu containing
+                // Step 1: Tigger IUT with DSRC.BILLINGDETAILS_TR_TC_1_ADJUST to send valid Initiating_Apdu containing
                 // exactely one BillingDetailsADU;
                 // billingDetailsId referencing the previously sent BillingDetailsADU;
                 // with actionCode = adjust
@@ -803,12 +803,12 @@ module EfcInfoExchange_TestCasesTc {
                  
 				// Start by setting test success
 				
-				// Trigger a first BILLINGDETAILS transaction with DSRC.BILLINGDETAILS_TR_TC_1
+				// Trigger a first BILLINGDETAILS transaction with DSRC.BILLINGDETAILS_TR_TC_1_REVOKE
 				// receive the BillingetailsADU
 				// send an AckADU
 				
 								
-                // Step 1: Tigger IUT with DSRC.BILLINGDETAILS_TR_TC_1 to send valid Initiating_Apdu containing
+                // Step 1: Tigger IUT with DSRC.BILLINGDETAILS_TR_TC_1_REVOKE to send valid Initiating_Apdu containing
                 // exactely one BillingDetailsADU;
                 // billingDetailsId referencing the previously sent BillingDetailsADU;
                 // with actionCode = revoke
@@ -2053,7 +2053,7 @@ module EfcInfoExchange_TestCasesTc {
                   
                 // Let IUT perform one BILLINGDETAILS complete and sucessful transaction
                   
-                // Step 1: Tigger IUT with PAYMENTCLAIM_TR_TC_1 to send valid Initiating_Apdu containing
+                // Step 1: Tigger IUT with PAYMENTCLAIM_TR_TC_1_SEND to send valid Initiating_Apdu containing
                 //		- exactly one PaymentClaimADU with actionCode=send
 
 				// Waint for requestADU(s), validate and check time constraints
@@ -2073,15 +2073,15 @@ module EfcInfoExchange_TestCasesTc {
                 // Initialisation
                 
                 // Loop: Repeate with
-                //		- first iteration: ACTION_CODE=adjust;
-                //		- second iteration: ACTION_CODE=revoke
+                //		- first iteration: ACTION_CODE=revoke;
+                //		- second iteration: ACTION_CODE=adjust
                   
                 	// Let IUT perform one BILLINGDETAILS complete and sucessful transaction
-                	// Trigger IUT with PAYMENTCLAIM_TR_TC_1 to send valid Initiating_Apdu containing
-                	// exactly one PaymentClaimADU with actionCode=send;
+                	// Trigger IUT with PAYMENTCLAIM_TR_TC_1_REVOKE to send valid Initiating_Apdu containing
+                	// exactly one PaymentClaimADU with actionCode=arevoke;
                 	// Send AckADU to colclude the transaction
                   
-                	// Step 1: Tigger IUT with PAYMENTCLAIM_TR_TC_1 to send valid Initiating_Apdu containing
+                	// Step 1: Tigger IUT with PAYMENTCLAIM_TR_TC_1_REVOKE to send valid Initiating_Apdu containing
                 	//		- exactly one PaymentClaimADU, with
                 	//		- with actionCode=[ACTION_CODE], and
                 	//		- paymentClaimId = same value as a previously sent PaymentClaimId
@@ -3551,7 +3551,7 @@ module EfcInfoExchange_TestCasesTc {
 				// wait respective time constraints until next transaction 	
 								
                 // Step 1:
-                // Trigger IUT to send send BillingDetailsADUs containing
+                // Trigger IUT with DSRC_BILLINGDETAILS_TR_TC_1_SEND to send BillingDetailsADUs containing
                 //		- all valid permutations of present and not present optional fields and choices that are used in the IUT implementation
                 
                   
@@ -3583,7 +3583,7 @@ module EfcInfoExchange_TestCasesTc {
 				// wait respective time constraints until next transaction
 								
                 // Step 1:
-                // Trigger IUT to send send BillingDetailsADUs containing exactly one BillingDetailsADU with
+                // Trigger IUT with DSRC_BILLINGDETAILS_TR_TC_1_ADJUST to send BillingDetailsADUs containing exactly one BillingDetailsADU with
                 //		- actionCode = adjust, and
                 //		- billingDetailsNum referencing the previously negatively acknowledged BillingDetailsADU
                 
@@ -3619,7 +3619,7 @@ module EfcInfoExchange_TestCasesTc {
 				// wait respective time constraints until next transaction
 								
                 // Step 1:
-                // Trigger IUT to send send BillingDetailsADUs containing exactly one BillingDetailsADU with
+                // Trigger IUT with DSRC_BILLINGDETAILS_TR_TC_1_REVOKE to send BillingDetailsADUs containing exactly one BillingDetailsADU with
                 //		- optional fields present and not present, and
                 //		- actionCode = revoke, and
                 //		- billingDetailsNum referencing the previously sent BillingDetailsADU
