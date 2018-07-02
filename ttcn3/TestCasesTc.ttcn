@@ -19,11 +19,11 @@
  *	PaymentClaim				! open					! none			!
  *	DSRC.ContractIssuerList		! done					! done			! ready for compile
  *	DSRC.EFCContextData			! done					! none			! ready for compile 
- *	DSRC.BillingDetails			! partially done		! none			! in progress
+ *	DSRC.BillingDetails			! done					! none			! ready for compile (template TODO)
  *	DSRC.ReportAbnormalOBE		! done					! none			! ready for compile
  *	GNSS.TollDeclaration		! open					! open			! done but need to revise List of ChargeReports in template
  *	GNSS.BillingDetails.TSP		! open					! open			! in progress
- *	GNSS.BillingDEtails.TC		! open					! none			! in progress
+ *	GNSS.BillingDetails.TC		! open					! none			! in progress
  *	GNSS.PaymentAnnouncement	! open					! open			!
  */
  
@@ -646,7 +646,7 @@ module EfcInfoExchange_TestCasesTc {
                 // containing a EFCContextDataADU as the only ADU, with
                 //		- domainType = dsrcContext;
                 //		- the values of all fields in EFCContextDataADU being within the range specified by the IUT
-				f_sendAndLogTrigger(DSRC_EFCCONTEXTDATA_TR_TC_1_DSRC_OPEN;
+				f_sendAndLogTrigger(DSRC_EFCCONTEXTDATA_TR_TC_1_DSRC_OPEN);
 
 				//  Wait for apdu containing domain type = dsrcContext
                  // PT140 TODO : mw_aduDsrcEfcContext template to be defined
@@ -732,13 +732,13 @@ module EfcInfoExchange_TestCasesTc {
 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A2_1_isDsrc and ICS_A26_3_implementedDSRCBILLINGDETAILS;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
                                   
-                // Step 1: Tigger IUT with DSRC.BILLINGDETAILS_TR_TC_1_A to send valid Initiating_Apdu containing BillingDetailsADUs
+                // Step 1: Tigger IUT with DSRC.BILLINGDETAILS_TR_TC_1_SEND to send valid Initiating_Apdu containing BillingDetailsADUs
                 // containing all valid permutations of present and not present optional fields and choices that are used
                 // in the IUT implementation, all with actionCode = send
 
 				f_sendAndLogTrigger(DSRC_BILLINGDETAILS_TR_TC_1_SEND);
 
-                 // PT140 TODO : mw_adusDsrcBillingDetails template to be defined
+                // PT140 TODO : mw_adusDsrcBillingDetails template to be defined
 				var InfoExchange v_apduToBeReceived := {
 				  	mw_apduNoSecInitIut({modifies mw_adusDsrcBillingDetails:= {actionCode := ActionCode_send_ }}) 
            		};                 
@@ -748,8 +748,7 @@ module EfcInfoExchange_TestCasesTc {
 
 				alt {
 					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();					              		
+						f_logReceivedThenCheckAndStopTime(DSRC_BILLINGDETAILS_TIME1_MIN_TC); // check for minimum wait time in response					              		
 						// Step 2: Send Ack within time constraints
 						f_wait(DSRC_BILLINGDETAILS_TIME1_MIN_TSP);
 						f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
@@ -769,26 +768,58 @@ module EfcInfoExchange_TestCasesTc {
                 */
  
   				// Initialisation
-                 
-				// Start by setting test success
-				
-				// Trigger a first BILLINGDETAILS transaction with DSRC.BILLINGDETAILS_TR_TC_1_ADJUST
-				// receive the BillingetailsADU
+				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A2_1_isDsrc and ICS_A26_3_implementedDSRCBILLINGDETAILS;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+                                  
+                // Step 1: Tigger IUT with DSRC.BILLINGDETAILS_TR_TC_1_ADJUST to send an Initiating_Apdu containing one BillingDetailsADU
+                // with actionCode = send and adjust the same BillingDetailsId in a second step
+                
+                f_sendAndLogTrigger(DSRC_BILLINGDETAILS_TR_TC_1_ADJUST);
+
+				// receive the BillingDetailsADU
+
+                // PT140 TODO : mw_adusDsrcBillingDetails template to be defined
+				var InfoExchange v_apduToBeReceived := {
+				  	mw_apduNoSecInitIut({modifies mw_adusDsrcBillingDetails:= {actionCode := ActionCode_send_ }}) 
+           		};                 
+
+				alt {
+					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(DSRC_BILLINGDETAILS_TIME1_MIN_TC); // check for minimum wait time in response					              		
+						// Step 2: Send NAck within time constraints
+						f_wait(DSRC_BILLINGDETAILS_TIME1_MIN_TSP);
+					}
+				}
+
 				// send a negative Ack (except of issueCode "acceptedWithWarning")
-				
-								
-                // Step 1: Tigger IUT with DSRC.BILLINGDETAILS_TR_TC_1_ADJUST to send valid Initiating_Apdu containing
-                // exactely one BillingDetailsADU;
-                // billingDetailsId referencing the previously sent BillingDetailsADU;
+				// Create parameters for the m_apduNAck			
+				var NAckParams v_nAckParams1 :={{1, AduReasonCode_semanticError_:=3000}};
+
+				f_sendAndLogApdu(m_apduNAck(v_apduReceived, v_nAckParams1));
+
+                // Step 2: Wait for IUT to send adjusted BillingDetailsADU
                 // with actionCode = adjust
+                
+                // PT140 TODO: mw_adusDsrcBillingDetails template to be defined
+                // PT140 TODO: check for same BillingDetailsId to be added 
+				var InfoExchange v_apduToBeReceived := {
+				  	mw_apduNoSec({modifies mw_adusDsrcBillingDetails:= {actionCode := ActionCode_adjust_ }}) 
+           		};                 
 
                 // Wait for above specified APDU within time constraints
-                // use template for APDU
                 // if not received or received outside specification or time constraints set test fail
-                
-                // Step 2: Send AckADU to conclude the transaction 
-                // within the time DSRC.BILLINGDETAILS.TIME1
 
+				alt {
+					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(DSRC_BILLINGDETAILS_TIME1_MIN_TC); // check for minimum wait time in response					              		
+						// Step 2: Send Ack within time constraints
+						f_wait(DSRC_BILLINGDETAILS_TIME1_MIN_TSP);
+						f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+						// Set test success
+						setverdict(pass);
+					}
+				} // End of alt statement
+				f_closeDownMtc();              	                   
 			} // End testcase TP_TC_DSRC_BILLINGDETAILS_BV_02
 						
 			testcase TP_TC_DSRC_BILLINGDETAILS_BV_03() runs on MainTestComponent system TestAdapter {
@@ -799,29 +830,57 @@ module EfcInfoExchange_TestCasesTc {
                 * @remark  [16986:2016], Clause 7.3 and Table A.1/1 AND Table A.2/1 AND Table A.36/15 = revoke
                 */
  
-  				// Initialisation
-                 
-				// Start by setting test success
-				
-				// Trigger a first BILLINGDETAILS transaction with DSRC.BILLINGDETAILS_TR_TC_1_REVOKE
-				// receive the BillingetailsADU
-				// send an AckADU
-				
-								
-                // Step 1: Tigger IUT with DSRC.BILLINGDETAILS_TR_TC_1_REVOKE to send valid Initiating_Apdu containing
-                // exactely one BillingDetailsADU;
-                // billingDetailsId referencing the previously sent BillingDetailsADU;
+   				// Initialisation
+				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A2_1_isDsrc and ICS_A26_3_implementedDSRCBILLINGDETAILS;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+                                  
+                // Step 1: Tigger IUT with DSRC.BILLINGDETAILS_TR_TC_1_REVOKE to send an Initiating_Apdu containing one BillingDetailsADU
+                // with actionCode = send and revoke the same BillingDetailsId in a second step
+                
+                f_sendAndLogTrigger(DSRC_BILLINGDETAILS_TR_TC_1_ADJUST);
+
+				// receive the BillingDetailsADU
+
+                // PT140 TODO : mw_adusDsrcBillingDetails template to be defined
+				var InfoExchange v_apduToBeReceived := {
+				  	mw_apduNoSecInitIut({modifies mw_adusDsrcBillingDetails:= {actionCode := ActionCode_send_ }}) 
+           		};                 
+
+				alt {
+					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(DSRC_BILLINGDETAILS_TIME1_MIN_TC); // check for minimum wait time in response					              		
+						// Step 2: Send NAck within time constraints
+						f_wait(DSRC_BILLINGDETAILS_TIME1_MIN_TSP);
+					}
+				}
+
+				// send an Ack
+				f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+
+                // Step 2: Wait for IUT to send adjusted BillingDetailsADU
                 // with actionCode = revoke
+                
+                // PT140 TODO: mw_adusDsrcBillingDetails template to be defined
+                // PT140 TODO: check for same BillingDetailsId to be added 
+				var InfoExchange v_apduToBeReceived := {
+				  	mw_apduNoSec({modifies mw_adusDsrcBillingDetails:= {actionCode := ActionCode_revoke_ }}) 
+           		};                 
 
                 // Wait for above specified APDU within time constraints
-                // use template for APDU
                 // if not received or received outside specification or time constraints set test fail
-                
-                // Step 2: Send AckADU to conclude the transaction 
-                // within the time DSRC.BILLINGDETAILS.TIME1
 
+				alt {
+					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(DSRC_BILLINGDETAILS_TIME1_MIN_TC); // check for minimum wait time in response					              		
+						// Step 2: Send Ack within time constraints
+						f_wait(DSRC_BILLINGDETAILS_TIME1_MIN_TSP);
+						f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+						// Set test success
+						setverdict(pass);
+					}
+				} // End of alt statement
+				f_closeDownMtc();              	                   
 			} // End testcase TP_TC_DSRC_BILLINGDETAILS_BV_03
-			
 		} // End Valid_Behaviour
 		
 		group Invalid_Behaviour {
