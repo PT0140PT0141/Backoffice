@@ -861,14 +861,35 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			template InfoExchange mw_apduAuthReportAbnormalOBE := mw_apduSec(mw_apci, Adus:{reportAbnormalOBEADUs:=?});
 
 		}
-		
-		
+				
 		group BILLINGDETAILS{
 
 			template InfoExchange mw_apduBillingDetails := m_apduNoSec(mw_apci, Adus:{billingDetailsADUs:=?});
 			
 			template InfoExchange mw_apduAuthBillingDetails := mw_apduSec(mw_apci, Adus:{billingDetailsADUs:=?});		  
-			
+
+			template (value) BillingDetailsADU mw_aduGnssBillingDetails :={
+    			billingDetailsId :={
+    				issuerId := ?,
+    				billingDetailsNum := ?, // range 0 - 2'(63-1)
+    				dateOfService := omit
+    				},
+    			tollContext := ?,
+    			userId :={
+    				pan := *, 
+					contractSerialNumber := *,
+					licencePlateNumber := *, 
+					obeID := *
+					},
+    			relatedBillingDetails := omit,
+    			period := ?,
+    			billingDetailsAmount := omit, 
+    			usageDetails := mw_gnssUsageDetails, // TPDO PT140: template mw_gnssUsageDetails to be created
+    			refTollDeclaration := ?,
+    			associatedEventData := {omit},
+    			actionCode := (ActionCode_send_, ActionCode_revoke_ ,ActionCode_adjust_ ),
+    			paymentReference := *
+  			}			
 			
 		// relevent datatype for easy reference
 		
@@ -920,7 +941,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 					paymentFeeUnit := ?,
 					vatRate := ?
 					}, 
-    			usageDetails := mw_dsrcUsageDetails,
+    			usageDetails := mw_dsrcUsageDetails, // TPDO PT140: template mw_dsrcUsageDetails to be created
     			refTollDeclaration := {omit},
     			associatedEventData := {omit},
     			actionCode := (ActionCode_send_, ActionCode_revoke_ ,ActionCode_adjust_ ),
