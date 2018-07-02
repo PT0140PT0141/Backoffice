@@ -11,20 +11,20 @@
  *
  *	Transaction type			!	BV					! BI			! Comments
  * 	----------------------------!-----------------------!---------------!--------------------------------
- *	Base						! open					! open			!
- *	Userdetails					! open					! open			! something available but to be reworked
- *	ListOfUsers					! open					! open			!
+ *	Base						! open					! open			! in progress
+ *	Userdetails					! open					! open			! available but to be reworked
+ *	ListOfUsers					! open					! open			! in progress
  *	ExceptionList				! done					! done			! ready for compile
  *	TrustObjects				! open					! open			! ready for compile
- *	PaymentClaim				! open					! none			!
+ *	PaymentClaim				! open					! none			! in progress
  *	DSRC.ContractIssuerList		! done					! done			! ready for compile
  *	DSRC.EFCContextData			! done					! none			! ready for compile 
- *	DSRC.BillingDetails			! done					! none			! ready for compile (template TODO)
+ *	DSRC.BillingDetails			! done					! none			! ready for compile
  *	DSRC.ReportAbnormalOBE		! done					! none			! ready for compile
  *	GNSS.TollDeclaration		! open					! open			! done but need to revise List of ChargeReports in template
  *	GNSS.BillingDetails.TSP		! open					! open			! in progress
  *	GNSS.BillingDetails.TC		! open					! none			! in progress
- *	GNSS.PaymentAnnouncement	! open					! open			!
+ *	GNSS.PaymentAnnouncement	! open					! open			! in progress
  */
  
 module EfcInfoExchange_TestCasesTc {
@@ -738,9 +738,8 @@ module EfcInfoExchange_TestCasesTc {
 
 				f_sendAndLogTrigger(DSRC_BILLINGDETAILS_TR_TC_1_SEND);
 
-                // PT140 TODO : mw_adusDsrcBillingDetails template to be defined
 				var InfoExchange v_apduToBeReceived := {
-				  	mw_apduNoSecInitIut({modifies mw_adusDsrcBillingDetails:= {actionCode := ActionCode_send_ }}) 
+				  	mw_apduNoSecInitIut({{mw_aduDsrcBillingDetails:= {actionCode := ActionCode_send_ }}}) 
            		};                 
 
                 // Wait for above specified APDU within time constraints
@@ -778,9 +777,8 @@ module EfcInfoExchange_TestCasesTc {
 
 				// receive the BillingDetailsADU
 
-                // PT140 TODO : mw_adusDsrcBillingDetails template to be defined
 				var InfoExchange v_apduToBeReceived := {
-				  	mw_apduNoSecInitIut({modifies mw_adusDsrcBillingDetails:= {actionCode := ActionCode_send_ }}) 
+				  	mw_apduNoSecInitIut({{mw_aduDsrcBillingDetails:= {actionCode := ActionCode_send_ }}}) 
            		};                 
 
 				alt {
@@ -791,19 +789,25 @@ module EfcInfoExchange_TestCasesTc {
 					}
 				}
 
+				// capture the billingDetailsId for validation in step 2
+				var BillingDetailsId v_receivedBillingDetailsId;
+				v_receivedBillingDetailsId := v_apduReceived.infoExchangeContent.adus.billingDetailsADUs.billingDetailsId;
 				// send a negative Ack (except of issueCode "acceptedWithWarning")
 				// Create parameters for the m_apduNAck			
-				var NAckParams v_nAckParams1 :={{1, AduReasonCode_semanticError_:=3000}};
+				var NAckParams v_nAckParams1 :={{1, AduReasonCode_semanticError_}};
 
 				f_sendAndLogApdu(m_apduNAck(v_apduReceived, v_nAckParams1));
 
                 // Step 2: Wait for IUT to send adjusted BillingDetailsADU
                 // with actionCode = adjust
+                // with same billingDetailsId as already received billingDetailsId
                 
-                // PT140 TODO: mw_adusDsrcBillingDetails template to be defined
-                // PT140 TODO: check for same BillingDetailsId to be added 
 				var InfoExchange v_apduToBeReceived := {
-				  	mw_apduNoSec({modifies mw_adusDsrcBillingDetails:= {actionCode := ActionCode_adjust_ }}) 
+				  	mw_apduNoSec({{mw_aduDsrcBillingDetails:= {
+				  		billingDetailsId := v_receivedBillingDetailsId,
+				  		actionCode := ActionCode_adjust_
+				  	}
+				  }}) 
            		};                 
 
                 // Wait for above specified APDU within time constraints
@@ -841,9 +845,8 @@ module EfcInfoExchange_TestCasesTc {
 
 				// receive the BillingDetailsADU
 
-                // PT140 TODO : mw_adusDsrcBillingDetails template to be defined
 				var InfoExchange v_apduToBeReceived := {
-				  	mw_apduNoSecInitIut({modifies mw_adusDsrcBillingDetails:= {actionCode := ActionCode_send_ }}) 
+				  	mw_apduNoSecInitIut({{mw_adusDsrcBillingDetails:= {actionCode := ActionCode_send_ }}}) 
            		};                 
 
 				alt {
@@ -857,14 +860,21 @@ module EfcInfoExchange_TestCasesTc {
 				// send an Ack
 				f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
 
+				// capture the billingDetailsId for validation in step 2
+				var BillingDetailsId v_receivedBillingDetailsId;
+				v_receivedBillingDetailsId := v_apduReceived.infoExchangeContent.adus.billingDetailsADUs.billingDetailsId;
+
                 // Step 2: Wait for IUT to send adjusted BillingDetailsADU
                 // with actionCode = revoke
+                // with billingDetailsId as already received billingDetailsId
                 
-                // PT140 TODO: mw_adusDsrcBillingDetails template to be defined
-                // PT140 TODO: check for same BillingDetailsId to be added 
 				var InfoExchange v_apduToBeReceived := {
-				  	mw_apduNoSec({modifies mw_adusDsrcBillingDetails:= {actionCode := ActionCode_revoke_ }}) 
-           		};                 
+				  	mw_apduNoSec({{mw_aduDsrcBillingDetails:= {
+				  		billingDetailsId := v_receivedBillingDetailsId,
+				  		actionCode := ActionCode_revoke_
+				  	}
+				  }}) 
+           		}; 
 
                 // Wait for above specified APDU within time constraints
                 // if not received or received outside specification or time constraints set test fail
