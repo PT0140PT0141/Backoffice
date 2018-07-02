@@ -867,10 +867,65 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 
 			template InfoExchange mw_apduBillingDetails := m_apduNoSec(mw_apci, Adus:{billingDetailsADUs:=?});
 			
-			template InfoExchange mw_apduAuthBillingDetails := mw_apduSec(mw_apci, Adus:{billingDetailsADUs:=?});
+			template InfoExchange mw_apduAuthBillingDetails := mw_apduSec(mw_apci, Adus:{billingDetailsADUs:=?});		  
+			
+			
+		// relevent datatype for easy reference
+		
+		//  type record BillingDetailsADU {
+    		// BillingDetailsId billingDetailsId,
+    		// EfcDsrcApplication.Provider tollContext,
+    		// UserId userId optional,
+    		// BillingDetailsId relatedBillingDetails optional,
+    		// EfcAutonomousCharging.Period period optional,
+    		// ExtendedPaymentAmount billingDetailsAmount,
+    		// record {
+      			// ASNAUX.UTF8String contextName,
+      			// ASNAUX.UTF8String appliedUserClass,
+      			// record of record {
+        		// ASNAUX.UTF8String declaredVehicleClass,
+        		// record of record {
+          		// ASNAUX.UTF8String appliedTimeClass,
+          		// ASNAUX.UTF8String costCenter optional,
+          		// record of UsageList usageList
+        		// } perUsedTimeClasses
+      		// } perDeclaredVehicleClasses
+    		// } usageDetails optional,
+    		// record of TollDeclarationId refTollDeclaration optional,
+    		// record of AssociatedEventData associatedEventData optional,
+    		// ActionCode actionCode optional,
+    		// ASNAUX.UTF8String paymentReference optional
+  		// }					
 		}
 		
-		group DSRC_BILLINGDETAILS{
+		group DSRC_BILLINGDETAILS {
+		
+			template (value) BillingDetailsADU mw_aduDsrcBillingDetails :={
+    			billingDetailsId :={
+    				issuerId := ?,
+    				billingDetailsNum := ?, // range 0 - 2'(63-1)
+    				dateOfService := omit
+    				},
+    			tollContext := ?,
+    			userId :={
+    				pan := *, 
+					contractSerialNumber := *,
+					licencePlateNumber := *, 
+					obeID := *
+					},
+    			relatedBillingDetails := *,
+    			period := omit,
+    			billingDetailsAmount := {
+    				paymentFeeAmount := ?,
+					paymentFeeUnit := ?,
+					vatRate := ?
+					}, 
+    			usageDetails := mw_dsrcUsageDetails,
+    			refTollDeclaration := {omit},
+    			associatedEventData := {omit},
+    			actionCode := (ActionCode_send_, ActionCode_revoke_ ,ActionCode_adjust_ ),
+    			paymentReference := *
+  			}					
 		}
 		
 		group GNSS_TOLLDECLARATIONS {
