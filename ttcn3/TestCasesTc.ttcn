@@ -23,7 +23,7 @@
  *	DSRC.ReportAbnormalOBE		! done					! none			! ready for compile
  *	GNSS.TollDeclaration		! open					! open			! done but need to revise List of ChargeReports in template
  *	GNSS.BillingDetails.TSP		! open					! open			! in progress
- *	GNSS.BillingDetails.TC		! done					! none			! ready for compile (template TODO)
+ *	GNSS.BillingDetails.TC		! done					! none			! ready for compile
  *	GNSS.PaymentAnnouncement	! open					! open			! in progress
  */
  
@@ -3671,7 +3671,6 @@ module EfcInfoExchange_TestCasesTc {
 
 				f_sendAndLogTrigger(GNSS_BILLINGDETAILS_TC_TR_TC_1_SEND);
 
-				// TODO PT140: template mw_aduGnssBillingDetails to be created
 				// TODO PT140: make sure the reference to toll declarations is validated
 				
 				var InfoExchange v_apduToBeReceived := {
@@ -3741,11 +3740,15 @@ module EfcInfoExchange_TestCasesTc {
                 
                 f_sendAndLogTrigger(GNSS_BILLINGDETAILS_TC_TR_TC_1_ADJUST);
 
-				// TODO PT140: template mw_aduGnssBillingDetails to be created
-				// TODO PT140: make sure the reference to toll declarations is validated
+				// capture the tollDeclarationId for use in step 3
+				var TollDeclarationId v_receivedTollDeclarationId;
+				v_receivedTollDeclarationId := v_apduReceived.infoExchangeContent.adus.tollDeclarationADUs.tollDeclarationId;
 
 				var InfoExchange v_apduToBeReceived := {
-				  	mw_apduNoSecInitIut({{mw_aduGnssBillingDetails:= {actionCode := ActionCode_send_ }}}) 
+				  	mw_apduNoSecInitIut({{mw_aduGnssBillingDetails:= {
+				  		tollDeclarationId := v_receivedTollDeclarationId,
+				  		actionCode := ActionCode_send_
+				  	}}}) 
            		};                 
 
 				alt {
@@ -3768,7 +3771,6 @@ module EfcInfoExchange_TestCasesTc {
                 // Step 4: Wait for IUT to send adjusted BillingDetailsADU
                 // with actionCode = adjust
                 // with same billingDetailsId as already received billingDetailsId
-                // TODO PT140: mw_aduGnssBillingDetails to be created
 				var InfoExchange v_apduToBeReceived := {
 				  	mw_apduNoSec({{mw_aduGnssBillingDetails:= {
 				  		billingDetailsId := v_receivedBillingDetailsId,
@@ -3840,11 +3842,15 @@ module EfcInfoExchange_TestCasesTc {
                 
                 f_sendAndLogTrigger(GNSS_BILLINGDETAILS_TC_TR_TC_1_REVOKE);
 
-				// TODO PT140: template mw_aduGnssBillingDetails to be created
-				// TODO PT140: make sure the reference to toll declarations is validated
+				// capture the tollDeclarationId for use in step 3
+				var TollDeclarationId v_receivedTollDeclarationId;
+				v_receivedTollDeclarationId := v_apduReceived.infoExchangeContent.adus.tollDeclarationADUs.tollDeclarationId;
 
 				var InfoExchange v_apduToBeReceived := {
-				  	mw_apduNoSecInitIut({{mw_aduGnssBillingDetails:= {actionCode := ActionCode_send_ }}}) 
+				  	mw_apduNoSecInitIut({{mw_aduGnssBillingDetails:= {
+				  		tollDeclarationId := v_receivedTollDeclarationId,
+				  		actionCode := ActionCode_send_
+				  	}}}) 
            		};                 
 
 				alt {
@@ -3865,7 +3871,6 @@ module EfcInfoExchange_TestCasesTc {
                 // Step 4: Wait for IUT to revke BillingDetailsADU
                 // with actionCode = revoke
                 // with same billingDetailsId as already received billingDetailsId
-                // TODO PT140: mw_aduGnssBillingDetails to be created
 				var InfoExchange v_apduToBeReceived := {
 				  	mw_apduNoSec({{mw_aduGnssBillingDetails:= {
 				  		billingDetailsId := v_receivedBillingDetailsId,
