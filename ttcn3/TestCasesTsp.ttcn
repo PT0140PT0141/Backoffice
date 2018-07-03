@@ -1791,7 +1791,7 @@ module EfcInfoExchange_TestCasesTsp {
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_4_implementedTRUSTOBJECTSElectronicTransfer;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				// Prepare an invalid certificate (not supported by the profile)
-				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(TrustObjectADU({TrustObjectPurposes_certIssuing_},invalidTESTERGenericObject);                 
+				var InfoExchange v_apduRespondedTo := mw_apduNoSecInitIut(TrustObjectADU({TrustObjectPurposes_certIssuing_},invalidTESTERGenericObject);                 
 				f_sendAndLogApdu(v_apduRespondedTo);                 
                 // Step 2: Wait for negative Ack within TRUSTOBJECTS.TIME2
 				// Set timer
@@ -1826,28 +1826,26 @@ module EfcInfoExchange_TestCasesTsp {
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				// Step1: send RequestADU by specifying the type of trustobject
 				// Prepare a request of a Trust Object by taking allowed type and purpose from the SENT_TRUST_OBJECTS_SUPPORTED Pixit value
-				var InfoExchange v_apduRequestForTrustObject := m_apduNoSec(mw_apci, Adus:{requestAdus:= {
+				var RequestADU requestAdu :={
 					requestedADUType := 3,
-					requestedTrustObject :{trustObjectSpec := {
-			    	typeOfTrustObject := SENT_TRUST_OBJECTS_SUPPORTED[1].trustObjectType,
-			    	purposesOfTrustObject := SENT_TRUST_OBJECTS_SUPPORTED[1].trustObjectPurpose}}
-					}});
-				// Get the apduId from the  apdu and modify it by adding one
-				var EfcDsrcApplication.Provider v_receivedProvider := v_apduRequestForTrustObject.infoExchangeContent.apci.apduOriginator;
-				var integer v_newApduSequence := v_apduRequestForTrustObject.infoExchangeContent.apci.apduIdentifier + 1;
-				var record v_newApduId := {v_ReceivedProvider, v_newApduSequence};
+					requestedTrustObject:={
+						trustObjectSpec := {
+							typeOfTrustObject := SENT_TRUST_OBJECTS_SUPPORTED[1].trustObjectType,
+							purposesOfTrustObject := SENT_TRUST_OBJECTS_SUPPORTED[1].trustObjectPurpose}
+						}
+				}
+
+				var Adus requestAduInWrapper:= {requestAdus:={requestAdu}};
 				
-				// Prepare the second APCI field to be transmitted				
-				template (value) ApciFields m_apciNewApduId modifies mw_apciSend:= {apduIdentifier := v_newApduId};							  
+				var InfoExchange v_firstApduRequest:=m_apduNoSecInitTester(requestAduInWrapper); 
+				var InfoExchange v_secondApduReqest:=m_apduNoSecInitTester(requestAduInWrapper); 
 				
-				var Adus v_aduAlreadySent := v_apduRequestForTrustObject.InfoExchangeContent.adus;
 				
 				// Now send the first apdu
-				f_sendAndLogApdu(v_apduRequestForTrustObject);
+				f_sendAndLogApdu(v_firstApduRequest);
 				
-       			// Change apdu and end again immediately same ADU with different APDUid				
-				var InfoExchange v_apduToSend := (m_apciNewApduId, v_aduAlreadySent);
-				f_sendAndLogApdu(v_apduToSend);
+       			//Immediately send same ADU with different APDUid				
+				f_sendAndLogApdu(v_secondApduRequest);
                               
 				//Set timer
 				t_step.start(TRUSTOBJECTS_TYPE1_TIME2_MAX_TSP);
@@ -1875,27 +1873,18 @@ module EfcInfoExchange_TestCasesTsp {
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_4_implementedTRUSTOBJECTSElectronicTransfer;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				// Step1: prepare TrustObjectADU by specifying KeyRef as type of trustobject
-				var InfoExchange v_apduToBeSent := m_apduNoSecInit(
-					m_aduTrustObject(
-						({TrustObjectPurposes_dSRCCharging_,TrustObjectPurposes_dSRCAC_,TrustObjectPurposes_oBEInterrogation_,TrustObjectPurposes_oBEInterrogationAC_},
-						dsrcKeyRefObjectTESTER_VALUE))
-					);                 
-				// Get the apduId from the prepared apdu and modify it by adding one
-				var EfcDsrcApplication.Provider v_receivedProvider := v_apduToBeSent.infoExchangeContent.apci.apduOriginator;
-				var integer v_newApduSequence := v_apduRequestForTrustObject.infoExchangeContent.apci.apduIdentifier + 1;
-				var record v_newApduId := {v_ReceivedProvider, v_newApduSequence};
+				var TrustObjectADU v_trustObjectAdu:=	m_aduTrustObject(
+						{TrustObjectPurposes_dSRCCharging_,TrustObjectPurposes_dSRCAC_,TrustObjectPurposes_oBEInterrogation_,TrustObjectPurposes_oBEInterrogationAC_},
+						TrustObjectCode:{dsrcKeyRef:=dsrcKeyRefObjectTESTER_VALUE}
+				);                 
 				
-				// Prepare the new APCI field to be transmitted
-				
-				template (value) ApciFields m_apciNewApduId modifies mw_apciSend:= {apduIdentifier := v_newApduId};							  
-				// Take the adu out of the apdu for later usage
-				var Adus v_aduAlreadySent := v_apduRequestForTrustObject.InfoExchangeContent.adus;
-				
+				var InfoExchange v_firstApduToBeSent := m_apduNoSecInitTester(v_trustObjectAdu);
+				var InfoExchange v_secondApduToBeSent := m_apduNoSecInitTester(v_trustObjectAdu);
+
 				// Send the first apdu
-				f_sendAndLogApdu(v_apduToSend);
-				// Modify apduId and send immediately
-				var InfoExchange v_apduToSend := (m_apciNewApduId, v_aduAlreadySent);
-				f_sendAndLogApdu(v_apduToSend);				
+				f_sendAndLogApdu(v_firstApduToBeSent);
+				// Send second apdu immediately
+				f_sendAndLogApdu(v_secondApduToBeSent);				
 
 				//Set timer
 				t_step.start(TRUSTOBJECTS_TYPE1_TIME1_MAX_TSP);
