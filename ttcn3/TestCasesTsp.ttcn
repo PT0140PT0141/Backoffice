@@ -128,7 +128,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Just modify the APCI
 				template (value) ApciFields m_apciSendFirstInvalidAid modifies m_apciSendFirst:= {aidIdentifier:=0};
 				// Then send it together with the request ADU
-				var InfoExchange v_apduForSending:=m_apduNoSec(m_apciSendFirstInvalidAid,{m_aduRequestProvideUserDetails(v_userParameterRequests)});
+				var InfoExchange v_apduForSending:=m_apduNoSecOld(m_apciSendFirstInvalidAid,{m_aduRequestProvideUserDetails(v_userParameterRequests)});
   				f_sendAndLogApdu(v_apduForSending);
                
                //Set timer
@@ -174,7 +174,7 @@ module EfcInfoExchange_TestCasesTsp {
 				apduWrongOriginator.providerIdentifier := apduWrongOriginator.providerIdentifier + 1;
 				template (value) ApciFields m_apciSendFirstInvalidAid modifies m_apciSendFirst:= {apduOriginator := apduWrongOriginator};
 				// Then send it together with the request ADU
-				var InfoExchange v_apduForSending := m_apduNoSec(
+				var InfoExchange v_apduForSending := m_apduNoSecOld(
 					m_apciSendFirstInvalidAid,
 					{m_aduRequestProvideUserDetails(v_userParameterRequests)}
 				);
@@ -223,7 +223,7 @@ module EfcInfoExchange_TestCasesTsp {
 				apduWrongSender.providerIdentifier := apduWrongSender.providerIdentifier + 1;
 				template (value) ApciFields m_apciSendFirstInvalidAid modifies m_apciSendFirst:= {informationSenderID := apduWrongSender};
 				// Then send it together with the request ADU
-				var InfoExchange v_apduForSending := m_apduNoSec(
+				var InfoExchange v_apduForSending := m_apduNoSecOld(
 					m_apciSendFirstInvalidAid,
 					{m_aduRequestProvideUserDetails(v_userParameterRequests)}
 				); 
@@ -272,7 +272,7 @@ module EfcInfoExchange_TestCasesTsp {
 				apduWrongRecipient.providerIdentifier.providerIdentifier := apduWrongRecipient.providerIdentifier.providerIdentifier + 1;
 				template (value) ApciFields m_apciSendFirstInvalidAid modifies m_apciSendFirst:= {informationrecipientID := apduWrongRecipient};
 				// Then send it together with the request ADU
-				var InfoExchange v_apduForSending := m_apduNoSec(
+				var InfoExchange v_apduForSending := m_apduNoSecOld(
 					m_apciSendFirstInvalidAid,
 					{m_aduRequestProvideUserDetails(v_userParameterRequests)}
 				); 
@@ -378,7 +378,7 @@ module EfcInfoExchange_TestCasesTsp {
 				template (value) ApciFields m_apciSendFirstInvalidAid modifies m_apciSendFirst:= {nextApduId := 1};				
 
 				// Then send it together with the request ADU
-				var InfoExchange v_apduForSending := m_apduNoSec(
+				var InfoExchange v_apduForSending := m_apduNoSecOld(
 					m_apciSendFirstInvalidAid,
 					{m_aduRequestProvideUserDetails(v_userParameterRequests)}
 				);
@@ -421,7 +421,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Step 1: Send Initiating APDU containing a valid RequestADU with APCI parameter field containing inResponseToApduId
 				template (value) ApciFields m_apciSendFirstInvalidAid modifies m_apciSendFirst:= {inResponseToApduId := 1};
 				// Then send it together with the request ADU
-				var InfoExchange v_apduForSending := m_apduNoSec(
+				var InfoExchange v_apduForSending := m_apduNoSecOld(
 					m_apciSendFirstInvalidAid,
 					{m_aduRequestProvideUserDetails(v_userParameterRequests)}
 				);
@@ -534,7 +534,7 @@ module EfcInfoExchange_TestCasesTsp {
 					}
 				};
 				
-				var InfoExchange v_apduForSending := m_apduNoSec(
+				var InfoExchange v_apduForSending := m_apduNoSecOld(
 					m_apciInvalidInRespTo,
 					{v_aduTrustObject}
 				);
@@ -593,7 +593,7 @@ module EfcInfoExchange_TestCasesTsp {
 
 				template (value) ApciFields m_apciSendFirstInvalidDate modifies m_apciSendFirst:= {apduDate := 0};
 				// Then send it together with the request ADU
-				var InfoExchange v_apduForSending := m_apduNoSec(
+				var InfoExchange v_apduForSending := m_apduNoSecOld(
 					m_apciSendFirstInvalidDate,
 					{m_aduRequestProvideUserDetails(v_userParameterRequests)}
 				);
@@ -1582,7 +1582,7 @@ module EfcInfoExchange_TestCasesTsp {
 						var integer v_requestedTrustObjectType := SENT_TRUST_OBJECTS_SUPPORTED[v_trustObjectsReceived].trustObjectType;
 						var TrustObjectPurposes v_requestedTrustObjectPurposes := SENT_TRUST_OBJECTS_SUPPORTED[v_trustObjectsReceived].trustObjectPurpose
 						
-						var InfoExchange v_apduRequestForTrustObject := m_apduNoSec(
+						var InfoExchange v_apduRequestForTrustObject := m_apduNoSecOld(
 							mw_apci, Adus:{
 								requestAdus:= {
 									requestedADUType:= 3,

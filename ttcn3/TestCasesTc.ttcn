@@ -153,7 +153,7 @@ module EfcInfoExchange_TestCasesTc {
 					v_adus[v_loop1]:=v_theAdu;
 				}								                   
 				
-				var InfoExchange v_apduProvideUserDetailsSend:=m_apduNoSec( m_apciSendResponse(v_apduReceived), v_adus);
+				var InfoExchange v_apduProvideUserDetailsSend:=m_apduNoSecOld( m_apciSendResponse(v_apduReceived), v_adus);
 				f_sendAndLogApdu(v_apduProvideUserDetailsSend);
 
 				//Set timer
@@ -232,7 +232,7 @@ module EfcInfoExchange_TestCasesTc {
 				
 				// TODO PT140: prepare in v_adus provideUserDetailsADU not corresponding to requested parameters, that is v_adus is NEVER SET								                   
 				
-				var InfoExchange v_apduToSend:=m_apduNoSec(m_apciSendResponse(v_apduReceived), v_adus);
+				var InfoExchange v_apduToSend:=m_apduNoSecOld(m_apciSendResponse(v_apduReceived), v_adus);
 				f_sendAndLogApdu(v_apduToSend);
 
 				//Set timer
@@ -313,7 +313,7 @@ module EfcInfoExchange_TestCasesTc {
 				
 				// TODO PT140: prepare in v_adus provideUserDetailsADU with no Status Flag being present								                   
 				
-				var InfoExchange v_apduForSending:=m_apduNoSec(m_apciSendResponse(v_apduReceived), v_adus);
+				var InfoExchange v_apduForSending:=m_apduNoSecOld(m_apciSendResponse(v_apduReceived), v_adus);
 				f_sendAndLogApdu(v_apduForSending);
 
 				//Set timer
@@ -393,7 +393,7 @@ module EfcInfoExchange_TestCasesTc {
 				
 				// TODO PT140: prepare in v_adus provideUserDetailsADU with Status Flag = 1..5 and no listOfUserParameters begin present								                   
 				
-				var InfoExchange v_apduForSending:=m_apduNoSec(m_apciSendResponse(v_apduReceived), v_adus);
+				var InfoExchange v_apduForSending:=m_apduNoSecOld(m_apciSendResponse(v_apduReceived), v_adus);
 				f_sendAndLogApdu(v_apduForSending);
 
 				//Set timer
@@ -473,7 +473,7 @@ module EfcInfoExchange_TestCasesTc {
 				
 				// TODO PT140: prepare in v_adus provideUserDetailsADU with Status Flag /= 1..5 and listOfUserParameters begin present								                   
 				
-				var InfoExchange v_apduForSending:=m_apduNoSec(m_apciSendResponse(v_apduReceived), v_adus);
+				var InfoExchange v_apduForSending:=m_apduNoSecOld(m_apciSendResponse(v_apduReceived), v_adus);
 				f_sendAndLogApdu(v_apduForSending);
 
 				//Set timer
@@ -553,7 +553,7 @@ module EfcInfoExchange_TestCasesTc {
 				
 				// TODO PT140: prepare in v_adus provideUserDetailsADU with invalid parameters in UserParameterResponse field								                   
 				
-				var InfoExchange v_apduForSending:=m_apduNoSec(m_apciSendResponse(v_apduReceived), v_adus);
+				var InfoExchange v_apduForSending:=m_apduNoSecOld(m_apciSendResponse(v_apduReceived), v_adus);
 				f_sendAndLogApdu(v_apduForSending);
 
 				//Set timer
@@ -1771,7 +1771,7 @@ module EfcInfoExchange_TestCasesTc {
 						var integer v_requestedTrustObjectType := SENT_TRUST_OBJECTS_SUPPORTED[v_trustObjectsReceived].trustObjectType;
 						var TrustObjectPurposes v_requestedTrustObjectPurposes := SENT_TRUST_OBJECTS_SUPPORTED[v_trustObjectsReceived].trustObjectPurpose;
 						
-						var InfoExchange v_apduRequestForTrustObject := m_apduNoSec(
+						var InfoExchange v_apduRequestForTrustObject := m_apduNoSecOld(
 							mw_apci, Adus:{
 								requestAdus:= {
 									requestedADUType:= 3,
