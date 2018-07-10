@@ -78,7 +78,7 @@ module EfcInfoExchange_TestCasesTsp {
                // and in addition an infoExchangeAuthenticator = value calculated according to clause 7.3 of EN ISO 12855
 
 				// Prepare the APDU 
-				var InfoExchange apduToBeSent := m_apduSecInit({m_aduRequestProvideUserDetails(v_userParameterRequests)});
+				var InfoExchange apduToBeSent := m_apduSecInitTester({m_aduRequestProvideUserDetails(v_userParameterRequests)});
                 
 				// send RequestADU
 				f_sendAndLogApdu(apduToBeSent);                                          
