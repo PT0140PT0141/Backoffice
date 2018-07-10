@@ -42,30 +42,9 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 	import from EfcInfoExchangeProfile all;
     
     group ApduTemplates {
-        
-        /**
-         * @desc    Generic template for InfoExchange structure, without authentication     
-         */
-    	template InfoExchange m_apduNoSec(in template ApciFields p_apci, in template Adus p_adus):={
-    	  infoExchangeContent:={
-    	  	apci:=p_apci,
-    	  	adus:=p_adus
-    	  },
-    	  infoExchangeAuthenticator := omit
-    	}
     	
-        
-        /**
-         * @desc    Generic template for InfoExchange structure, with authentication     
-         */
-    	template InfoExchange mw_apduSec(in template ApciFields p_apci, in template Adus p_adus):={
-    	  infoExchangeContent:={
-    	  	apci:=p_apci,
-    	  	adus:=p_adus
-    	  },
-    	  infoExchangeAuthenticator := *
-    	}
-    
+    	/* Underlaying definitions for APCI and security*/
+
     	/**
          * @desc Generic template for ApciFields 
          */
@@ -80,132 +59,263 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
     		inResponseToApduId := *, 
     		apduDate :=  ?
     	}
-    	
-    	/**
-         * @desc Generic template for ApciFields sent 
-         */
-    	template ApciFields mw_apciSend modifies mw_apci:= {			
-			apduIdentifier := float2int(rnd()) * 65535,
-			//apduIdentifier shall be a unique identifier for each given apduOriginator that is assigned by the apduOriginator. 
-    		//It is used to either acknowledge or request retransmission of a previously issued APDU.
-			previousApduId:=omit
-    	}
-    	  	
-    	/**
-         * @desc Template for ApciFields sent by the Tester     
-         */
-    	template ApciFields mw_apciSendTester modifies mw_apci:= {			
+
+		template (value) ApciFields m_apciInitTester modifies mw_apci :={
     		apduOriginator := APDU_ORIGINATOR_FOR_TESTER,  
     		informationSenderID := INFORMATION_SENDER_ID_FOR_TESTER, 
-    		informationrecipientID := INFORMATION_SENDER_ID_FOR_IUT
-    	}
-    	  	
-    	/**
-         * @desc Template for ApciFields sent by the IUT     
-         */
-    	template ApciFields mw_apciSendIut modifies mw_apci:= {			
-    		apduOriginator := APDU_ORIGINATOR_FOR_IUT,  
-    		informationSenderID := INFORMATION_SENDER_ID_FOR_IUT, 
-    		informationrecipientID := INFORMATION_SENDER_ID_FOR_TESTER
-    	}
-    	  	
-
-    	/**
-    	 * 
-		* @desc Template for ApciFields for APDUs sent as a response     
-		*/
-	   template (value) ApciFields m_apciSendResponse(in InfoExchange p_apduBeingRespondedTo) modifies mw_apciSend:= {			
-			inResponseToApduId := {
-				apduOriginator:=p_apduBeingRespondedTo.infoExchangeContent.apci.apduOriginator,
-				apduIdentifier:=p_apduBeingRespondedTo.infoExchangeContent.apci.apduIdentifier
-			},
-			// TODO PT140: Check whether the function is evaluated at run time. If not, time  has to be set within the test case
-		   	apduDate:=fx_getUtc()
-	   }
-    	
-    	/**
-    	 * 
-         * @desc Template for ApciFields for initiating APDUs sent by the Tester     
-         */
-    	template (value) ApciFields m_apciSendFirstTester modifies mw_apciSendTester:= {			
-    		inResponseToApduId := omit,
-    		apduDate:=fx_getUtc()
-    	}
-
-		/**
-		 * 
-		 * @desc Matching template for ApciFields for initiating APDUs sent by the IUT
-		 */
-		template ApciFields mw_apciSendFirstIut modifies mw_apciSendIut:= {			
-			inResponseToApduId := omit,
-			apduDate:=?
+    		informationrecipientID := INFORMATION_SENDER_ID_FOR_IUT,
+			apduIdentifier := float2int(rnd()) * 65535,
+    		previousApduId := omit,
+    		inResponseToApduId := omit, 
+    		apduDate:=fx_getUtc()			
+		}
+		
+		template (value) ApciFields m_apciRespTester(in InfoExchange p_apduBeingRespondedTo) modifies m_apciInitTester :={
+			inResponseToApduId:=p_apduBeingRespondedTo.infoExchangeContent.apci.apduIdentifier
 		}
     	
+		template ApciFields mw_apciInitIut modifies mw_apci :={
+			apduOriginator := APDU_ORIGINATOR_FOR_IUT,  
+			informationSenderID := INFORMATION_SENDER_ID_FOR_IUT, 
+			informationrecipientID := INFORMATION_SENDER_ID_FOR_TESTER,
+			inResponseToApduId := omit
+		}
+		
+		template ApciFields mw_apciRespIut(in InfoExchange p_apduBeingRespondedTo) modifies mw_apciInitIut :={
+			inResponseToApduId:=p_apduBeingRespondedTo.infoExchangeContent.apci.apduIdentifier		
+		} 
+		
+    	  	
+        /**
+         * @desc    Generic template for InfoExchange structure, without authentication     
+         */
+    	template (value) InfoExchange m_apduNoAuth(in template ApciFields p_apci, in template Adus p_adus):={
+    	  infoExchangeContent:={
+    	  	apci:=p_apci,
+    	  	adus:=p_adus
+    	  },
+    	  infoExchangeAuthenticator := omit
+    	}
+    	
+        
+        /**
+         * @desc    Generic template for InfoExchange structure, with authentication     
+         */
+		template InfoExchange mw_apduAuth(in template ApciFields p_apci, in template Adus p_adus):={
+		  infoExchangeContent:={
+			apci:=p_apci,
+			adus:=p_adus
+		  },
+		  infoExchangeAuthenticator := ?
+		}
+
+    	template InfoExchange m_apduAuth(in template ApciFields p_apci, in template Adus p_adus):={
+    	  infoExchangeContent:={
+    	  	apci:=p_apci,
+    	  	adus:=p_adus
+    	  },
+    	  infoExchangeAuthenticator := fx_computeAuthenticator(InfoExchangeContent:{p_apci,p_adus})
+    	}
+    	
 		/**
 		 * 
-		 * @desc Corresponds to the event Initiating_Apdu desribed in test purposes in the cases where the Tester is the initiator of the transaction
+		 * @desc Corresponds to the event Initiating_Apdu described in test purposes in the cases where the Tester is the initiator of the transaction 
 		 * @desc Definition: "An APDU with the APCI-fields set to informationRecipientId = Tester identifier and apduDate = valid date, 
 		 * @desc optional fields on all levels not present" 
 		 */ 
-		template (value) InfoExchange m_apduNoSecInitTester(in Adus p_adus) := m_apduNoSec(
-			m_apciSendFirstTester, 
+		template (value) InfoExchange m_apduNoAuthInitTester(in Adus p_adus) := m_apduNoAuth(
+			m_apciInitTester, 
+			p_adus
+		);
+
+		template (value) InfoExchange m_apduAuthInitTester(in Adus p_adus) := m_apduAuth(
+			m_apciInitTester, 
 			p_adus
 		);
 
     	/**
     	 * 
-    	 * @desc Corresponds to the event Initiating_Apdu desribed in test purposes in the cases where the IUT is the initiator of the transaction
+    	 * @desc Corresponds to the event Default_Apdu described in test purposes in the cases where the Tester is the respondant of the transaction.
+		 * @desc Definition: "An APDU with the APCI-fields set to informationRecipientId = Tester identifier, 
+		 * @desc inResponseToApduId = the apduId of the APDU carrying the ADU that is being responded to and 
+		 * @desc apduDate = valid date, other optional fields on all levels not present" 
+    	 */ 
+		template (value) InfoExchange m_apduNoAuthRespTester(in InfoExchange p_apduBeingRespondedTo, in Adus p_adus) := m_apduNoAuth(
+			m_apciRespTester(p_apduBeingRespondedTo), 
+			p_adus
+		);
+
+		template (value) InfoExchange m_apduAuthRespTester(in InfoExchange p_apduBeingRespondedTo, in Adus p_adus) := m_apduAuth(
+			m_apciRespTester(p_apduBeingRespondedTo), 
+			p_adus
+		);
+
+
+    	/**
+    	 * 
+    	 * @desc Corresponds to the event Initiating_Apdu described in test purposes in the cases where the IUT is the initiator of the transaction
     	 * @desc Definition: "An APDU with the APCI-fields set to informationRecipientId = Tester identifier and apduDate = valid date, 
     	 * @desc optional fields on all levels not present" 
     	 */ 
-    	template InfoExchange mw_apduNoSecInitIut(in Adus p_adus) := m_apduNoSec(
-     		mw_apciSendFirstIut, 
+    	template InfoExchange mw_apduNoAuthInitIut(in Adus p_adus) := m_apduNoAuth(
+     		mw_apciInitIut, 
      		p_adus
      	);
 
-    	template (value) InfoExchange m_apduSecInitTester(in Adus p_adus):={
-    	  infoExchangeContent:={
-    	  	apci:=m_apciSendFirstTester,
-    	  	adus:=p_adus
-    	  },
-    	  infoExchangeAuthenticator := fx_computeAuthenticator({apci:=m_apciSendFirstTester,adus:=p_adus})
-    	}
 
-    	template InfoExchange mw_apduSecInitIut(in Adus p_adus) := mw_apduSec(
-     		mw_apciSendFirstIut, 
+    	template InfoExchange mw_apduAuthInitIut(in Adus p_adus) := mw_apduAuth(
+     		mw_apciInitIut, 
      		p_adus
      	);
 
 
     	/**
     	 * 
-    	 * @desc Corresponds to the event Default_Apdu described in test purposes.
+    	 * @desc Corresponds to the event Default_Apdu described in test purposes in the cases where the IUT is the respondant of the transaction.
 		 * @desc Definition: "An APDU with the APCI-fields set to informationRecipientId = Tester identifier, 
 		 * @desc inResponseToApduId = the apduId of the APDU carrying the ADU that is being responded to and 
 		 * @desc apduDate = valid date, other optional fields on all levels not present" 
     	 */ 
-		template (value) InfoExchange m_apduDefault(in InfoExchange p_apduToRespondTo, in Adus p_adus) := m_apduNoSec(
-			m_apciSendResponse(p_apduToRespondTo), 
+		template InfoExchange mw_apduNoAuthRespIut(in InfoExchange p_apduBeingRespondedTo, in Adus p_adus) := m_apduNoAuth(
+			mw_apciRespIut(p_apduBeingRespondedTo), 
 			p_adus
-	    );
+		);
 
-		template InfoExchange mw_apduRequest := m_apduNoSec(mw_apci, Adus:{requestAdus:=?});
+		template InfoExchange mw_apduAuthRespIut(in InfoExchange p_apduBeingRespondedTo, in Adus p_adus) := mw_apduAuth(
+			mw_apciRespIut(p_apduBeingRespondedTo), 
+			p_adus
+		);
+
+		template InfoExchange mw_apduRequest := mw_apduNoAuthInitIut(Adus:{requestAdus:=?});
 			
-		template InfoExchange mw_apduAuthRequest := mw_apduSec(mw_apci, Adus:{requestAdus:=?});
-
+		template InfoExchange mw_apduAuthRequest := mw_apduAuthInitIut(Adus:{requestAdus:=?});
 
 		template (value) Adus m_oneAckInAdusStruct(in AckADU p_ackADU):={ackAdus:={p_ackADU}};
 		
 		/**
 		 * 
-		 * @desc Corresponds to the event Default_Ack_Apdu described in test purposes.
+		 * @desc Corresponds to the event Default_Ack_Apdu described in test purposes in the case where the Tester is the sender.
 		 * @desc Definition: "Default_Apdu containing one AckADU containing {apduAckCode =: apduOK(2)}, with issues being not present" 
 		 */ 
-		template (value) InfoExchange m_apduDefaultAck(in InfoExchange p_apduToAck) := m_apduDefault(
+		template (value) InfoExchange m_apduDefaultAckTester(in InfoExchange p_apduToAck) := m_apduNoAuthRespTester(
 			p_apduToAck, 
 			m_oneAckInAdusStruct(m_aduDefaultAck(p_apduToAck))
 		);
 
+		/**
+		 * 
+		/**
+		 * 
+		 * @desc Corresponds to the event Default_Ack_Apdu described in test purposes in the case where the Tester is the receiver.
+		 * @desc Definition: "Default_Apdu containing one AckADU containing {apduAckCode =: apduOK(2)}, with issues being not present" 
+		 */ 
+		template (value) InfoExchange mw_apduDefaultAckIut(in InfoExchange p_apduToAck) := mw_apduNoAuthRespIut(
+			p_apduToAck, 
+			m_oneAckInAdusStruct(m_aduDefaultAck(p_apduToAck))
+		);
+
+		 /**
+		  * @desc Corresponds to the event NAck_Protocol_Apdu in the case where the tester is the sender
+		 * @desc Definition: NAck_Protocol_Apdu(apduAckCode excluding the values 2 and 5) "Default_Apdu 
+		 * @desc containing one AckADU containing {apduAckCode =: specified apduAckCode }, with issues 
+		 * @desc being not present"
+		 */ 
+		 //TODO introduce the exclusion of values 2 and 5
+		 
+		template (value) InfoExchange m_apduNAckProtocolTester
+			(in InfoExchange p_apduToAck, in ApduReasonCode p_apduReasonCode) := m_apduNoAuthRespTester(
+			p_apduToAck, 
+			m_oneAckInAdusStruct(m_aduNAckProtocol(p_apduToAck, p_apduReasonCode))
+	    );
+
+		/**
+		 * @desc Corresponds to the event NAck_Protocol_Apdu in the case where the IUT is the sender
+		 * @desc Definition: NAck_Protocol_Apdu(apduAckCode excluding the values 2 and 5) "Default_Apdu 
+		 * @desc containing one AckADU containing {apduAckCode =: specified apduAckCode }, with issues 
+		 * @desc being not present"
+		 */ 
+		template (value) InfoExchange mw_apduNAckProtocolIut
+			(in InfoExchange p_apduToAck, in ApduReasonCode p_apduReasonCode) := mw_apduNoAuthRespIut(
+			p_apduToAck, 
+			m_oneAckInAdusStruct(m_aduNAckProtocol(p_apduToAck, p_apduReasonCode))
+	    );
+
+		/**
+		* @desc Corresponds to the event NAck_Protocol_Apdu_Sec in the case where the Tester is the sender
+		* @desc Definition: NAck_Protocol_Apdu_Sec (apduAckCode excluding the values 2 and 5) 
+		* @desc "NAck_Protocol_Apdu( apduAckCode) modified by having infoExchangeAuthenticator present 
+		* @desc and calculated according to clause 7.3 of EN ISO 12855”
+		*/ 
+
+	   template (value) InfoExchange m_apduNAckProtocolAuthTester(
+		   in InfoExchange p_apduToAck,
+		   in ApduReasonCode p_apduReasonCode 	
+	   ):=m_apduAuthRespTester(p_apduToAck, 
+		   m_oneAckInAdusStruct(m_aduNAckProtocol(p_apduToAck, p_apduReasonCode))
+	   );
+
+ 
+		/**
+		 * @desc Corresponds to the event NAck_Protocol_Apdu_Sec in the case where the Iut is the sender
+		 * @desc Definition: NAck_Protocol_Apdu_Sec (apduAckCode excluding the values 2 and 5) 
+		 * @desc "NAck_Protocol_Apdu( apduAckCode) modified by having infoExchangeAuthenticator present 
+		 * @desc and calculated according to clause 7.3 of EN ISO 12855”
+		 */ 
+
+		template InfoExchange mw_apduNAckProtocolAuthIut(
+			in InfoExchange p_apduToAck,
+			in ApduReasonCode p_apduReasonCode 	
+		):=mw_apduAuthRespIut(
+			p_apduToAck, 
+			m_oneAckInAdusStruct(m_aduNAckProtocol(p_apduToAck, p_apduReasonCode))
+		);
+
+		/**
+		 * @desc Corresponds to the event NAck_AllAdus_Apdu when the IUT is the sender
+		 * @desc Definition: NAck_AllAdus_Apdu(aduReasonCode) "Default_Apdu containing one AckADU containing 
+		 * @desc {apduAckCode= apduOK(2), issues containing one element containing {issueADUStruct=0, 
+		 * @desc issueCode = aduReasonCode }}"
+		 */ 
+		template InfoExchange mw_apduNAckAllAdusNoAuthIut(
+			in InfoExchange p_apduToAck,
+			in AduReasonCode p_aduReasonCode	
+		):=mw_apduAuthRespIut(
+			p_apduToAck, 
+			m_oneAckInAdusStruct(mw_aduNAckWIssues(p_apduToAck, m_nAckParamsSingle(0,p_aduReasonCode)))
+		);
+
+		/**
+		 * 
+		 * @desc Corresponds to the event NAck_IndividualAdus_Apdu when the Tester is sending
+		 * @desc Definition: NAck_IndividualAdus_Apdu({one or more sets of Param defined as {aduPosition, 
+		 * @desc aduReasonCode}}) "Default_Apdu containing one AckADU containing {apduAckCode= apduOK(2), 
+		 * @desc issues containing one element for each Param set containing {issueADUStruct=aduPosition, 
+		 * @desc issueCode = aduReasonCode }}"
+		 */ 
+		
+		//TODO Ulrik finalise this!!!
+		
+		
+		/**
+		 * 
+		 * @desc Corresponds to the event NAck_IndividualAdus_Apdu when the IUT is sending
+		 * @desc Definition: NAck_IndividualAdus_Apdu({one or more sets of Param defined as {aduPosition, 
+		 * @desc aduReasonCode}}) "Default_Apdu containing one AckADU containing {apduAckCode= apduOK(2), 
+		 * @desc issues containing one element for each Param set containing {issueADUStruct=aduPosition, 
+		 * @desc issueCode = aduReasonCode }}"
+		 */ 
+
+		//TODO Ulrik finalise this!!!
+
+		/**
+		 * 
+		 * @desc Corresponds to the event NAck_requestSentTooOften when the IUT is the sender
+		 * @desc Definition: NAck_requestSentTooOften "NAck_Protocol_Apdu(requestSentTooOften(10)"
+		*/ 
+		
+		template InfoExchange mw_apduNAckRequestSentTooOften(in InfoExchange p_apduToAck) := 
+		mw_apduNAckProtocolIut(p_apduToAck, ApduReasonCode_requestSentTooOften_);
+		
 		/**
 		 * 
 		 * @desc Corresponds to the event NAck_Apdu described in test purposes.
@@ -254,25 +364,22 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			issues := p_nAckParams
 		}
     	
-			
-		/**
-		 * 
-		 * @desc Corresponds to the event NAck_requestSentTooOften described in test purposes.
-		 * @desc Definition: "Default_Apdu containing one AckADU containing {apduAckCode= requestSentTooOften(10)}" 
-		 */ 
-		template (value) InfoExchange m_apduNAckRequestSentTooOften(in InfoExchange p_apduToAck) := m_apduDefault(
-			p_apduToAck,
-			m_oneAckInAdusStruct(m_aduAckRequestSentTooOften(p_apduToAck))			
-		);
-
-		template AckADU m_aduAckRequestSentTooOften(in InfoExchange p_apduToAck) := {
+		template AckADU m_aduNAckProtocol(in InfoExchange p_apduToAck, in ApduReasonCode p_apduReasonCode) := {
 			apduIdentifier := p_apduToAck.infoExchangeContent.apci.apduIdentifier,
 			explicitlyAckedAdus := omit,
-			apduAckCode := ApduReasonCode_requestSentTooOften_ ,
+			apduAckCode := p_apduReasonCode ,
 			apduAckText := omit,
 			issues := omit
 		}
-      
+    	
+		template AckADU mw_aduNAckWIssues(in InfoExchange p_apduToAck, in NAckParams p_nackParams) := {
+			apduIdentifier := p_apduToAck.infoExchangeContent.apci.apduIdentifier,
+			explicitlyAckedAdus := omit,
+			apduAckCode := ApduReasonCode_apduOK_,
+			apduAckText := omit,
+			issues := p_nackParams
+		}
+    	      
 		template AckADU mw_aduDefaultAck := {
 			apduIdentifier := ?,
 			explicitlyAckedAdus := omit,
@@ -336,9 +443,9 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
             	listOfUserParameters := *
         	}
         	
-   			template InfoExchange mw_apduProvideUserDetails(InfoExchange p_apduRespondedTo) := m_apduNoSec(m_apciSendResponse(p_apduRespondedTo), Adus:{provideUserDetailsADUs:=?});
+   			template InfoExchange mw_apduProvideUserDetails(InfoExchange p_apduRespondedTo) := m_apduNoAuth(m_apciSendResponse(p_apduRespondedTo), Adus:{provideUserDetailsADUs:=?});
 			
-			template InfoExchange mw_apduAuthProvideUserDetails := mw_apduSec(mw_apci, Adus:{provideUserDetailsADUs:=?});
+			template InfoExchange mw_apduAuthProvideUserDetails := mw_apduAuth(mw_apci, Adus:{provideUserDetailsADUs:=?});
 		}
 
 		group LISTOFUSERS {
@@ -367,7 +474,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
             	userIdList := *
         	}
 
-   			template InfoExchange mw_apduProvideUserIdList := m_apduNoSec(mw_apci, Adus:{provideUserIdListADUs:=?});
+   			template InfoExchange mw_apduProvideUserIdList := m_apduNoAuth(mw_apci, Adus:{provideUserIdListADUs:=?});
 			
 			template InfoExchange mw_apduAuthProvideUserIdList := mw_apduSec(mw_apci, Adus:{provideUserIdListADUs:=?});
 			
