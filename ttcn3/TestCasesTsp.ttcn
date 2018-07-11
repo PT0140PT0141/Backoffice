@@ -2948,7 +2948,7 @@ module EfcInfoExchange_TestCasesTsp {
 						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
 						setverdict(pass);
 						}
-					[] mtcPort.receive(mw_apduNAck_IndividualAdus(v_apduRespondedTo, {{1, AduReasonCode_semanticError_},{2,AduReasonCode_semanticError_}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAck_IndividualAdus(v_apduRespondedTo, {{1, AduReasonCode_semanticError_}})) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
 						setverdict(pass);
 						}
@@ -2974,7 +2974,7 @@ module EfcInfoExchange_TestCasesTsp {
 
                  // Step 1: Send one valid APDU containing one valid BillingDetailsADU with no optional fields except includedDiscounts
                  // PT140 TODO : mw_aduBillingDetails template to be defined and includedDiscounts to be set
-				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(
 					{modifies mw_aduBillingDetails:= {
 					  	billingDetailsId := 1, 
 					  	includedDiscounts.discounts := 10, billingDetailsAmount.paymentFeeAmount := 400,
@@ -2987,7 +2987,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Set timer
                  t_step.start(BILLINGDETAILS_TIME1_MAX_TSP);                 
 				alt {
-					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduRespondedTo)) -> value v_apduReceived {
 					  
 						// Log what we received
 						f_logReceivedThenCheckAndStopTime(BILLINGDETAILS_TIME1_MIN_TSP); 
@@ -3009,45 +3009,45 @@ module EfcInfoExchange_TestCasesTsp {
                  // Step 1: Send one valid APDU containing 10 valid BillingDetailsADU with actionCode = SEND
                  // PT140 TODO : mw_aduBillingDetails template and related fields to be defined
 				var InfoExchange v_apduRespondedTo :=
-					{m_apduNoSecInit({modifies mw_aduBillingDetails:= {
+					{m_apduNoAuthInitTester({modifies mw_aduBillingDetails:= {
 					  	billingDetailsId := 1,
 					  	billingDetailsAmount.paymentFeeAmount := 400,
 					  	actionCode := ActionCode_send_
 					  	}
 					}),
-					m_apduNoSecInit({modifies mw_aduBillingDetails:= {
+					m_apduNoAuthInitTester({modifies mw_aduBillingDetails:= {
 					  	billingDetailsId := 2, billingDetailsAmount.paymentFeeAmount := 500, actionCode := ActionCode_send_
 					  	}
 					}),
-					m_apduNoSecInit({modifies mw_aduBillingDetails:= {
+					m_apduNoAuthInitTester({modifies mw_aduBillingDetails:= {
 					  	billingDetailsId := 3, billingDetailsAmount.paymentFeeAmount := 500, actionCode := ActionCode_send_
 					  	}
 					}),					
-					m_apduNoSecInit({modifies mw_aduBillingDetails:= {
+					m_apduNoAuthInitTester({modifies mw_aduBillingDetails:= {
 					  	billingDetailsId := 4, billingDetailsAmount.paymentFeeAmount := 500, actionCode := ActionCode_send_
 					  	}
 					}),					
-					m_apduNoSecInit({modifies mw_aduBillingDetails:= {
+					m_apduNoAuthInitTester({modifies mw_aduBillingDetails:= {
 					  	billingDetailsId := 5, billingDetailsAmount.paymentFeeAmount := 500, actionCode := ActionCode_send_
 					  	}
 					}),					
-					m_apduNoSecInit({modifies mw_aduBillingDetails:= {
+					m_apduNoAuthInitTester({modifies mw_aduBillingDetails:= {
 					  	billingDetailsId := 6, billingDetailsAmount.paymentFeeAmount := 500, actionCode := ActionCode_send_
 					  	}
 					}),					
-					m_apduNoSecInit({modifies mw_aduBillingDetails:= {
+					m_apduNoAuthInitTester({modifies mw_aduBillingDetails:= {
 					  	billingDetailsId := 7, billingDetailsAmount.paymentFeeAmount := 500, actionCode := ActionCode_send_
 					  	}
 					}),					
-					m_apduNoSecInit({modifies mw_aduBillingDetails:= {
+					m_apduNoAuthInitTester({modifies mw_aduBillingDetails:= {
 					  	billingDetailsId := 8, billingDetailsAmount.paymentFeeAmount := 500, actionCode := ActionCode_send_
 					  	}
 					}),					
-					m_apduNoSecInit({modifies mw_aduBillingDetails:= {
+					m_apduNoAuthInitTester({modifies mw_aduBillingDetails:= {
 					  	billingDetailsId := 9, billingDetailsAmount.paymentFeeAmount := 500, actionCode := ActionCode_send_
 					  	}
 					}),					
-					m_apduNoSecInit({modifies mw_aduBillingDetails:= {
+					m_apduNoAuthInitTester({modifies mw_aduBillingDetails:= {
 					  	billingDetailsId := 10, billingDetailsAmount.paymentFeeAmount := 500, actionCode := ActionCode_send_
 					  	}
 					})          	
@@ -3057,7 +3057,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Set timer
                  t_step.start(BILLINGDETAILS_TIME1_MAX_TSP);                 
 				alt {
-					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduRespondedTo)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(BILLINGDETAILS_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
@@ -3077,7 +3077,7 @@ module EfcInfoExchange_TestCasesTsp {
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				// Prepare a billingdetails with excessive amount
 				var InfoExchange v_apduRespondedTo :=
-					{m_apduNoSecInit({modifies mw_aduBillingDetails:= {
+					{m_apduNoAuthInitTester({modifies mw_aduBillingDetails:= {
 					  	billingDetailsId := 1,
 					  	billingDetailsAmount.paymentFeeAmount := MAX_ACCEPTED_BILLINGDETAILS_AMOUNT.paymentFeeAmount + 4000,
 					  	actionCode := ActionCode_send_
@@ -3085,23 +3085,19 @@ module EfcInfoExchange_TestCasesTsp {
 					})};				
 				// Wait for a negative ack
 				f_sendAndLogApdu(v_apduRespondedTo);                 
-                // Wait for a NAck_Apdu containing one AckADU with issues containing issueCode = paymentClaimEndDateTimeRejected (804)
-				//Create parameters for the m_apduNAck			
-				var NAckParams v_nAckParams1 :={{0, AduReasonCode_billingDetailsAmountRejected_}};
-				var NAckParams v_nAckParams2 :={{1, AduReasonCode_billingDetailsAmountRejected_}};
                  
                 // Wait for negative Ack (if positive Ack or not received set test failure)
 				// Set timer
                  t_step.start(BILLINGDETAILS_TIME1_MAX_TSP);                 
-				
+
 				alt {
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
-						// Log what we received
-						f_logReceivedThenCheckAndStopTime(BILLINGDETAILS_TIME1_MIN_TSP); 
+					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduRespondedTo, AduReasonCode_billingDetailsAmountRejected_)) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						setverdict(pass);
 						}
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
-						// Log what we received
-						f_logReceivedThenCheckAndStopTime(BILLINGDETAILS_TIME1_MIN_TSP); 
+					[] mtcPort.receive(mw_apduNAck_IndividualAdus(v_apduRespondedTo, {{1, AduReasonCode_billingDetailsAmountRejected_}})) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						setverdict(pass);
 						}
 					} // End of Alt statement
                  // Step 1: Send one valid APDU containing one valid BillingDetailsADU with only mandatory fields and with
@@ -3110,7 +3106,7 @@ module EfcInfoExchange_TestCasesTsp {
                  	// paymentFeeAmount = 45
                  // PT140 TODO : mw_aduBillingDetails template and related fields to be defined
 
-				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(
 					{modifies mw_aduBillingDetails:= {
 					  	billingDetailsId := 1, actionCode := ActionCode_adjust_, billingDetailsAmount.paymentFeeAmount := 45
 					  	}
@@ -3121,7 +3117,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Set timer
                  t_step.start(BILLINGDETAILS_TIME1_MAX_TSP);                 
 				alt {
-					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduRespondedTo)) -> value v_apduReceived {
 						// Log what we received
 						f_logReceivedThenCheckAndStopTime(BILLINGDETAILS_TIME1_MIN_TSP); 
 						setverdict(pass);
@@ -3142,7 +3138,7 @@ module EfcInfoExchange_TestCasesTsp {
 
                  // Send one valid APDU containing one valid BillingDetailsADU numbered 1 with only mandatory field
                  // PT140 TODO : mw_aduBillingDetails template and related fields to be defined
-				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(
 					{modifies mw_aduBillingDetails:= {
 					  	billingDetailsId := 1, actionCode := ActionCode_send_, billingDetailsAmount.paymentFeeAmount := 45
 					  	}
@@ -3152,7 +3148,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Set timer
                  t_step.start(BILLINGDETAILS_TIME1_MAX_TSP);                 
 				alt {
-					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduRespondedTo)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(BILLINGDETAILS_TIME1_MIN_TSP); 
 						}
 					} // End of Alt statement
@@ -3161,7 +3157,7 @@ module EfcInfoExchange_TestCasesTsp {
                  	// billingDetailsNum = 1
                  // PT140 TODO : mw_aduBillingDetails template and related fields to be defined
 
-				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(
 					{modifies mw_aduBillingDetails:= {
 					  	billingDetailsId := 1, actionCode := ActionCode_revoke_
 					  	}
@@ -3172,7 +3168,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Set timer
                  t_step.start(BILLINGDETAILS_TIME1_MAX_TSP);                 
 				alt {
-					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduRespondedTo)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(BILLINGDETAILS_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
@@ -3196,7 +3192,7 @@ module EfcInfoExchange_TestCasesTsp {
 
                  //  Send one valid APDU containing one BillingDetailsADU numbered 3 with actionCode = SEND and only mandatory fields
                  // PT140 TODO : mw_aduBillingDetails template to be defined
-				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(
 					{modifies mw_aduBillingDetails:= {
 					  	billingDetailsId := 3, actionCode := ActionCode_send_, billingDetailsAmount.paymentFeeAmount := 50
 					  	}
@@ -3206,7 +3202,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Set timer
                  t_step.start(BILLINGDETAILS_TIME1_MAX_TSP);                 
 				alt {
-					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduRespondedTo)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(BILLINGDETAILS_TIME1_MIN_TSP); 
 						}
 					}  // End of Alt statement
@@ -3214,25 +3210,25 @@ module EfcInfoExchange_TestCasesTsp {
                  // Step 1: Send one valid APDU containing 10  BillingDetailsADUs with actionCode = SEND numbered from 4 to 13, each one with the following parameters respectively set to one incorrect value:
                  	// billingDetailsId.issuerId, tollContext, userId, billingDetailsAmount, usageDetails.contextName, usageDetails.appliedUserClass, usageDetails.perDeclaredVehicleClasses, usageDetails.appliedTimeClass, usageDetails.entranceTime, usageList.ListofSections.chargeObjectId
 				var InfoExchange v_apduRespondedTo :=
-					{m_apduNoSecInit(
+					{m_apduNoAuthInitTester(
 						{modifies mw_aduBillingDetails:= {billingDetailsId := 4, actionCode := ActionCode_send_, billingDetailsId.issuerId := 0}}),
-					m_apduNoSecInit(
+					m_apduNoAuthInitTester(
 						{modifies mw_aduBillingDetails:= {billingDetailsId := 5, actionCode := ActionCode_send_, tollContext := 0}}),	
-					m_apduNoSecInit(
+					m_apduNoAuthInitTester(
 						{modifies mw_aduBillingDetails:= {billingDetailsId := 6, actionCode := ActionCode_send_, userId := omit}}),
-					m_apduNoSecInit(
+					m_apduNoAuthInitTester(
 						{modifies mw_aduBillingDetails:= {billingDetailsId := 7, actionCode := ActionCode_send_, billingDetailsAmount.paymentFeeAmount := -5}}),
-					m_apduNoSecInit(
+					m_apduNoAuthInitTester(
 						{modifies mw_aduBillingDetails:= {billingDetailsId := 8, actionCode := ActionCode_send_, usageDetails.contextName := 42}}),
-					m_apduNoSecInit(
+					m_apduNoAuthInitTester(
 						{modifies mw_aduBillingDetails:= {billingDetailsId := 9, actionCode := ActionCode_send_, usageDetails.appliedUserClass := 0}}),
-					m_apduNoSecInit(
+					m_apduNoAuthInitTester(
 						{modifies mw_aduBillingDetails:= {billingDetailsId := 10, actionCode := ActionCode_send_, usageDetails.perDeclaredVehicleClasses := omit}}),
-					m_apduNoSecInit(
+					m_apduNoAuthInitTester(
 						{modifies mw_aduBillingDetails:= {billingDetailsId := 11, actionCode := ActionCode_send_, usageDetails.appliedTimeClass := 0}}),
-					m_apduNoSecInit(
+					m_apduNoAuthInitTester(
 						{modifies mw_aduBillingDetails:= {billingDetailsId := 12, actionCode := ActionCode_send_, usageDetails.entranceTime := 0}}),
-					m_apduNoSecInit(
+					m_apduNoAuthInitTester(
 						{modifies mw_aduBillingDetails:= {billingDetailsId := 13, actionCode := ActionCode_send_, usageList.ListofSections.chargeObjectId := 0}})
 					};                 
 				f_sendAndLogApdu(v_apduRespondedTo);
@@ -3241,7 +3237,7 @@ module EfcInfoExchange_TestCasesTsp {
                  	// billingDetailsIssuerIdRejected, billingDetailsContextIdRejected, billingDetailsUserIdRejected, billingDetailsAmountRejected, billingDetailsContextNameRejected, billingDetailsAppliedUserClassRejected, billingDetailsDeclaredVehicleClassRejected, billingDetailsAppliedTimeClassRejected, billingDetailsEntranceTimeRejected, billingDetailsIntermediateSectionRejected
 				
 				alt {
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNackIndividualIssues(v_apduRespondedTo)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
 
@@ -3283,7 +3279,7 @@ module EfcInfoExchange_TestCasesTsp {
 
                  //  Send one valid APDU containing one BillingDetailsADU numbered 3 with actionCode = SEND and only mandatory fields
                  // PT140 TODO : mw_aduBillingDetails template to be defined
-				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(
 					{modifies mw_aduBillingDetails:= {
 					  	billingDetailsId := 3, actionCode := ActionCode_send_, billingDetailsAmount.paymentFeeAmount := 50
 					  	}
@@ -3293,7 +3289,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Set timer
                  t_step.start(BILLINGDETAILS_TIME1_MAX_TSP);                 
 				alt {
-					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {					  
+					[] mtcPort.receive(mw_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {					  
 						// Log what we received
 						f_logReceivedThenCheckAndStopTime(BILLINGDETAILS_TIME1_MIN_TSP); 
 						}
@@ -3303,7 +3299,7 @@ module EfcInfoExchange_TestCasesTsp {
                  	// actionCode = adjust
                  	// paymentFeeAmount = 45
                  // PT140 TODO : mw_aduBillingDetails template to be defined
-				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(
 					{modifies mw_aduBillingDetails:= {
 					  	billingDetailsId := 14, actionCode := ActionCode_adjust_, billingDetailsAmount.paymentFeeAmount := 45
 					  	}
@@ -3311,22 +3307,19 @@ module EfcInfoExchange_TestCasesTsp {
 				f_sendAndLogApdu(v_apduRespondedTo);                 
 
                  // Step 2: Wait for negative Ack within DSRC.BILLINGDETAILS.TIME1 identifying the APDU containing the BillingDetailsADU numbered 14 and with issueCode= semanticError 
-				//Create parameters for the m_apduNAck			
-				var NAckParams v_nAckParams1 :={{0, AduReasonCode_semanticError_}};
-				var NAckParams v_nAckParams2 :={{1, AduReasonCode_semanticError_},{2,AduReasonCode_semanticError_}};
-                
                 t_step.start(BILLINGDETAILS_TIME1_MAX_TSP);                 
+
 				alt {
-					// Either Params1 or Params2 Nacks are valid
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(BILLINGDETAILS_TIME1_MIN_TSP); 
+					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduRespondedTo, AduReasonCode_semanticError_)) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
 						setverdict(pass);
 						}
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(BILLINGDETAILS_TIME1_MIN_TSP); 
+					[] mtcPort.receive(mw_apduNAck_IndividualAdus(v_apduRespondedTo, {{1, AduReasonCode_semanticError_}})) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
 						setverdict(pass);
 						}
-					} // End of Alt statement			
+					} // End of Alt statement
+		
 				f_closeDownMtc();  			
                 
                 } // End of TP_TSP_DSRC_BILLINGDETAILS_BI_02
@@ -3342,7 +3335,7 @@ module EfcInfoExchange_TestCasesTsp {
 
                  //  Send one valid APDU containing one BillingDetailsADU numbered 3 with actionCode = SEND and only mandatory fields
                  // PT140 TODO : mw_aduBillingDetails template to be defined
-				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(
 					{modifies mw_aduBillingDetails:= {
 					  	billingDetailsId := 3, actionCode := ActionCode_send_, billingDetailsAmount.paymentFeeAmount := 50
 					  	}
@@ -3352,7 +3345,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Set timer
                  t_step.start(BILLINGDETAILS_TIME1_MAX_TSP);                 
 				alt {
-					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {					  
+					[] mtcPort.receive(mw_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {					  
 						// Log what we received
 						f_logReceivedThenCheckAndStopTime(BILLINGDETAILS_TIME1_MIN_TSP); 
 						}
@@ -3361,7 +3354,7 @@ module EfcInfoExchange_TestCasesTsp {
                  // Step 1: Send one valid APDU containing one valid BillingDetailsADU numbered 14 with only mandatory fields with the following values:
                  	// actionCode = revoke
                  // PT140 TODO : mw_aduBillingDetails template to be defined
-				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(
 					{modifies mw_aduBillingDetails:= {
 					  	billingDetailsId := 14, actionCode := ActionCode_revoke_
 					  	}
@@ -3369,18 +3362,15 @@ module EfcInfoExchange_TestCasesTsp {
 				f_sendAndLogApdu(v_apduRespondedTo);                 
 
                  // Step 2: Wait for negative Ack within DSRC.BILLINGDETAILS.TIME1 identifying the APDU containing the BillingDetailsADU numbered 14 and with issueCode= semanticError 
-				//Create parameters for the m_apduNAck			
-				var NAckParams v_nAckParams1 :={{0, AduReasonCode_semanticError_}};
-				var NAckParams v_nAckParams2 :={{1, AduReasonCode_semanticError_},{2,AduReasonCode_semanticError_}};
+                t_step.start(BILLINGDETAILS_TIME1_MAX_TSP);                 
 
 				alt {
-					// Either Params1 or Params2 Nacks are valid
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(BILLINGDETAILS_TIME1_MIN_TSP); 
+					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduRespondedTo, AduReasonCode_semanticError_)) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
 						setverdict(pass);
 						}
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(BILLINGDETAILS_TIME1_MIN_TSP); 
+					[] mtcPort.receive(mw_apduNAck_IndividualAdus(v_apduRespondedTo, {{1, AduReasonCode_semanticError_}})) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
 						setverdict(pass);
 						}
 					} // End of Alt statement
@@ -3400,7 +3390,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Send one valid DSRC.BILLINGDETAILS numbered 3
                  //  Send one valid APDU containing one BillingDetailsADU numbered 3 with actionCode = SEND and only mandatory fields
                  // PT140 TODO : mw_aduBillingDetails template to be defined
-				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(
 					{modifies mw_aduBillingDetails:= {
 					  	billingDetailsId := 3, actionCode := ActionCode_send_, billingDetailsAmount.paymentFeeAmount := 50
 					  	}
@@ -3412,7 +3402,7 @@ module EfcInfoExchange_TestCasesTsp {
                 // Step 1:
                 // Send one valid DSRC.BILLINGDETAILS numbered 4  before TIME1
                  // PT140 TODO : mw_aduBillingDetails template to be defined
-				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(
 					{modifies mw_aduBillingDetails:= {
 					  	billingDetailsId := 4, actionCode := ActionCode_send_, billingDetailsAmount.paymentFeeAmount := 45
 					  	}
@@ -3424,7 +3414,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Set timer
                  t_step.start(BILLINGDETAILS_TIME1_MAX_TSP);
 				alt {
-					[] mtcPort.receive(m_apduNAckRequestSentTooOften(v_apduRespondedTo)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckRequestSentTooOften(v_apduRespondedTo)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(BILLINGDETAILS_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}

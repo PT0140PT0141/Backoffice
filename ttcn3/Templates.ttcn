@@ -304,7 +304,10 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		 * @desc issues containing one element for each Param set containing {issueADUStruct=aduPosition, 
 		 * @desc issueCode = aduReasonCode }}"
 		 */ 
-
+		template InfoExchange mw_apduNackIndividualIssues(
+			in InfoExchange p_apduToAck
+		):=mw_apduNoAuthRespIut(
+		);
 		//TODO Ulrik finalise this!!!
 
 		/**
