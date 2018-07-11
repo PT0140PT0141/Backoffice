@@ -3822,7 +3822,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Step 1: Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send three valid TollDeclarationADUs with actionCode = send, revoke, and adjust, respectively
 				// PT140 TODO: mw_aduGnssTollDeclaration template to be defined
 				// PT140 TODO: way to set or change amount in the Charge report to be defined
-				var InfoExchange v_apduToBeReceived := m_apduNoSecInit(
+				var InfoExchange v_apduToBeReceived := mw_apduNoAuthInitIut(
 					{modifies mw_aduGnssTollDeclaration:= {	amount := *, actionCode := ActionCode_send_	}},
 					{modifies mw_aduGnssTollDeclaration:= {	actionCode := ActionCode_adjust_, amount := *}},
 					{modifies mw_adGnssTollDeclaration := { actionCode := ActionCode_revoke_}}
