@@ -4043,7 +4043,7 @@ module EfcInfoExchange_TestCasesTsp {
                  	// action code = send
                  	// includedDiscounts in usageList with textDetail field being set according to values specified in Table A.54 of CEN/TS 16986:2016
                  	// PT140 TODO: Correct template to be defined. Using basic BillingDetails template in what follows (to be changed)
-				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(
 					{
 						modifies mw_aduBillingDetails:= {
 						  	billingDetailsId := 1, 
@@ -4058,7 +4058,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Set timer
                  t_step.start(GNSS_BILLINGDETAILS_TC_TIME1_MAX_TC);                 
 				alt {
-					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC);
 						setverdict(pass);
 						}
@@ -4086,7 +4086,7 @@ module EfcInfoExchange_TestCasesTsp {
                  	// action code = send
                  	// CHOICE forSectionedRoads
                   	// PT140 TODO: Correct template to be defined. Using basic BillingDetails template in what follows (to be changed)
-						var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+						var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(
 							{modifies mw_aduBillingDetails:= {
 					  			billingDetailsId := 1, actionCode := ActionCode_send_ }
 							});                 
@@ -4125,7 +4125,7 @@ module EfcInfoExchange_TestCasesTsp {
                  			// action code = send
                  			// CHOICE forTravellingInArea
                   	// PT140 TODO: Correct template to be defined. Using basic BillingDetails template in what follows (to be changed)
-						var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+						var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(
 						{modifies mw_aduBillingDetails:= {
 					  	billingDetailsId := 1, actionCode := ActionCode_send_ }
 						});                 
@@ -4136,7 +4136,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Set timer
                  t_step.start(GNSS_BILLINGDETAILS_TC_TIME1_MAX_TC);                 
 				alt {
-					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC);
 						setverdict(pass);
 						}
@@ -4166,7 +4166,7 @@ module EfcInfoExchange_TestCasesTsp {
                  			// action code = send
                  			// CHOICE forStayingInArea
                   			// PT140 TODO: Correct template to be defined. Using basic BillingDetails template in what follows (to be changed)
-						var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+						var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(
 							{modifies mw_aduBillingDetails:= {
 					  			billingDetailsId := 1, actionCode := ActionCode_send_ }
 							});                 
@@ -4177,7 +4177,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Set timer
                  t_step.start(GNSS_BILLINGDETAILS_TC_TIME1_MAX_TC);                 
 				alt {
-					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC);
 						setverdict(pass);
 						}
@@ -4206,7 +4206,7 @@ module EfcInfoExchange_TestCasesTsp {
                  		// action code = send
                  			// CHOICE forCordonCrossings
                   		// PT140 TODO: Correct template to be defined. Using basic BillingDetails template in what follows (to be changed)
-						var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+						var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(
 							{modifies mw_aduBillingDetails:= {
 					  			billingDetailsId := 1, actionCode := ActionCode_send_ }
 							});                 
@@ -4217,7 +4217,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Set timer
                  t_step.start(GNSS_BILLINGDETAILS_TC_TIME1_MAX_TC);                 
 				alt {
-					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC);
 						setverdict(pass);
 						}
@@ -4246,16 +4246,19 @@ module EfcInfoExchange_TestCasesTsp {
                  		// Step 1: Send one valid APDU containing a number of valid BillingDetailsADU equal to GNSS.BILLINGDETAILS.TSP.PARAM1_MAX, with
                  			// action code = send 
                  			// no optional fields
-                		// Set first element of apdu
-						var InfoExchange v_apduRespondedTo := m_apduNoSecInit({modifies mw_aduBillingDetails:= {billingDetailsId := 1, actionCode := ActionCode_send_ }});                 
-						// PT140 TODO: Is that a correct setting of an APDU with multiple ADUs?				
-						// Set all remaining elements of apdu
-						for (var integer v_ind := 2; v_ind < (GNSS.BILLINGDETAILS_TSP_PARAM1_MAX - 1); v_ind := v_ind + 1){
-								v_apduRespondedTo[v_ind] := m_apduNoSecInit({modifies mw_aduBillingDetails:= {
-					  			billingDetailsId := v_ind, actionCode := ActionCode_send_ }});
+                		// Define record to contain adus
+                		var BillingDetailsADUs v_adusToBeSent;
+						// Set all  elements of apdu
+						for (var integer v_ind := 0; v_ind < (GNSS.BILLINGDETAILS_TSP_PARAM1_MAX - 1); v_ind := v_ind + 1){
+								v_adusToBeSent[v_ind] := modifies m_aduBillingDetails:= {
+					  			billingDetailsId := v_ind,
+					  			actionCode := ActionCode_send_,
+					  			billingDetailsAmount := 10000
+					  			}};
 								continue;
 							}
-						f_sendAndLogApdu(v_apduRespondedTo);                 
+						var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester(v_adusToBeSent);
+						f_sendAndLogApdu(v_apduToBeSent);                 
 						}
 					} // End of first alt statement
 				
@@ -4263,7 +4266,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Set timer
                  t_step.start(GNSS_BILLINGDETAILS_TC_TIME1_MAX_TC);                 
 				alt {
-					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC);
 						setverdict(pass);
 						}
@@ -4292,7 +4295,7 @@ module EfcInfoExchange_TestCasesTsp {
                  			// action code = send
                  			// billingDetailsAmount set to a value (to be modified later)
                  		// PT140 TODO: Correct template to be defined. Using basic BillingDetails template in what follows (to be changed)
-						var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+						var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(
 							{modifies mw_aduBillingDetails:= {
 					  			billingDetailsId := 1, actionCode := ActionCode_send_, billingDetailsAmount := 10000}
 							}
@@ -4304,19 +4307,14 @@ module EfcInfoExchange_TestCasesTsp {
                  // Wait for negative Ack within GNSS_BILLINGDETAILS_TC_TIME1_MAX_TC
 				// Set timer
                  t_step.start(GNSS_BILLINGDETAILS_TC_TIME1_MAX_TC);                 
-				//Create parameters for the m_apduNAck			
-				var NAckParams v_nAckParams1 :={{0, AduReasonCode_billingDetailsAmountRejected_}};
-				var NAckParams v_nAckParams2 :={{1, AduReasonCode_billingDetailsAmountRejected_}};
-
 				alt {
-					// Either Params1 or Params2 Nacks are valid
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC);
-						t_step.stop;
+					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduRespondedTo, AduReasonCode_billingDetailsAmountRejected_)) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						setverdict(pass);
 						}
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC);
-						t_step.stop;
+					[] mtcPort.receive(mw_apduNAck_IndividualAdus(v_apduRespondedTo, {{1, AduReasonCode_billingDetailsAmountRejected_}})) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						setverdict(pass);
 						}
 					} // End of Alt statement
 					
@@ -4328,7 +4326,7 @@ module EfcInfoExchange_TestCasesTsp {
                  	// value of the fee being in an acceptable range
                  // PT140 TODO :  template and related fields to be defined. Provisionally used mw_aduBillingDetails
 
-				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(
 					{modifies mw_aduBillingDetails:= {
 					  	billingDetailsId := 1, actionCode := ActionCode_adjust_, billingDetailsAmount := 45}
 					});                 
@@ -4338,7 +4336,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Set timer
                  t_step.start(GNSS_BILLINGDETAILS_TC_TIME1_MAX_TC);                 
 				alt {
-					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC);
 						setverdict(pass);
 						}
@@ -4371,7 +4369,7 @@ module EfcInfoExchange_TestCasesTsp {
                  	// action code = send
                  	// includedDiscounts in usageList with textDetail field being set according to values specified in Table A.54 of CEN/TS 16986:2016
                  	// PT140 TODO: Correct template to be defined. Using basic BillingDetails template in what follows (to be changed)
-				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(
 					{modifies mw_aduBillingDetails:= 
 						{billingDetailsId := 1, actionCode := ActionCode_send_, billingDetailsAmount := 45 }
 						}
@@ -4381,12 +4379,12 @@ module EfcInfoExchange_TestCasesTsp {
 				// Set timer
                  t_step.start(GNSS_BILLINGDETAILS_TC_TIME1_MAX_TC);                 
 				alt {
-					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC);
 						}
 					} // End of Alt statement 
 				// Revoke the previously sent Billing Details
-				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(
 					{modifies mw_aduBillingDetails:= 
 						{billingDetailsId := 1, actionCode := ActionCode_revoke_ }
 					});                 
@@ -4395,7 +4393,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Set timer
                  t_step.start(GNSS_BILLINGDETAILS_TC_TIME1_MAX_TC);                 
 				alt {
-					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {					  
+					[] mtcPort.receive(mw_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {					  
 						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC);
 						setverdict(pass);
 						}
@@ -4425,25 +4423,25 @@ module EfcInfoExchange_TestCasesTsp {
                  			// billingDetailsId.issuerId, tollContext, userId, Period, billingDetailsAmount, usageDetails.contextName, usageDetails.appliedUserClass, usageDetails.perDeclaredVehicleClasses, usageDetails.appliedTimeClass, usageDetails.entranceTime, usageList.ListofSections.chargeObjectId, exitChargeObject, exitTime
                  		// PT140 TODO: template to be defined. Using mw_aduBillingDetails provisionally.
 						var InfoExchange v_apduRespondedTo :=
-							{m_apduNoSecInit(
+							{m_apduNoAuthInitTester(
 								{modifies mw_aduBillingDetails:= {billingDetailsId := 4, actionCode := ActionCode_send_, billingDetailsId.issuerId := 0}}),
-							m_apduNoSecInit(
+							m_apduNoAuthInitTester(
 								{modifies mw_aduBillingDetails:= {billingDetailsId := 5, actionCode := ActionCode_send_, tollContext := 0}}),	
-							m_apduNoSecInit(
+							m_apduNoAuthInitTester(
 								{modifies mw_aduBillingDetails:= {billingDetailsId := 6, actionCode := ActionCode_send_, userId := omit}}),
-							m_apduNoSecInit(
+							m_apduNoAuthInitTester(
 								{modifies mw_aduBillingDetails:= {billingDetailsId := 7, actionCode := ActionCode_send_, billingDetailsAmount.paymentFeeAmount := -5}}),
-							m_apduNoSecInit(
+							m_apduNoAuthInitTester(
 								{modifies mw_aduBillingDetails:= {billingDetailsId := 8, actionCode := ActionCode_send_, usageDetails.contextName := 42}}),
-							m_apduNoSecInit(
+							m_apduNoAuthInitTester(
 								{modifies mw_aduBillingDetails:= {billingDetailsId := 9, actionCode := ActionCode_send_, usageDetails.appliedUserClass := 0}}),
-							m_apduNoSecInit(
+							m_apduNoAuthInitTester(
 								{modifies mw_aduBillingDetails:= {billingDetailsId := 10, actionCode := ActionCode_send_, usageDetails.perDeclaredVehicleClasses := omit}}),
-							m_apduNoSecInit(
+							m_apduNoAuthInitTester(
 								{modifies mw_aduBillingDetails:= {billingDetailsId := 11, actionCode := ActionCode_send_, usageDetails.appliedTimeClass := 0}}),
-							m_apduNoSecInit(
+							m_apduNoAuthInitTester(
 								{modifies mw_aduBillingDetails:= {billingDetailsId := 12, actionCode := ActionCode_send_, usageDetails.entranceTime := 0}}),
-							m_apduNoSecInit(
+							m_apduNoAuthInitTester(
 								{modifies mw_aduBillingDetails:= {billingDetailsId := 13, actionCode := ActionCode_send_, usageList.ListofSections.chargeObjectId := 0}})
 							};                 
 						f_sendAndLogApdu(v_apduRespondedTo);						
@@ -4456,7 +4454,7 @@ module EfcInfoExchange_TestCasesTsp {
                 t_step.start(GNSS_BILLINGDETAILS_TC_TIME1_MAX_TC);                 
   				
 				alt {
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNackIndividualIssues(v_apduRespondedTo)) -> value v_apduReceived {
 						// Log what we received
 						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC);
 						// Check the issue list presence and contents
@@ -4503,28 +4501,23 @@ module EfcInfoExchange_TestCasesTsp {
 				} // End of first alt statement
 
                  // PT140 TODO : mw_aduBillingDetails template to be defined
-				var InfoExchange v_apduRespondedTo := m_apduNoSecInit({modifies mw_aduBillingDetails:= {billingDetailsId := 14, actionCode := ActionCode_adjust_, paymentFeeAmount := 45}});                 
+				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester({modifies mw_aduBillingDetails:= {billingDetailsId := 14, actionCode := ActionCode_adjust_, paymentFeeAmount := 45}});                 
 				f_sendAndLogApdu(v_apduRespondedTo);                 
 
                  // Step 2: Wait for negative Ack within DSRC_BILLINGDETAILS.TIME1 identifying the APDU containing the BillingDetailsADU numbered 14 and with issueCode= semanticError 
-				//Create parameters for the m_apduNAck			
-				var NAckParams v_nAckParams1 :={{0, AduReasonCode_semanticError_}};
-				var NAckParams v_nAckParams2 :={{1, AduReasonCode_semanticError_},{2,AduReasonCode_semanticError_}};
 				// Set timer
                 t_step.start(GNSS_BILLINGDETAILS_TC_TIME1_MAX_TC);                 
 
 				alt {
-					// Either Params1 or Params2 Nacks are valid
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC);
+					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduRespondedTo, AduReasonCode_semanticError_)) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
 						setverdict(pass);
 						}
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
-						f_logApduReceivedAndTStep();
-						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC);
+					[] mtcPort.receive(mw_apduNAck_IndividualAdus(v_apduRespondedTo, {{1, AduReasonCode_semanticError_}})) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
 						setverdict(pass);
 						}
-					} // End of Alt statement				
+					} // End of Alt statement
 				f_closeDownMtc();  			
                 
            	} // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BI_02           
@@ -4550,7 +4543,7 @@ module EfcInfoExchange_TestCasesTsp {
 					} // End of first alt statement
 
                  // PT140 TODO : mw_aduBillingDetails template to be defined
-				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(
 					{modifies mw_aduBillingDetails:= {
 					  	billingDetailsId := 14, actionCode := ActionCode_revoke_
 					  	}
@@ -4558,22 +4551,19 @@ module EfcInfoExchange_TestCasesTsp {
 				f_sendAndLogApdu(v_apduRespondedTo);                 
 
                  // Step 2: Wait for negative Ack within GNSS_BILLINGDETAILS_TC_TIME1_MAX_TC identifying the APDU containing the BillingDetailsADU numbered 14 and with issueCode= semanticError 
-				//Create parameters for the m_apduNAck			
-				var NAckParams v_nAckParams1 :={{0, AduReasonCode_semanticError_}};
-				var NAckParams v_nAckParams2 :={{1, AduReasonCode_semanticError_},{2,AduReasonCode_semanticError_}};
 				// Set timer
                 t_step.start(GNSS_BILLINGDETAILS_TC_TIME1_MAX_TC);                 
+
 				alt {
-					// Either Params1 or Params2 Nacks are valid
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC);
+					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduRespondedTo, AduReasonCode_semanticError_)) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
 						setverdict(pass);
 						}
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC);
+					[] mtcPort.receive(mw_apduNAck_IndividualAdus(v_apduRespondedTo, {{1, AduReasonCode_semanticError_}})) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
 						setverdict(pass);
 						}
-					} // End of Alt statement			
+					} // End of Alt statement
 				f_closeDownMtc();  
                 
                 } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BI_03           
@@ -4602,7 +4592,7 @@ module EfcInfoExchange_TestCasesTsp {
 					} // End of first alt statement
 
                  // PT140 TODO : mw_aduBillingDetails template to be defined
-				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(
 					{modifies mw_aduBillingDetails:= {
 					  	billingDetailsId := 1, actionCode := ActionCode_send_
 					  	}
@@ -4612,7 +4602,7 @@ module EfcInfoExchange_TestCasesTsp {
                 // Step 1:
                 // Send one valid DSRC.BILLINGDETAILS numbered 4 without waiting
                  // PT140 TODO : mw_aduBillingDetails template to be defined
-				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(
 					{modifies mw_aduBillingDetails:= {
 					  	billingDetailsId := 4, actionCode := ActionCode_send_
 					  	}
@@ -4624,7 +4614,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Set timer
                  t_step.start(GNSS_BILLINGDETAILS_TC_TIME1_MAX_TC);
 				alt {
-					[] mtcPort.receive(m_apduNAck_requestSentTooOften(v_apduRespondedTo)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckRequestSentTooOften(v_apduRespondedTo)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC);
 						setverdict(pass);
 						}
