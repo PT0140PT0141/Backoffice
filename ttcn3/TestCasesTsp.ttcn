@@ -2554,7 +2554,7 @@ module EfcInfoExchange_TestCasesTsp {
 
 				//  Wait for apdu containing CONTRACISSUERLIST for three different manufacturers
                  // PT140 TODO : mw_aduContractIssuerList template to be defined
-				var template InfoExchange v_apduToBeReceived := mw_apduNoSecInitIut({
+				var template InfoExchange v_apduToBeReceived := m_apduNoAuthInitTester({
 					{modifies mw_aduContractIssuerList:= {manufacturerIdId := MANUFACTURERID1}},
 					{modifies mw_aduContractIssuerList:= {manufacturerIdId := MANUFACTURERID2}},
 					{modifies mw_aduContractIssuerList:= {manufacturerIdId := MANUFACTURERID3}}
