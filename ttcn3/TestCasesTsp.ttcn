@@ -3441,7 +3441,7 @@ module EfcInfoExchange_TestCasesTsp {
 
                 // Send one valid DSRC.REPORTABNORMALOBE
                  // PT140 TODO : mw_aduReportAbnormalOBE template to be defined
-				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(
 					{modifies mw_aduReportAbnormalOBE:= {
 					  	userId := EXISTING_USER_ID,
 					  	dateAndTime := now,
@@ -3453,7 +3453,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Set timer
                  t_step.start(DSRC_REPORTABNORMALOBE_TIME1_MAX_TSP);                 
 				alt {
-					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(DSRC_REPORTABNORMALOBE_MIN_TSP); 
 						setverdict(pass);
 						}
@@ -3477,7 +3477,7 @@ module EfcInfoExchange_TestCasesTsp {
 
                 // Send one  DSRC.REPORTABNORMALOBE with userId field missing
                 // PT140 TODO : mw_aduReportAbnormalOBE template to be defined
-				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(
 					{modifies mw_aduReportAbnormalOBE:= {
 					  	userId := omit,
 					  	dateAndTime := now,
@@ -3489,21 +3489,17 @@ module EfcInfoExchange_TestCasesTsp {
 				// Set timer
                  t_step.start(DSRC_REPORTABNORMALOBE_TIME1_MAX_TSP);                 
               	// Wait for negative Ack with issueCode = semanticError (if positive Ack or not received set test failure)                	
-				//Create parameters for the m_apduNAck			
-				var NAckParams v_nAckParams1 :={{0, AduReasonCode_semanticError_}};
-				var NAckParams v_nAckParams2 :={{1, AduReasonCode_semanticError_},{2,AduReasonCode_semanticError_}};
 
 				alt {
-					// Either Params1 or Params2 Nacks are valid
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(DSRC_REPORTABNORMALOBE_MIN_TSP); 
+					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduRespondedTo, AduReasonCode_semanticError_)) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
 						setverdict(pass);
 						}
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(DSRC_REPORTABNORMALOBE_MIN_TSP); 
+					[] mtcPort.receive(mw_apduNAck_IndividualAdus(v_apduRespondedTo, {{1, AduReasonCode_semanticError_}})) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
 						setverdict(pass);
 						}
-					} // End of Alt statement				
+					} // End of Alt statement
 				f_closeDownMtc();  			
                 
            	} // End of TP_TSP_DSRC_REPORTABNORMALOBE_BI_01
@@ -3521,13 +3517,13 @@ module EfcInfoExchange_TestCasesTsp {
 
                 // PT140 TODO : mw_aduReportAbnormalOBE template to be defined
 				var InfoExchange v_apduRespondedTo := {
-					m_apduNoSecInit({modifies mw_aduReportAbnormalOBE:= {
+					m_apduNoAuthInitTester({modifies mw_aduReportAbnormalOBE:= {
 					  		userId := omit,
 					  		dateAndTime := now,
 					  		abnormalOBEReasonCode := AbnormalOBEReasonCode_reasonNotToBeDisclosed_
 					  		}
 						}),
-					m_apduNoSecInit({modifies mw_aduReportAbnormalOBE:= {
+					m_apduNoAuthInitTester({modifies mw_aduReportAbnormalOBE:= {
 					  		userId := WRONG_USER_ID,
 					  		dateAndTime := now,
 					  		abnormalOBEReasonCode := AbnormalOBEReasonCode_reasonNotToBeDisclosed_
@@ -3541,31 +3537,19 @@ module EfcInfoExchange_TestCasesTsp {
               	// Wait for negative Ack with the following issues:
               			// 1, invalidADU (0)
               			// 2, abnormalObeUserIdRejected
-              			                	
-				//Create parameters for the m_apduNAck			
-				var NAckParams v_nAckParams1 :={{0, AduReasonCode_invalidADU_}}
-				var NAckParams v_nAckParams2 :={{1, AduReasonCode_invalidADU_},{2,AduReasonCode_abnormalObeUserIdRejected_}}
-
 				alt {
-					// Either Params1 or Params2 Nacks are valid
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
-						// Log what we received
-						f_logReceivedThenCheckAndStopTime(DSRC_REPORTABNORMALOBE_MIN_TSP); 
+					[] mtcPort.receive(mw_apduNAck_IndividualAdus(v_apduRespondedTo, {{1, AduReasonCode_invalidADU_},{2, AduReasonCode_abnormalObeUserIdRejected_}})) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
 						setverdict(pass);
 						}
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
-						// Log what we received
-						f_logReceivedThenCheckAndStopTime(DSRC_REPORTABNORMALOBE_MIN_TSP); 
-						setverdict(pass);
-						}
-					} // End of alt statement				
+					} // End of Alt statement
                	
                	f_closeDownMtc();  			
                 } // End of TP_TSP_DSRC_REPORTABNORMALOBE_BI_02
 
            testcase TP_TSP_DSRC_REPORTABNORMALOBE_BI_03() runs on MainTestComponent system TestAdapter {
                   /**
-                  * @desc    TP_TSP_DSRC_REPORTABNORMALOBE_BI_03: Verify that the TSP correctly responds to an APDU containing one ReportAbnormalOBEADU with no dateAndTime field 
+                  * @desc    TP_TSP_DSRC_REPORTABNORMALOBE_BI_03: Verify that the TSP correctly responds to an APDU containing one ReportAbnormalOBEADU with invalid dateAndTime field 
                   * @remark  [16986:2016], Clause 7.4 and Table A.1/2 AND Table A.2/1 AND Table A.26/4
                   */
                  // Initialisation 
@@ -3575,9 +3559,9 @@ module EfcInfoExchange_TestCasesTsp {
                 // Send one  DSRC.REPORTABNORMALOBE with dateAndTime field missing
                 // PT140 TODO : mw_aduReportAbnormalOBE template to be defined
 				var InfoExchange v_apduRespondedTo := {
-					m_apduNoSecInit({modifies mw_aduReportAbnormalOBE:= {
+					m_apduNoAuthInitTester({modifies mw_aduReportAbnormalOBE:= {
 					  	userId := EXISTING_USER_ID,
-					  	dateAndTime := omit,
+					  	dateAndTime := fx_getUtc() + 1000,
 					  	abnormalOBEReasonCode := AbnormalOBEReasonCode_reasonNotToBeDisclosed_
 					  	}
 					})	
@@ -3586,87 +3570,25 @@ module EfcInfoExchange_TestCasesTsp {
 
 				// Set timer
                  t_step.start(DSRC_REPORTABNORMALOBE_TIME1_MAX_TSP);                 
-              	// Wait for negative Ack with issueCode = semanticError (if positive Ack or not received set test failure)                	
-              			                	
-				//Create parameters for the m_apduNAck			
-				var NAckParams v_nAckParams1 :={{0, AduReasonCode_semanticError_}};
-				var NAckParams v_nAckParams2 :={{1, AduReasonCode_semanticError_},{2,AduReasonCode_semanticError_}};
+              	// Wait for negative Ack with issueCode = semanticError (if positive Ack or not received set test failure)             	
 
 				alt {
-					// Either Params1 or Params2 Nacks are valid
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
-						// Log what we received
-						f_logReceivedThenCheckAndStopTime(DSRC_REPORTABNORMALOBE_MIN_TSP); 
+					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduRespondedTo, AduReasonCode_abnormalObeDateAndTimeRejected_)) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
 						setverdict(pass);
 						}
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
-						// Log what we received
-						f_logReceivedThenCheckAndStopTime(DSRC_REPORTABNORMALOBE_MIN_TSP); 
+					[] mtcPort.receive(mw_apduNAck_IndividualAdus(v_apduRespondedTo, {{1, AduReasonCode_abnormalObeDateAndTimeRejected_}})) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
 						setverdict(pass);
 						}
-					} //End of alt statement				
+					} // End of Alt statement
                	
                	f_closeDownMtc();  
                                 
                 } // End of TP_TSP_DSRC_REPORTABNORMALOBE_BI_03
 
+
            testcase TP_TSP_DSRC_REPORTABNORMALOBE_BI_04() runs on MainTestComponent system TestAdapter {
-                  /**
-                  * @desc    TP_TSP_DSRC_REPORTABNORMALOBE_BI_04: Verify that the TSP correctly responds to an APDU containing ReportAbnormalOBEADU with no value or invalid values in field dateAndTime 
-                  * @remark  [16986:2016], Clause 7.4 and Table A.1/2 AND Table A.2/1 AND Table A.26/4
-                  */
-                 // Initialisation 
-				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_4_implementedDSRCREPORTABNORMALOBE;
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
-                // Step 1:
-                	// Send one  APDU containg 2 ReportAbnormalOBEADUs, first one with dateAndTime missing and second one with dateAndTime set to a future value
-
-                // PT140 TODO : mw_aduReportAbnormalOBE template to be defined
-				var InfoExchange v_apduRespondedTo := {
-					m_apduNoSecInit({modifies mw_aduReportAbnormalOBE:= {
-					  		userId := EXISTING_USER_ID,
-					  		dateAndTime := omit,
-					  		abnormalOBEReasonCode := AbnormalOBEReasonCode_reasonNotToBeDisclosed_
-					  		}
-						}),
-					m_apduNoSecInit({modifies mw_aduReportAbnormalOBE:= {
-					  		userId := EXISTING_USER_ID,
-					  		dateAndTime := fx_getUtc() + 1000,
-					  		abnormalOBEReasonCode := AbnormalOBEReasonCode_reasonNotToBeDisclosed_
-					  		}
-						})	
-           			};                 
-				f_sendAndLogApdu(v_apduRespondedTo);                 
-
-				// Set timer
-                 t_step.start(DSRC_REPORTABNORMALOBE_TIME1_MAX_TSP);                 
-              		// Wait for negative Ack with the following issues:
-              			// 1, invalidADU (0)
-              			// 2, abnormalObeDateAndTimeRejected
-              			                	
-				//Create parameters for the m_apduNAck			
-				var NAckParams v_nAckParams1 :={{0, AduReasonCode_invalidADU_}}
-				var NAckParams v_nAckParams2 :={{1, AduReasonCode_invalidADU_},{2,abnormalObeDateAndTimeRejected_}}
-
-				alt {
-					// Either Params1 or Params2 Nacks are valid
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
-						// Log what we received
-						f_logReceivedThenCheckAndStopTime(DSRC_REPORTABNORMALOBE_MIN_TSP); 
-						setverdict(pass);
-						}
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
-						// Log what we received
-						f_logReceivedThenCheckAndStopTime(DSRC_REPORTABNORMALOBE_MIN_TSP); 
-						setverdict(pass);
-						}
-					} // End of alt statement				
-               	
-               	f_closeDownMtc(); 
-                
-                } // End of TP_TSP_DSRC_REPORTABNORMALOBE_BI_04
-
-           testcase TP_TSP_DSRC_REPORTABNORMALOBE_BI_05() runs on MainTestComponent system TestAdapter {
                   /**
                   * @desc    TP_TSP_DSRC_REPORTABNORMALOBE_BI_05: Verify that the TSP correctly responds to an APDU containing one ReportAbnormalOBEADU with no efcContextMark field 
                   * @remark  [16986:2016], Clause 7.4 and Table A.1/2 AND Table A.2/1 AND Table A.26/4
@@ -3678,7 +3600,7 @@ module EfcInfoExchange_TestCasesTsp {
                 // Send one  DSRC.REPORTABNORMALOBE with efcContextMark field missing
                 // PT140 TODO : mw_aduReportAbnormalOBE template to be defined
 				var InfoExchange v_apduRespondedTo := {
-					m_apduNoSecInit({modifies mw_aduReportAbnormalOBE:= {					  	
+					m_apduNoAuthInitTester({modifies mw_aduReportAbnormalOBE:= {					  	
 					  	userId := EXISTING_USER_ID,
 					  	efcContextMark := omit,
 					  	dateAndTime := now,
@@ -3691,32 +3613,24 @@ module EfcInfoExchange_TestCasesTsp {
 				// Set timer
                  t_step.start(DSRC_REPORTABNORMALOBE_TIME1_MAX_TSP);                 
               	
-              	// Wait for negative Ack with issueCode = semanticError (if positive Ack or not received set test failure)                	              			                	
-				//Create parameters for the m_apduNAck			
-				var NAckParams v_nAckParams1 :={{0, AduReasonCode_semanticError_}};
-				var NAckParams v_nAckParams2 :={{1, AduReasonCode_semanticError_}};
-
 				alt {
-					// Either Params1 or Params2 Nacks are valid
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
-						// Log what we received
-						f_logReceivedThenCheckAndStopTime(DSRC_REPORTABNORMALOBE_MIN_TSP); 
+					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduRespondedTo, AduReasonCode_invalidADU_)) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
 						setverdict(pass);
 						}
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
-						// Log what we received
-						f_logReceivedThenCheckAndStopTime(DSRC_REPORTABNORMALOBE_MIN_TSP); 
+					[] mtcPort.receive(mw_apduNAck_IndividualAdus(v_apduRespondedTo, {{1, AduReasonCode_invalidADU_}})) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
 						setverdict(pass);
 						}
-					}	// End of alt statement			
+					} // End of Alt statement
                	
                	f_closeDownMtc();
                 
-                } // End of TP_TSP_DSRC_REPORTABNORMALOBE_BI_05
+                } // End of TP_TSP_DSRC_REPORTABNORMALOBE_BI_04
 
-           testcase TP_TSP_DSRC_REPORTABNORMALOBE_BI_06() runs on MainTestComponent system TestAdapter {
+           testcase TP_TSP_DSRC_REPORTABNORMALOBE_BI_05() runs on MainTestComponent system TestAdapter {
                   /**
-                  * @desc    TP_TSP_DSRC_REPORTABNORMALOBE_BI_06: Verify that the TSP correctly responds to an APDU containing one ReportAbnormalOBEADU with no value or invalid values in the field efcContextMark 
+                  * @desc    TP_TSP_DSRC_REPORTABNORMALOBE_BI_05: Verify that the TSP correctly responds to an APDU containing one ReportAbnormalOBEADU with invalid values in the field efcContextMark 
                   * @remark  [16986:2016], Clause 7.4 and Table A.1/2 AND Table A.2/1 AND Table A.26/4
                   */
                  // Initialisation 
@@ -3727,17 +3641,10 @@ module EfcInfoExchange_TestCasesTsp {
 
                 // PT140 TODO : mw_aduReportAbnormalOBE template to be defined
 				var InfoExchange v_apduRespondedTo := {
-					m_apduNoSecInit({modifies mw_aduReportAbnormalOBE:= {
-					  	userId := EXISTING_USER_ID,
-					  	efcContextMark := omit,
-					  	dateAndTime := now,
-					  	abnormalOBEReasonCode := AbnormalOBEReasonCode_reasonNotToBeDisclosed_
-					  	}
-					}),
-					m_apduNoSecInit({modifies mw_aduReportAbnormalOBE:= {
+					m_apduNoAuthInitTester({modifies mw_aduReportAbnormalOBE:= {
 					  	userId := EXISTING_USER_ID,
 					  	efcContextMark := 0,
-					  	dateAndTime := fx_getUtc() + 1,
+					  	dateAndTime := now,
 					  	abnormalOBEReasonCode := AbnormalOBEReasonCode_reasonNotToBeDisclosed_
 					  	}
 					})	
@@ -3748,32 +3655,23 @@ module EfcInfoExchange_TestCasesTsp {
                  t_step.start(DSRC_REPORTABNORMALOBE_TIME1_MAX_TSP);                 
               	// Step 2:
               		// Wait for negative Ack with the following issues:
-              			// 1, invalidADU (0)
-              			// 2, abnormalObeDateAndTimeRejected
-              			                	
-				//Create parameters for the m_apduNAck			
-				var NAckParams v_nAckParams1 :={{0, AduReasonCode_invalidADU_}}
-				var NAckParams v_nAckParams2 :={{1, AduReasonCode_semanticError_},{2,AduReasonCode_semanticError_}}
-
+              			// 1, AduReasonCode_semanticError
 				alt {
-					// Either Params1 or Params2 Nacks are valid
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
-						// Log what we received
-						f_logReceivedThenCheckAndStopTime(DSRC_REPORTABNORMALOBE_MIN_TSP); 
+					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduRespondedTo, AduReasonCode_semanticError_)) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
 						setverdict(pass);
 						}
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
-						// Log what we received
-						f_logReceivedThenCheckAndStopTime(DSRC_REPORTABNORMALOBE_MIN_TSP); 
+					[] mtcPort.receive(mw_apduNAck_IndividualAdus(v_apduRespondedTo, {{1, AduReasonCode_semanticError_}})) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
 						setverdict(pass);
 						}
-					}	// End of alt statement		
+					} // End of Alt statement
                	
                	f_closeDownMtc(); 
                 
-                } // End of TP_TSP_DSRC_REPORTABNORMALOBE_BI_06
+                } // End of TP_TSP_DSRC_REPORTABNORMALOBE_BI_05
 
-           testcase TP_TSP_DSRC_REPORTABNORMALOBE_BI_07() runs on MainTestComponent system TestAdapter {
+           testcase TP_TSP_DSRC_REPORTABNORMALOBE_BI_06() runs on MainTestComponent system TestAdapter {
                   /**
                   * @desc    TP_TSP_DSRC_REPORTABNORMALOBE_BI_07: Verify that the TSP correctly responds to an APDU containing ReportAbnormalOBEADU not containing the abnormalOBEReason field 
                   * @remark  [16986:2016], Clause 7.4 and Table A.1/2 AND Table A.2/1 AND Table A.26/4
@@ -3785,7 +3683,7 @@ module EfcInfoExchange_TestCasesTsp {
                 	// Send one  DSRC.REPORTABNORMALOBE with abnormalOBEReason field missing
                 // PT140 TODO : mw_aduReportAbnormalOBE template to be defined
 				var InfoExchange v_apduRespondedTo := {
-					m_apduNoSecInit({modifies mw_aduReportAbnormalOBE:= {					  	
+					m_apduNoAuthInitTester({modifies mw_aduReportAbnormalOBE:= {					  	
 					  		userId := EXISTING_USER_ID,
 					  		dateAndTime := now,
 					  		abnormalOBEReasonCode := omit
@@ -3797,29 +3695,24 @@ module EfcInfoExchange_TestCasesTsp {
 				// Set timer
                  t_step.start(DSRC_REPORTABNORMALOBE_TIME1_MAX_TSP);                 
               	
-              	// Wait for negative Ack with issueCode = semanticError (if positive Ack or not received set test failure)                	
+              	// Wait for negative Ack with issueCode = invalidADU (if positive Ack or not received set test failure)                	
               			                	
-				//Create parameters for the m_apduNAck			
-				var NAckParams v_nAckParams1 :={{0, AduReasonCode_semanticError_}};
-				var NAckParams v_nAckParams2 :={{1, AduReasonCode_semanticError_}};
-
 				alt {
-					// Either Params1 or Params2 Nacks are valid
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(DSRC_REPORTABNORMALOBE_MIN_TSP); 
+					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduRespondedTo, AduReasonCode_invalidADU_)) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
 						setverdict(pass);
 						}
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(DSRC_REPORTABNORMALOBE_MIN_TSP); 
+					[] mtcPort.receive(mw_apduNAck_IndividualAdus(v_apduRespondedTo, {{1, AduReasonCode_invalidADU_}})) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
 						setverdict(pass);
 						}
-					}	// End of alt statement			
+					} // End of Alt statement
                	
                	f_closeDownMtc();
                 
-                } // End of TP_TSP_DSRC_REPORTABNORMALOBE_BI_07
+                } // End of TP_TSP_DSRC_REPORTABNORMALOBE_BI_06
 
-           testcase TP_TSP_DSRC_REPORTABNORMALOBE_BI_08() runs on MainTestComponent system TestAdapter {
+           testcase TP_TSP_DSRC_REPORTABNORMALOBE_BI_07() runs on MainTestComponent system TestAdapter {
                   /**
                   * @desc    TP_TSP_DSRC_REPORTABNORMALOBE_BI_08: Verify that the TSP correctly responds to an APDU containing one ReportAbnormalOBEADU with no value or invalid values in the field abnormalOBEReason 
                   * @remark  [16986:2016], Clause 7.4 and Table A.1/2 AND Table A.2/1 AND Table A.26/4
@@ -3832,12 +3725,12 @@ module EfcInfoExchange_TestCasesTsp {
 
                 // PT140 TODO : mw_aduReportAbnormalOBE template to be defined
 				var InfoExchange v_apduRespondedTo := {
-					m_apduNoSecInit(modifies mw_aduReportAbnormalOBE:= {
+					m_apduNoAuthInitTester(modifies mw_aduReportAbnormalOBE:= {
 					  	userId := EXISTING_USER_ID,
 					  	dateAndTime := now,
 					  	abnormalOBEReasonCode := omit
 						}),
-					m_apduNoSecInit(modifies mw_aduReportAbnormalOBE:= {
+					m_apduNoAuthInitTester(modifies mw_aduReportAbnormalOBE:= {
 					  	userId := EXISTING_USER_ID,
 					  	dateAndTime := now,
 					  	abnormalOBEReasonCode := 700
@@ -3851,26 +3744,20 @@ module EfcInfoExchange_TestCasesTsp {
               	// Step 2:
               		// Wait for negative Ack with the following issues:
               			// 1, invalidADU (0)
-              			// 2, abnormalObeReasonCodeRejected              			                	
-				//Create parameters for the m_apduNAck			
-				var NAckParams v_nAckParams1 :={{0, AduReasonCode_invalidADU_}};
-				var NAckParams v_nAckParams2 :={{1, abnormalObeReasonCodeRejected},{2,abnormalObeReasonCodeRejected}};
-
+              			// 2, abnormalObeReasonCodeRejected
+              			                	
 				alt {
-					// Either Params1 or Params2 Nacks are valid
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(DSRC_REPORTABNORMALOBE_MIN_TSP); 
+					[] mtcPort.receive(mw_apduNAck_IndividualAdus(v_apduRespondedTo, {{1, AduReasonCode_invalidADU_},{2, abnormalObeReasonCodeRejected}})) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
 						setverdict(pass);
 						}
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(DSRC_REPORTABNORMALOBE_MIN_TSP); 
-						setverdict(pass);
-						}
-					}	// End of alt statement	               	
-               	f_closeDownMtc();             
-                } // End of TP_TSP_DSRC_REPORTABNORMALOBE_BI_08
+					} // End of Alt statement
+               	
+               	f_closeDownMtc();
+            
+                } // End of TP_TSP_DSRC_REPORTABNORMALOBE_BI_07
                
-			testcase TP_TSP_DSRC_REPORTABNORMALOBE_BI_09() runs on MainTestComponent system TestAdapter {
+			testcase TP_TSP_DSRC_REPORTABNORMALOBE_BI_08() runs on MainTestComponent system TestAdapter {
                  /**
                   * @desc    TP_TSP_DSRC_REPORTABNORMALOBE_BI_09: Verify that the TSP responds correctly to a ReportAbnormalOBEADU sent earlier than allowed 
                   * @remark  [16986:2016], Clause 7.4 and Table A.1/2 AND Table A.2/1 AND Table A.26/4
@@ -3880,7 +3767,7 @@ module EfcInfoExchange_TestCasesTsp {
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
                 // Send one valid DSRC_REPORTBILLINGDETAILS
                  // PT140 TODO : mw_aduReportAbnormalOBE template to be defined
-				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(
 					{modifies mw_aduReportAbnormalOBE:= {
 					  	userId := EXISTING_USER_ID,
 					  	dateAndTime := now,
@@ -3893,7 +3780,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Do not wait for positive Ack
                 // Send one one  APDU containg one valid ReportAbnormalOBEADU before TIMEA_MIN
                  // PT140 TODO : mw_aduReportAbnormalOBE template to be defined
-				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(
 					{modifies mw_aduReportAbnormalOBE:= {
 					  	userId := EXISTING_USER_ID,
 					  	dateAndTime := now,
@@ -3909,14 +3796,14 @@ module EfcInfoExchange_TestCasesTsp {
 				// timeout expiration is handled in the altstep branch
 
 				alt {
-					[] mtcPort.receive(m_apduNAck_requestSentTooOften(v_apduRespondedTo)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAck_requestSentTooOften(v_apduRespondedTo)) -> value v_apduReceived {
 						// Log what we received
 						f_logReceivedThenCheckAndStopTime(DSRC_REPORTABNORMALOBE_MIN_TSP); 
 						setverdict(pass);
 						}
                 	} // End of alt statement               
                 f_closeDownMtc(); 					
-				} // End of  TP_TSP_DSRC_REPORTABNORMALOBE_BI_09             		
+				} // End of  TP_TSP_DSRC_REPORTABNORMALOBE_BI_08             		
 			
 		} // End of group Invalid_Behaviour 
 	} // End of group DSRC_REPORTABNORMALOBE
