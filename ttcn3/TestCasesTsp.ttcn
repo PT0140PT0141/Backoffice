@@ -2600,7 +2600,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// set tester tolling domain characteristics
 				var Iso17575_3AduBody v_contextData;
 				f_setDsrcContextData(v_contextData);				
-				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(
 					{ 
 						modifies mw_aduDsrcEfcContextData := {
 						  	iso175753ADU := v_contextData,
@@ -2612,7 +2612,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Set timer
                  t_step.start(DSRC_EFCCONTEXTDATA_TIME1_MAX_TSP);                 
 				alt {
-					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {					  
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduRespondedTo)) -> value v_apduReceived {					  
 						// Log what we received
 						f_logReceivedThenCheckAndStopTime(DSRC_EFCCONTEXTDATA_TIME1_MIN_TSP); 
 						setverdict(pass);
@@ -2639,7 +2639,7 @@ module EfcInfoExchange_TestCasesTsp {
                  	// feeModifiers set to null
 
 					// Only tollContextOverview in ClosedContextDefinition set to a valid value
-				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(
 					{modifies mw_aduDsrcClosedContextEfcContextData := {
 					  	closedContext.closedSystem.tollContextOverview := tollContextOverviewTESTER_VALUE,
 					  	feeModifiers := omit
@@ -2650,7 +2650,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Set timer
                  t_step.start(DSRC_EFCCONTEXTDATA_TIME1_MAX_TSP);                 
 				alt {
-					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {					  
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduRespondedTo)) -> value v_apduReceived {					  
 						// Log what we received
 						f_logReceivedThenCheckAndStopTime(DSRC_EFCCONTEXTDATA_TIME1_MIN_TSP); 
 						setverdict(pass);
@@ -2677,13 +2677,13 @@ module EfcInfoExchange_TestCasesTsp {
                  	// domainType = dsrcClosedContext 
                  	// dsrcClosedContext with valid values and feeModifiers set to null
                  	// closedSystem with tariffClassDefinition = {valid contents} and all other fields set to null
-				var InfoExchange v_apduForSending := m_apduNoSecInit({m_aduEfcContextDataDsrcClosedContextTariffClassDefinition});                 
+				var InfoExchange v_apduForSending := m_apduNoAuthInitTester({m_aduEfcContextDataDsrcClosedContextTariffClassDefinition});                 
 				f_sendAndLogApdu(v_apduForSending);                 
                  // Step 2: Wait for positive Ack within DSRC.EFCCONTEXTDATA.TIME1
 				// Set timer
                  t_step.start(DSRC_EFCCONTEXTDATA_TIME1_MAX_TSP);                 
 				alt {
-					[] mtcPort.receive(m_apduDefaultAck(v_apduForSending)) -> value v_apduReceived {					  
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received
 						f_logReceivedThenCheckAndStopTime(DSRC_EFCCONTEXTDATA_TIME1_MIN_TSP); 
 						setverdict(pass);
@@ -2710,13 +2710,13 @@ module EfcInfoExchange_TestCasesTsp {
                 // domainType = dsrcClosedContext 
                 // dsrcClosedContext with valid values and feeModifiers set to null
                 // closedSystem with localVehicleClassDefinition  = {valid contents} and all other fields set to null
-				var InfoExchange v_apduForSending := m_apduNoSecInit({m_aduEfcContextDataDsrcClosedContextLocVehClass});                
+				var InfoExchange v_apduForSending := m_apduNoAuthInitTester({m_aduEfcContextDataDsrcClosedContextLocVehClass});                
 				f_sendAndLogApdu(v_apduForSending);                 
                  // Step 2: Wait for positive Ack within DSRC.EFCCONTEXTDATA.TIME1
 				// Set timer
                  t_step.start(DSRC_EFCCONTEXTDATA_TIME1_MAX_TSP);                 
 				alt {
-					[] mtcPort.receive(m_apduDefaultAck(v_apduForSending)) -> value v_apduReceived {					  
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received
 						f_logReceivedThenCheckAndStopTime(DSRC_EFCCONTEXTDATA_TIME1_MIN_TSP); 
 						setverdict(pass);
@@ -2741,13 +2741,13 @@ module EfcInfoExchange_TestCasesTsp {
                  	// domainType = dsrcClosedContext 
                  	// dsrcClosedContext with valid values and feeModifiers set to null
                  	// closedSystem with timeClassDefinition  = {valid contents} and all other fields set to null
-				var InfoExchange v_apduForSending := m_apduNoSecInit({m_aduEfcContextDataDsrcClosedContextTimeClass});                
+				var InfoExchange v_apduForSending := m_apduNoAuthInitTester({m_aduEfcContextDataDsrcClosedContextTimeClass});                
 				f_sendAndLogApdu(v_apduForSending);                 
                  // Step 2: Wait for positive Ack within DSRC.EFCCONTEXTDATA.TIME1
 				// Set timer
                  t_step.start(DSRC_EFCCONTEXTDATA_TIME1_MAX_TSP);                 
 				alt {
-					[] mtcPort.receive(m_apduDefaultAck(v_apduForSending)) -> value v_apduReceived {					  
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received
 						f_logReceivedThenCheckAndStopTime(DSRC_EFCCONTEXTDATA_TIME1_MIN_TSP); 
 						setverdict(pass);
@@ -2772,14 +2772,14 @@ module EfcInfoExchange_TestCasesTsp {
                  	// domainType = dsrcClosedContext 
                  	// dsrcClosedContext with valid values and feeModifiers set to null
                  	// closedSystem with userClassDefinition  = {valid contents} and all other fields set to null
-				var InfoExchange v_apduForSending := m_apduNoSecInit({m_aduEfcContextDataDsrcClosedContextUserClass});                
+				var InfoExchange v_apduForSending := m_apduNoAuthInitTester({m_aduEfcContextDataDsrcClosedContextUserClass});                
 				f_sendAndLogApdu(v_apduForSending);                 
 
                 // Step 2: Wait for positive Ack within DSRC.EFCCONTEXTDATA.TIME1
 				// Set timer
                 t_step.start(DSRC_EFCCONTEXTDATA_TIME1_MAX_TSP);                 
 				alt {
-					[] mtcPort.receive(m_apduDefaultAck(v_apduForSending)) -> value v_apduReceived {					  
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received
 						f_logReceivedThenCheckAndStopTime(DSRC_EFCCONTEXTDATA_TIME1_MIN_TSP); 
 						setverdict(pass);
@@ -2804,14 +2804,14 @@ module EfcInfoExchange_TestCasesTsp {
                 // domainType = dsrcClosedContext 
                 // dsrcClosedContext with valid values and feeModifiers set to null
                 // closedSystem with feeDefinition  = {valid contents} and all other fields set to null
-				var InfoExchange v_apduForSending := m_apduNoSecInit({m_aduEfcContextDataDsrcClosedContextFeeDefinition});                
+				var InfoExchange v_apduForSending := m_apduNoAuthInitTester({m_aduEfcContextDataDsrcClosedContextFeeDefinition});                
 				f_sendAndLogApdu(v_apduForSending);
 
                 // Step 2: Wait for positive Ack within DSRC.EFCCONTEXTDATA.TIME1
 				// Set timer
                 t_step.start(DSRC_EFCCONTEXTDATA_TIME1_MAX_TSP);                 
 				alt {
-					[] mtcPort.receive(m_apduDefaultAck(v_apduForSending)) -> value v_apduReceived {					  
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received
 						f_logReceivedThenCheckAndStopTime(DSRC_EFCCONTEXTDATA_TIME1_MIN_TSP); 
 						setverdict(pass);
@@ -2844,7 +2844,7 @@ module EfcInfoExchange_TestCasesTsp {
                  	// PT140 TODO: which field to be set to a wrong value? Is this test doable?
 				var Iso17575_3AduBody v_contextData;
 				f_setDsrcContextData(v_contextData);				
-				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(
 					{modifies mw_aduDsrcEfcContextData := {
 					  	iso175753ADU := v_contextData,
 					  	regimeContextData.feeModifiers := omit
@@ -2852,23 +2852,19 @@ module EfcInfoExchange_TestCasesTsp {
 					});                 
 				f_sendAndLogApdu(v_apduRespondedTo);                 
                  // Step 2: Wait for negative Ack within DSRC.EFCCONTEXTDATA.TIME1
-				//Create parameters for the m_apduNAck			
-				var NAckParams v_nAckParams1 :={{0, AduReasonCode_semanticError_}};
-				var NAckParams v_nAckParams2 :={{1, AduReasonCode_semanticError_},{2,AduReasonCode_semanticError_}};
 				// Set timer
                  t_step.start(DSRC_EFCCONTEXTDATA_TIME1_MAX_TSP);                 
 				alt {
-					// Either Params1 or Params2 Nacks are valid
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(DSRC_EFCCONTEXTDATA_TIME1_MIN_TSP); 
+					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduRespondedTo, AduReasonCode_semanticError_)) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
 						setverdict(pass);
 						}
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(DSRC_EFCCONTEXTDATA_TIME1_MIN_TSP); 
-						//Set verdict
+					[] mtcPort.receive(mw_apduNAck_IndividualAdus(v_apduRespondedTo, {{1, AduReasonCode_semanticError_},{2,AduReasonCode_semanticError_}})) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
 						setverdict(pass);
 						}
-					} // End of Alt statement				
+					} // End of Alt statement
+			
 				f_closeDownMtc();  			
                 
                 } // End of TP_TSP_DSRC_EFCCONTEXTDATA_BI_01
@@ -2890,7 +2886,7 @@ module EfcInfoExchange_TestCasesTsp {
                  	// feeModifiers set to null
                  	// all other mandatory fields set to valid values
 					// Only tollContextOverview in ClosedContextDefinition set to a valid value
-				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(
+				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(
 					{modifies mw_aduDsrcClosedContextEfcContextData := {
 					  	closedContext.closedSystem.tollContextOverview := tollContextOverviewTESTER_VALUE,
 					  	closedContext.closedContextType := 3, // only 1 or 2 are allowed
@@ -2899,24 +2895,20 @@ module EfcInfoExchange_TestCasesTsp {
 					});                 
 				f_sendAndLogApdu(v_apduRespondedTo);                 
                  // Step 2: Wait for negative Ack within DSRC.EFCCONTEXTDATA.TIME1
-				//Create parameters for the m_apduNAck			
-				var NAckParams v_nAckParams1 :={{0, AduReasonCode_semanticError_}};
-				var NAckParams v_nAckParams2 :={{1, AduReasonCode_semanticError_},{2,AduReasonCode_semanticError_}};
 				// Set timer
                  t_step.start(DSRC_EFCCONTEXTDATA_TIME1_MAX_TSP);                 
+
 				alt {
-					// Either Params1 or Params2 Nacks are valid
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
-						// Log what we received
-						f_logReceivedThenCheckAndStopTime(DSRC_EFCCONTEXTDATA_TIME1_MIN_TSP); 
+					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduRespondedTo, AduReasonCode_semanticError_)) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
 						setverdict(pass);
 						}
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
-						// Log what we received
-						f_logReceivedThenCheckAndStopTime(DSRC_EFCCONTEXTDATA_TIME1_MIN_TSP); 
+					[] mtcPort.receive(mw_apduNAck_IndividualAdus(v_apduRespondedTo, {{1, AduReasonCode_semanticError_},{2,AduReasonCode_semanticError_}})) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
 						setverdict(pass);
 						}
-					} // End of Alt statement				
+					} // End of Alt statement
+
 				f_closeDownMtc();  			
                 
                 } // End of TP_TSP_DSRC_EFCCONTEXTDATA_BI_02
@@ -2939,7 +2931,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// set tester tolling domain characteristics
 				var Iso17575_3AduBody v_contextData;
 				f_setDsrcContextData(v_contextData);				
-				var InfoExchange v_apduToSend := m_apduNoSecInit(
+				var InfoExchange v_apduToSend := m_apduNoAuthInitTester(
 					{modifies mw_aduDsrcEfcContextData := {
 					  	iso175753ADU := v_contextData,
 					  	regimeContextData.feeModifiers := omit
@@ -2948,24 +2940,19 @@ module EfcInfoExchange_TestCasesTsp {
 				f_sendAndLogApdu(v_apduToSend);                 
                 // Step 1: Do not wait for positive Ack but send immediately another EFCCONTEXTDATA before TIME1
                 f_sendAndLogApdu(v_apduToSend);                 
-              	// Wait for negative Ack (if positive Ack or not received set test failure)                	
-				//Create parameters for the m_apduNAck			
-				var NAckParams v_nAckParams1 :={{0, AduReasonCode_semanticError_}};
-				var NAckParams v_nAckParams2 :={{1, AduReasonCode_semanticError_},{2,AduReasonCode_semanticError_}};
 				// Set timer
                  t_step.start(DSRC_EFCCONTEXTDATA_TIME1_MAX_TSP);                 
+
 				alt {
-					// Either Params1 or Params2 Nacks are valid
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(DSRC_EFCCONTEXTDATA_TIME1_MIN_TSP); 
+					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduRespondedTo, AduReasonCode_semanticError_)) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
 						setverdict(pass);
 						}
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
-						// Log what we received
-						f_logReceivedThenCheckAndStopTime(DSRC_EFCCONTEXTDATA_TIME1_MIN_TSP); 
+					[] mtcPort.receive(mw_apduNAck_IndividualAdus(v_apduRespondedTo, {{1, AduReasonCode_semanticError_},{2,AduReasonCode_semanticError_}})) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
 						setverdict(pass);
 						}
-					}	// End of Alt statement			
+					} // End of Alt statement
 				f_closeDownMtc();  			
                 } // End of TP_TSP_DSRC_EFCCONTEXTDATA_BI_03
            		
