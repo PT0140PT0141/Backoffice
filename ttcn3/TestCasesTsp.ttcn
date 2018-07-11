@@ -3875,7 +3875,7 @@ module EfcInfoExchange_TestCasesTsp {
 				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1_SEND);												
 				//  Wait for GNSS.TOLLDECLARATION
 				// PT140 TODO: mw_aduGnssTollDeclaration template to be defined
-				var InfoExchange v_apduToBeReceived := m_apduNoSecInit(mw_aduGnssTollDeclaration);
+				var InfoExchange v_apduToBeReceived := mw_apduNoAuthInitIut(mw_aduGnssTollDeclaration);
 				
 				// Receive the correct adu, send positive ack
 				alt {
@@ -3918,7 +3918,7 @@ module EfcInfoExchange_TestCasesTsp {
 				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1_SEND);												
 				//  Wait for GNSS.TOLLDECLARATION
 				// PT140 TODO: mw_aduGnssTollDeclaration template to be defined
-				var InfoExchange v_apduToBeReceived := m_apduNoSecInit(mw_aduGnssTollDeclaration);
+				var InfoExchange v_apduToBeReceived := mw_apduNoAuthInitIut(mw_aduGnssTollDeclaration);
 				
 				// Receive the correct adu, send positive ack
 				alt {
@@ -3936,7 +3936,7 @@ module EfcInfoExchange_TestCasesTsp {
 							
 						// Send NAck within time constraints
 						f_wait(GNSS_BILLINGDETAILS_TSP_TIME1_TC);
-						f_sendAndLogApdu(m_apduNAck(v_apduReceived, billingDetailsAmountRejected));
+						f_sendAndLogApdu(m_apduNoAuthRespTester(v_apduReceived, AduReasonCode_billingDetailsAmountRejected_));
 						}
  					} // End of alt statement
 
@@ -3971,7 +3971,7 @@ module EfcInfoExchange_TestCasesTsp {
 				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1_SEND);												
 				//  Wait for GNSS.TOLLDECLARATION
 				// PT140 TODO: mw_aduGnssTollDeclaration template to be defined
-				var InfoExchange v_apduToBeReceived := m_apduNoSecInit(mw_aduGnssTollDeclaration);
+				var InfoExchange v_apduToBeReceived := mw_apduNoAuthInitIut(mw_aduGnssTollDeclaration);
 				
 				// Receive the correct adu, send positive ack
 				alt {
