@@ -4097,7 +4097,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Set timer
                  t_step.start(GNSS_BILLINGDETAILS_TC_TIME1_MAX_TC);                 
 				alt {
-					[] mtcPort.receive(m_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduRespondedTo)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC);
 						setverdict(pass);
 						}
@@ -4646,7 +4646,7 @@ module EfcInfoExchange_TestCasesTsp {
 				f_sendAndLogTrigger(GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1_SEND);												
 				//  Wait for GNSS.PAYMENTANNOUNCEMENT
 				// PT140 TODO: mw_aduGnssPaymentAnnouncement template to be defined
-				var InfoExchange v_apduToBeReceived := m_apduNoSecInit(
+				var InfoExchange v_apduToBeReceived := mw_apduNoAuthInitIut(
 					{modifies mw_aduGnssPaymentAnnouncement:= {
 					  	actionCode := ActionCode_send_
 					  	}
@@ -4681,7 +4681,7 @@ module EfcInfoExchange_TestCasesTsp {
 				f_sendAndLogTrigger(GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1_SEND); 												
 				//  Wait for GNSS.PAYMENTANNOUNCEMENT
 				// PT140 TODO: mw_aduGnssPaymentAnnouncement template to be defined
-				var InfoExchange v_apduToBeReceived := m_apduNoSecInit(
+				var InfoExchange v_apduToBeReceived := mw_apduNoAuthInitIut(
 					{modifies mw_aduGnssPaymentAnnouncement:= {
 					  	actionCode := ActionCode_send_
 					  	}
@@ -4704,7 +4704,7 @@ module EfcInfoExchange_TestCasesTsp {
 				t_step.start(GNSS_PAYMENTANNOUNCEMENT_TIMEB_MAX_TSP);
 				//  Wait for GNSS.PAYMENTANNOUNCEMENT
 				// PT140 TODO: mw_aduGnssPaymentAnnouncement template to be defined
-				var InfoExchange v_apduToBeReceived := m_apduNoSecInit(
+				var InfoExchange v_apduToBeReceived := mw_apduNoAuthInitIut(
 					{modifies mw_aduGnssPaymentAnnouncement:= {
 					  	paymentAnnouncementID := idReceived,
 					  	actionCode := ActionCode_adjust_,
@@ -4739,7 +4739,7 @@ module EfcInfoExchange_TestCasesTsp {
 				f_sendAndLogTrigger(GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1_SEND);												
 				//  Wait for GNSS.PAYMENTANNOUNCEMENT
 				// PT140 TODO: mw_aduGnssPaymentAnnouncement template to be defined
-				var InfoExchange v_apduToBeReceived := m_apduNoSecInit({modifies mw_aduGnssPaymentAnnouncement:= {actionCode := ActionCode_send_}});					
+				var InfoExchange v_apduToBeReceived := mw_apduNoAuthInitIut({modifies mw_aduGnssPaymentAnnouncement:= {actionCode := ActionCode_send_}});					
 				
 				// Wait for PaymentAnnouncementADU within allowed time constraints
 				t_step.start(GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TSP);	
@@ -4757,7 +4757,7 @@ module EfcInfoExchange_TestCasesTsp {
 				f_sendAndLogTrigger(GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1_REVOKE);												
 				//  Wait for GNSS.PAYMENTANNOUNCEMENT
 				// PT140 TODO: mw_aduGnssPaymentAnnouncement template to be defined
-				var InfoExchange v_apduToBeReceived := m_apduNoSecInit(
+				var InfoExchange v_apduToBeReceived := mw_apduNoAuthInitIut(
 					{modifies mw_aduGnssPaymentAnnouncement:= {
 					  	paymentAnnouncementID := idReceived,
 					  	actionCode := ActionCode_revoke_
@@ -4770,7 +4770,7 @@ module EfcInfoExchange_TestCasesTsp {
 						// Log what we received
 					// Send Ack within time constraints
 						f_logReceivedWaitAndAcknowledge(GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC);
-						f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+						f_sendAndLogApdu(m_apduDefaultAckTester(v_apduReceived));
 						setverdict(pass);						
 						}
  					} // End of alt statement
