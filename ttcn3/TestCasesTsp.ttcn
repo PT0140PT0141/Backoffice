@@ -612,7 +612,7 @@ module EfcInfoExchange_TestCasesTsp {
                 
 				// Step1: send RequestADU
 				f_sendAndLogApdu(
-					m_apduNoSecInit(
+					m_apduNoAuthInitTester(
 						{m_aduRequestProvideUserDetails(v_userParameterRequests)}
 						)
 					);
@@ -671,7 +671,7 @@ module EfcInfoExchange_TestCasesTsp {
                 
 				// Step1: send RequestADU
 				
-				var InfoExchange v_apduRespondedTo := m_apduNoSecInit({m_aduRequestProvideUserDetails(v_userParameterRequests)});
+				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester({m_aduRequestProvideUserDetails(v_userParameterRequests)});
 				f_sendAndLogApdu(
 					m_apduNoSecInit(v_apduRespondedTo)
 					);   	  
@@ -727,24 +727,21 @@ module EfcInfoExchange_TestCasesTsp {
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
              
 				// Step 1: Send APDU with 2 incorrect ADUs, the first one without userDetails, the second one with empty userDetails
-				var InfoExchange v_apduRespondedTo := m_apduNoSecInit({m_aduRequestProvideUserDetails(omit), m_aduRequestProvideUserDetails({})});
+				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester({m_aduRequestProvideUserDetails(omit), m_aduRequestProvideUserDetails({})});
 				f_sendAndLogApdu(v_apduRespondedTo);                               
 
-				// Step 2: wait for a Semantic Error code Nack 
+				// Step 2: wait for a Invalid ADU Error code Nack 
 				t_step.start(USERDETAILS_TIME1_MAX_TSP);
 
-				// Either we receive an APDU containing Nack with semantic error as error code or the timeout expires
+				// Either we receive an APDU containing Nack with invalid adu  as error code or the timeout expires
 				// timeout expiration handling is in the altstep branch				
 
-				//Create parameters for the m_apduNAck and start receive		
-				var NAckParams v_nAckParams1 :={{0, AduReasonCode_invalidADU_}};
-				var NAckParams v_nAckParams2 :={{1, AduReasonCode_invalidADU_},{2,AduReasonCode_invalidADU_}};				
 				alt {
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduRespondedTo, AduReasonCode_invalidADU_)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
 						setverdict(pass);
 						}
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAck_IndividualAdus(v_apduRespondedTo, {{1, AduReasonCode_invalidADU_},{2,AduReasonCode_invalidADU_}})) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
 						setverdict(pass);
 						}
@@ -785,7 +782,7 @@ module EfcInfoExchange_TestCasesTsp {
 					f_addLogEntry("All user details supported by IUT. Test cannot be executed");
 					stop;
 				};				
-				var InfoExchange v_apduForSending := m_apduNoSecInit(
+				var InfoExchange v_apduForSending := m_apduNoAuthInitTester(
 					{m_aduRequestProvideUserDetails({v_notSupportedUserDetailsParameter})}
 				);
 				f_sendAndLogApdu(v_apduForSending);                              
@@ -825,7 +822,7 @@ module EfcInfoExchange_TestCasesTsp {
 							
 						// Step3: Send DefaultAck with correct identifier
 						f_wait(USERDETAILS_TIME2_MIN_TSP);
-						f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+						f_sendAndLogApdu(m_apduDefaultAckTester(v_apduReceived));
 						
 						}
 					} // End of alt statement
@@ -854,7 +851,7 @@ module EfcInfoExchange_TestCasesTsp {
 					};                
 				// Step1: send RequestADU
 				
-				var InfoExchange v_apduForSending := m_apduNoSecInit({m_aduRequestProvideUserDetails(USERDETAILS_NOT_AGREED_LIST)});
+				var InfoExchange v_apduForSending := m_apduNoAuthInitTester({m_aduRequestProvideUserDetails(USERDETAILS_NOT_AGREED_LIST)});
 				f_sendAndLogApdu(v_apduForSending);   	  
                                 		
 				//Set timer
@@ -871,20 +868,7 @@ module EfcInfoExchange_TestCasesTsp {
 						  setverdict (fail);
 						  f_addLogEntry("Only one ADU expected. " & sizeof(v_apduReceived.adus.provideUserDetailsADUs) & " ADUs received instead.");
 						  stop;
-						}
-						
-//    UserId originaluserIdRequest,
-//    UserId userId,
-//    UserStatus statusFlag optional,
-//    record of UserParameterResponse listOfUserParameters optional
-						
-//	  type record UserParameterResponse {
-//		UserParameterRequest requestedUserParameter optional,
-//		UserParameterResponseDetails userParameterResponse optional,
-//		UserParameterStatus userParameterStatus optional,
-//		EfcAutonomousCharging.Period userInfoValidityPeriod optional
-//	  }		
-				
+						}				
 						if (not match(
 							v_apduReceived.adus.provideUserDetailsADUs[0],						
 							ProvideUserDetailsADU: modifies mw_aduProvideUserDetails := {
@@ -927,7 +911,7 @@ module EfcInfoExchange_TestCasesTsp {
                 
 				// Step1: send RequestADU
 				f_sendAndLogApdu(
-					m_apduNoSecInit(
+					m_apduNoAuthInitTester(
 						{m_aduRequestProvideUserDetails(v_userParameterRequests)}
 						)
 					);
@@ -946,7 +930,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Either we receive an APDU containing  Nack or the timeout expires
 				// timeout expiration is handled in the altstep branch
 				alt {
-					[] mtcPort.receive(m_apduNAckRequestSentTooOften(v_apduToSend)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckRequestSentTooOften(v_apduToSend)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum time for response
 						setverdict(pass);
 						}
