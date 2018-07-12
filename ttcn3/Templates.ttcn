@@ -204,10 +204,9 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 
 		/**
 		 * 
-		/**
-		 * 
 		 * @desc Corresponds to the event Default_Ack_Apdu described in test purposes in the case where the Tester is the receiver.
 		 * @desc Definition: "Default_Apdu containing one AckADU containing {apduAckCode =: apduOK(2)}, with issues being not present" 
+		 *
 		 */ 
 		template (value) InfoExchange mw_apduDefaultAckIut(in InfoExchange p_apduToAck) := mw_apduNoAuthRespIut(
 			p_apduToAck, 
@@ -221,7 +220,6 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		 * @desc being not present"
 		 */ 
 		 //TODO introduce the exclusion of values 2 and 5
-		 
 		template (value) InfoExchange m_apduNAckProtocolTester
 			(in InfoExchange p_apduToAck, in ApduReasonCode p_apduReasonCode) := m_apduNoAuthRespTester(
 			p_apduToAck, 
@@ -261,7 +259,6 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		 * @desc "NAck_Protocol_Apdu( apduAckCode) modified by having infoExchangeAuthenticator present 
 		 * @desc and calculated according to clause 7.3 of EN ISO 12855”
 		 */ 
-
 		template InfoExchange mw_apduNAckProtocolAuthIut(
 			in InfoExchange p_apduToAck,
 			in ApduReasonCode p_apduReasonCode 	
@@ -292,10 +289,10 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		 * @desc issues containing one element for each Param set containing {issueADUStruct=aduPosition, 
 		 * @desc issueCode = aduReasonCode }}"
 		 */ 
-		
-		//TODO Ulrik finalise this!!!
-		
-		
+		template InfoExchange m_apduNackIndividualIssuesTester(
+			in InfoExchange p_apduToAck, in NAckParams p_nAckParams
+		):=m_apduNoAuthRespTester(p_apduToAck, {m_aduNAck(p_apduToAck, p_nAckParams)});
+				
 		/**
 		 * 
 		 * @desc Corresponds to the event NAck_IndividualAdus_Apdu when the IUT is sending
@@ -304,11 +301,10 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		 * @desc issues containing one element for each Param set containing {issueADUStruct=aduPosition, 
 		 * @desc issueCode = aduReasonCode }}"
 		 */ 
-		template InfoExchange mw_apduNackIndividualIssues(
-			in InfoExchange p_apduToAck
-		):=mw_apduNoAuthRespIut(
-		);
-		//TODO Ulrik finalise this!!!
+		template InfoExchange mw_apduNackIndividualIssuesIut(
+			in InfoExchange p_apduToAck,
+			in NAckParams p_nAckParams
+		):=mw_apduNoAuthRespIut(p_apduToAck, m_oneAckInAdusStruct(mw_aduNAckWIssues(p_apduToAck, p_nAckParams)));
 
 		/**
 		 * 
@@ -319,19 +315,6 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		template InfoExchange mw_apduNAckRequestSentTooOften(in InfoExchange p_apduToAck) := 
 		mw_apduNAckProtocolIut(p_apduToAck, ApduReasonCode_requestSentTooOften_);
 		
-		/**
-		 * 
-		 * @desc Corresponds to the event NAck_Apdu described in test purposes.
-    	 * @desc Definition: "NAck_Apdu(zero or more sets of Param defined as {aduPosition, aduReasonCode}) 
-    	 * @desc "Default_Apdu containing one AckADU containing {apduAckCode= apduOK(2), issues containing one 
-    	 * @desc element for each Param set containing {issueADUStruct=aduPosition, issueCode = aduReasonCode }}"
-    	 * @desc NOTE	the NAck_Apdu definition assumes that there are some valid ADUs in the APDU it is 
-    	 * @desc responding to (otherwise an apduAckCode  = apduNotOK(3) might have been a feasible answer)
-		 */ 
-		template (value) InfoExchange m_apduNAck(in InfoExchange p_apduToAck, in NAckParams p_nAckParams) := m_apduDefault(
-			p_apduToAck, 
-			m_oneAckInAdusStruct(m_aduNAck(p_apduToAck, p_nAckParams))
-	    );
 
 		type record of record {
 			NumberOfADUStruct issueADUStruct,
