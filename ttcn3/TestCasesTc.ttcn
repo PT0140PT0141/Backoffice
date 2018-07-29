@@ -14,16 +14,16 @@
  *	Base						! open					! open			! in progress
  *	Userdetails					! open					! open			! available but to be reworked
  *	ListOfUsers					! open					! open			! in progress
- *	ExceptionList				! done					! done			! ready for compile
- *	TrustObjects				! open					! open			! ready for compile
- *	PaymentClaim				! open					! none			! in progress
- *	DSRC.ContractIssuerList		! done					! done			! ready for compile
- *	DSRC.EFCContextData			! done					! none			! ready for compile 
- *	DSRC.BillingDetails			! done					! none			! ready for compile
- *	DSRC.ReportAbnormalOBE		! done					! none			! ready for compile
+ *	ExceptionList				! done					! done			! revised and ready for compile
+ *	TrustObjects				! done					! done			! revised and ready for compile
+ *	PaymentClaim				! open					! n.a.			! in progress
+ *	DSRC.ContractIssuerList		! done					! done			! revised and ready for compile
+ *	DSRC.EFCContextData			! done					! n.a.			! ready for compile 
+ *	DSRC.BillingDetails			! done					! n.a.			! ready for compile
+ *	DSRC.ReportAbnormalOBE		! done					! n.a.			! ready for compile
  *	GNSS.TollDeclaration		! open					! open			! done but need to revise List of ChargeReports in template
  *	GNSS.BillingDetails.TSP		! open					! open			! in progress
- *	GNSS.BillingDetails.TC		! done					! none			! ready for compile
+ *	GNSS.BillingDetails.TC		! done					! n.a.			! ready for compile
  *	GNSS.PaymentAnnouncement	! open					! open			! in progress
  */
  
@@ -920,13 +920,11 @@ module EfcInfoExchange_TestCasesTc {
                                 		              
                 // Step 1:
                 // Prepare and send Initiating_Apdu containing three ContractIssuerListADUs with differing manufacturerID values
-				var InfoExchange v_apduToBeSent := m_apduNoSecInitTester(
-					{modifies mw_recordOfAduContractIssuerList := {
+				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
 					  	TD_CONTRACT_ISSUER_DATA_VALID_1,
 					  	TD_CONTRACT_ISSUER_DATA_VALID_2,
 					  	TD_CONTRACT_ISSUER_DATA_VALID_3
-					  	}
-					});                 
+					  	});                 
 				f_sendAndLogApdu(v_apduToBeSent);                     
                 
                 // Start timer
@@ -936,17 +934,11 @@ module EfcInfoExchange_TestCasesTc {
               	// if negative Ack or not received set test failure --> is done in altstep
 
 				alt {
-					[] mtcPort.receive(m_apduDefaultAck(v_apduToBeSent)) -> value v_apduReceived {
-					  
-						// Log what we received
-						f_logApduReceivedAndTStep();
-						
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(DSRC_CONTRACTISSUERLIST_TIME1_MIN_TC);
-						t_step.stop;						
-
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {
+						// Log what we received, check minimum time and stop time
+						f_logReceivedThenCheckAndStopTime(DSRC_CONTRACTISSUERLIST_TIME1_MIN_TC);
 						//Set verdict
-						setverdict(pass);
+						setverdict(pass)												
 					}
 				} 
 				f_closeDownMtc();   
@@ -971,49 +963,41 @@ module EfcInfoExchange_TestCasesTc {
                 // Send Initiating_Apdu containing three ContractIssuerListADUs each one with exactly
                 // one incorrect parameter value from the set [uniquePartOfPan, acCrKeyReference, authKeyReference]
 
-				var InfoExchange v_apduToBeSent := m_apduNoSecInitTester(
-					{modifies mw_recordOfAduContractIssuerList := {
+				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
 					  	TD_CONTRACT_ISSUER_DATA_INVALID_1,
 					  	TD_CONTRACT_ISSUER_DATA_INVALID_2,
 					  	TD_CONTRACT_ISSUER_DATA_INVALID_3
-					  	}
 					});                 
 				f_sendAndLogApdu(v_apduToBeSent); 
                 
                 // Start timer
                 t_step.start(DSRC_CONTRACTISSUERLIST_TIME1_MAX_TC);   
-                // Step 2:	
-              	// Wait for NAck_Apdu with issueCode = semanticError (3000)
-              	// within the time interval DSRC.CONTRACTISSUERLIST.TIME1
-              	// if negative Ack or not received set test failure
 
-				//Create parameters for the m_apduNAck			
-				var NAckParams v_nAckParams1 :=m_nAckParamsSingle(0, AduReasonCode_semanticError_);
-				//TODO Does the construct below really work?
-				var NAckParams v_nAckParams2 :={{1, AduReasonCode_semanticError_},{2,AduReasonCode_semanticError_},{3, AduReasonCode_semanticError_}};
+              	// Wait for NAck_Apdu within time DSRC.CONTRACTISSUERLIST.TIME1
+                //		- NAck_Apdu with aduReasonCode = semanticError (3000) for all ADUs, or
+                //		- NAck_Apdu with aduReasonCode = semanticError (3000) for ADU#1, #2 and #3
+              	// if negative Ack or not received set test failure --> is done in altstep
 
 				alt {
-					// Either Params1 or Params2 Nacks are valid
-					[] mtcPort.receive(m_apduNAck(v_apduToBeSent,v_nAckParams1)) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(DSRC_CONTRACTISSUERLIST_TIME1_MIN_TC);
-						t_step.stop;
+					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduToBeSent, AduReasonCode_semanticError_)) -> value v_apduReceived {
+						// Log what we received, check minimum time and stop time
+						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
+						// set verdict
 						setverdict(pass);
-						}
-					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams2)) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();
+					}
 
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(DSRC_CONTRACTISSUERLIST_TIME1_MIN_TC);
-						t_step.stop;
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent, {
+						{1, AduReasonCode_semanticError_},
+						{2, AduReasonCode_semanticError_},
+						{3, AduReasonCode_semanticError_}})) -> value v_apduReceived {
+						// Log what we received, check minimum time and stop time
+						f_logReceivedThenCheckAndStopTime(DSRC_CONTRACTISSUERLIST_TIME1_MIN_TC);
+						// set verdict
 						setverdict(pass);
-						}
-				}	
-				f_closeDownMtc(); 						              	
+					}										
+				}
+				f_closeDownMtc();				            	          				
+
 			} // End testcase TP_TC_DSRC_CONTRACTISSUERLIST_BI_01			
 
 			testcase TP_TC_DSRC_CONTRACTISSUERLIST_BI_02() runs on MainTestComponent system TestAdapter {
@@ -1027,44 +1011,35 @@ module EfcInfoExchange_TestCasesTc {
 				// Initialisation
  				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A2_1_isDsrc and ICS_A26_1_implementedDSRCCONTRACTISSUERLIST;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc                        		
-                 
-                // Step 1: Send Initiating_Apdu containing one valid RequestADU of type userListRequest
-				var InfoExchange v_apduToBeSent := m_apduNoSecInitTester(
-					{modifies mw_recordOfAduContractIssuerList := {
-					  	TD_CONTRACT_ISSUER_DATA_VALID_1
-					  	}
-					});                 
-				f_sendAndLogApdu(v_apduToBeSent);                     
-                              
-                // Send second Initiating_Apdu containing one valid RequestADU of type userListRequest
-                // before DSRC.CONTRACTISSUERLIST.TIMEA_MIN has passed
-				f_wait(DSRC_CONTRACTISSUERLIST_TIMEA_MIN_TSP / 2);
 
-				v_apduToBeSent := m_apduDefault(
-					{modifies mw_recordOfAduContractIssuerList := {
-					  	TD_CONTRACT_ISSUER_DATA_VALID_2 // PT140 TODO Testerdata definition
-					  	}
-					});                 
+                // Step 0: Send Initiating_Apdu containing one ExceptionListADU
+                // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for black list
+                var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({TD_EXCEPTIONLIST_ADU_BLACK_VALID});
+				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+                                                
+                // Step 1: Send second Initiating_Apdu containing one ContractIssuerListADU
+                // before DSRC.CONTRACTISSUERLIST.TIMEA_MIN has passed
+				f_wait(DSRC_CONTRACTISSUERLIST_TIMEA_MIN_TC / 2);
+
+				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({TD_CONTRACT_ISSUER_DATA_VALID_1});                 
 				f_sendAndLogApdu(v_apduToBeSent); 
                 
                 // Start timer
                 t_step.start(DSRC_CONTRACTISSUERLIST_TIME1_MAX_TC);   
 
-                // Step 2: Wait for NAck_requestSentTooOften
-                // within the time DSRC.CONTRACTISSUERLIST.TIME1  
+				// Step 2: Wait for NAck_Apdu with issueCode=NAck_requestSentTooOften(10)
+            	// within the time DSRC.CONTRACTISSUERLIST.TIME1  
+              	// if other Ack or not received set test failure --> is done in altstep            	
 
 				alt {
 					[] mtcPort.receive(m_apduNAckRequestSentTooOften(v_apduToBeSent)) -> value v_apduReceived {
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(DSRC_CONTRACTISSUERLIST_TIME1_MIN_TC);
-						t_step.stop;
+						// Log what we received, check minimum time and stop time
+						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
+						// set verdict
 						setverdict(pass);
-						}
-				}	
-				f_closeDownMtc();
+					}
+				}
+				f_closeDownMtc();				            	          				
               	
 			} // End testcase TP_TC_DSRC_CONTRACTISSUERLIST_BI_02
 		} // End group Invalid_Behaviour
@@ -1205,7 +1180,7 @@ module EfcInfoExchange_TestCasesTc {
 							
                 // Step 1 / loop 1 for black list:
                 // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for black list
-                var InfoExchange v_apduToBeSent := m_apduNoSecInitTester(TD_EXCEPTIONLIST_ADU_BLACK_VALID);
+                var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({TD_EXCEPTIONLIST_ADU_BLACK_VALID});
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
   	
                 // Start timer
@@ -1215,7 +1190,7 @@ module EfcInfoExchange_TestCasesTc {
               	// if negative Ack or not received set test failure --> is done in altstep
 
 				alt {
-					[] mtcPort.receive(m_apduDefaultAck(v_apduToBeSent)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
 					}
@@ -1225,7 +1200,7 @@ module EfcInfoExchange_TestCasesTc {
 				
 				// Step 2 / loop 2 for white list:
                 // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for white list
-                v_apduToBeSent := m_apduNoSecInitTester(TD_EXCEPTIONLIST_ADU_WHITE_VALID);
+                v_apduToBeSent := m_apduNoAuthInitTester({TD_EXCEPTIONLIST_ADU_WHITE_VALID});
 				f_sendAndLogApdu(v_apduToBeSent);                	
   	
                 // Start timer
@@ -1235,11 +1210,11 @@ module EfcInfoExchange_TestCasesTc {
               	// if negative Ack or not received set test failure --> is done in altstep
 
 				alt {
-					[] mtcPort.receive(m_apduDefaultAck(v_apduToBeSent)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
 						//Set verdict
-						setverdict(pass)												
+						setverdict(pass);												
 					}
 				} 				 
 				f_closeDownMtc();              
@@ -1260,7 +1235,7 @@ module EfcInfoExchange_TestCasesTc {
 							
                 // Step 1:
                 // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for discounted user list
-                var InfoExchange v_apduToBeSent := m_apduNoSecInitTester(TD_EXCEPTIONLIST_ADU_DISCOUNTED_VALID);
+                var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({TD_EXCEPTIONLIST_ADU_DISCOUNTED_VALID});
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
   	
                 // Start timer
@@ -1268,31 +1243,28 @@ module EfcInfoExchange_TestCasesTc {
                 // Step 2:	
               	// Wait for Default_Ack_Apdu within time EXCEPTIONLIST.TIME1
                 //		- Default_Ack, or
-                //		- NAck_Apdu with aduReasonCode = semanticError(3000)
+                //		- NAck_Apdu with aduReasonCode = semanticError(3000) for all ADUs, or
+                //		- NAck_Apdu with aduReasonCode = semanticError(3000) for ADU#1
               	// if negative Ack or not received set test failure --> is done in altstep
 
-				// Prepare parameters to be expected in the NAck-APDU
-				var NAckParams v_nAckParams_1 :={{0, AduReasonCode_semanticError_}};
-				var NAckParams v_nAckParams_2 :={{2, AduReasonCode_semanticError_}};
-
 				alt {
-					[] mtcPort.receive(m_apduDefaultAck(v_apduToBeSent)) -> value v_apduReceived {					  
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_DISCOUNT_TIME1_MIN_TC);
 						//Set verdict
 						setverdict(pass)												
 					}
-					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams_1)) -> value v_apduReceived {				  
+					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduToBeSent, AduReasonCode_semanticError_)) -> value v_apduReceived {				  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_DISCOUNT_TIME1_MIN_TC);
 						//Set verdict
-						setverdict(pass)												
+						setverdict(pass);												
 					}
-					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams_2)) -> value v_apduReceived {				  
+					[] mtcPort.receive(mw_apduNAck_IndividualAdus(v_apduToBeSent, {{1, AduReasonCode_semanticError_}})) -> value v_apduReceived {				  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_DISCOUNT_TIME1_MIN_TC);
 						//Set verdict
-						setverdict(pass)												
+						setverdict(pass);												
 					}								
 				}			 
 				f_closeDownMtc();
@@ -1316,30 +1288,25 @@ module EfcInfoExchange_TestCasesTc {
             	// Prepare Initiating_Apdu containing
             	//		- exactly one valid ExceptionListADU indicating list type BLACK; AND
 				//		- exactly one ExceptionListADU indicating list type BLACK and containing exceptionValidityEnd of any value
-
-				var ExceptionListADU v_aduToBeSent := TD_EXCEPTIONLIST_ADU_BLACK_INVALID_1;
 	  	
-                var InfoExchange v_apduToBeSent := m_apduNoSecInitTester(v_aduToBeSent);
+                var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({TD_EXCEPTIONLIST_ADU_BLACK_INVALID_1});
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
             	
                 // Start timer
                 t_step.start(EXCEPTIONLIST_BLACK_TIME1_MAX_TC);               
 
-            	// Step 2: Wait for NAck_Apdu with ({2, exceptionListsDateAndTimeRejected(405)}) //TODO PT140 to be revised in part 1
-            	// within the time EXCEPTIONLIST.BLACK_TIME1
+              	// Wait for Ack_Apdu within time EXCEPTIONLIST.BLACK_TIME1
+                //		- NAck_Apdu with aduReasonCode = exceptionListsDateAndTimeRejected(405) for all ADUs, or
+                //		- NAck_Apdu with aduReasonCode = exceptionListsDateAndTimeRejected(405) for ADU#1
               	// if negative Ack or not received set test failure --> is done in altstep
 
-				// Prepare parameters to be expected in the NAck-APDU
-				var NAckParams v_nAckParams_1 := {{0, AduReasonCode_exceptionListsDateAndTimeRejected_}};
-				var NAckParams v_nAckParams_2 := {{1, AduReasonCode_exceptionListsDateAndTimeRejected_}};
-
 				alt {
-					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams_1)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduToBeSent, AduReasonCode_exceptionListsDateAndTimeRejected_)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
 					}
 
-					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams_2)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent, {{1, AduReasonCode_exceptionListsDateAndTimeRejected_}}) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
 					}										
@@ -1361,24 +1328,27 @@ module EfcInfoExchange_TestCasesTc {
           
             	// Step 1: Send Initiating_Apdu containing exactly one ExceptionListADU indicating list type BLACK containing
             	//		- efcContextMark of any value
-               var InfoExchange v_apduToBeSent := m_apduNoSecInitTester(TD_EXCEPTIONLIST_ADU_BLACK_INVALID_2);
+               var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({TD_EXCEPTIONLIST_ADU_BLACK_INVALID_2});
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
 
                 // Start timer
                 t_step.start(EXCEPTIONLIST_BLACK_TIME1_MAX_TC);     
             	
-            	// Step 2: Wait for NAck_Apdu with issueCode=otherReason(5)
-            	// within the time EXCEPTIONLIST.BLACK_TIME1   				
+              	// Wait for Ack_Apdu within time EXCEPTIONLIST.BLACK_TIME1
+                //		- NAck_Apdu with aduReasonCode = invalidAdu(0) for all ADUs, or
+                //		- NAck_Apdu with aduReasonCode = invalidAdu(0) for ADU#1
               	// if negative Ack or not received set test failure --> is done in altstep
 
-				// Prepare parameters to be expected in the NAck-APDU
-				var NAckParams v_nAckParams_1 := {{0, ApduReasonCode_otherReason_}};
-
 				alt {
-					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams_1)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduToBeSent, AduReasonCode_invalidADU_)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
 					}					
+
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent, {{1, AduReasonCode_invalidADU_}}) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC); // check for minimum wait time in response
+						setverdict(pass);
+					}										
 				}
 				f_closeDownMtc();				            	          				
 			} // End of TP_TC_EXCEPTIONLIST_BI_02
@@ -1396,21 +1366,18 @@ module EfcInfoExchange_TestCasesTc {
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc                 
 
             	// Step 1: Send Initiating_Apdu containing more than one ExceptionListADU indicating list type BLACK
-               	var InfoExchange v_apduToBeSent := m_apduNoSecInitTester(TD_EXCEPTIONLIST_ADU_BLACK_VALID, TD_EXCEPTIONLIST_ADU_BLACK_VALID);
+               	var InfoExchange v_apduToBeSent := m_apduNoSecInitTester({TD_EXCEPTIONLIST_ADU_BLACK_VALID, TD_EXCEPTIONLIST_ADU_BLACK_VALID});
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
 		
                 // Start timer
                 t_step.start(EXCEPTIONLIST_BLACK_TIME1_MAX_TC);               
             	
-            	// Step 2: Wait for NAck_Apdu with issueCode=otherReason(5)
-            	// within the time EXCEPTIONLIST.BLACK_TIME1     				
+              	// Wait for Ack_Apdu within time EXCEPTIONLIST.BLACK_TIME1
+                //		- NAck_Apdu with apduNotOk(3)
               	// if negative Ack or not received set test failure --> is done in altstep
 
-				// Prepare parameters to be expected in the NAck-APDU
-				var NAckParams v_nAckParams_1 := {{0, ApduReasonCode_otherReason_}};
-
 				alt {
-					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams_1)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduToBeSent, ApduReasonCode_apduNotOK_)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
 					}					
@@ -1432,30 +1399,27 @@ module EfcInfoExchange_TestCasesTc {
 
            		// Step 1: Send Initiating_Apdu containing one ExceptionListADU indicating list type BLACK
             	//		- with exceptionListVersion </= 0
-               	var InfoExchange v_apduToBeSent := m_apduNoSecInitTester(TD_EXCEPTIONLIST_ADU_BLACK_INVALID_3);
+               	var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({TD_EXCEPTIONLIST_ADU_BLACK_INVALID_3});
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
 		
                 // Start timer
                 t_step.start(EXCEPTIONLIST_BLACK_TIME1_MAX_TC);               
             	
-            	// Step 2: Wait for NAck_Apdu with issueCode=exceptionListsVersionRejected(400)
-            	// within the time EXCEPTIONLIST.BLACK_TIME1      				
+              	// Wait for Ack_Apdu within time EXCEPTIONLIST.BLACK_TIME1
+                //		- NAck_Apdu with aduReasonCode = exceptionListsVersionRejected(400) for all ADUs, or
+                //		- NAck_Apdu with aduReasonCode = exceptionListsVersionRejected(400) for ADU#1
               	// if negative Ack or not received set test failure --> is done in altstep
 
-				// Prepare parameters to be expected in the NAck-APDU
-				var NAckParams v_nAckParams_1 := {{0, AduReasonCode_exceptionListsVersionRejected_}};
-				var NAckParams v_nAckParams_2 := {{1, AduReasonCode_exceptionListsVersionRejected_}};
-
 				alt {
-					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams_1)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduToBeSent, AduReasonCode_exceptionListsVersionRejected_)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
-					}		
-					
-					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams_2)) -> value v_apduReceived {
+					}					
+
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent, {{1, AduReasonCode_exceptionListsVersionRejected_}}) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
-					}				
+					}										
 				}
 				f_closeDownMtc();	
 			} // End of TP_TC_EXCEPTIONLIST_BI_04
@@ -1473,30 +1437,27 @@ module EfcInfoExchange_TestCasesTc {
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc                 
 
              	// Step 1: Send Initiating_Apdu containing one ExceptionListADU indicating exceptionListType = 4
-               	var InfoExchange v_apduToBeSent := m_apduNoSecInitTester(TD_EXCEPTIONLIST_ADU_TYPE4_VALID);
+               	var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({TD_EXCEPTIONLIST_ADU_TYPE4_VALID});
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
 		
                 // Start timer
-                t_step.start(EXCEPTIONLIST_BLACK_TIME1_MAX_TC);   // TODO PT140 to be revised in conjunction with Part1            
+                t_step.start(EXCEPTIONLIST_BLACK_TIME1_MAX_TC);            
             	
-            	// Step 2: Wait for NAck_Apdu with issueCode=exceptionListsTypeRejected(401)
-            	// within the time EXCEPTIONLIST.BLACK_TIME1
-            	// if negative Ack or not received set test failure --> is done in altstep
-				
-				// Prepare parameters to be expected in the NAck-APDU
-				var NAckParams v_nAckParams_1 := {{0, AduReasonCode_exceptionListsTypeRejected_}};
-				var NAckParams v_nAckParams_2 := {{1, AduReasonCode_exceptionListsTypeRejected_}};
+              	// Wait for Ack_Apdu within time TIME_DEFAULT
+                //		- NAck_Apdu with aduReasonCode = exceptionListsTypeRejected(401) for all ADUs, or
+                //		- NAck_Apdu with aduReasonCode = exceptionListsTypeRejected(401) for ADU#1
+              	// if negative Ack or not received set test failure --> is done in altstep
 
 				alt {
-					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams_1)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC); // check for minimum wait time in response
+					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduToBeSent, AduReasonCode_exceptionListsTypeRejected_)) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(TIME_DEFAULT); // check for minimum wait time in response
 						setverdict(pass);
-					}		
-					
-					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams_2)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC); // check for minimum wait time in response
+					}					
+
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent, {{1, AduReasonCode_exceptionListsTypeRejected_}}) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(TIME_DEFAULT); // check for minimum wait time in response
 						setverdict(pass);
-					}				
+					}										
 				}
 				f_closeDownMtc();	
 			} // End of TP_TC_EXCEPTIONLIST_BI_05
@@ -1515,30 +1476,27 @@ module EfcInfoExchange_TestCasesTc {
 
 	            // Step 1: Send Initiating_Apdu containing one ExceptionListADU of list type BLACK
     	        // and userId = contractSerialNumber present
-               	var InfoExchange v_apduToBeSent := m_apduNoSecInitTester(TD_EXCEPTIONLIST_ADU_BLACK_INVALID_4);
+               	var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({TD_EXCEPTIONLIST_ADU_BLACK_INVALID_4});
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
 		
                 // Start timer
                 t_step.start(EXCEPTIONLIST_BLACK_TIME1_MAX_TC);           
             	
-            	// Step 2: Wait for NAck_Apdu with issueCode=exceptionListsUserIdRejected(402)
-            	// within the time EXCEPTIONLIST.BLACK_TIME1  
-            	// if negative Ack or not received set test failure --> is done in altstep
-				
-				// Prepare parameters to be expected in the NAck-APDU
-				var NAckParams v_nAckParams_1 := {{0, AduReasonCode_exceptionListsUserIdRejected_}};
-				var NAckParams v_nAckParams_2 := {{1, AduReasonCode_exceptionListsUserIdRejected_}};
+              	// Wait for Ack_Apdu within time EXCEPTIONLIST.BLACK_TIME1
+                //		- NAck_Apdu with aduReasonCode = exceptionListsUserIdRejected(402) for all ADUs, or
+                //		- NAck_Apdu with aduReasonCode = exceptionListsUserIdRejected(402) for ADU#1
+              	// if negative Ack or not received set test failure --> is done in altstep
 
 				alt {
-					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams_1)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduToBeSent, AduReasonCode_exceptionListsUserIdRejected_)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
-					}		
-					
-					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams_2)) -> value v_apduReceived {
+					}					
+
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent, {{1, AduReasonCode_exceptionListsUserIdRejected_}}) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
-					}				
+					}										
 				}
 				f_closeDownMtc();	
 			} // End of TP_TC_EXCEPTIONLIST_BI_06
@@ -1546,51 +1504,7 @@ module EfcInfoExchange_TestCasesTc {
 			testcase TP_TC_EXCEPTIONLIST_BI_07() runs on MainTestComponent system TestAdapter {
 													
             /**
-            * @desc    TP_TC_EXCEPTIONLIST_BI_07: Verify that the TC correctly responds
-            *			to an ExceptionListADU with exceptionValidityEnd
-            * @remark  [16986:2016], Clause 6.6 and Table A.1/1 AND Table A.7/3
-            */
-  
-				// Initialisation
- 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A7_3_implementedEXCEPTIONLIST;
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc                 
-							
-            	// Step 1: Send Initiating_Apdu containing one ExceptionListADU of list type BLACK
-            	// and and with exceptionValidityEnd present
-				var ExceptionListADU v_aduToBeSent := TD_EXCEPTIONLIST_ADU_BLACK_INVALID_5;
-	  	
-                var InfoExchange v_apduToBeSent := m_apduNoSecInitTester(v_aduToBeSent);
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
-            	
-                // Start timer
-                t_step.start(EXCEPTIONLIST_BLACK_TIME1_MAX_TC);               
-
-            	// Step 2: Wait for NAck_Apdu with issueCode=exceptionListsDateAndTimeRejected(405)
-            	// within the time EXCEPTIONLIST.BLACK_TIME1   				
-              	// if negative Ack or not received set test failure --> is done in altstep
-
-				// Prepare parameters to be expected in the NAck-APDU
-				var NAckParams v_nAckParams_1 := {{0, AduReasonCode_exceptionListsDateAndTimeRejected_}};
-				var NAckParams v_nAckParams_2 := {{1, AduReasonCode_exceptionListsDateAndTimeRejected_}};
-
-				alt {
-					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams_1)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC); // check for minimum wait time in response
-						setverdict(pass);
-					}
-
-					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams_2)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC); // check for minimum wait time in response
-						setverdict(pass);
-					}										
-				}
-				f_closeDownMtc();				            	          				
-			} // End of TP_TC_EXCEPTIONLIST_BI_07
-
-			testcase TP_TC_EXCEPTIONLIST_BI_08() runs on MainTestComponent system TestAdapter {
-													
-            /**
-             * @desc    TP_TC_EXCEPTIONLIST_BI_08: Verify that the TC responds correctly
+             * @desc    TP_TC_EXCEPTIONLIST_BI_07: Verify that the TC responds correctly
              *			to a RequestADU sent earlier than allowed
              * @remark  [16986:2016], Clause 6.6 and Table A.1/1 AND Table A.7/3
              */  				
@@ -1604,17 +1518,18 @@ module EfcInfoExchange_TestCasesTc {
             	// Step 1: Send Initiating_Apdu containing one valid ExceptionListADU of list type BLACK
             
                 // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for black list
-                var InfoExchange v_apduToBeSent := m_apduNoSecInitTester(TD_EXCEPTIONLIST_ADU_BLACK_VALID);
+                var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({TD_EXCEPTIONLIST_ADU_BLACK_VALID});
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
   	
                 // Start timer
                 t_step.start(EXCEPTIONLIST_BLACK_TIME1_MAX_TC);               
+
                 // Transaction 1 / Step 2:	
               	// Wait for Default_Ack_Apdu within time EXCEPTIONLIST.TIME1
               	// if negative Ack or not received set test failure --> is done in altstep
 
 				alt {
-					[] mtcPort.receive(m_apduDefaultAck(v_apduToBeSent)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
 					}
@@ -1625,7 +1540,7 @@ module EfcInfoExchange_TestCasesTc {
             	// before TIME0 MIN has passed = immediately after the Ack in Transaction 1 
             	
                 // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for black list
-                v_apduToBeSent := m_apduNoSecInitTester(TD_EXCEPTIONLIST_ADU_BLACK_VALID);
+                v_apduToBeSent := m_apduNoAuthInitTester({TD_EXCEPTIONLIST_ADU_BLACK_VALID});
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
   	
                 // Start timer
@@ -1642,7 +1557,7 @@ module EfcInfoExchange_TestCasesTc {
 					}
 				}
 				f_closeDownMtc();				            	          				
-			} // End of TP_TC_EXCEPTIONLIST_BI_08
+			} // End of TP_TC_EXCEPTIONLIST_BI_07
 
 		} // End of group Invalid_Behaviour 
 			
@@ -1705,9 +1620,8 @@ module EfcInfoExchange_TestCasesTc {
 						}
 						repeat;
 					}										
-				}				
+				} // End of alt statement
 				// Exiting the alt means that the expected number of Trust Objects have been received
-				
 				label ReceivedAll;
 				if (ICS_A2_1_isDsrc and isCertificateOrPublicKey and isDsrcKeyRef and isMacMasterKey and isDsrcMasterKey) {
 					setverdict(pass);
@@ -1716,38 +1630,36 @@ module EfcInfoExchange_TestCasesTc {
 					setverdict(pass);
 				}			 				
 				f_closeDownMtc();              
-             
 			} // End of TP_TC_TRUSTOBJECTS_BV_01
 
 			testcase TP_TC_TRUSTOBJECTS_BV_02() runs on MainTestComponent system TestAdapter {
 						
-                /**
-                 * @desc    TP_TC_TRUSTOBJECTS_BV_02: Verify that the TC correctly responds to a Trust Object received
-                 *			from a TSP without having issued a request
-                 * @remark  [16986:2016], Clause 6.7 and Table A.1/1
-                 * @remark	same as TP_TSP_TRUSTOBJECT_BV_02
-                 */
+            /**
+            * @desc    TP_TC_TRUSTOBJECTS_BV_02: Verify that the TC correctly responds to a Trust Object received
+            *			from a TSP without having issued a request
+            * @remark  [16986:2016], Clause 6.7 and Table A.1/1
+            * @remark	same as TP_TSP_TRUSTOBJECT_BV_02
+            */
 
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A7_4_implementedTRUSTOBJECTSElectronicTransfer;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				
-                 // Step 1: Send one valid APDU containing the a valid TrustObjectADU with the only mandatorily supported type in both profiles, for all possible purposes
-				var InfoExchange v_apduRespondedTo := mw_apduNoSecInitIut(m_aduTrustObject
-					({TrustObjectPurposes_dSRCCharging_,TrustObjectPurposes_dSRCAC_,TrustObjectPurposes_oBEInterrogation_,TrustObjectPurposes_oBEInterrogationAC_}, dsrcKeyRefObjectTESTER_VALUE));                 
+            	// Step 1: Send one valid APDU containing the a valid TrustObjectADU with the only mandatorily supported type in both profiles, for all possible purposes
+				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(m_aduTrustObject
+				({TrustObjectPurposes_dSRCCharging_,TrustObjectPurposes_dSRCAC_,TrustObjectPurposes_oBEInterrogation_,TrustObjectPurposes_oBEInterrogationAC_}, dsrcKeyRefObjectTESTER_VALUE));                 
 				f_sendAndLogApdu(v_apduRespondedTo);                 
-                
-                 // Step 2: Wait for positive Ack within TRUSTOBJECTS.TIME2
+            	// Step 2: Wait for positive Ack within TRUSTOBJECTS.TIME2
 				// Set timer
-                 t_step.start(TRUSTOBJECTS_TYPE1_TIME2_MAX_TC);                 
+            	t_step.start(TRUSTOBJECTS_TYPE1_TIME2_MAX_TC);                 
+			
 				alt {
-					[] mtcPort.receive(mw_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduRespondedTo)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TYPE1_TIME2_MIN_TC);
 						setverdict(pass);
-						} 
-					} // End of Alt statement 
-				f_closeDownMtc();                  
-             
+					} 
+				} // End of Alt statement 
+				f_closeDownMtc();                   
 			} // End of TP_TC_TRUSTOBJECTS_BV_02
 
 			testcase TP_TC_TRUSTOBJECTS_BV_03() runs on MainTestComponent system TestAdapter {
@@ -1763,16 +1675,17 @@ module EfcInfoExchange_TestCasesTc {
 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A7_4_implementedTRUSTOBJECTSElectronicTransfer;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				// Loop in all available types of trustobject supported by the IUT as specified by the length of SENT_TRUST_OBJECTS_SUPPORTED Pixit record
+
 				var integer v_trustObjectsToBeSent := sizeof(SENT_TRUST_OBJECTS_SUPPORTED);
 				for (var integer v_trustObjectsReceived :=1; v_trustObjectsReceived<v_trustObjectsToBeSent;v_trustObjectsReceived:=v_trustObjectsReceived+1)
 					{
 						// Prepare a request of a Trust Object by taking allowed type and purpose from the RECEIVED_TRUST_OBJECTS_SUPPORTED Pixit value
 						
 						var integer v_requestedTrustObjectType := SENT_TRUST_OBJECTS_SUPPORTED[v_trustObjectsReceived].trustObjectType;
-						var TrustObjectPurposes v_requestedTrustObjectPurposes := SENT_TRUST_OBJECTS_SUPPORTED[v_trustObjectsReceived].trustObjectPurpose;
+						var TrustObjectPurposes v_requestedTrustObjectPurposes := SENT_TRUST_OBJECTS_SUPPORTED[v_trustObjectsReceived].trustObjectPurpose
 						
-						var InfoExchange v_apduRequestForTrustObject := m_apduNoSecOld(
-							mw_apci, Adus:{
+						var InfoExchange v_apduRequestForTrustObject := m_apduNoAuth(
+							m_apciInitTester, Adus:{
 								requestAdus:= {
 									requestedADUType:= 3,
 									requestedTrustObject:={
@@ -1801,8 +1714,8 @@ module EfcInfoExchange_TestCasesTc {
 						}; // end of for statement
 				//Set verdict
 				setverdict(pass);
-				f_closeDownMtc(); 
-             
+				f_closeDownMtc(); 				 
+
 			} // End of TP_TC_TRUSTOBJECTS_BV_03
 
 			testcase TP_TC_TRUSTOBJECTS_BV_04() runs on MainTestComponent system TestAdapter {
@@ -1870,9 +1783,9 @@ module EfcInfoExchange_TestCasesTc {
                 
                 		// Step 2: Wait for positive Ack within TRUSTOBJECTS.TIME2
 						// Set timer
-                 		t_step.start(TRUSTOBJECTS_TYPE1_TIME2_MAX_C);                 
+                 		t_step.start(TRUSTOBJECTS_TYPE1_TIME2_MAX_TC);                 
 						alt {
-							[] mtcPort.receive(m_apduDefaultAck(v_apduToSend)) -> value v_apduReceived {
+							[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToSend)) -> value v_apduReceived {
 								// Log what we received
 								f_logApduReceivedAndTStep();
 								t_step.stop;
@@ -1888,7 +1801,7 @@ module EfcInfoExchange_TestCasesTc {
 					}	
 				} // End of first alt 					
 				f_closeDownMtc();                  
-             
+
 			} // End of TP_TC_TRUSTOBJECTS_BV_04
 		} // End group Valid_Behaviour
 		
@@ -1906,27 +1819,25 @@ module EfcInfoExchange_TestCasesTc {
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A7_4_implementedTRUSTOBJECTSElectronicTransfer;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
-				var InfoExchange v_apduToBeSent := m_apduNoSecInitTester(m_aduTrustObjectInvalidStatus);                 
+
+				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester(m_aduTrustObjectInvalidStatus);                 
 				f_sendAndLogApdu(v_apduToBeSent);                 
                 // Step 2: Wait for negative Ack within TRUSTOBJECTS.TIME2
 				// Set timer
-                 t_step.start(TRUSTOBJECTS_TYPE1_TIME2_MAX_TC);                		
-				//Create parameters for the m_apduNAck			
-				var NAckParams v_nAckParams1 :={{0, AduReasonCode_invalidADU_}};
-				var NAckParams v_nAckParams2 :={{1, AduReasonCode_invalidADU_}};
-				
+                t_step.start(TRUSTOBJECTS_TYPE1_TIME2_MAX_TC);                		
+
 				alt {
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TYPE1_TIME2_MIN_TC);  
-						setverdict(pass);						
-					}
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TYPE1_TIME2_MIN_TC);  
+					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduRespondedTo, AduReasonCode_invalidADU_)) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
 						setverdict(pass);
-					}
-				} 
+						}
+					[] mtcPort.receive(mw_apduNAck_IndividualAdus(v_apduRespondedTo, {{1, AduReasonCode_invalidADU_},{2,AduReasonCode_invalidADU_}})) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						setverdict(pass);
+						}
+					} // End of Alt statement
 				f_closeDownMtc();                   
-             
+                          
 			} // End of TP_TC_TRUSTOBJECTS_BI_01 
  
  			testcase TP_TC_TRUSTOBJECTS_BI_02() runs on MainTestComponent system TestAdapter {   
@@ -1942,8 +1853,9 @@ module EfcInfoExchange_TestCasesTc {
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A7_4_implementedTRUSTOBJECTSElectronicTransfer;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+
 				// Set two different TrustObject adus by varying the type of trust object 
-				var InfoExchange v_apduToBeSent := m_apduNoSecInitTester(
+				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester(
 					{
 					 m_aduTrustObject(
 						{TrustObjectPurposes_dSRCCharging_,TrustObjectPurposes_dSRCAC_,TrustObjectPurposes_oBEInterrogation_,TrustObjectPurposes_oBEInterrogationAC_},
@@ -1957,19 +1869,17 @@ module EfcInfoExchange_TestCasesTc {
 				// Set timer
                  t_step.start(TRUSTOBJECTS_TYPE1_TIME2_MAX_TC);                		
 				//Create parameters for the m_apduNAck			
-				var NAckParams v_nAckParams1 :={{0, AduReasonCode_semanticError_}};
-				var NAckParams v_nAckParams2 :={{1, AduReasonCode_semanticError_}};
-				
+
 				alt {
-					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams1)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TYPE1_TIME2_MIN_TC);  
+					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduRespondedTo, AduReasonCode_semanticError_)) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
 						setverdict(pass);
 						}
-					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams2)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TYPE1_TIME2_MIN_TC);  
+					[] mtcPort.receive(mw_apduNAck_IndividualAdus(v_apduRespondedTo, {{1, AduReasonCode_semanticError_},{2,AduReasonCode_semanticError_}})) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
 						setverdict(pass);
 						}
-					} 
+					} // End of Alt statement
 				f_closeDownMtc();                   
 
 			} // End of TP_TC_TRUSTOBJECTS_BI_02 
@@ -1986,26 +1896,25 @@ module EfcInfoExchange_TestCasesTc {
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A7_4_implementedTRUSTOBJECTSElectronicTransfer;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+
 				// Prepare an invalid certificate (not supported by the profile)
-				var InfoExchange v_apduRespondedTo := mw_apduNoSecInitIut(TrustObjectADU({TrustObjectPurposes_certIssuing_},invalidTESTERGenericObject));                 
+				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(TrustObjectADU({TrustObjectPurposes_certIssuing_},invalidTESTERGenericObject));                 
 				f_sendAndLogApdu(v_apduRespondedTo);                 
                 // Step 2: Wait for negative Ack within TRUSTOBJECTS.TIME2
 				// Set timer
                  t_step.start(TRUSTOBJECTS_TYPE1_TIME2_MAX_TC);                		
 				//Create parameters for the m_apduNAck			
-				var NAckParams v_nAckParams1 :={{0, AduReasonCode_semanticError_}};
-				var NAckParams v_nAckParams2 :={{1, AduReasonCode_semanticError_}};
-				
+
 				alt {
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams1)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TYPE1_TIME2_MIN_TC);  
+					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduRespondedTo, AduReasonCode_semanticError_)) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
 						setverdict(pass);
 						}
-					[] mtcPort.receive(m_apduNAck(v_apduRespondedTo, v_nAckParams2)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TYPE1_TIME2_MIN_TC);  
+					[] mtcPort.receive(mw_apduNAck_IndividualAdus(v_apduRespondedTo, {{1, AduReasonCode_semanticError_},{2,AduReasonCode_semanticError_}})) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
 						setverdict(pass);
 						}
-					} 
+					} // End of Alt statement
 				f_closeDownMtc();                   
 
            } // End of TP_TC_TRUSTOBJECTS_BI_03 
@@ -2021,6 +1930,7 @@ module EfcInfoExchange_TestCasesTc {
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A7_4_implementedTRUSTOBJECTSElectronicTransfer;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+
 				// Step1: send RequestADU by specifying the type of trustobject
 				// Prepare a request of a Trust Object by taking allowed type and purpose from the SENT_TRUST_OBJECTS_SUPPORTED Pixit value
 				var RequestADU requestAdu :={
@@ -2034,8 +1944,8 @@ module EfcInfoExchange_TestCasesTc {
 
 				var Adus requestAduInWrapper:= {requestAdus:={requestAdu}};
 				
-				var InfoExchange v_firstApduRequest:=m_apduNoSecInitTester(requestAduInWrapper); 
-				var InfoExchange v_secondApduReqest:=m_apduNoSecInitTester(requestAduInWrapper); 
+				var InfoExchange v_firstApduRequest:=m_apduNoAuthInitTester(requestAduInWrapper); 
+				var InfoExchange v_secondApduReqest:=m_apduNoAuthInitTester(requestAduInWrapper); 
 				
 				
 				// Now send the first apdu
@@ -2043,7 +1953,7 @@ module EfcInfoExchange_TestCasesTc {
 				
        			//Immediately send same ADU with different APDUid				
 				f_sendAndLogApdu(v_secondApduRequest);
-   
+                              
 				//Set timer
 				t_step.start(TRUSTOBJECTS_TYPE1_TIME2_MAX_TC);
                 
@@ -2072,14 +1982,15 @@ module EfcInfoExchange_TestCasesTc {
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A7_4_implementedTRUSTOBJECTSElectronicTransfer;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+
 				// Step1: prepare TrustObjectADU by specifying KeyRef as type of trustobject
-				var TrustObjectADU v_trustObjectAdu:=	m_aduTrustObject(
+				var TrustObjectADU v_trustObjectAdu := m_aduTrustObject(
 						{TrustObjectPurposes_dSRCCharging_,TrustObjectPurposes_dSRCAC_,TrustObjectPurposes_oBEInterrogation_,TrustObjectPurposes_oBEInterrogationAC_},
-						TrustObjectCode:{dsrcKeyRef:=dsrcKeyRefObjectTESTER_VALUE}
+						TrustObjectCode:{dsrcKeyRef := dsrcKeyRefObjectTESTER_VALUE}
 				);                 
 				
-				var InfoExchange v_firstApduToBeSent := m_apduNoSecInitTester(v_trustObjectAdu);
-				var InfoExchange v_secondApduToBeSent := m_apduNoSecInitTester(v_trustObjectAdu);
+				var InfoExchange v_firstApduToBeSent := m_apduNoAuthInitTester(v_trustObjectAdu);
+				var InfoExchange v_secondApduToBeSent := m_apduNoAuthInitTester(v_trustObjectAdu);
 
 				// Send the first apdu
 				f_sendAndLogApdu(v_firstApduToBeSent);
@@ -2101,9 +2012,7 @@ module EfcInfoExchange_TestCasesTc {
 				f_closeDownMtc();            
              
            } // End of TP_TC_TRUSTOBJECTS_BI_05   
- 
  		} // End group Invalid_Behaviour
-
 	} // End of group TRUSTOBJECTS		
 
 	group PAYMENTCLAIM {
