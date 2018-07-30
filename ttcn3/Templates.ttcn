@@ -2,7 +2,7 @@
  * @author  PT0140  
  * @desc    This module provides common templates for both Toll Charger and Toll Service Provider TCs. Most of these templates shall be used to modify the new ones.
  * @see     [17154-1:2017]: Test suite structure and test purpose
- * @see     Electronic fee collection — Evaluation of implementation for conformity to CEN/TS 16986 — Part 1: Test suite structure and purposes
+ * @see     Electronic fee collection â€” Evaluation of implementation for conformity to CEN/TS 16986 â€” Part 1: Test suite structure and purposes
  * @remark  See Annex C - Data structures
  * @version $id$
  */
@@ -27,7 +27,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
      */
     import from EfcAutonomousContextData language "ASN.1:1997" all;
     /**
-     * @desc    Electronic fee collection (EFC) — Application interface definition for autonomous systems — Part 4: Roaming
+     * @desc    Electronic fee collection (EFC) â€” Application interface definition for autonomous systems â€” Part 4: Roaming
      * @see     Annex A (normative) EFC data type specifications
      */
     import from EfcDsrcApplication language "ASN.1:1997" all;
@@ -242,7 +242,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		* @desc Corresponds to the event NAck_Protocol_Apdu_Sec in the case where the Tester is the sender
 		* @desc Definition: NAck_Protocol_Apdu_Sec (apduAckCode excluding the values 2 and 5) 
 		* @desc "NAck_Protocol_Apdu( apduAckCode) modified by having infoExchangeAuthenticator present 
-		* @desc and calculated according to clause 7.3 of EN ISO 12855”
+		* @desc and calculated according to clause 7.3 of EN ISO 12855â€�
 		*/ 
 
 	   template (value) InfoExchange m_apduNAckProtocolAuthTester(
@@ -257,7 +257,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		 * @desc Corresponds to the event NAck_Protocol_Apdu_Sec in the case where the Iut is the sender
 		 * @desc Definition: NAck_Protocol_Apdu_Sec (apduAckCode excluding the values 2 and 5) 
 		 * @desc "NAck_Protocol_Apdu( apduAckCode) modified by having infoExchangeAuthenticator present 
-		 * @desc and calculated according to clause 7.3 of EN ISO 12855”
+		 * @desc and calculated according to clause 7.3 of EN ISO 12855â€�
 		 */ 
 		template InfoExchange mw_apduNAckProtocolAuthIut(
 			in InfoExchange p_apduToAck,
@@ -575,17 +575,19 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 
 		group DSRC_EFCCONTEXTDATA {						
 			template EfcContextDataADU mw_aduDsrcEfcContextData := {
-				entityOverview := *,
+				entityOverview := omit,
 				domainType:={
 					dsrcContext:= {
 						regimeContextData := {
-								iso175753ADU := ?,
+								iso175753ADU := ?, // PT140 TODO: Details for this element are required in a receiving template (mw_..)
 								feeModifiers := omit
 						}
 					}					
 				}
 			}
 	
+	
+		
 			type record DsrcClosedContext {
 				ClosedContextDefinition closedContext,
 				FeeModifiers feeModifiers optional
@@ -596,6 +598,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				feeModifiers := omit
 			}
 
+			// PT140 TODO: Details for mw_dsrcClosedContext are required in a receiving template
 			template EfcContextDataADU mw_aduDsrcClosedContextEfcContextData := {
 				entityOverview := omit,
 				domainType:={
@@ -1358,7 +1361,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		//		month INTEGER (0..12), -- Value zero shall not be used
 		//		-- except with 1990 - see below.
 		//		day INTEGER (0..31) -- Value zero shall not be used
-		//		-- except with 1990 � see below.
+		//		-- except with 1990 ï¿½ see below.
 		//	}	
     
 		}
