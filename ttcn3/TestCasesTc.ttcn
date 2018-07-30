@@ -939,11 +939,10 @@ module EfcInfoExchange_TestCasesTc {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(DSRC_CONTRACTISSUERLIST_TIME1_MIN_TC);
 						//Set verdict
-						setverdict(pass)												
+						setverdict(pass);												
 					}
 				} 
-				f_closeDownMtc();   
-              	
+				f_closeDownMtc();                	
               } // End testcase TP_TC_DSRC_CONTRACTISSUERLIST_BV_01              
 		} // End group Valid_Behaviour
 					
@@ -998,7 +997,6 @@ module EfcInfoExchange_TestCasesTc {
 					}										
 				}
 				f_closeDownMtc();				            	          				
-
 			} // End testcase TP_TC_DSRC_CONTRACTISSUERLIST_BI_01			
 
 			testcase TP_TC_DSRC_CONTRACTISSUERLIST_BI_02() runs on MainTestComponent system TestAdapter {
@@ -1013,9 +1011,9 @@ module EfcInfoExchange_TestCasesTc {
  				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A2_1_isDsrc and ICS_A26_1_implementedDSRCCONTRACTISSUERLIST;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc                        		
 
-                // Step 0: Send Initiating_Apdu containing one ExceptionListADU
-                // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for black list
-                var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({TD_EXCEPTIONLIST_ADU_BLACK_VALID});
+                // Step 0: Send Initiating_Apdu containing one ContractIssuerListADU
+                // Prepare and send one Initiating_Apdu containing exactly one ContractIssuerListADU
+                var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({TD_CONTRACT_ISSUER_DATA_VALID_1});
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
                                                 
                 // Step 1: Send second Initiating_Apdu containing one ContractIssuerListADU
@@ -1040,8 +1038,7 @@ module EfcInfoExchange_TestCasesTc {
 						setverdict(pass);
 					}
 				}
-				f_closeDownMtc();				            	          				
-              	
+				f_closeDownMtc();				            	          				            	
 			} // End testcase TP_TC_DSRC_CONTRACTISSUERLIST_BI_02
 		} // End group Invalid_Behaviour
 	} // End DSRC_CONTRACTISSUERLIST 
@@ -1253,7 +1250,7 @@ module EfcInfoExchange_TestCasesTc {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_DISCOUNT_TIME1_MIN_TC);
 						//Set verdict
-						setverdict(pass)												
+						setverdict(pass);												
 					}
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduToBeSent, AduReasonCode_semanticError_)) -> value v_apduReceived {				  
 						// Log what we received, check minimum time and stop time
@@ -1261,7 +1258,7 @@ module EfcInfoExchange_TestCasesTc {
 						//Set verdict
 						setverdict(pass);												
 					}
-					[] mtcPort.receive(mw_apduNAck_IndividualAdus(v_apduToBeSent, {{1, AduReasonCode_semanticError_}})) -> value v_apduReceived {				  
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent, {{1, AduReasonCode_semanticError_}})) -> value v_apduReceived {				  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_DISCOUNT_TIME1_MIN_TC);
 						//Set verdict
@@ -1303,14 +1300,16 @@ module EfcInfoExchange_TestCasesTc {
 
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduToBeSent, AduReasonCode_exceptionListsDateAndTimeRejected_)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC); // check for minimum wait time in response
+						// Log what we received, check minimum time and stop time
+						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
 						setverdict(pass);
 					}
-
-					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent, {{1, AduReasonCode_exceptionListsDateAndTimeRejected_}}) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC); // check for minimum wait time in response
-						setverdict(pass);
-					}										
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent, {{1, AduReasonCode_exceptionListsDateAndTimeRejected_}})) -> value v_apduReceived {				  
+						// Log what we received, check minimum time and stop time
+						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
+						//Set verdict
+						setverdict(pass);												
+					}								
 				}
 				f_closeDownMtc();				            	          				
 			} // End of TP_TC_EXCEPTIONLIST_BI_01
@@ -1342,12 +1341,13 @@ module EfcInfoExchange_TestCasesTc {
 
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduToBeSent, AduReasonCode_invalidADU_)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC); // check for minimum wait time in response
+						// Log what we received, check minimum time and stop time
+						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
 						setverdict(pass);
 					}					
-
-					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent, {{1, AduReasonCode_invalidADU_}}) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC); // check for minimum wait time in response
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent, {{1, AduReasonCode_invalidADU_}})) -> value v_apduReceived {
+						// Log what we received, check minimum time and stop time
+						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
 						setverdict(pass);
 					}										
 				}
@@ -1379,7 +1379,8 @@ module EfcInfoExchange_TestCasesTc {
 
 				alt {
 					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduToBeSent, ApduReasonCode_apduNotOK_)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC); // check for minimum wait time in response
+						// Log what we received, check minimum time and stop time
+						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
 						setverdict(pass);
 					}					
 				}
@@ -1413,12 +1414,13 @@ module EfcInfoExchange_TestCasesTc {
 
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduToBeSent, AduReasonCode_exceptionListsVersionRejected_)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC); // check for minimum wait time in response
+						// Log what we received, check minimum time and stop time
+						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
 						setverdict(pass);
 					}					
-
-					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent, {{1, AduReasonCode_exceptionListsVersionRejected_}}) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC); // check for minimum wait time in response
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent, {{1, AduReasonCode_exceptionListsVersionRejected_}})) -> value v_apduReceived {
+						// Log what we received, check minimum time and stop time
+						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
 						setverdict(pass);
 					}										
 				}
@@ -1451,12 +1453,14 @@ module EfcInfoExchange_TestCasesTc {
 
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduToBeSent, AduReasonCode_exceptionListsTypeRejected_)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(TIME_DEFAULT); // check for minimum wait time in response
+						// Log what we received, check minimum time and stop time
+						f_logReceivedThenCheckAndStopTime(TIME_DEFAULT);
 						setverdict(pass);
 					}					
 
-					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent, {{1, AduReasonCode_exceptionListsTypeRejected_}}) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(TIME_DEFAULT); // check for minimum wait time in response
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent, {{1, AduReasonCode_exceptionListsTypeRejected_}})) -> value v_apduReceived {
+						// Log what we received, check minimum time and stop time
+						f_logReceivedThenCheckAndStopTime(TIME_DEFAULT);
 						setverdict(pass);
 					}										
 				}
@@ -1490,12 +1494,13 @@ module EfcInfoExchange_TestCasesTc {
 
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduToBeSent, AduReasonCode_exceptionListsUserIdRejected_)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC); // check for minimum wait time in response
+						// Log what we received, check minimum time and stop time
+						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
 						setverdict(pass);
 					}					
-
-					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent, {{1, AduReasonCode_exceptionListsUserIdRejected_}}) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC); // check for minimum wait time in response
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent, {{1, AduReasonCode_exceptionListsUserIdRejected_}})) -> value v_apduReceived {
+						// Log what we received, check minimum time and stop time
+						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
 						setverdict(pass);
 					}										
 				}
@@ -1553,15 +1558,14 @@ module EfcInfoExchange_TestCasesTc {
 
 				alt {
 					[] mtcPort.receive(m_apduNAckRequestSentTooOften(v_apduToBeSent)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC); // check for minimum wait time in response
+						// Log what we received, check minimum time and stop time		
+						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
 						setverdict(pass);
 					}
 				}
 				f_closeDownMtc();				            	          				
 			} // End of TP_TC_EXCEPTIONLIST_BI_07
-
-		} // End of group Invalid_Behaviour 
-			
+		} // End of group Invalid_Behaviour 	
 	} // End of group EXCEPTIONLIST		
 			
 	group TRUSTOBJECTS {
