@@ -21,7 +21,7 @@
  *	DSRC.ContractIssuerList		! done					! done			! revised and ready for compile
  *	DSRC.EFCContextData			! done					! n.a.			! revised and ready for compile 
  *	DSRC.BillingDetails			! done					! n.a.			! ready for compile
- *	DSRC.ReportAbnormalOBE		! done					! n.a.			! ready for compile
+ *	DSRC.ReportAbnormalOBE		! done					! n.a.			! revised and ready for compile
  *	GNSS.TollDeclaration		! open					! open			! done but need to revise List of ChargeReports in template
  *	GNSS.BillingDetails.TSP		! open					! open			! in progress
  *	GNSS.BillingDetails.TC		! done					! n.a.			! ready for compile
@@ -598,7 +598,7 @@ module EfcInfoExchange_TestCasesTc {
                 // Step 1: Trigger IUT with DSRC.REPORTABNORMALOBE_TR_TC_1 to send valid Initiating_APDU containing
                 // one or more ADUs of type ReportAbnormalOBEADU containing different combinations of valid
                 // and IUT declared values in the following data elements
-				//		- userID = at least one element shall be present;
+				//		- userID = at least one element shall be present (ensured in the template);
 				//		- dateAndTime = present and valid;
 				//		- efcContextMark = present and valid;
 				//		- abnormalOBEReason code = present and valid                
@@ -606,18 +606,17 @@ module EfcInfoExchange_TestCasesTc {
 
 				//  Wait for DSRC.REPORTABNORMALOBE ADU
 				alt {
-					[] mtcPort.receive(mw_apduNoSecInitIut(mw_adusDsrcReportAbnormalObe)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNoAuthInitIut({mw_aduDsrcReportAbnormalObe})) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();					
 					               		
 						// Step 2: Send Ack within time constraints
 						f_wait(DSRC_REPORTABNORMALOBE_TIME1_MIN_TSP);
-						f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+						f_sendAndLogApdu(m_apduDefaultAckTester(v_apduReceived));
 						// Set test success
 						setverdict(pass);
 					}
 				} // End of alt statement
-
 				f_closeDownMtc();   						           
 			} // End testcase TP_TC_DSRC_REPORTABNORMALOBE_BV_01	
 		} // End Valid_Behaviour
