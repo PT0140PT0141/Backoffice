@@ -19,7 +19,7 @@
  *	TrustObjects				! done					! done			! revised and ready for compile
  *	PaymentClaim				! open					! n.a.			! in progress
  *	DSRC.ContractIssuerList		! done					! done			! revised and ready for compile
- *	DSRC.EFCContextData			! done					! n.a.			! ready for compile 
+ *	DSRC.EFCContextData			! done					! n.a.			! revised and ready for compile 
  *	DSRC.BillingDetails			! done					! n.a.			! ready for compile
  *	DSRC.ReportAbnormalOBE		! done					! n.a.			! ready for compile
  *	GNSS.TollDeclaration		! open					! open			! done but need to revise List of ChargeReports in template
@@ -649,21 +649,18 @@ module EfcInfoExchange_TestCasesTc {
                 //		- the values of all fields in EFCContextDataADU being within the range specified by the IUT
 				f_sendAndLogTrigger(DSRC_EFCCONTEXTDATA_TR_TC_1_DSRC_OPEN);
 
-				//  Wait for apdu containing domain type = dsrcContext
-                 // PT140 TODO : mw_aduDsrcEfcContext template to be defined
-				
+                // Wait for above specified Initiating_Apdu within time constraints
+                // if not received or received outside specification set test fail (done in altstep)
 
-                // Wait for above specified APDU within time constraints
-                // use template for APDU
-                // if not received or received outside specification or time constraints set test fail
+				// PT140 TODO : mw_aduDsrcEfcContextData template exiszting but details yet to be defined
 
 				alt {
-					[] mtcPort.receive(mw_apduNoSecInitIut(mw_aduDsrcEfcContextData)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNoAuthInitIut(mw_aduDsrcEfcContextData)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();					              		
 						// Step 2: Send Ack within time constraints
 						f_wait(DSRC_EFCCONTEXTDATA_TIME1_MIN_TSP);
-						f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+						f_sendAndLogApdu(m_apduDefaultAckTester(v_apduReceived));
 						// Set test success
 						setverdict(pass);
 					}
@@ -689,27 +686,24 @@ module EfcInfoExchange_TestCasesTc {
                 //		- the values of all fields in EFCContextDataADU being within the range specified by the IUT
 				f_sendAndLogTrigger(DSRC_EFCCONTEXTDATA_TR_TC_1_DSRC_CLOSED);
 
-				//  Wait for apdu containing domain type = dsrcClosedContext
-                 // PT140 TODO : mw_aduDsrcEfcContext template to be defined
+                // Wait for above specified Initiating_Apdu within time constraints
+                // if not received or received outside specification set test fail (done in altstep)
 
-                // Wait for above specified APDU within time constraints
-                // use template for APDU
-                // if not received or received outside specification or time constraints set test fail
+				// PT140 TODO : aduDsrcClosedContextEfcContextData template exsisting but details yet to be defined
 
 				alt {
-					[] mtcPort.receive(mw_apduNoSecInitIut(mw_aduDsrcClosedContextEfcContextData)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNoAuthInitIut(mw_aduDsrcClosedContextEfcContextData)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();					              		
 						// Step 2: Send Ack within time constraints
 						f_wait(DSRC_EFCCONTEXTDATA_TIME1_MIN_TSP);
-						f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+						f_sendAndLogApdu(m_apduDefaultAckTester(v_apduReceived));
 						// Set test success
 						setverdict(pass);
 					}
 				} // End of alt statement
 				f_closeDownMtc();              	
-			} // End testcase TP_TC_DSRC_EFCCONTEXTDATA_BV_02				
-			
+			} // End testcase TP_TC_DSRC_EFCCONTEXTDATA_BV_02							
 		} // End Valid_Behaviour
 
 		group Invalid_Behaviour {
@@ -718,6 +712,7 @@ module EfcInfoExchange_TestCasesTc {
                  */			
 		} // End Invalid_Behaviour		
 	} // End DSRC_EFCCONTEXTDATA
+
 
 	group DSRC_BILLINGDETAILS {
 		group Valid_Behaviour {
