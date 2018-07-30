@@ -945,8 +945,8 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		}
 
 		group DSRC_REPORTABNORMALOBE {
-			template ReportAbnormalOBEADU mw_adusDsrcReportAbnormalObe := {
-				userId := ? , //TODO Jan check that at least one element of userId is present (use sizeof>0), this needs to be done in the test cases
+			template ReportAbnormalOBEADU mw_aduDsrcReportAbnormalObe := {
+				userId := ? length(1..4), //at least one element of userId shall be present
 				dateAndTime := ?,
 				efcContextMark := ?,
 				abnormalOBEReasonCode := ? length (1..255) //= at least one reason code shall be present in this record of integer
