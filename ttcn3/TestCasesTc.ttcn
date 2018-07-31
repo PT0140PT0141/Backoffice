@@ -24,7 +24,7 @@
  *	DSRC.ReportAbnormalOBE		! done					! n.a.			! revised and ready for compile
  *	GNSS.TollDeclaration		! open					! open			! done but need to revise List of ChargeReports in template
  *	GNSS.BillingDetails.TSP		! open					! open			! in progress
- *	GNSS.BillingDetails.TC		! done					! n.a.			! ready for compile
+ *	GNSS.BillingDetails.TC		! done					! n.a.			! revised and ready for compile
  *	GNSS.PaymentAnnouncement	! open					! open			! in progress
  */
  
@@ -3533,7 +3533,7 @@ module EfcInfoExchange_TestCasesTc {
 				// Perform a full GNSS.TOLLDECLARATION transaction with five(5) tollDeclarations
 				// receive positive Ack
 				// wait respective time constraints until next transaction 	
-				var InfoExchange v_apduToBeSent := m_apduNoSecInitTester({
+				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
 					m_aduTollDeclarationToSendOneObe(
 						{TD_IDENTIFIER, 1},
 						TD_USAGE_STATEMENT_VALID_1,
@@ -3569,9 +3569,9 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail
 
 				alt {				
-					[] mtcPort.receive(m_apduDefaultAck(v_apduToBeSent)) -> value v_apduReceived {					  
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
+						logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
 					}
 				}	
 								
@@ -3581,22 +3581,33 @@ module EfcInfoExchange_TestCasesTc {
                 //		- and correspond to the toll declarations sent by the Tester
 
 				f_sendAndLogTrigger(GNSS_BILLINGDETAILS_TC_TR_TC_1_SEND);
-
-				// TODO PT140: make sure the reference to toll declarations is validated
 				
-				var InfoExchange v_apduToBeReceived := {
-				  	mw_apduNoSecInitIut({{mw_aduGnssBillingDetails:= {actionCode := ActionCode_send_ }}}) 
-           		};                 
+				// PT140 TDO: the assumption is that the five Toll Declarations (sse above)
+				// are used to create in one BillingDetailsAdu.
 
+				var InfoExchange v_apduToBeReceived := {
+				  	mw_apduNoAuthInitIut({{mw_aduGnssBillingDetails:= {
+				  		refTollDeclaration := {
+				  			{TD_IDENTIFIER, 1},
+				  			{TD_IDENTIFIER, 2},
+				  			{TD_IDENTIFIER, 3},
+				  			{TD_IDENTIFIER, 4},
+				  			{TD_IDENTIFIER, 5}
+				  		},
+				  		actionCode := ActionCode_send_
+				  	}}}) 
+           		};                 
+				
                 // Wait for above specified APDU within time constraints
                 // if not received or received outside specification or time constraints set test fail
 
 				alt {
 					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC); // check for minimum wait time in response					              		
+						// Log what we received
+						f_logApduReceivedAndTStep();					              		
 						// Step 3: Send Ack within time constraints
-						f_wait(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TSP);
-						f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+						f_wait(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC);
+						f_sendAndLogApdu(m_apduDefaultAckTester(v_apduReceived));
 						// Set test success
 						setverdict(pass);
 					}
@@ -3624,7 +3635,7 @@ module EfcInfoExchange_TestCasesTc {
 				// Perform a full GNSS.TOLLDECLARATION transaction with one(1) tollDeclarations
 				// receive positive Ack
 				// wait respective time constraints until next transaction 	
-				var InfoExchange v_apduToBeSent := m_apduNoSecInitTester({
+				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
 					m_aduTollDeclarationToSendOneObe(
 						{TD_IDENTIFIER, 1},
 						TD_USAGE_STATEMENT_VALID_1,
@@ -3640,7 +3651,7 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail
 
 				alt {				
-					[] mtcPort.receive(m_apduDefaultAck(v_apduToBeSent)) -> value v_apduReceived {					  
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
 					}
@@ -3651,39 +3662,33 @@ module EfcInfoExchange_TestCasesTc {
                 
                 f_sendAndLogTrigger(GNSS_BILLINGDETAILS_TC_TR_TC_1_ADJUST);
 
-				// capture the tollDeclarationId for use in step 3
-				var TollDeclarationId v_receivedTollDeclarationId;
-				v_receivedTollDeclarationId := v_apduReceived.infoExchangeContent.adus.tollDeclarationADUs.tollDeclarationId;
-
 				var InfoExchange v_apduToBeReceived := {
-				  	mw_apduNoSecInitIut({{mw_aduGnssBillingDetails:= {
-				  		tollDeclarationId := v_receivedTollDeclarationId,
+				  	mw_apduNoAuthInitIut({{mw_aduGnssBillingDetails:= {
+				  		refTollDeclaration := {{TD_IDENTIFIER, 1}},
 				  		actionCode := ActionCode_send_
 				  	}}}) 
            		};                 
 
 				alt {
 					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC); // check for minimum wait time in response					              		
-						// Step 3: Send NAck within time constraints
-						f_wait(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TSP);
+						// Log what we received, no time check
+						f_logApduReceivedAndTStep();					              		
 					}
 				}
 
 				// capture the billingDetailsId for validation in step 3
 				var BillingDetailsId v_receivedBillingDetailsId;
 				v_receivedBillingDetailsId := v_apduReceived.infoExchangeContent.adus.billingDetailsADUs.billingDetailsId;
-				// send a negative Ack (except of issueCode "acceptedWithWarning")
-				// Create parameters for the m_apduNAck			
-				var NAckParams v_nAckParams1 :={{1, AduReasonCode_semanticError_}};
 
-				f_sendAndLogApdu(m_apduNAck(v_apduReceived, v_nAckParams1));
+				// Step 3: Send NAck (except of issueCode "acceptedWithWarning") within time constraints
+				f_wait(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TSP);
+				f_sendAndLogApdu(m_apduNAckIndivudualIssuesTester(v_apduReceived, {1, AduReasonCode_semanticError_}));
 
                 // Step 4: Wait for IUT to send adjusted BillingDetailsADU
                 // with actionCode = adjust
                 // with same billingDetailsId as already received billingDetailsId
 				var InfoExchange v_apduToBeReceived := {
-				  	mw_apduNoSec({{mw_aduGnssBillingDetails:= {
+				  	mw_apduNoAuthInitIut({{mw_aduGnssBillingDetails:= {
 				  		billingDetailsId := v_receivedBillingDetailsId,
 				  		actionCode := ActionCode_adjust_
 				  	}
@@ -3695,10 +3700,11 @@ module EfcInfoExchange_TestCasesTc {
 
 				alt {
 					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC); // check for minimum wait time in response					              		
-						// Step 2: Send Ack within time constraints
-						f_wait(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TSP);
-						f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+						// Log what we received, check minimum time and stop time
+						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC);					              		
+						// Send Ack within time constraints
+						f_wait(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC);
+						f_sendAndLogApdu(m_apduDefaultAckTester(v_apduReceived));
 						// Set test success
 						setverdict(pass);
 					}
@@ -3726,7 +3732,7 @@ module EfcInfoExchange_TestCasesTc {
 				// Perform a full GNSS.TOLLDECLARATION transaction with one(1) tollDeclarations
 				// receive positive Ack
 				// wait respective time constraints until next transaction 	
-				var InfoExchange v_apduToBeSent := m_apduNoSecInitTester({
+				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
 					m_aduTollDeclarationToSendOneObe(
 						{TD_IDENTIFIER, 1},
 						TD_USAGE_STATEMENT_VALID_1,
@@ -3742,7 +3748,7 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail
 
 				alt {				
-					[] mtcPort.receive(m_apduDefaultAck(v_apduToBeSent)) -> value v_apduReceived {					  
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
 					}
@@ -3753,22 +3759,17 @@ module EfcInfoExchange_TestCasesTc {
                 
                 f_sendAndLogTrigger(GNSS_BILLINGDETAILS_TC_TR_TC_1_REVOKE);
 
-				// capture the tollDeclarationId for use in step 3
-				var TollDeclarationId v_receivedTollDeclarationId;
-				v_receivedTollDeclarationId := v_apduReceived.infoExchangeContent.adus.tollDeclarationADUs.tollDeclarationId;
-
 				var InfoExchange v_apduToBeReceived := {
-				  	mw_apduNoSecInitIut({{mw_aduGnssBillingDetails:= {
-				  		tollDeclarationId := v_receivedTollDeclarationId,
+				  	mw_apduNoAuthInitIut({{mw_aduGnssBillingDetails:= {
+				  		refTollDeclaration := {{TD_IDENTIFIER, 1}},
 				  		actionCode := ActionCode_send_
 				  	}}}) 
            		};                 
 
 				alt {
 					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC); // check for minimum wait time in response					              		
-						// Step 3: Send NAck within time constraints
-						f_wait(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TSP);
+						// Log what we received, no time check
+						f_logApduReceivedAndTStep();					              		
 					}
 				}
 
@@ -3776,14 +3777,15 @@ module EfcInfoExchange_TestCasesTc {
 				var BillingDetailsId v_receivedBillingDetailsId;
 				v_receivedBillingDetailsId := v_apduReceived.infoExchangeContent.adus.billingDetailsADUs.billingDetailsId;
 
-				// send an Ack
-				f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+				// Step 3: Send Ack within time constraints
+				f_wait(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TSP);
+				f_sendAndLogApdu(m_apduDefaultAckTester(v_apduReceived));
 
                 // Step 4: Wait for IUT to revke BillingDetailsADU
                 // with actionCode = revoke
                 // with same billingDetailsId as already received billingDetailsId
 				var InfoExchange v_apduToBeReceived := {
-				  	mw_apduNoSec({{mw_aduGnssBillingDetails:= {
+				  	mw_apduNoAuth({{mw_aduGnssBillingDetails:= {
 				  		billingDetailsId := v_receivedBillingDetailsId,
 				  		actionCode := ActionCode_revoke_
 				  	}
@@ -3795,10 +3797,11 @@ module EfcInfoExchange_TestCasesTc {
 
 				alt {
 					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC); // check for minimum wait time in response					              		
-						// Step 2: Send Ack within time constraints
-						f_wait(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TSP);
-						f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+						// Log what we received, no time check
+						f_logApduReceivedAndTStep();					              		
+						// Send Ack within time constraints
+						f_wait(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC);
+						f_sendAndLogApdu(m_apduDefaultAckTester(v_apduReceived));
 						// Set test success
 						setverdict(pass);
 					}
