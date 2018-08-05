@@ -647,6 +647,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 					}
 				}
 			};	
+
 			
 			template (value) VersionAndValidity m_basicVersionValidFromNow :={
 				version:={
@@ -967,7 +968,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			template (value) BillingDetailsADU mw_aduGnssBillingDetails :={
     			billingDetailsId :={
     				issuerId := ?,
-    				billingDetailsNum := ?, // range 0 - 2'(63-1)
+    				billingDetailsNum := (0..(2E63)-1),
     				dateOfService := omit
     				},
     			tollContext := ?,
@@ -980,41 +981,98 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
     			relatedBillingDetails := omit,
     			period := ?,
     			billingDetailsAmount := omit, 
-    			usageDetails := mw_gnssUsageDetails, // TPDO PT140: template mw_gnssUsageDetails to be created
+    			usageDetails := {
+					contextName := ?,
+      				appliedUserClass := ?,
+      				perDeclaredVehicleClass := {{
+        				declaredVehicleClass := ?,
+        				perUsedTimeClasses := {{
+          					appliedTimeClass := ?,
+          					costCenter := ?, // mandatory in IAP
+          					usageList := ({mw_sectionedRoadGnssUsageList}, {mw_travellingInAreaRoadGnssUsageList},
+          					{mw_stayingInAreaRoadGnssUsageList}, {mw_cordonCrossingRoadGnssUsageList})
+          				}}
+          			}}  			
+				},
     			refTollDeclaration := ?,
-    			associatedEventData := {omit},
+    			associatedEventData := omit,
     			actionCode := (ActionCode_send_, ActionCode_revoke_ ,ActionCode_adjust_ ),
     			paymentReference := *
-  			}			
-			
-		// relevent datatype for easy reference
+  			};			
 		
-		//  type record BillingDetailsADU {
-    		// BillingDetailsId billingDetailsId,
-    		// EfcDsrcApplication.Provider tollContext,
-    		// UserId userId optional,
-    		// BillingDetailsId relatedBillingDetails optional,
-    		// EfcAutonomousCharging.Period period optional,
-    		// ExtendedPaymentAmount billingDetailsAmount,
-    		// record {
-      			// ASNAUX.UTF8String contextName,
-      			// ASNAUX.UTF8String appliedUserClass,
-      			// record of record {
-        		// ASNAUX.UTF8String declaredVehicleClass,
-        		// record of record {
-          		// ASNAUX.UTF8String appliedTimeClass,
-          		// ASNAUX.UTF8String costCenter optional,
-          		// record of UsageList usageList
-        		// } perUsedTimeClasses
-      		// } perDeclaredVehicleClasses
-    		// } usageDetails optional,
-    		// record of TollDeclarationId refTollDeclaration optional,
-    		// record of AssociatedEventData associatedEventData optional,
-    		// ActionCode actionCode optional,
-    		// ASNAUX.UTF8String paymentReference optional
-  		// }					
-		}
-		
+		template (value) UsageList mw_sectionedRoadGnssUsageList := {
+			usageListEntry {
+				forSectionedRoads {		
+					howManyTimes := (1..(2E63)-1),
+					listOfSections := {mw_sections}; // mandatory in IAP 
+					invoiceAggregationNumber := omit, //shall not be used in IAP
+					fee := omit, // shall mot be used in IAP,
+					feeQualifier := omit, // shall not be used in IAP
+				}
+			},
+			includedDiscounts := {{*}},
+			associatedEventData := omit, // shall not be used in IAP
+			externalCosts := *
+		};
+
+		template (value) Section mw_sections := {
+			tollContext := omit, // shall not be used in IAP
+			chargeObjectId := ?,
+			chargeObjectName := omit, // shall not be used in IAP
+			tollEventId := ?, // mandatory in IAP
+			tollEventTime := ?, // mandatory in IAP
+			modeOfOperation := omit // shall not be used in IAP
+  		};
+
+		template (value) UsageList mw_travellingInAreaRoadGnssUsageList := {
+			usageListEntry {
+				forTravellingInArea {		
+        			areaDisplayName := ?,
+        			accumulatedDistance := ?,
+        			beginOfAccumulation := *,
+        			endOfAccumulation := *,
+        			fee := omit, // shall not be used in IAP
+        			feeQualifier := omit // shall not be used in IAP
+				}
+			},
+			includedDiscounts := {{*}},
+			associatedEventData := omit, // shall not be used in IAP
+			externalCosts := *
+		};
+
+		template (value) UsageList mw_stayingInAreaGnssUsageList := {
+			usageListEntry {
+				forStayingInArea {		
+					areaDisplayName := ?,
+					qualifier := *,
+					stayedDuration := ?,
+        			chargeUnit := (time), //event and distance shall not be used
+        			fee := omit, // shall not be used in IAP
+        			feeQualifier := omit // shall not be used in IAP
+				}
+			},
+			includedDiscounts := {{*}},
+			associatedEventData := omit, // shall not be used in IAP
+			externalCosts := *
+		};
+
+		template (value) UsageList mw_cordonCrossingRoadGnssUsageList := {
+			usageListEntry {
+				forCordonCrossing {		
+					qualifier := *,
+        			entranceChargeObject := ?,
+        			entranceChargeObjectName := *,
+        			exitChargeObject := ?, // mandatory in IAP
+        			exitChargeObjectName := omit, //shall not be used in IAP
+        			exitTime := ?, // mandatory in IAP
+        			fee := omit, // shall not be used in IAP
+        			feeQualifier := omit // shall not be used in IAP				}
+			},
+			includedDiscounts := {{*}},
+			associatedEventData := omit, // shall not be used in IAP
+			externalCosts := *
+		};
+										 							
 		group DSRC_BILLINGDETAILS {
 		
 			template (value) BillingDetailsADU mw_aduDsrcBillingDetails :={
@@ -1044,6 +1102,8 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
     			paymentReference := *
   			}					
 		}
+		
+		
 		
 		group GNSS_TOLLDECLARATIONS {
    			template InfoExchange mw_apduTollDeclaration := m_apduNoSec(mw_apci, Adus:{tollDeclarationADUs:=?});
