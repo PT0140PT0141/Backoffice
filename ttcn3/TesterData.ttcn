@@ -19,9 +19,9 @@ module EfcInfoExchange_TesterData{
 	import from EfcInfoExchange_ParameterisedAsn1Data all;
 	import from LibEfc_Common_Parameterised_Asn1_Data all;
 	
-	modulepar Provider TD_IDENTIFIER; //TODO this modulepar seems redundant with the ones below
-	modulepar Provider APDU_ORIGINATOR_FOR_TESTER; //value of the InfoExchange.infoExchangeContent.apci.apduOriginator
-	modulepar Provider INFORMATION_SENDER_ID_FOR_TESTER;	//value of the InfoExchange.infoExchangeContent.apci.informationSenderID
+	modulepar EfcDsrcApplication.Provider TD_IDENTIFIER; //TODO this modulepar seems redundant with the ones below
+	modulepar EfcDsrcApplication.Provider APDU_ORIGINATOR_FOR_TESTER; //value of the InfoExchange.infoExchangeContent.apci.apduOriginator
+	modulepar EfcDsrcApplication.Provider INFORMATION_SENDER_ID_FOR_TESTER;	//value of the InfoExchange.infoExchangeContent.apci.informationSenderID
 	
 	group ContractIssuerData {
 
@@ -230,6 +230,57 @@ module EfcInfoExchange_TesterData{
 		modulepar EfcDsrcApplication.EFC_ContextMark TD_SERVICE_PROVIDER_CONTRACT := {INFORMATION_SENDER_ID_FOR_TESTER, '11'O ,99};
 		modulepar Provider TD_TOLL_CONTEXT;	//value of the InfoExchange.infoExchangeContent.apci.informationSenderID	
 	}
+
+
+	group GNSSBILLINGDETAILS {
+	
+		modulepar EfcAutonomousCharging.Period TD_PERIOD_1; // period in billing details
+		modulepar ASNAUX.UTF8String TD_USER_CLASS; // applied user class
+		modulepar ASNAUX.UTF8String TD_DECLARED_VEHICLE_CLASS; // declared vehicle class
+		modulepar ASNAUX.UTF8String TD_APPLIED_TIME_CLASS; // applied time class
+		modulepar ASNAUX.UTF8String TD_COST_CENTER; // cost center
+		modulepar EfcAutonomousCharging.ChargeObjectId TD_CHARGE_OBJECT_ID; // charge object id
+		modulepar TollEventId TD_TOLL_EVENT_ID;
+		modulepar ASNAUX.GeneralizedTime TD_TOLL_EVENT_TIME;
+		modulepar ExtendedPaymentAmount TD_DISCOUNT_AMOUNT;
+		modulepar DiscountQualifier TD_DISCOUNT_QUALIFIER;
+ 
+		
+/*		modulepar record {
+      		ASNAUX.UTF8String contextName,
+      		ASNAUX.UTF8String appliedUserClass,
+      		record of record {
+        		ASNAUX.UTF8String declaredVehicleClass,
+        	record of record {
+          		ASNAUX.UTF8String appliedTimeClass,
+          		ASNAUX.UTF8String costCenter optional,
+          		record of UsageList usageList
+        	} perUsedTimeClasses
+      	} perDeclaredVehicleClasses
+    	} TD_GNSS_USAGE_DETAILS_1;
+*/    	
+		
+/*		var BillingDetailsADU v_aduGnssBillingDetailsTester(
+			in integer p_billingDetailsNum,
+			in record of TollDeclarationId p_tollDeclarationIds) := mw_aduGnssBillingDetails := {
+            	billingDetailsId := {
+                	issuerId := TD_IDENTIFIER,		
+                    billingDetailsNum := p_billingDetailsNum,
+                    dateOfService := omit
+                    },
+                tollContext := TD_IDENTIFIER,
+                userId := TD_USERID_1,
+                relatedBillingDetails := omit,
+                period := TD_PERIOD_1,
+                billingDetailsAmount := omit, 
+                usageDetails := TD_GNSS_USAGE_DETAILS_1,
+                refTollDeclaration := p_tollDeclarationIds,
+                associatedEventData := {omit},
+                actionCode := (ActionCode_send_, ActionCode_revoke_ ,ActionCode_adjust_ ),
+                paymentReference := omit
+  			}			
+*/
+		
 	
 } // end module 
 	
