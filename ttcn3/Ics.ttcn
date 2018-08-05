@@ -32,6 +32,7 @@ module EfcInfoExchange_Ics {
     modulepar boolean ICS_A52_2_implementedGNSSBILLINGDETAILSTC := true; 
     modulepar boolean ICS_A52_3_implementedGNSSTOLLDECLARATION := true; 
     modulepar boolean ICS_A52_4_implementedGNSSPAYMENTANNOUNCEMENT := true;
+    modulepar boolean ICS_A56_1_implementedSectionedRoads := true;   
     modulepar boolean ICS_A56_6_implementedIncludedDiscounts := true;    
 	
 } 
