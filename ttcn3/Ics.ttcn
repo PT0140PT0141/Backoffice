@@ -35,6 +35,7 @@ module EfcInfoExchange_Ics {
     modulepar boolean ICS_A56_1_implementedSectionedRoads := true;   
     modulepar boolean ICS_A56_2_implementedTravellingInArea := true;   
     modulepar boolean ICS_A56_3_implementedStayingInArea := true;   
+    modulepar boolean ICS_A56_4_implementedCordonCrossing := true;   
     modulepar boolean ICS_A56_6_implementedIncludedDiscounts := true;    
 	
 } 
