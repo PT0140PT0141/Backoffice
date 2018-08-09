@@ -20,8 +20,11 @@ module EfcInfoExchange_TesterData{
 	import from LibEfc_Common_Parameterised_Asn1_Data all;
 	
 	modulepar EfcDsrcApplication.Provider TD_IDENTIFIER; //TODO this modulepar seems redundant with the ones below
-	modulepar EfcDsrcApplication.Provider APDU_ORIGINATOR_FOR_TESTER; //value of the InfoExchange.infoExchangeContent.apci.apduOriginator
-	modulepar EfcDsrcApplication.Provider INFORMATION_SENDER_ID_FOR_TESTER;	//value of the InfoExchange.infoExchangeContent.apci.informationSenderID
+	modulepar EfcDsrcApplication.Provider TD_APDU_ORIGINATOR_FOR_TESTER; //value of the InfoExchange.infoExchangeContent.apci.apduOriginator
+	modulepar EfcDSRCApplication.Provider TD_INVALID_APDU_ORIGINATOR_FOR_TESTER // for base test cases
+	modulepar EfcDsrcApplication.Provider TD_INFORMATION_SENDER_ID_FOR_TESTER;	//value of the InfoExchange.infoExchangeContent.apci.informationSenderID
+	modulepar EfcDsrcApplication.Provider TD_INVALID_INFORMATION_SENDER_ID_FOR_TESTER; // for base test cases
+	modulepar EfcDsrcApplication.Provider TD_INVALID_INFORMATION_RECEPIENT_ID_FOR_IUT; // for base test cases
 	
 	group ContractIssuerData {
 
