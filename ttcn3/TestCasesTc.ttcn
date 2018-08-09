@@ -3958,10 +3958,10 @@ module EfcInfoExchange_TestCasesTc {
 					}
 				}	
 
-                // Step 2: Tigger IUT with GNSS.BILLINGDETAILS_TC_TR_TC_1_ADJUST to send an Initiating_Apdu containing one BillingDetailsADU
-                // with actionCode = send and adjust the same BillingDetailsId in a second step
+                // Step 2: Tigger IUT with GNSS.BILLINGDETAILS_TC_TR_TC_1_SEND to send an Initiating_Apdu containing one BillingDetailsADU
+                // with actionCode = send
                 
-                f_sendAndLogTrigger(GNSS_BILLINGDETAILS_TC_TR_TC_1_ADJUST);
+                f_sendAndLogTrigger(GNSS_BILLINGDETAILS_TC_TR_TC_1_SEND);
 
 				var InfoExchange v_apduToBeReceived := {
 				  	mw_apduNoAuthInitIut({{mw_aduGnssBillingDetails:= {
@@ -3985,7 +3985,12 @@ module EfcInfoExchange_TestCasesTc {
 				f_wait(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TSP);
 				f_sendAndLogApdu(m_apduNAckIndivudualIssuesTester(v_apduReceived, {1, AduReasonCode_semanticError_}));
 
-                // Step 4: Wait for IUT to send adjusted BillingDetailsADU
+                // Step 4: Tigger IUT with GNSS.BILLINGDETAILS_TC_TR_TC_1_ADJUST to send an Initiating_Apdu containing one BillingDetailsADU
+                // with actionCode = adjust the same BillingDetailsId from Step 2
+
+                f_sendAndLogTrigger(GNSS_BILLINGDETAILS_TC_TR_TC_1_ADJUST);
+
+                // Wait for IUT to send adjusted BillingDetailsADU
                 // with actionCode = adjust
                 // with same billingDetailsId as already received billingDetailsId
 				var InfoExchange v_apduToBeReceived := {
@@ -4055,10 +4060,10 @@ module EfcInfoExchange_TestCasesTc {
 					}
 				}	
 
-                // Step 2: Tigger IUT with GNSS.BILLINGDETAILS_TC_TR_TC_1_REVOKE to send an Initiating_Apdu containing one BillingDetailsADU
-                // with actionCode = send and revoke the same BillingDetailsId in a second step
+                // Step 2: Tigger IUT with GNSS.BILLINGDETAILS_TC_TR_TC_1_SEND to send an Initiating_Apdu containing one BillingDetailsADU
+                // with actionCode = send
                 
-                f_sendAndLogTrigger(GNSS_BILLINGDETAILS_TC_TR_TC_1_REVOKE);
+                f_sendAndLogTrigger(GNSS_BILLINGDETAILS_TC_TR_TC_1_SEND);
 
 				var InfoExchange v_apduToBeReceived := {
 				  	mw_apduNoAuthInitIut({{mw_aduGnssBillingDetails:= {
@@ -4082,7 +4087,12 @@ module EfcInfoExchange_TestCasesTc {
 				f_wait(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TSP);
 				f_sendAndLogApdu(m_apduDefaultAckTester(v_apduReceived));
 
-                // Step 4: Wait for IUT to revke BillingDetailsADU
+                // Step 4: Tigger IUT with GNSS.BILLINGDETAILS_TC_TR_TC_1_REVKE to send an Initiating_Apdu containing one BillingDetailsADU
+                // with actionCode = revoke the same BillingDetailsId from Step 2
+
+                f_sendAndLogTrigger(GNSS_BILLINGDETAILS_TC_TR_TC_1_ADJUST);
+
+                // Wait for IUT to revke BillingDetailsADU
                 // with actionCode = revoke
                 // with same billingDetailsId as already received billingDetailsId
 				var InfoExchange v_apduToBeReceived := {

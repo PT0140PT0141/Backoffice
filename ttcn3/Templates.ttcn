@@ -1007,10 +1007,10 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 					listOfSections := {mw_sections}; // mandatory in IAP 
 					invoiceAggregationNumber := omit, //shall not be used in IAP
 					fee := omit, // shall mot be used in IAP,
-					feeQualifier := omit, // shall not be used in IAP
+					feeQualifier := omit // shall not be used in IAP
 				}
 			},
-			includedDiscounts := {{*}},
+			includedDiscounts := *,
 			associatedEventData := omit, // shall not be used in IAP
 			externalCosts := *
 		};
