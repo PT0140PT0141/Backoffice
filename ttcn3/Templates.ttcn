@@ -61,8 +61,8 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
     	}
 
 		template (value) ApciFields m_apciInitTester modifies mw_apci :={
-    		apduOriginator := APDU_ORIGINATOR_FOR_TESTER,  
-    		informationSenderID := INFORMATION_SENDER_ID_FOR_TESTER, 
+    		apduOriginator := TD_APDU_ORIGINATOR_FOR_TESTER,  
+    		informationSenderID := TD_INFORMATION_SENDER_ID_FOR_TESTER, 
     		informationrecipientID := INFORMATION_SENDER_ID_FOR_IUT,
 			apduIdentifier := float2int(rnd()) * 65535,
     		previousApduId := omit,
