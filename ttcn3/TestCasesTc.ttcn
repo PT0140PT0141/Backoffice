@@ -12,19 +12,19 @@
  *
  *	Transaction type			!	BV					! BI			! Comments
  * 	----------------------------!-----------------------!---------------!--------------------------------
- *	Base						! open					! open			! in progress
+ *	Base						! done					! done			! ready for compile
  *	Userdetails					! open					! open			! available but to be reworked
  *	ListOfUsers					! open					! open			! in progress
- *	ExceptionList				! done					! done			! revised and ready for compile
- *	TrustObjects				! done					! done			! revised and ready for compile
+ *	ExceptionList				! done					! done			! ready for compile
+ *	TrustObjects				! done					! done			! ready for compile
  *	PaymentClaim				! open					! n.a.			! in progress
- *	DSRC.ContractIssuerList		! done					! done			! revised and ready for compile
- *	DSRC.EFCContextData			! done					! n.a.			! revised and ready for compile 
- *	DSRC.BillingDetails			! done					! n.a.			! revised and ready for compile
- *	DSRC.ReportAbnormalOBE		! done					! n.a.			! revised and ready for compile
+ *	DSRC.ContractIssuerList		! done					! done			! ready for compile
+ *	DSRC.EFCContextData			! done					! n.a.			! ready for compile 
+ *	DSRC.BillingDetails			! done					! n.a.			! ready for compile
+ *	DSRC.ReportAbnormalOBE		! done					! n.a.			! ready for compile
  *	GNSS.TollDeclaration		! done					! done			! done but need to revise List of ChargeReports in template
  *	GNSS.BillingDetails.TSP		! open					! open			! in progress
- *	GNSS.BillingDetails.TC		! done					! n.a.			! revised and ready for compile
+ *	GNSS.BillingDetails.TC		! done					! n.a.			! ready for compile
  *	GNSS.PaymentAnnouncement	! open					! open			! in progress
  */
  
@@ -60,23 +60,420 @@ module EfcInfoExchange_TestCasesTc {
       * @remark  nn TCs
       */
  
-	group Base {
-	/**
-	 * @desc test cases for validating correct general behaviour which is required for any transaction types
-	 * @remark TODO PT140: These TCs shall be completed after the transaction TCs are finalized
-	 */
-		testcase TP_TC_Base_BV_01() runs on MainTestComponent system TestAdapter {}
-		testcase TP_TC_Base_BI_01() runs on MainTestComponent system TestAdapter {}
-		testcase TP_TC_Base_BI_02() runs on MainTestComponent system TestAdapter {}
-		testcase TP_TC_Base_BI_03() runs on MainTestComponent system TestAdapter {}
-		testcase TP_TC_Base_BI_04() runs on MainTestComponent system TestAdapter {}
-		testcase TP_TC_Base_BI_05() runs on MainTestComponent system TestAdapter {}
-		testcase TP_TC_Base_BI_06() runs on MainTestComponent system TestAdapter {}
-		testcase TP_TC_Base_BI_07() runs on MainTestComponent system TestAdapter {}
+	group BASE {
+		group Valid_Behaviour {
+
+			testcase TP_TC_BASE_BV_01() runs on MainTestComponent system TestAdapter {		
+			/**
+	 		* @desc TP_TC_Base_BV_01: Verify that the TC validates correct infoExchanceAuthenticators in received APDUs
+	 		* and generates correct infoExchangeAuthenticators
+	 		* @remark  [16986:2016], Clause 6.2.2 and Table A.1/1 and Table A.3/3 and Table A.7/3
+	 		*/
+	 
+	  			// Initialisation
+ 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A3_3_useAuthenticator and ICS_A7_3_implementedEXCEPTIONLIST;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc                 
+				
+				// Step 1:
+                // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for white list with authenticator
+                var InfoExchange v_apduToBeSent := m_apduAuthInitTester({TD_EXCEPTIONLIST_ADU_WHITE_VALID});
+				f_sendAndLogApdu(v_apduToBeSent);                	
+  	
+                // Start timer
+                t_step.start(EXCEPTIONLIST_WHITE_TIME1_MAX_TC);               
+                // Step 2:	
+              	// Wait for Default_Ack_Apdu within time EXCEPTIONLIST.TIME1
+              	// if negative Ack or not received set test failure --> is done in altstep
+
+				alt {
+					[] mtcPort.receive(mw_apduAuthRespIut(v_apduToBeSent, m_oneAckInAdusStruct(m_aduDefaultAck(v_apduToBeSent)))) -> value v_apduReceived {
+						
+						if (fx_evaluateAuthenticator(v_apduReceived)) {
+							f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
+							setverdict(pass);
+						}
+						else {
+							setverdict(fail);
+							f_addLogEntry("Incorrect authenticator");
+						};
+					}
+				}
+				f_closeDownMtc();              
+			} // End of TP_TC_BASE_BV_01
+		} //end group valid_behaviour         
+
+		group Invalid_Behaviour {
+
+			testcase TP_TC_BASE_BI_01() runs on MainTestComponent system TestAdapter {		
+			/**
+	 		* @desc TP_TC_Base_BI_01: Verify that the TC correctly responds to invalid aidIdentifier
+	 		* in the APCI field received in an APDU
+	 		* @remark  [16986:2016], Clause 6.2.2 and Table A.1/1 and Table A.7/3
+	 		*/
+	 
+	  			// Initialisation
+ 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A7_3_implementedEXCEPTIONLIST;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc                 
+				
+				// Step 1:
+				// Prepare APCI with invalid aidIdentifier
+				template (value) ApciFields m_apciInvalidAidInitTester modifies m_apciInitTester:= {aidIdentifier:=0};
+							
+                // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for white list
+                // Including the invalid APCI 
+                var InfoExchange v_apduToBeSent := m_apduNoAuth(m_apciInvalidAidInitTester, {TD_EXCEPTIONLIST_ADU_WHITE_VALID});
+				f_sendAndLogApdu(v_apduToBeSent);                	
+  	
+                // Start timer
+                t_step.start(EXCEPTIONLIST_WHITE_TIME1_MAX_TC);               
+                // Step 2:	
+              	// Wait for NAck_Protocol_Apdu(protocolVersionError (6))
+              	// within time EXCEPTIONLIST.TIME1
+              	// if not received set test failure --> is done in altstep
+
+				alt {
+					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduToBeSent, ApduReasonCode_protocolVersionError_)) -> value v_apduReceived {
+						// Log what we received, check and stop time
+						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
+						setverdict(pass);
+					}
+				}
+				f_closeDownMtc();              
+			} // End of TP_TC_BASE_BI_01
+
+			testcase TP_TC_BASE_BI_02() runs on MainTestComponent system TestAdapter {		
+			/**
+	 		* @desc TP_TC_Base_BI_02: Verify that the TC correctly responds to invalid apduOriginator
+	 		* in the APCI field received in an APDU
+	 		* @remark  [16986:2016], Clause 6.2.2 and Table A.1/1 and Table A.7/3
+	 		*/
+	 
+	  			// Initialisation
+ 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A7_3_implementedEXCEPTIONLIST;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc                 
+				
+				// Step 1:
+				// Prepare APCI with invalid apduOriginator (= not Tester Originator)
+				template (value) ApciFields m_apciInvalidAidInitTester modifies m_apciInitTester:= {apduOriginator:= TD_INVALID_APDU_ORIGINATOR_FOR_TESTER};
+							
+                // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for white list
+                // Including the invalid APCI 
+                var InfoExchange v_apduToBeSent := m_apduNoAuth(m_apciInvalidAidInitTester, {TD_EXCEPTIONLIST_ADU_WHITE_VALID});
+				f_sendAndLogApdu(v_apduToBeSent);                	
+  	
+                // Start timer
+                t_step.start(EXCEPTIONLIST_WHITE_TIME1_MAX_TC);               
+                // Step 2:	
+              	// Wait for NAck_Protocol_Apdu(originatorRejected (7))
+              	// within time EXCEPTIONLIST.TIME1
+              	// if not received set test failure --> is done in altstep
+
+				alt {
+					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduToBeSent, ApduReasonCode_originatorRejected_)) -> value v_apduReceived {
+						// Log what we received, check and stop time
+						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
+						setverdict(pass);
+					}
+				}
+				f_closeDownMtc();              
+			} // End of TP_TC_BASE_BI_02
+
+			testcase TP_TC_BASE_BI_03() runs on MainTestComponent system TestAdapter {		
+			/**
+	 		* @desc TP_TC_Base_BI_03: Verify that the TC correctly responds to invalid or unknown informationSenderID
+	 		* in the APCI field received in an APDU
+	 		* @remark  [16986:2016], Clause 6.2.2 and Table A.1/1 and Table A.7/3
+	 		*/
+	 
+	  			// Initialisation
+ 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A7_3_implementedEXCEPTIONLIST;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc                 
+				
+				// Step 1:
+				// Prepare APCI with invalid or unknown informationSenderID (= not Sender Id of the Tester)
+				template (value) ApciFields m_apciInvalidSenderIdInitTester modifies m_apciInitTester:= {informationSenderID:= TD_INVALID_INFORMATION_SENDER_ID_FOR_TESTER};
+							
+                // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for white list
+                // Including the invalid APCI 
+                var InfoExchange v_apduToBeSent := m_apduNoAuth(m_apciInvalidSenderIdInitTester, {TD_EXCEPTIONLIST_ADU_WHITE_VALID});
+				f_sendAndLogApdu(v_apduToBeSent);                	
+  	
+                // Start timer
+                t_step.start(EXCEPTIONLIST_WHITE_TIME1_MAX_TC);               
+                // Step 2:	
+              	// Wait for NAck_Protocol_Apdu(originatorRejected (7))
+              	// within time EXCEPTIONLIST.TIME1
+              	// if not received set test failure --> is done in altstep
+
+				alt {
+					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduToBeSent, ApduReasonCode_originatorRejected_)) -> value v_apduReceived {
+						// Log what we received, check and stop time
+						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
+						setverdict(pass);
+					}
+				}
+				f_closeDownMtc();              
+			} // End of TP_TC_BASE_BI_03
+
+			testcase TP_TC_BASE_BI_04() runs on MainTestComponent system TestAdapter {		
+			/**
+	 		* @desc TP_TC_Base_BI_04: Verify that the TC correctly validates an informationRecipientID
+	 		* in APCI field which does not address the IUT
+	 		* @remark  [16986:2016], Clause 6.2.2 and Table A.1/1 and Table A.7/3
+	 		*/
+	 
+	  			// Initialisation
+ 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A7_3_implementedEXCEPTIONLIST;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc                 
+				
+				// Step 1:
+				// Prepare APCI with invalid or unknown informationRecipientID (= not Id of the Iut)
+				template (value) ApciFields m_apciInvalidRecipientIdInitTester
+					modifies m_apciInitTester:= {informationrecipientID:= TD_INVALID_INFORMATION_RECEPIENT_ID_FOR_IUT};
+							
+                // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for white list
+                // Including the invalid APCI 
+                var InfoExchange v_apduToBeSent := m_apduNoAuth(m_apciInvalidRecipientIdInitTester, {TD_EXCEPTIONLIST_ADU_WHITE_VALID});
+				f_sendAndLogApdu(v_apduToBeSent);                	
+  	
+                // Start timer
+                t_step.start(EXCEPTIONLIST_WHITE_TIME1_MAX_TC);               
+                // Step 2:	
+              	// Wait for NAck_Protocol_Apdu(recipientUnknown (8))
+              	// within time EXCEPTIONLIST.TIME1
+              	// if not received set test failure --> is done in altstep
+
+				alt {
+					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduToBeSent, ApduReasonCode_recipientUnknown_)) -> value v_apduReceived {
+						// Log what we received, check and stop time
+						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
+						setverdict(pass);
+					}
+				}
+				f_closeDownMtc();              
+			} // End of TP_TC_BASE_BI_04
+
+			testcase TP_TC_BASE_BI_05() runs on MainTestComponent system TestAdapter {		
+			/**
+	 		* @desc TP_TC_Base_BI_05: Verify that the TC correctly respond to invalid apduIdentifier in APCI field
+	 		* received in an APDU
+	 		* @remark  [16986:2016], Clause 6.2.2 and Table A.1/1 and Table A.7/3
+	 		*/
+	 
+	  			// Initialisation
+ 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A7_3_implementedEXCEPTIONLIST;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc                 
+				
+				// Step 0:
+				// Prepare and capture the apdu to be sent in a variable to avoid apduIdentifier to be re-generated
+				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({TD_EXCEPTIONLIST_ADU_WHITE_VALID});
+
+				// Send APDU
+				f_sendAndLogApdu(v_apduToBeSent);              	
+
+                // Start timer
+                t_step.start(EXCEPTIONLIST_WHITE_TIME1_MAX_TC);               
+
+              	// Wait for Default_Ack_Apdu within time EXCEPTIONLIST.TIME1
+              	// if negative Ack or not received set test failure --> is done in altstep
+
+				alt {
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {
+						// Log what we received, check minimum time and stop time
+						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
+					}
+				}											
+											
+                // Send the same APDU again with same apduIdentifier 
+				f_sendAndLogApdu(v_apduToBeSent);              	
+
+                // Start timer
+                t_step.start(EXCEPTIONLIST_WHITE_TIME1_MAX_TC);               
+
+                // Step 2:	
+              	// Wait for NAck_Protocol_Apdu(apduNotOk (3))
+              	// within time EXCEPTIONLIST.TIME1
+              	// if not received set test failure --> is done in altstep
+
+				alt {
+					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduToBeSent, ApduReasonCode_apduNotOK_)) -> value v_apduReceived {
+						// Log what we received, check and stop time
+						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
+						setverdict(pass);
+					}
+				}
+				f_closeDownMtc();              
+			} // End of TP_TC_BASE_BI_05
+
+			testcase TP_TC_BASE_BI_06() runs on MainTestComponent system TestAdapter {		
+			/**
+	 		* @desc TP_TC_Base_BI_06: Verify that the TC correctly responds to a received APDU
+	 		* in which the nextAPDUId field is present in APCI field
+	 		* @remark  [16986:2016], Clause 6.2.1 and Table A.1/1 and Table A.7/3
+	 		*/
+	 
+	  			// Initialisation
+ 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A7_3_implementedEXCEPTIONLIST;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc                 
+				
+				// Step 1:
+				// Prepare APCI with containing nextApduId field
+				template (value) ApciFields m_apciInvalidWithNextApduIdInitTester
+					modifies m_apciInitTester:= {nextApduId := 1};
+							
+                // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for white list
+                // Including the invalid APCI 
+                var InfoExchange v_apduToBeSent := m_apduNoAuth(m_apciInvalidWithNextApduIdInitTester, {TD_EXCEPTIONLIST_ADU_WHITE_VALID});
+				f_sendAndLogApdu(v_apduToBeSent);                	
+  	
+                // Start timer
+                t_step.start(EXCEPTIONLIST_WHITE_TIME1_MAX_TC);               
+                // Step 2:	
+              	// Wait for NAck_Protocol_Apdu(apduNotOk (3))
+              	// within time EXCEPTIONLIST.TIME1
+              	// if not received set test failure --> is done in altstep
+
+				alt {
+					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduToBeSent, ApduReasonCode_apduNotOK_)) -> value v_apduReceived {
+						// Log what we received, check and stop time
+						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
+						setverdict(pass);
+					}
+				}
+				f_closeDownMtc();              
+			} // End of TP_TC_BASE_BI_06
+
+			testcase TP_TC_BASE_BI_07() runs on MainTestComponent system TestAdapter {		
+			/**
+	 		* @desc TP_TC_Base_BI_07: Verify that the TC correctly responds to a received APDU in which
+	 		* the inResponseToApduId is present in APCI field but the received APDU is not in response to a previous APDU
+	 		* @remark  [16986:2016], Clause 6.2.1 and Table A.1/1 and Table A.7/3
+	 		*/
+	 
+	  			// Initialisation
+ 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A7_3_implementedEXCEPTIONLIST;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc                 
+				
+				// Step 1:
+				// Prepare APCI for an Initiating APDU in which inResponseToApdu field is present
+				template (value) ApciFields m_apciInvalidWithInResponseToApduIdInitTester
+					modifies m_apciInitTester:= {inResponseToApduId := 1};
+							
+                // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for white list
+                // Including the invalid APCI 
+                var InfoExchange v_apduToBeSent := m_apduNoAuth(m_apciInvalidWithInResponseToApduIdInitTester, {TD_EXCEPTIONLIST_ADU_WHITE_VALID});
+				f_sendAndLogApdu(v_apduToBeSent);                	
+  	
+                // Start timer
+                t_step.start(EXCEPTIONLIST_WHITE_TIME1_MAX_TC);               
+                // Step 2:	
+              	// Wait for NAck_Protocol_Apdu(apduNotOk (3)) or NAck_Protocol_Apdu(sequenceError (4)) 
+              	// within time EXCEPTIONLIST.TIME1
+              	// if not received set test failure --> is done in altstep
+
+				alt {
+					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduToBeSent, ApduReasonCode_apduNotOK_)) -> value v_apduReceived {
+						// Log what we received, check and stop time
+						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
+						setverdict(pass);
+					}
+					
+					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduToBeSent, ApduReasonCode_sequenceError_)) -> value v_apduReceived {
+						// Log what we received, check and stop time
+						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
+						setverdict(pass);
+					}
+				}
+				f_closeDownMtc();              
+			} // End of TP_TC_BASE_BI_07
+
 		testcase TP_TC_Base_BI_08() runs on MainTestComponent system TestAdapter {}
-		testcase TP_TC_Base_BI_09() runs on MainTestComponent system TestAdapter {}
-		testcase TP_TC_Base_BI_10() runs on MainTestComponent system TestAdapter {}
-	} //End group Base TPs
+
+			testcase TP_TC_BASE_BI_09() runs on MainTestComponent system TestAdapter {		
+			/**
+	 		* @desc TP_TC_Base_BI_09: Verify that the TC correctly responds to an
+	 		* invalid apduDate in the APCI field of the received APDU
+	 		* @remark  [16986:2016], Clause 6.2.1 and Table A.1/1 and Table A.7/3
+	 		*/
+	 
+	  			// Initialisation
+ 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A7_3_implementedEXCEPTIONLIST;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc                 
+				
+				// Step 1:
+				// Prepare APCI for an Initiating APDU in which the apduDate is invalid (= presents a future date/time)
+				template (value) ApciFields m_apciInvalidApduDateInitTester
+					modifies m_apciInitTester:= {apduDate := fx_getUtc(100000)};
+							
+                // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for white list
+                // Including the invalid APCI 
+                var InfoExchange v_apduToBeSent := m_apduNoAuth(m_apciInvalidWithInResponseToApduIdInitTester, {TD_EXCEPTIONLIST_ADU_WHITE_VALID});
+				f_sendAndLogApdu(v_apduToBeSent);                	
+  	
+                // Start timer
+                t_step.start(EXCEPTIONLIST_WHITE_TIME1_MAX_TC);               
+                // Step 2:	
+              	// Wait for NAck_Protocol_Apdu(apduNotOk (3)) 
+              	// within time EXCEPTIONLIST.TIME1
+              	// if not received set test failure --> is done in altstep
+
+				alt {
+					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduToBeSent, ApduReasonCode_apduNotOK_)) -> value v_apduReceived {
+						// Log what we received, check and stop time
+						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
+						setverdict(pass);
+					}
+				}
+				f_closeDownMtc();              
+			} // End of TP_TC_BASE_BI_09
+	
+			testcase TP_TC_BASE_BI_10() runs on MainTestComponent system TestAdapter {		
+			/**
+	 		* @desc TP_TC_Base_BI_10: Verify that the TC responds to incorrect infoExchanceAuthenticators in received APDUs
+	 		* @remark  [16986:2016], Clause 6.2.2, Clause 6.3.2 and Table A.1/1 and Table A.3/3 and Table A.7/3
+	 		*/
+	 
+	  			// Initialisation
+ 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A3_3_useAuthenticator and ICS_A7_3_implementedEXCEPTIONLIST;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc                 
+
+				// Set up a correct apdu which not be sent (Black-list) and create an valid authenticator		
+				var InfoExchange v_apduToBeSent := m_apduAuthInitTester({TD_EXCEPTIONLIST_ADU_BLACK_VALID});
+
+				// Get this correctly computed authenticator				
+				var ApduAuthenticator v_authenticator:= v_apduToBeSent.infoExchangeAuthenticator;
+					
+				// Step 0:
+				// Prepare APCI for an Initiating APDU (White-list) in which the authenticator is replaced by
+				// the one calculated above for the black-list
+				template (value) InfoExchange m_apduInvalidAuthInitTester
+					modifies m_apduAuthInitTester := {infoExchangeAuthenticator := v_authenticator};
+											
+				// Step 1:
+                // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for white list with authenticator
+                var InfoExchange v_apduToBeSent := m_apduInvalidAuthInitTester({TD_EXCEPTIONLIST_ADU_WHITE_VALID});
+				f_sendAndLogApdu(v_apduToBeSent);                	
+  	
+                // Start timer
+                t_step.start(EXCEPTIONLIST_WHITE_TIME1_MAX_TC);               
+               	// Step 2:	
+              	// Wait for NAck_Protocol_Apdu(apduNotOk (3)) 
+              	// within time EXCEPTIONLIST.TIME1
+              	// if not received set test failure --> is done in altstep
+
+				alt {
+					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduToBeSent, ApduReasonCode_apduNotOK_)) -> value v_apduReceived {
+						// Log what we received, check and stop time
+						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
+						setverdict(pass);
+					}
+				}
+				f_closeDownMtc();              
+			} // End of TP_TC_BASE_BI_10
+				
+		} //end group invalid_behaviour 
+	} // end group base TPs 
+
 
 	group USERDETAILS {
          group Valid_Behaviour {
@@ -978,7 +1375,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduToBeSent, AduReasonCode_semanticError_)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(DSRC_CONTRACTISSUERLIST_TIME1_MIN_TC);
 						// set verdict
 						setverdict(pass);
 					}
@@ -1030,7 +1427,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(m_apduNAckRequestSentTooOften(v_apduToBeSent)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(DSRC_CONTRACTISSUERLIST_TIME1_MIN_TC);
 						// set verdict
 						setverdict(pass);
 					}
