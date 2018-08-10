@@ -439,12 +439,12 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		  	template RequestADU mw_aduRequestListOfUsers := {
 		  		userListRequest :={
 		  			requestedADUType	:= AduType_provideUserIdListADU_,
-      				userIdRequestType	:= ?,
-      				userId				:= ?,
+      				userIdRequestType	:= UserIdRequestType_allUserIdsToGivenCustomer_, // the only allowd type accoring to IAP restrictions 
+      				userId				:= ? length (1..4), // at least one element shall be present
 					userIdRequestTime	:= ?
 				}
 			}
-		  	
+			  	
 		  	template (value) RequestADU m_aduRequestListOfUsers := {
 	  			userListRequest :={
 	  				requestedADUType	:= AduType_provideUserIdListADU_,
