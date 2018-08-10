@@ -14,7 +14,7 @@
  * 	----------------------------!-----------------------!---------------!--------------------------------
  *	Base						! done					! done			! ready for compile
  *	Userdetails					! open					! open			! available but to be reworked
- *	ListOfUsers					! open					! open			! in progress
+ *	ListOfUsers					! done					! open			! in progress
  *	ExceptionList				! done					! done			! ready for compile
  *	TrustObjects				! done					! done			! ready for compile
  *	PaymentClaim				! open					! n.a.			! in progress
@@ -403,7 +403,6 @@ module EfcInfoExchange_TestCasesTc {
 				f_sendAndLogTrigger(LISTOFUSERS_TR_TC_1);
 
              	// Wait for RequestADU of type userListRequest 
-              	// within time LISTOFUSERS.TIME1
               	// if not received set test failure --> is done in altstep
 
 				alt {
@@ -421,10 +420,26 @@ module EfcInfoExchange_TestCasesTc {
 					modifies m_apciRespTester := {inResponseToApduId := {APDU_ORIGINATOR_FOR_IUT, v_apduId+1}};				
 
 				// Step 2
-				// prepare ProvideUserIdList depending on received request
+				// Prepare ProvideUserIdListADUs depending on received request
+				type record of ProvideUserIdListADU ProvideUserIdListAduList;
+				var ProvideUserIdListAduList v_provideUserIdListAduList;
+				var integer v_i, v_numberOfRequestAdus := lengthof(v_apduReceived.infoExchangeContent.adus);
+				
+				for (v_i := 1; v_i < v_numberOfRequestAdus; v_i := v_i + 1) {
+					v_provideUserIdListAduList[v_i] {
+						originalUserIdRequestType := UserIdRequestType_allUserIdsToGivenCustomer_,
+						originalUserId := v_apduReceived.infoExchangeContent.adus.requestAdus[v_i].userListRequest.userId,
+						userIdList {
+							v_apduReceived.infoExchangeContent.adus.requestAdus[v_i].userListRequest.userId, // send back same userId from request
+							TD_USERID_1, // and additional UserIds (from Tester data assumed belonging to the same customer
+							TD_USERID_2,
+							TD_USERID_3
+						}
+					};
+				}
+
                 // Including the invalid APCI with wrong inResponseToApduId
-                var InfoExchange v_apduToBeSent := m_apduNoAuth(m_apciInvalidInResponseToApduIdRespTester, {//PT140 TODO ProvideUserIdListADU to insert here
-                	});              	
+                var InfoExchange v_apduToBeSent := m_apduNoAuth(m_apciInvalidInResponseToApduIdRespTester, v_provideUserIdListAduList);              	
 
 				// send ProvideUserIdList within TIME1
 				f_wait(USERDETAILS_TIME1_MIN_TC);
@@ -436,7 +451,6 @@ module EfcInfoExchange_TestCasesTc {
               	// Wait for NAck_Protocol_Apdu(apduNotOk (3)) or NAck_Protocol_Apdu(sequenceError (4)) 
               	// within time LISTOFUSERS.TIME2
               	// if not received set test failure --> is done in altstep
-
 				alt {
 					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduToBeSent, ApduReasonCode_apduNotOK_)) -> value v_apduReceived {
 						// Log what we received, check and stop time
@@ -520,11 +534,11 @@ module EfcInfoExchange_TestCasesTc {
   	
                 // Start timer
                 t_step.start(EXCEPTIONLIST_WHITE_TIME1_MAX_TC);               
+
                	// Step 2:	
               	// Wait for NAck_Protocol_Apdu(apduNotOk (3)) 
               	// within time EXCEPTIONLIST.TIME1
               	// if not received set test failure --> is done in altstep
-
 				alt {
 					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduToBeSent, ApduReasonCode_apduNotOK_)) -> value v_apduReceived {
 						// Log what we received, check and stop time
@@ -533,8 +547,7 @@ module EfcInfoExchange_TestCasesTc {
 					}
 				}
 				f_closeDownMtc();              
-			} // End of TP_TC_BASE_BI_10
-				
+			} // End of TP_TC_BASE_BI_10				
 		} //end group invalid_behaviour 
 	} // end group base TPs 
 
@@ -983,7 +996,8 @@ module EfcInfoExchange_TestCasesTc {
 						f_logApduReceivedAndTStep();
 
 						//Check minumum time and stop timer
-						//TODO PT140 this needs to be checked against USERDETAILS_TIMEA f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
+						//TODO PT140 this needs to be checked against USERDETAILS_TIMEA f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP);
+						//t_step is an implicit argument and what we will compare against
 						t_step.stop;
 						
 						//Set default verdict
@@ -1043,6 +1057,167 @@ module EfcInfoExchange_TestCasesTc {
          } // End group Invalid_Behaviour
 
     } // End goup USERDETAILS
+    
+    
+    group LISTOFUSERS {
+		group Valid_Behaviour {
+		
+			testcase TP_TC_LISTOFUSERS_BV_01() runs on MainTestComponent system TestAdapter {
+							
+                /**
+                 * @desc    TP_TC_LISTOFUSERS_BV_01: Verify that the TC correctly performs a LISTOFUSERS transaction 
+                 * @remark  [16986:2016], Clause 6.5 and Table A.1/1 AND Table A.7/2
+                 */
+  
+	  			// Initialisation
+ 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A7_2_implementedLISTOFUSERS;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc                 
+				
+                // Step 1: Tigger IUT with LISTOFUSERS_TR_TC_1 to send one or more valid RequestADU(s) of type userListRequest with
+                //		- userIdRequestType = 0,
+                //		- userId = at least one of {pan, licensePlateNumber, obeId, contractSerialNumber},
+                //		- userIdRequestTime; and
+                //		- requesting IUT declared user data
+				f_sendAndLogTrigger(LISTOFUSERS_TR_TC_1);
+
+             	// Wait for expected RequestADU 
+              	// if not received set test failure --> is done in altstep
+
+				alt {
+					[] mtcPort.receive(mw_apduNoAuthInitIut({mw_aduRequestListOfUsers})) -> value v_apduReceived {
+						// Log what we received, check and stop time
+						f_logReceivedThenCheckAndStopTime(0.0); // no minimum time specified
+					}
+				}
+
+				// Step 2
+				// Prepare ProvideUserIdListADUs depending on received request
+				type record of ProvideUserIdListADU ProvideUserIdListAduList;
+				var ProvideUserIdListAduList v_provideUserIdListAduList;
+				var integer v_i, v_numberOfRequestAdus := lengthof(v_apduReceived.infoExchangeContent.adus);
+				
+				for (v_i := 1; v_i < v_numberOfRequestAdus; v_i := v_i + 1) {
+					v_provideUserIdListAduList[v_i] {
+						originalUserIdRequestType := UserIdRequestType_allUserIdsToGivenCustomer_,
+						originalUserId := v_apduReceived.infoExchangeContent.adus.requestAdus[v_i].userListRequest.userId,
+						userIdList {
+							v_apduReceived.infoExchangeContent.adus.requestAdus[v_i].userListRequest.userId, // send back same userId from request
+							TD_USERID_1, // and additional UserIds (from Tester data assumed belonging to the same customer
+							TD_USERID_2,
+							TD_USERID_3
+						}
+					};
+				}
+																	
+                // Prepare APDU to be sent
+                var InfoExchange v_apduToBeSent := m_apduNoAuthRespTester(v_apduReceived, v_provideUserIdListAduList);              	
+
+				// send ProvideUserIdList within TIME1
+				f_wait(USERDETAILS_TIME1_MIN_TC);
+				f_sendAndLogApdu(v_apduToBeSent);       				
+
+				// Start timer
+                t_step.start(LISTOFUSERS_TIME2_MAX_TC);               	
+             	             
+                // Step 3:	
+              	// Wait for Default_Ack 
+              	// within time LISTOFUSERS.TIME2
+              	// if not received set test failure --> is done in altstep
+				alt {
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {
+						// Log what we received, check and stop time
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME2_MIN_TC);
+						setverdict(pass);
+					}
+				}
+				f_closeDownMtc();              
+			} // End of TP_TC_LISTOFUSERS_BV_01			
+		} // End of Valid_Behaviour
+		
+		group Invalid_Behaviour {
+		
+			testcase TP_TC_LISTOFUSERS_BI_01() runs on MainTestComponent system TestAdapter {
+						
+                /**
+                 * @desc    TP_TC_LISTOFUSERS_BI_01: Verify that the TC correctly responds to a ProvideUserIdListADU with originalUserId not present
+                 * @remark  [16986:2016], Clause 6.5 and Table A.1/1 AND Table A.7/2
+                 */
+                  
+                // Initialisation
+                  
+                // Step 1: Trigger IUT with LISTOFUSERS_TR_TC_1 to send one valid RequestADU of type userListRequest with
+                //		- userIdRequestType = 0,
+                //		- userId = at least one of {pan, licensePlateNumber, obeId, contractSerialNumber},
+                //		- userIdRequestTime; and
+                //		- requesting IUT declared user data
+
+				// Waint for requestADU, validate and check time constraints							
+
+                // Step 2: Send ProvideUserIdListADU not containing an originalUserId field
+                
+                // Step 3: Wait for NAck_Apdu within LISTOFUSERS.TIME2 with aduReasonCode = semanticError (3000D)			
+			
+			} // End of TP_TC_LISTOFUSERS_BI_01
+
+			testcase TP_TC_LISTOFUSERS_BI_02() runs on MainTestComponent system TestAdapter {
+						
+                /**
+                 * @desc    TP_TC_LISTOFUSERS_BI_02: Verify that the TC correctly responds to a ProvideUserIdListADU with userIds
+                 *			which have not be requested in the requestADU
+                 * @remark  [16986:2016], Clause 6.5 and Table A.1/1 AND Table A.7/2
+                 */
+                  
+                // Initialisation
+                  
+                // Step 1: Tigger IUT with LISTOFUSERS_TR_TC_1 to send valid RequestADU(s) of type userListRequest with
+                //		- userIdRequestType = 0,
+                //		- userId = at least one of {pan, licensePlateNumber, obeId, contractSerialNumber},
+                //		- userIdRequestTime; and
+                //		- requesting IUT declared user data
+
+				// Waint for requestADU(s), validate and check time constraints							
+
+                // Step 2: Send ProvideUserIdListADU(s) with userIds which have not been requested
+                
+                // Step 3: Wait for NAck_Apdu with ({0, semanticError (3000)})
+                // or NAck_Apdu with ({1, semanticError (3000)}, �, {n, semanticError (3000)})
+                // where n is the number of ProvideUserIdListADUs
+                // within LISTOFUSERS.TIME2 
+			
+			} // End of TP_TC_LISTOFUSERS_BI_02
+			
+			testcase TP_TC_LISTOFUSERS_BI_03() runs on MainTestComponent system TestAdapter {
+						
+                /**
+                 * @desc    TP_TC_LISTOFUSERS_BI_03: Verify that the TC correctly responds to a ProvideUserIdListADU
+                 *			with invalid userId data
+                 * @remark  [16986:2016], Clause 6.5 and Table A.1/1 AND Table A.7/2
+                 */
+                  
+                // Initialisation
+                  
+                // Step 1: Tigger IUT with LISTOFUSERS_TR_TC_1 to send valid RequestADU(s) of type userListRequest with
+                //		- userIdRequestType = 0,
+                //		- userId = at least one of {pan, licensePlateNumber, obeId, contractSerialNumber},
+                //		- userIdRequestTime; and
+                //		- requesting IUT declared user data
+
+				// Waint for requestADU(s), validate and check time constraints							
+
+                // Step 2: Send ProvideUserIdListADU(s) within LISTOFUSERS.TIME1
+                // containing UserIds in the userIdList with all fields empty
+                
+                // Step 3: Wait for NAck_Apdu with ({0, invalidADU(0)})
+                // or NAck_Apdu with ({1, InvalidADU(0)}, �, {n, invalidADU(0)})
+                // where n is the number of ProvideUserIdListADUs
+                // within LISTOFUSERS.TIME2 
+			
+			} // End of TP_TC_LISTOFUSERS_BI_03
+
+		} // End of Invalid_Behaviour
+		
+	} // End of group LISTOFUSERS
+    
 
 	group DSRC_REPORTABNORMALOBE {
 		group Valid_Behaviour {
@@ -1501,119 +1676,6 @@ module EfcInfoExchange_TestCasesTc {
 		} // End group Invalid_Behaviour
 	} // End DSRC_CONTRACTISSUERLIST 
 
-
-	group LISTOFUSERS {
-	
-		group Valid_Behaviour {
-		
-			testcase TP_TC_LISTOFUSERS_BV_01() runs on MainTestComponent system TestAdapter {
-							
-                /**
-                 * @desc    TP_TC_LISTOFUSERS_BV_01: Verify that the TC correctly performs a LISTOFUSERS transaction 
-                 * @remark  [16986:2016], Clause 6.5 and Table A.1/1 AND Table A.7/2
-                 */
-                  
-                // Initialisation
-                  
-                // Step 1: Tigger IUT with LISTOFUSERS_TR_TC_1 to send valid RequestADU(s) of type userListRequest with
-                //		- userIdRequestType = 0,
-                //		- userId = at least one of {pan, licensePlateNumber, obeId, contractSerialNumber},
-                //		- userIdRequestTime; and
-                //		- requesting IUT declared user data
-
-				// Waint for requestADU(s), validate and check time constraints							
-
-                // Step 2: Send valid ProvideUserIdListADU following request from IUT within time constraint LISTOFUSERS.TIME1
-                
-                // Step 3: Wait for Default_Ack_Apdu within LISTOFUSERS.TIME2			
-			
-			} // End of TP_TC_LISTOFUSERS_BV_01
-			
-		} // End of Valid_Behaviour
-		
-		group Invalid_Behaviour {
-		
-			testcase TP_TC_LISTOFUSERS_BI_01() runs on MainTestComponent system TestAdapter {
-						
-                /**
-                 * @desc    TP_TC_LISTOFUSERS_BI_01: Verify that the TC correctly responds to a ProvideUserIdListADU with originalUserId not present
-                 * @remark  [16986:2016], Clause 6.5 and Table A.1/1 AND Table A.7/2
-                 */
-                  
-                // Initialisation
-                  
-                // Step 1: Trigger IUT with LISTOFUSERS_TR_TC_1 to send one valid RequestADU of type userListRequest with
-                //		- userIdRequestType = 0,
-                //		- userId = at least one of {pan, licensePlateNumber, obeId, contractSerialNumber},
-                //		- userIdRequestTime; and
-                //		- requesting IUT declared user data
-
-				// Waint for requestADU, validate and check time constraints							
-
-                // Step 2: Send ProvideUserIdListADU not containing an originalUserId field
-                
-                // Step 3: Wait for NAck_Apdu within LISTOFUSERS.TIME2 with aduReasonCode = semanticError (3000D)			
-			
-			} // End of TP_TC_LISTOFUSERS_BI_01
-
-			testcase TP_TC_LISTOFUSERS_BI_02() runs on MainTestComponent system TestAdapter {
-						
-                /**
-                 * @desc    TP_TC_LISTOFUSERS_BI_02: Verify that the TC correctly responds to a ProvideUserIdListADU with userIds
-                 *			which have not be requested in the requestADU
-                 * @remark  [16986:2016], Clause 6.5 and Table A.1/1 AND Table A.7/2
-                 */
-                  
-                // Initialisation
-                  
-                // Step 1: Tigger IUT with LISTOFUSERS_TR_TC_1 to send valid RequestADU(s) of type userListRequest with
-                //		- userIdRequestType = 0,
-                //		- userId = at least one of {pan, licensePlateNumber, obeId, contractSerialNumber},
-                //		- userIdRequestTime; and
-                //		- requesting IUT declared user data
-
-				// Waint for requestADU(s), validate and check time constraints							
-
-                // Step 2: Send ProvideUserIdListADU(s) with userIds which have not been requested
-                
-                // Step 3: Wait for NAck_Apdu with ({0, semanticError (3000)})
-                // or NAck_Apdu with ({1, semanticError (3000)}, �, {n, semanticError (3000)})
-                // where n is the number of ProvideUserIdListADUs
-                // within LISTOFUSERS.TIME2 
-			
-			} // End of TP_TC_LISTOFUSERS_BI_02
-			
-			testcase TP_TC_LISTOFUSERS_BI_03() runs on MainTestComponent system TestAdapter {
-						
-                /**
-                 * @desc    TP_TC_LISTOFUSERS_BI_03: Verify that the TC correctly responds to a ProvideUserIdListADU
-                 *			with invalid userId data
-                 * @remark  [16986:2016], Clause 6.5 and Table A.1/1 AND Table A.7/2
-                 */
-                  
-                // Initialisation
-                  
-                // Step 1: Tigger IUT with LISTOFUSERS_TR_TC_1 to send valid RequestADU(s) of type userListRequest with
-                //		- userIdRequestType = 0,
-                //		- userId = at least one of {pan, licensePlateNumber, obeId, contractSerialNumber},
-                //		- userIdRequestTime; and
-                //		- requesting IUT declared user data
-
-				// Waint for requestADU(s), validate and check time constraints							
-
-                // Step 2: Send ProvideUserIdListADU(s) within LISTOFUSERS.TIME1
-                // containing UserIds in the userIdList with all fields empty
-                
-                // Step 3: Wait for NAck_Apdu with ({0, invalidADU(0)})
-                // or NAck_Apdu with ({1, InvalidADU(0)}, �, {n, invalidADU(0)})
-                // where n is the number of ProvideUserIdListADUs
-                // within LISTOFUSERS.TIME2 
-			
-			} // End of TP_TC_LISTOFUSERS_BI_03
-
-		} // End of Invalid_Behaviour
-		
-	} // End of group LISTOFUSERS
 	
 	group EXCEPTIONLIST {
 		
