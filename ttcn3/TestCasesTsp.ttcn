@@ -4029,9 +4029,8 @@ module EfcInfoExchange_TestCasesTsp {
                  // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A52_1_implementedGNSSBILLINGDETAILSTSP and ICS_A52_3_implementedGNSSTOLLDECLARATION;
 				f_intialiseMtc(v_runOrNot);                   
-				// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
-				// PT140 TODO: Trigger definition missing
-				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1);
+				// Trigger IUT with GNSS_TOLLDECLARATION_TR_TSP_1_SEND to send one valid TollDeclarationADU with actionCode = send
+				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1_SEND);
 				//  PT140 TODO: Template for Toll Declaration to be defined
 				alt {
 					[] mtcPort.receive(mw_apduTollDeclaration) -> value v_apduReceived {
