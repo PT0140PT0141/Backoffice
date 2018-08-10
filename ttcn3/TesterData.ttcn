@@ -98,7 +98,7 @@ module EfcInfoExchange_TesterData{
 		modulepar ASNAUX.GeneralizedTime TD_ENTRY_VALIDITY_START;
 		modulepar VehicleParameters TD_VEHICLE_PARAMETERS;
 		modulepar ASNAUX.UTF8String TD_VAT_ID;  
-		modulepar UserId TD_USERID_1;
+		modulepar UserId TD_USERID_1, TD_USERID_2, TD_USERID_3, TD_USERID_4, TD_USERID_5, TD_USERID_6, TD_USERID_7, TD_USERID_8;
 		
 		modulepar ExceptionListADU TD_EXCEPTIONLIST_ADU_BLACK_VALID := {
 			exceptionListVersion := TD_EXCEPTIONLIST_VERSION,
