@@ -108,7 +108,7 @@ module EfcInfoExchange_TestCasesTc {
 			/**
 	 		* @desc TP_TC_Base_BI_01: Verify that the TC correctly responds to invalid aidIdentifier
 	 		* in the APCI field received in an APDU
-	 		* @remark  [16986:2016], Clause 6.2.2 and Table A.1/1 and Table A.7/3
+	 		* @remark  [16986:2016], Clause 6.2.1 and Table A.1/1 and Table A.7/3
 	 		*/
 	 
 	  			// Initialisation
@@ -145,7 +145,7 @@ module EfcInfoExchange_TestCasesTc {
 			/**
 	 		* @desc TP_TC_Base_BI_02: Verify that the TC correctly responds to invalid apduOriginator
 	 		* in the APCI field received in an APDU
-	 		* @remark  [16986:2016], Clause 6.2.2 and Table A.1/1 and Table A.7/3
+	 		* @remark  [16986:2016], Clause 6.2.1 and Table A.1/1 and Table A.7/3
 	 		*/
 	 
 	  			// Initialisation
@@ -182,7 +182,7 @@ module EfcInfoExchange_TestCasesTc {
 			/**
 	 		* @desc TP_TC_Base_BI_03: Verify that the TC correctly responds to invalid or unknown informationSenderID
 	 		* in the APCI field received in an APDU
-	 		* @remark  [16986:2016], Clause 6.2.2 and Table A.1/1 and Table A.7/3
+	 		* @remark  [16986:2016], Clause 6.2.1 and Table A.1/1 and Table A.7/3
 	 		*/
 	 
 	  			// Initialisation
@@ -219,7 +219,7 @@ module EfcInfoExchange_TestCasesTc {
 			/**
 	 		* @desc TP_TC_Base_BI_04: Verify that the TC correctly validates an informationRecipientID
 	 		* in APCI field which does not address the IUT
-	 		* @remark  [16986:2016], Clause 6.2.2 and Table A.1/1 and Table A.7/3
+	 		* @remark  [16986:2016], Clause 6.2.1 and Table A.1/1 and Table A.7/3
 	 		*/
 	 
 	  			// Initialisation
@@ -257,7 +257,7 @@ module EfcInfoExchange_TestCasesTc {
 			/**
 	 		* @desc TP_TC_Base_BI_05: Verify that the TC correctly respond to invalid apduIdentifier in APCI field
 	 		* received in an APDU
-	 		* @remark  [16986:2016], Clause 6.2.2 and Table A.1/1 and Table A.7/3
+	 		* @remark  [16986:2016], Clause 6.2.1 and Table A.1/1 and Table A.7/3
 	 		*/
 	 
 	  			// Initialisation
@@ -387,7 +387,71 @@ module EfcInfoExchange_TestCasesTc {
 				f_closeDownMtc();              
 			} // End of TP_TC_BASE_BI_07
 
-		testcase TP_TC_Base_BI_08() runs on MainTestComponent system TestAdapter {}
+			testcase TP_TC_BASE_BI_08() runs on MainTestComponent system TestAdapter {		
+			/**
+	 		* @desc TP_TC_Base_BI_08: Verify that the TC correctly responds
+	 		* to an invalid inResponseToApduId in APCI field of the APDU received
+	 		* @remark  [16986:2016], Clause 6.2.1 and Table A.1/1 and Table A.7/2
+	 		*/
+	 
+	  			// Initialisation
+ 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A7_2_implementedLISTOFUSERS;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc                 
+				
+				// Step 1:
+				// Trigger Iut to send userListRequest
+				f_sendAndLogTrigger(LISTOFUSERS_TR_TC_1);
+
+             	// Wait for RequestADU of type userListRequest 
+              	// within time LISTOFUSERS.TIME1
+              	// if not received set test failure --> is done in altstep
+
+				alt {
+					[] mtcPort.receive(mw_apduNoAuthInitIut({mw_aduRequestListOfUsers})) -> value v_apduReceived {
+						// Log what we received, check and stop time
+						f_logReceivedThenCheckAndStopTime(0.0); // no minimum time specified
+					}
+				}
+
+				// capture ApduId received
+				var ApduIdentifier v_apduId := v_apduReceived.infoExchangeContent.apci.apduIdentifier;
+				
+				// prepare wrong APCI-fields with wrong inResponseToApduId
+				template (value) ApciFields m_apciInvalidInResponseToApduIdRespTester
+					modifies m_apciRespTester := {inResponseToApduId := {APDU_ORIGINATOR_FOR_IUT, v_apduId+1}};				
+
+				// Step 2
+				// prepare ProvideUserIdList depending on received request
+                // Including the invalid APCI with wrong inResponseToApduId
+                var InfoExchange v_apduToBeSent := m_apduNoAuth(m_apciInvalidInResponseToApduIdRespTester, {//PT140 TODO ProvideUserIdListADU to insert here
+                	});              	
+
+				// send ProvideUserIdList within TIME1
+				f_wait(USERDETAILS_TIME1_MIN_TC);
+				f_sendAndLogApdu(v_apduToBeSent);       				
+				// Start timer
+                t_step.start(LISTOFUSERS_TIME2_MAX_TC);               	
+             	             
+                // Step 3:	
+              	// Wait for NAck_Protocol_Apdu(apduNotOk (3)) or NAck_Protocol_Apdu(sequenceError (4)) 
+              	// within time LISTOFUSERS.TIME2
+              	// if not received set test failure --> is done in altstep
+
+				alt {
+					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduToBeSent, ApduReasonCode_apduNotOK_)) -> value v_apduReceived {
+						// Log what we received, check and stop time
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME2_MIN_TC);
+						setverdict(pass);
+					}
+					
+					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduToBeSent, ApduReasonCode_sequenceError_)) -> value v_apduReceived {
+						// Log what we received, check and stop time
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME2_MIN_TC);
+						setverdict(pass);
+					}
+				}
+				f_closeDownMtc();              
+			} // End of TP_TC_BASE_BI_08
 
 			testcase TP_TC_BASE_BI_09() runs on MainTestComponent system TestAdapter {		
 			/**
