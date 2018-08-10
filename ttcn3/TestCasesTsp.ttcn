@@ -459,14 +459,14 @@ module EfcInfoExchange_TestCasesTsp {
 				// Step 1: Send Initiating APDU containing a valid TrustObjectADU with inResponseToApduId not equal to the value of the previously sent APDU
 				// Answer with the correct requested Trust Object, but using the incorrect inResponseToApduId in the apci
 				var TrustObjectADU v_aduTrustObject;
-					if (isCertificate) {v_aduTrustObject:= m_aduTrustObject(v_receivedPurposes,certificateTESTER_VALUE)};									
-					if (isPublicKey)   {v_aduTrustObject:= m_aduTrustObject(v_receivedPurposes,publicKeyTESTER_VALUE)};								
+					if (isCertificate) {v_aduTrustObject:= m_aduTrustObject(v_receivedPurposes,CERTIFICATE_TESTER_VALUE)};									
+					if (isPublicKey)   {v_aduTrustObject:= m_aduTrustObject(v_receivedPurposes,PUBLICKEY_TESTER_VALUE)};								
 					if (isCertificateRevocationList) {v_aduTrustObject:= m_aduTrustObject(v_receivedPurposes, TD_CERT_REVOKE_LIST)};
 					//TODO PT140 According to the current version of the 12855 or 16986, there is no way to request a MAC or DSRC key is to be sent. Using symmetric key provisionally 
 					if (isMacMasterOrDsrcKey) {
-						if (v_encryptedKey) {v_aduTrustObject:= m_aduTrustObject(v_receivedPurposes,symmetricKeyEncryptedTESTER_VALUE)}
+						if (v_encryptedKey) {v_aduTrustObject:= m_aduTrustObject(v_receivedPurposes,SYMMETRICKEY_ENCRYPTED_TESTER_VALUE)}
 					} else { 
-						v_aduTrustObject:= m_aduTrustObject(v_receivedPurposes,symmetricKeyTESTER_VALUE);
+						v_aduTrustObject:= m_aduTrustObject(v_receivedPurposes,SYMMETRICKEY_TESTER_VALUE);
 					}
 					 							
 				//Prepare a faulty inResponseTo-field. The originator is set to the Tester value which CANNOT be correct.
@@ -1435,7 +1435,7 @@ module EfcInfoExchange_TestCasesTsp {
 				
                  // Step 1: Send one valid APDU containing the a valid TrustObjectADU with the only mandatorily supported type in both profiles, for all possible purposes
 				var InfoExchange v_apduRespondedTo := m_apduNoSecInit(m_aduTrustObject
-					({TrustObjectPurposes_dSRCCharging_,TrustObjectPurposes_dSRCAC_,TrustObjectPurposes_oBEInterrogation_,TrustObjectPurposes_oBEInterrogationAC_}, dsrcKeyRefObjectTESTER_VALUE));                 
+					({TrustObjectPurposes_dSRCCharging_,TrustObjectPurposes_dSRCAC_,TrustObjectPurposes_oBEInterrogation_,TrustObjectPurposes_oBEInterrogationAC_}, DSRCRF_OBJECT_TESTER_VALUE));                 
 				f_sendAndLogApdu(v_apduRespondedTo);                 
                  // Step 2: Wait for positive Ack within TRUSTOBJECTS.TIME2
 				// Set timer
@@ -1638,7 +1638,7 @@ module EfcInfoExchange_TestCasesTsp {
 					{
 					 m_aduTrustObject(
 						{TrustObjectPurposes_dSRCCharging_,TrustObjectPurposes_dSRCAC_,TrustObjectPurposes_oBEInterrogation_,TrustObjectPurposes_oBEInterrogationAC_},
-						dsrcKeyRefObjectTESTER_VALUE),
+						DSRCRF_OBJECT_TESTER_VALUE),
 					 m_aduTrustObject(
 					 	{TrustObjectPurposes_dSRCCharging_},
 					 	certificateTESTER_OBJECT) }
@@ -1755,7 +1755,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Step1: prepare TrustObjectADU by specifying KeyRef as type of trustobject
 				var TrustObjectADU v_trustObjectAdu:=	m_aduTrustObject(
 						{TrustObjectPurposes_dSRCCharging_,TrustObjectPurposes_dSRCAC_,TrustObjectPurposes_oBEInterrogation_,TrustObjectPurposes_oBEInterrogationAC_},
-						TrustObjectCode:{dsrcKeyRef:=dsrcKeyRefObjectTESTER_VALUE}
+						TrustObjectCode:{dsrcKeyRef:=DSRCRF_OBJECT_TESTER_VALUE}
 				);                 
 				
 				var InfoExchange v_firstApduToBeSent := m_apduNoAuthInitTester(v_trustObjectAdu);
@@ -2552,13 +2552,13 @@ module EfcInfoExchange_TestCasesTsp {
 				// Step 1: Trigger IUT with CONTRACTISSUERLIST.TR_TSP_1
 				f_sendAndLogTrigger(DSRC_CONTRACTISSUERLIST_TR_TSP_1_DIFFMANUFID);
 
-				//  Wait for apdu containing CONTRACISSUERLIST for three different manufacturers
+				//  Wait for apdu containing CONTRACTISSUERLIST for three different manufacturers
                  // PT140 TODO : mw_aduContractIssuerList template to be defined
-				var template InfoExchange v_apduToBeReceived := m_apduNoAuthInitTester({
+				var template InfoExchange v_apduToBeReceived := m_apduNoAuthInitTester(
 					{modifies mw_aduContractIssuerList:= {manufacturerIdId := MANUFACTURERID1}},
 					{modifies mw_aduContractIssuerList:= {manufacturerIdId := MANUFACTURERID2}},
 					{modifies mw_aduContractIssuerList:= {manufacturerIdId := MANUFACTURERID3}}
-           		};                 
+           			);                 
 
 				alt {
 					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
@@ -4787,5 +4787,3 @@ module EfcInfoExchange_TestCasesTsp {
 
     } // End of group GNSS.PAYMENTANNOUNCEMENT
 }; // End of module Toll_Service_Provider
-
-
