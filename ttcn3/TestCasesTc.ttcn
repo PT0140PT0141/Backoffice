@@ -1532,7 +1532,7 @@ module EfcInfoExchange_TestCasesTc {
 						f_logReceivedThenCheckAndStopTime(DSRC_BILLINGDETAILS_TIME1_MIN_TC);					              		
 						// Step 2: Send Ack within time constraints
 						f_wait(DSRC_BILLINGDETAILS_TIME1_MIN_TSP);
-						f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+						f_sendAndLogApdu(m_apduDefaultAckTester(v_apduReceived));
 						// Set test success
 						setverdict(pass);
 					}
@@ -1646,7 +1646,7 @@ module EfcInfoExchange_TestCasesTc {
 
 				// Step 2: Send NAck within time constraints
 				f_wait(DSRC_BILLINGDETAILS_TIME1_MIN_TSP);
-				f_sendAndLogApdu(m_apduDefaultAckIut(v_apduReceived));
+				f_sendAndLogApdu(m_apduDefaultAckTester(v_apduReceived));
 
                 // Step 3: Wait for IUT to send adjusted BillingDetailsADU
                 // with actionCode = revoke
@@ -2692,28 +2692,134 @@ module EfcInfoExchange_TestCasesTc {
 
 	group PAYMENTCLAIM {
 	
-		group Valid_Behaviour {
-		
-			testcase TP_TC_PAYMENTCLAIM_BV_01() runs on MainTestComponent system TestAdapter {
+		group Valid_Behaviour {	
+			testcase TP_TC_PAYMENTCLAIM_BV_01_DSRC() runs on MainTestComponent system TestAdapter {
 							
                 /**
-                 * @desc    TP_TC_LISTOFUSERS_BV_01: Verify that the TC correctly performs the PAYMENTCLAIM transaction with
+                 * @desc    TP_TC_LISTOFUSERS_BV_01_DSRC: Verify that the TC correctly performs the PAYMENTCLAIM transaction with
                  *			actionCode=send 
                  * @remark  [16986:2016], Clause 6.8 and Table A.1/1 AND Table A.7/5
+                 * @remark	This test case shall only be performed in case the TC operates a DSRC-Domain, thus additional
+                 *			conditions apply: Table A.2/1 and Table A.26/3 
                  */
                   
-                // Initialisation
+  				// Initialisation
+				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A7_5_implementedPAYMENTCLAIM;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
                   
+                // Step 0:
                 // Let IUT perform one BILLINGDETAILS complete and sucessful transaction
-                  
-                // Step 1: Tigger IUT with PAYMENTCLAIM_TR_TC_1_SEND to send valid Initiating_Apdu containing
-                //		- exactly one PaymentClaimADU with actionCode=send
+                // this step is differnet for TCs operating a DSRC Toll Domain or a GNSS Toll Domain
 
-				// Waint for requestADU(s), validate and check time constraints
-				
-				// Step 2: Send AckADU to conclude the transaction							
-		
+				if (ICS_A2_1_isDsrc and ICS_A26_3_implementedDSRCBILLINGDETAILS) {
+                
+					f_sendAndLogTrigger(DSRC_BILLINGDETAILS_TR_TC_1_SEND);
+
+					var InfoExchange v_apduToBeReceived := {
+				  		mw_apduNoAuthInitIut({{mw_aduDsrcBillingDetails:= {actionCode := ActionCode_send_ }}}) 
+           			};                 
+
+                	// Wait for above specified APDU within time constraints
+                	// if not received or received outside specification or time constraints set test fail (done in the altstep)
+
+					alt {
+						[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
+							// Log what we received, no minimum time	
+							f_logReceivedThenCheckAndStopTime(0.0);					              		
+							// Step 2: Send Ack within time constraints
+							f_wait(DSRC_BILLINGDETAILS_TIME1_MIN_TC);
+							f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+						}
+					} // End of alt statement
+				} // end if-branch
+				else { // else-branch for GNSS Toll Charger
+					
+					f_sendAndLogTrigger(GNSS_BILLINGDETAILS_TC_TR_TC_1_SEND);
+
+					var InfoExchange v_apduToBeReceived := {
+				  		mw_apduNoAuthInitIut({{mw_aduGnssBillingDetails:= {actionCode := ActionCode_send_ }}}) 
+           			};                 
+
+                	// Wait for above specified APDU within time constraints
+                	// if not received or received outside specification or time constraints set test fail (done in the altstep)
+
+					alt {
+						[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
+							// Log what we received, no minimum time	
+							f_logReceivedThenCheckAndStopTime(0.0);					              		
+							// Step 2: Send Ack within time constraints
+							f_wait(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC);
+							f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+						}
+					} // End of alt statement
+				} // end else-branch      	                              
+  
+  				// capture received userIds and billingDetailsIds
+ 				type record of UserId ReceivedUserIdList;
+ 				type record of BillingDetailsList ReceivedBillingDetailsIdList;
+ 				
+ 				var ReceivedUserIdList v_receivedBillingDetailsUserIdList, v_receivedPaymentClaimBillingDetailsUserIdList;
+ 				var ReceivedBillingDetailsIdList v_receivedBillingDetailsBillingDetailsIdList, v_receivedPaymentClaimBillingDetailsIdList;
+				var integer v_i, v_numberOfReceivedBillingDetailsAdus, v_numberOfReceivedPaymentClaimAdus;
+ 				
+ 				v_numberOfReceivedBillingDetailsAdus := lengthof(v_apduReceived.infoExchangeContent.adus);
+ 				for (v_i := 0; v_i < v_numberOfReceivedBillingDetailsAdus; v_i := v_i +1) {
+ 					v_receivedBillingDetailsUserIdList[v_i] := v_apduReceived.infoExchangeContent.adus.billingDetailsADUs[v_i].userId;
+ 					v_receivedBillingDetailsBillingDetailsIdList[v_i] := v_apduReceived.infoExchangeContent.adus.billingDetailsADUs[v_i].billingDetailsId;
+				}
+  				  
+                // Step 1:
+                // Prepare APDU to be received
+
+				var InfoExchange v_apduToBeReceived := {
+				  	mw_apduNoAuthInitIut({{mw_aduPaymentClaim:= {
+				  		paymentClaimStatus := firstVersion	(0),
+				  		actionCode := ActionCode_send_ }}}) 
+           		};                 
+
+				// Send trigger
+				f_sendAndLogTrigger(PAYMENTCLAIM_TR_TC_1_SEND);
+
+                // Wait for above specified APDU within time constraints
+                // if not received or received outside specification or time constraints set test fail (done in the altstep)
+
+				alt {
+					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
+						// Log what we received, no minimum time required	
+						f_logReceivedThenCheckAndStopTime(0.0);
+												
+						// capture receoved userIds and billingDetailsIds
+ 						v_numberOfReceivedPaymentClaimAdus := lengthof(v_apduReceived.infoExchangeContent.adus);
+ 						for (v_i := 0; v_i < v_numberOfReceivedPaymentClaimAdus; v_i := v_i +1) {
+ 							v_receivedPaymentClaimUserIdList[v_i] := v_apduReceived.infoExchangeContent.adus.paymentClaimADUs[v_i].userId;
+ 							v_receivedPaymentClaimBillingDetailsIdList[v_i] := v_apduReceived.infoExchangeContent.adus.paymentClaimADUs[v_i].billingDetailsId;
+						}
+						
+						// Validate content of received APDU ...
+						// if userId are amongst the userIds received in previose BillingDetails; and
+						// if billingDetailsIds are amongst the billingDetailsIds received in previose BillingDetails 
+
+						if (f_matchRecordOfWithRecordOf(
+							v_receivedBillingDetailsUserIdList,
+							v_numberOfReceivedBillingDetailsAdus,
+							v_receivedPaymentClaimUserIdList,
+							v_numberOfReceivedPaymentClaimAdus) and 
+							f_matchRecordOfWithRecordOf(
+							v_receivedBillingDetailsBillingDetailsIdList,
+							v_numberOfReceivedBillingDetailsAdus,
+							v_receivedPaymentClaimBillingDetailsIdList,
+							v_numberOfReceivedPaymentClaimAdus) {
+							 											              		
+							// Step 2: Send Ack within time constraints
+							f_wait(PAYMENTCLAIM_TIME1_MIN_TC);
+							f_sendAndLogApdu(m_apduDefaultAckTester(v_apduReceived));
+							// Set test success
+							setverdict(pass);
+						}
+					}
+				} // End of alt statement            	                              
 			} // End of TP_TC_LISTOFUSERS_BV_01
+
 					
 			testcase TP_TC_PAYMENTCLAIM_BV_02() runs on MainTestComponent system TestAdapter {
 							
@@ -2739,7 +2845,7 @@ module EfcInfoExchange_TestCasesTc {
                 	//		- with actionCode=[ACTION_CODE], and
                 	//		- paymentClaimId = same value as a previously sent PaymentClaimId
     
-					// Waint for requestADU(s), validate and check time constraints
+					// Wait for requestADU(s), validate and check time constraints
 				
 					// Step 2: Send AckADU to conclude the transaction							
 		
