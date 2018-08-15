@@ -15,6 +15,7 @@ module EfcInfoExchange_InteroperabilityStatement {
      
     // TODO PT 140: Below data type f xxx-PARA
     const float c_veryLongTime := 100000.0;
+    const integer c_veryHighNumber := 10000;
     modulepar float USERDETAILS_TIME1_MAX_TC := c_veryLongTime;
     modulepar float USERDETAILS_TIME1_MIN_TC := 0.0;
     modulepar float USERDETAILS_TIME1_MAX_TSP := c_veryLongTime;
@@ -89,8 +90,8 @@ module EfcInfoExchange_InteroperabilityStatement {
     modulepar float PAYMENTCLAIM_TIME1_MIN_TSP := 0.0;  
     modulepar float PAYMENTCLAIM_TIMEA_MIN_TC := c_veryLongTime;
     modulepar float PAYMENTCLAIM_TIMEA_MIN_TSP := 0.0;
-    modulepar float PAYMENTCLAIM_TIMEB_MIN_TC := c_veryLongTime;
-    modulepar float PAYMENTCLAIM_TIMEB_MIN_TSP := 0.0;
+    modulepar float PAYMENTCLAIM_TIMEB_MAX_TC := c_veryLongTime;
+    modulepar float PAYMENTCLAIM_TIMEB_MAX_TSP := 0.0;
     modulepar float DSRC_CONTRACTISSUERLIST_TIME1_MAX_TC := c_veryLongTime;
     modulepar float DSRC_CONTRACTISSUERLIST_TIME1_MIN_TC := 0.0;
     modulepar float DSRC_CONTRACTISSUERLIST_TIME1_MAX_TSP := c_veryLongTime;
@@ -121,64 +122,48 @@ module EfcInfoExchange_InteroperabilityStatement {
     modulepar float GNSS_TOLLDECLARATIONS_TIME1_MIN_TSP := 0.0;  
     modulepar float GNSS_TOLLDECLARATIONS_TIMEA_MIN_TC := c_veryLongTime;
     modulepar float GNSS_TOLLDECLARATIONS_TIMEA_MIN_TSP := 0.0;      
-    modulepar float GNSS_TOLLDECLARATIONS_TIMEB_MIN_TC := c_veryLongTime;
-    modulepar float GNSS_TOLLDECLARATIONS_TIMEB_MIN_TSP := 0.0; 
-    
-    // below data typoe should be integer 
-    modulepar float GNSS_TOLLDECLARATIONS_PARAM1_MAX_TC := c_veryLongTime;
-    modulepar float GNSS_TOLLDECLARATIONS_PARAM1_MAX_TSP := c_veryLongTime;
-    modulepar float GNSS_TOLLDECLARATIONS_PARAM2_MAX_TC := c_veryLongTime;
-    modulepar float GNSS_TOLLDECLARATIONS_PARAM2_MAX_TSP := c_veryLongTime;
-    modulepar float GNSS_TOLLDECLARATIONS_PARAM3_MAX_TC := c_veryLongTime;
-    modulepar float GNSS_TOLLDECLARATIONS_PARAM3_MAX_TSP := c_veryLongTime;
-    modulepar float GNSS_TOLLDECLARATIONS_PARAM4_MAX_TC := c_veryLongTime;
-    modulepar float GNSS_TOLLDECLARATIONS_PARAM4_MAX_TSP := c_veryLongTime;
-    modulepar float GNSS_TOLLDECLARATIONS_PARAM5_MAX_TC := c_veryLongTime;
-    modulepar float GNSS_TOLLDECLARATIONS_PARAM5_MAX_TSP := c_veryLongTime;
-    // end integer
-    
+    modulepar float GNSS_TOLLDECLARATIONS_TIMEB_MAX_TC := c_veryLongTime;
+    modulepar float GNSS_TOLLDECLARATIONS_TIMEB_MAX_TSP := 0.0; 
+    modulepar float GNSS_TOLLDECLARATIONS_PARAM1_MAX_TC := c_veryHighNumber;
+    modulepar float GNSS_TOLLDECLARATIONS_PARAM1_MAX_TSP := c_veryHighNumber;
+    modulepar float GNSS_TOLLDECLARATIONS_PARAM2_MAX_TC := c_veryHighNumber;
+    modulepar float GNSS_TOLLDECLARATIONS_PARAM2_MAX_TSP := c_veryHighNumber;
+    modulepar float GNSS_TOLLDECLARATIONS_PARAM3_MAX_TC := c_veryHighNumber;
+    modulepar float GNSS_TOLLDECLARATIONS_PARAM3_MAX_TSP := c_veryHighNumber;
+    modulepar float GNSS_TOLLDECLARATIONS_PARAM4_MAX_TC := c_veryHighNumber;
+    modulepar float GNSS_TOLLDECLARATIONS_PARAM4_MAX_TSP := c_veryHighNumber;
+    modulepar float GNSS_TOLLDECLARATIONS_PARAM5_MAX_TC := c_veryHighNumber;
+    modulepar float GNSS_TOLLDECLARATIONS_PARAM5_MAX_TSP := c_veryHighNumber;
     modulepar float GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC := c_veryLongTime;
     modulepar float GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC := 0.0;
     modulepar float GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TSP := c_veryLongTime;
     modulepar float GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TSP := 0.0;  
     modulepar float GNSS_BILLINGDETAILS_TSP_TIMEA_MIN_TC := c_veryLongTime;
     modulepar float GNSS_BILLINGDETAILS_TSP_TIMEA_MIN_TSP := 0.0;
-    modulepar float GNSS_BILLINGDETAILS_TSP_TIMEB_MIN_TC := c_veryLongTime;
-    modulepar float GNSS_BILLINGDETAILS_TSP_TIMEB_MIN_TSP := 0.0;
-    
-    // below data type should be integer
-    modulepar float GNSS_BILLINGDETAILS_TSP_PARAM1_MAX_TC := c_veryLongTime;
-    modulepar float GNSS_BILLINGDETAILS_TSP_PARAM1_MAX_TSP := c_veryLongTime;
-    // end integer
-    
+    modulepar float GNSS_BILLINGDETAILS_TSP_TIMEB_MAX_TC := c_veryLongTime;
+    modulepar float GNSS_BILLINGDETAILS_TSP_TIMEB_MAX_TSP := 0.0;
+    modulepar float GNSS_BILLINGDETAILS_TSP_PARAM1_MAX_TC := c_veryHighNumber;
+    modulepar float GNSS_BILLINGDETAILS_TSP_PARAM1_MAX_TSP := c_veryHighNumber;   
+    modulepar float GNSS_BILLINGDETAILS_TC_TIME0_MAX_TC := c_veryLongTime;
+    modulepar float GNSS_BILLINGDETAILS_TC_TIME0_MIN_TC := 0.0;
+    modulepar float GNSS_BILLINGDETAILS_TC_TIME0_MAX_TSP := c_veryLongTime;
+    modulepar float GNSS_BILLINGDETAILS_TC_TIME0_MIN_TSP := 0.0;  
     modulepar float GNSS_BILLINGDETAILS_TC_TIME1_MAX_TC := c_veryLongTime;
-    modulepar float GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC := 0.0;
-    modulepar float GNSS_BILLINGDETAILS_TC_TIME1_MAX_TSP := c_veryLongTime;
-    modulepar float GNSS_BILLINGDETAILS_TC_TIME1_MIN_TSP := 0.0;  
-    modulepar float GNSS_BILLINGDETAILS_TC_TIMEA_MIN_TC := c_veryLongTime;
-    modulepar float GNSS_BILLINGDETAILS_TC_TIMEA_MIN_TSP := 0.0;
-    modulepar float GNSS_BILLINGDETAILS_TC_TIMEB_MIN_TC := c_veryLongTime;
-    modulepar float GNSS_BILLINGDETAILS_TC_TIMEB_MIN_TSP := 0.0;
-    
-    // below the data type should be integer
-    modulepar float GNSS_BILLINGDETAILS_TC_PARAM1_MAX_TC := c_veryLongTime;
-    modulepar float GNSS_BILLINGDETAILS_TC_PARAM1_MAX_TSP := c_veryLongTime;
-    // end integer
-    
+    modulepar float GNSS_BILLINGDETAILS_TC_TIME1_MIN_TSP := 0.0;
+    modulepar float GNSS_BILLINGDETAILS_TC_TIME1_MAX_TC := c_veryLongTime;
+    modulepar float GNSS_BILLINGDETAILS_TC_TIME1_MIN_TSP := 0.0;
+    modulepar float GNSS_BILLINGDETAILS_TC_PARAM1_MAX_TC := c_veryHighNumber;
+    modulepar float GNSS_BILLINGDETAILS_TC_PARAM1_MAX_TSP := c_veryHighNumber;
 	modulepar float GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC := c_veryLongTime;
-	modulepar float GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC := 0.0;
-	modulepar float GNSS_PAYMENTANNOUNCEMENT_TIMEB_MAX_TC := c_veryLongTime;
-	modulepar float GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TSP := 0.0;
-    modulepar float GNSS_PAYMENTANNOUNCEMENT_TIMEB_MAX_TSP := c_veryLongTime;
-    modulepar float GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC := 0.0;
     modulepar float GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TSP := c_veryLongTime;
+    modulepar float GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC := 0.0;
     modulepar float GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TSP := 0.0;  
-    modulepar float GNSS_PAYMENTANNOUNCEMENT_TIMEB_MIN_TC := c_veryLongTime;
-    modulepar float GNSS_PAYMENTANNOUNCEMENT_TIMEB_MIN_TSP := 0.0; 
-    
-    // below the data type should be integer
-    modulepar float GNSS_PAYMENTANNOUNCEMENT_PARAM1_MAX_TC := c_veryLongTime;
-    modulepar float GNSS_PAYMENTANNOUNCEMENT_PARAM1_MAX_TSP := c_veryLongTime;
-    modulepar float GNSS_PAYMENTANNOUNCEMENT_PARAM2_MAX_TC := c_veryLongTime;
-    modulepar float GNSS_PAYMENTANNOUNCEMENT_PARAM2_MAX_TSP := c_veryLongTime;                                                
+	modulepar float GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC := 0.0;
+	modulepar float GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TSP := 0.0;
+	modulepar float GNSS_PAYMENTANNOUNCEMENT_TIMEB_MAX_TC := c_veryLongTime;
+    modulepar float GNSS_PAYMENTANNOUNCEMENT_TIMEB_MAX_TSP := c_veryLongTime;
+    modulepar float GNSS_PAYMENTANNOUNCEMENT_PARAM1_MAX_TC := c_veryHighNumber;
+    modulepar float GNSS_PAYMENTANNOUNCEMENT_PARAM1_MAX_TSP := c_veryHighNumber;
+    modulepar float GNSS_PAYMENTANNOUNCEMENT_PARAM2_MAX_TC := c_veryHighNumber;
+    modulepar float GNSS_PAYMENTANNOUNCEMENT_PARAM2_MAX_TSP := c_veryHighNumber;                                                
 }		 
