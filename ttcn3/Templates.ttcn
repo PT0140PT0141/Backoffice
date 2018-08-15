@@ -1,5 +1,4 @@
 /**
- * @author  PT0140  
  * @desc    This module provides common templates for both Toll Charger and Toll Service Provider TCs. Most of these templates shall be used to modify the new ones.
  * @see     [17154-1:2017]: Test suite structure and test purpose
  * @see     Electronic fee collection â€” Evaluation of implementation for conformity to CEN/TS 16986 â€” Part 1: Test suite structure and purposes
@@ -541,12 +540,28 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		
 
 		group PAYMENTCLAIM {
-
-   			template InfoExchange mw_apduPaymentClaim := m_apduNoSec(mw_apci, Adus:{paymentClaimADUs:=?});
 			
-			template InfoExchange mw_apduAuthPaymentClaim := mw_apduSec(mw_apci, Adus:{paymentClaimADUs:=?});
-			
-		
+			template PaymentClaimADU mw_aduPaymentClaim := {
+				paymentClaimId := ?,
+				startDateTime := ?,
+				endDateTime := ?, // mandatory according to IAP,
+				userId := ? length (1..4), // mandatory according to IAP and at least one element shall be present
+				paymentClaimAmount := ?,
+				paymentClaimStatus := (firstVersion	(0), amendedVersion	(1)), // restrictions according to IAP
+				typeOfFee := ?, // mandatory according to IAP
+				referenceDetailsList := {{
+					billingDetailsList := {{
+						billingDetailsId := {
+    						issuerId := ?,
+    						billingDetailsNum := ?, // range 0 - 2'(63-1)
+    						dateOfService := * //PT140 TODO definition for billingDeatails is missing in IAP but at other locations
+    											//inside IAP the billingDetailsId shall contain NO dateOfService
+    					}
+    				}}
+    			}}, // mandatory in IAP and the only value allowed in IAP
+				actionCode := (ActionCode_send_, ActionCode_revoke_ ,ActionCode_adjust_ ), // onyl allowed values in IAP
+				paymentReference := *
+			}			 					
 		}
 
 		group DSRC_CONTRACTISSUERLIST {		
@@ -646,7 +661,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 						}
 					}
 				}
-			};	
+			}	
 
 			
 			template (value) VersionAndValidity m_basicVersionValidFromNow :={
@@ -802,7 +817,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 						)
 					}
 				}
-			);
+			)
 			
 			template TrustObjectADU mw_aduTrustObject(
 				template RecOfTrustObjectPurposes p_recOfTrustObjectPurposes,
@@ -841,7 +856,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
    				mw_apci, 
    				Adus:{trustObjectAdus:={mw_aduTrustObject(?,p_trustObjectCode)}
    				}
-   			);
+   			)
 			
 			// Template for a generic object. According to the profile, only certificate revocation lists can be sent as generic trust objects
    			template InfoExchange mw_apduTrustObjectGeneric := mw_apduTrustObjectProtoTemp(mw_genericTrustObject);
@@ -870,7 +885,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
    			template InfoExchange mw_apduTrustObjectDsrcKeyRef:=mw_apduTrustObjectProtoTemp(TrustObjectCode:{dsrcKeyRef:=?});
 
 			// PT140 TODO to be defined Generic Request for Trust Object with one parameter as apduToBeRespondedTo, and another as TrustObjectCode - Ulrik: still needed? not used anywhere... 
-			template InfoExchange m_apduRequestTrustObject := ();
+			template InfoExchange m_apduRequestTrustObject := {}
 						
 			// Generic received Request for Trust Object, to receive a requestADU for any Trust Object 			
 			template InfoExchange mw_apduRequestTrustObject := m_apduNoSec(
@@ -896,7 +911,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 						}
 					}
 				}
-			);
+			)
 			
 			// Received Request for a Public Key Trust Object			
 			template InfoExchange mw_apduRequestTrustObjectPublicKey := m_apduNoSec(
@@ -904,7 +919,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				Adus:{
 					requestAdus:={{mw_aduRequestTrustObjectPublicKey}}
 				}
-			);
+			)
 
 			template RequestADU mw_aduRequestTrustObjectPublicKey:={
 				trustObjectRequest:={
@@ -923,7 +938,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			template InfoExchange mw_apduRequestTrustObjectGeneric := m_apduNoSec(mw_apci, Adus:{requestAdus:= {
 			  requestedADUType := 3,
 			  requestedTrustObject:={trustObjectSpec := omit}
-			}});
+			}})
 			
 			// Received Request for a Symmetric Key Trust Object
 			template InfoExchange m_apduTrustObjectSymmetricKey := m_apduNoSec(
@@ -998,80 +1013,81 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
     			associatedEventData := omit,
     			actionCode := (ActionCode_send_, ActionCode_revoke_ ,ActionCode_adjust_ ),
     			paymentReference := *
-  			};			
+  			}			
 		
-		template (value) UsageList mw_sectionedRoadGnssUsageList := {
-			usageListEntry {
-				forSectionedRoads {		
-					howManyTimes := (1..(2E63)-1),
-					listOfSections := {mw_sections}; // mandatory in IAP 
-					invoiceAggregationNumber := omit, //shall not be used in IAP
-					fee := omit, // shall mot be used in IAP,
-					feeQualifier := omit // shall not be used in IAP
-				}
-			},
-			includedDiscounts := *,
-			associatedEventData := omit, // shall not be used in IAP
-			externalCosts := *
-		};
+			template (value) UsageList mw_sectionedRoadGnssUsageList := {
+				usageListEntry :={
+					forSectionedRoads := {		
+						howManyTimes := (1..(2E63)-1),
+						listOfSections := {mw_sections}, // mandatory in IAP 
+						invoiceAggregationNumber := omit, //shall not be used in IAP
+						fee := omit, // shall mot be used in IAP,
+						feeQualifier := omit // shall not be used in IAP
+					}
+				},
+				includedDiscounts := *,
+				associatedEventData := omit, // shall not be used in IAP
+				externalCosts := *
+			}
 
-		template (value) Section mw_sections := {
-			tollContext := omit, // shall not be used in IAP
-			chargeObjectId := ?,
-			chargeObjectName := omit, // shall not be used in IAP
-			tollEventId := ?, // mandatory in IAP
-			tollEventTime := ?, // mandatory in IAP
-			modeOfOperation := omit // shall not be used in IAP
-  		};
+			template (value) Section mw_sections := {
+				tollContext := omit, // shall not be used in IAP
+				chargeObjectId := ?,
+				chargeObjectName := omit, // shall not be used in IAP
+				tollEventId := ?, // mandatory in IAP
+				tollEventTime := ?, // mandatory in IAP
+				modeOfOperation := omit // shall not be used in IAP
+  			}
 
-		template (value) UsageList mw_travellingInAreaRoadGnssUsageList := {
-			usageListEntry {
-				forTravellingInArea {		
-        			areaDisplayName := ?,
-        			accumulatedDistance := ?,
-        			beginOfAccumulation := *,
-        			endOfAccumulation := *,
-        			fee := omit, // shall not be used in IAP
-        			feeQualifier := omit // shall not be used in IAP
-				}
-			},
-			includedDiscounts := {{*}},
-			associatedEventData := omit, // shall not be used in IAP
-			externalCosts := *
-		};
+			template (value) UsageList mw_travellingInAreaRoadGnssUsageList := {
+				usageListEntry := {
+					forTravellingInArea := {		
+        				areaDisplayName := ?,
+        				accumulatedDistance := ?,
+        				beginOfAccumulation := *,
+        				endOfAccumulation := *,
+        				fee := omit, // shall not be used in IAP
+        				feeQualifier := omit // shall not be used in IAP
+					}
+				},
+				includedDiscounts := {{*}},
+				associatedEventData := omit, // shall not be used in IAP
+				externalCosts := *
+			}
 
-		template (value) UsageList mw_stayingInAreaGnssUsageList := {
-			usageListEntry {
-				forStayingInArea {		
-					areaDisplayName := ?,
-					qualifier := *,
-					stayedDuration := ?,
-        			chargeUnit := (time), //event and distance shall not be used
-        			fee := omit, // shall not be used in IAP
-        			feeQualifier := omit // shall not be used in IAP
-				}
-			},
-			includedDiscounts := {{*}},
-			associatedEventData := omit, // shall not be used in IAP
-			externalCosts := *
-		};
+			template (value) UsageList mw_stayingInAreaGnssUsageList := {
+				usageListEntry :={
+					forStayingInArea :={		
+						areaDisplayName := ?,
+						qualifier := *,
+						stayedDuration := ?,
+        				chargeUnit := (time), //event and distance shall not be used
+        				fee := omit, // shall not be used in IAP
+        				feeQualifier := omit // shall not be used in IAP
+					}
+				},
+				includedDiscounts := {{*}},
+				associatedEventData := omit, // shall not be used in IAP
+				externalCosts := *
+			}
 
-		template (value) UsageList mw_cordonCrossingRoadGnssUsageList := {
-			usageListEntry {
-				forCordonCrossing {		
-					qualifier := *,
-        			entranceChargeObject := ?,
-        			entranceChargeObjectName := *,
-        			exitChargeObject := ?, // mandatory in IAP
-        			exitChargeObjectName := omit, //shall not be used in IAP
-        			exitTime := ?, // mandatory in IAP
-        			fee := omit, // shall not be used in IAP
-        			feeQualifier := omit // shall not be used in IAP				}
-			},
-			includedDiscounts := {{*}},
-			associatedEventData := omit, // shall not be used in IAP
-			externalCosts := *
-		};
+			template (value) UsageList mw_cordonCrossingRoadGnssUsageList := {
+				usageListEntry :={
+					forCordonCrossing :={		
+						qualifier := *,
+        				entranceChargeObject := ?,
+        				entranceChargeObjectName := *,
+        				exitChargeObject := ?, // mandatory in IAP
+        				exitChargeObjectName := omit, //shall not be used in IAP
+        				exitTime := ?, // mandatory in IAP
+        				fee := omit, // shall not be used in IAP
+        				feeQualifier := omit // shall not be used in IAP				}
+				},
+				includedDiscounts := {{*}},
+				associatedEventData := omit, // shall not be used in IAP
+				externalCosts := *
+			}
+		}
 										 							
 		group DSRC_BILLINGDETAILS {
 		
@@ -1102,8 +1118,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
     			paymentReference := *
   			}					
 		}
-		
-		
+			
 		
 		group GNSS_TOLLDECLARATIONS {
    			template InfoExchange mw_apduTollDeclaration := m_apduNoSec(mw_apci, Adus:{tollDeclarationADUs:=?});
@@ -1433,11 +1448,24 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		}
 
 		group GNSS_PAYMENTANNOUNCEMENT {
-   			template InfoExchange mw_apduPaymentAnnouncement := m_apduNoSec(mw_apci, Adus:{paymentAnnouncementADUs:=?});
-			
-			template InfoExchange mw_apduAuthPaymentAnnouncement := mw_apduSec(mw_apci, Adus:{paymentAnnouncementADUs:=?});
+
+			template PaymentAnnouncmentADU mw_aduPaymentAnnouncement := {
+				paymentAnnouncementID := (0..(2E63)-1), // range restriction from IAP
+				dueDate := ?,
+				totalamount := ?,
+				paymentStatus := ?,
+				numberOfItems := ?, // mandatory according to IAP
+				referenceDetailsList := {{// mandatory according to IAP
+					referenceDetail := (billingDetailsList, tollDeclarationList, tollEventList),
+					amount := ?,
+					paymentMeansType := (*, (0..255)),
+					valueDate := *,
+					interestAmount := *
+				}},
+				attachment := (*, (0..(2E63)-1)), // restrictions from IAP
+				actionCode := (ActionCode_send_, ActionCode_revoke_ ,ActionCode_adjust_ )
+			} 					
 		}
-
-
 	}
+}
 }
