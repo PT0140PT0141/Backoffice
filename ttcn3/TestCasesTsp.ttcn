@@ -8,22 +8,22 @@
   /**
  * work in progress Status overview
  *
- *	Transaction type			!	BV					! BI			! Comments
- * 	----------------------------!-----------------------!---------------!--------------------------------
- *	Base						! done					! done			! to be compiled
- *	Userdetails					! done					! done			! to be compiled
- *	ListOfUsers					! done					! done			! to be compiled
- *	ExceptionList				! done					! done			! to be compiled
- *	TrustObjects				! done    				! done			! to be compiled
- *	PaymentClaim				! done					! done			! BillingDetails and PaymentClaim templates to be defined
- *	DSRC.ContractIssuerList		! done					! done			! Template mw_aduContractIssuerList to be defined
- *	DSRC.EFCContextData			! done					! done			! to be compiled
- *	DSRC.BillingDetails			! done					! done			! Billingdetails templates to be defined.
- *	DSRC.ReportAbnormalOBE		! done					! done			! mw_aduReportAbnormalOBE to be defined.
- *	GNSS.TollDeclaration		! done					! done			! mw_aduGnssTollDeclaration template to be defined
- *	GNSS.BillingDetails.TSP		! done					! done			! mw_apduGnssBillingDetails_TSP to be defined
- *	GNSS.BillingDetails.TC		! done					! done			! templates to be defined.
- *	GNSS.PaymentAnnouncement	! done					! done			! mw_aduGnssPaymentAnnouncement template to be defined
+ *	Transaction type	!	BV		! BI		! Comments
+ * 	------------------------!-----------------------!---------------!--------------------------------
+ *	Base			! done					! done			! to be compiled
+ *	Userdetails		! done					! done			! to be compiled
+ *	ListOfUsers		! done					! done			! to be compiled
+ *	ExceptionList		! done					! done			! to be compiled
+ *	TrustObjects		! done    				! done			! to be compiled
+ *	PaymentClaim		! done					! done			! BillingDetails and PaymentClaim templates to be defined
+ *	DSRC.ContractIssuerList	! done					! done			! Template mw_aduContractIssuerList to be defined
+ *	DSRC.EFCContextData	! done					! done			! to be compiled
+ *	DSRC.BillingDetails	! done					! done			! Billingdetails templates to be defined.
+ *	DSRC.ReportAbnormalOBE	! done					! done			! mw_aduReportAbnormalOBE to be defined.
+ *	GNSS.TollDeclaration	! done					! done			! mw_aduGnssTollDeclaration template to be defined
+ *	GNSS.BillingDetails.TSP	! done					! done			! mw_apduGnssBillingDetails_TSP to be defined
+ *	GNSS.BillingDetails.TC	! done					! done			! templates to be defined.
+ *	GNSS.PaymentAnnouncement! done					! done			! mw_aduGnssPaymentAnnouncement template to be defined
  */
  
 module EfcInfoExchange_TestCasesTsp {
