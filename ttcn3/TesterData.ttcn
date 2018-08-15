@@ -188,7 +188,7 @@ module EfcInfoExchange_TesterData{
 		modulepar UserParameterResponseDetails UserParameterResponseDetails_TESTER_VALUES[27]:={};
 	}
 	
-	group EFCCONTEXTDATA{
+	group EFCCONTEXTDATA {
 //TODO Currently not used - needed?
 //	 	modulepar  TariffClassDefinition tariffClassDefinitionTESTER_VALUE;
 //	 	modulepar  LocalVehicleClassDefinition localVehicleClassDefinitionTESTER_VALUE;
@@ -241,8 +241,7 @@ module EfcInfoExchange_TesterData{
 	}
 
 
-	group GNSSBILLINGDETAILS {
-	
+	group GNSSBILLINGDETAILS {	
 		modulepar EfcAutonomousCharging.Period TD_PERIOD_1; // period in billing details
 		modulepar ASNAUX.UTF8String TD_USER_CLASS; // applied user class
 		modulepar ASNAUX.UTF8String TD_DECLARED_VEHICLE_CLASS; // declared vehicle class
@@ -253,8 +252,20 @@ module EfcInfoExchange_TesterData{
 		modulepar ASNAUX.GeneralizedTime TD_TOLL_EVENT_TIME;
 		modulepar ExtendedPaymentAmount TD_DISCOUNT_AMOUNT;
 		modulepar DiscountQualifier TD_DISCOUNT_QUALIFIER;
- 
-		
+		modulepar UsageStatement TD_USAGE_STATEMENT_VALID_1, TD_USAGE_STATEMENT_VALID_2, TD_USAGE_STATEMENT_VALID_3,
+			TD_USAGE_STATEMENT_VALID_4, TD_USAGE_STATEMENT_VALID_5; 
+ 	}
+ 	
+ 	group PAYMENTANNOUNCEMENT {
+ 		modulepar integer TD_PAYMENTANNOUNCEMENT_ID_1, TD_PAYMENTANNOUNCEMENT_ID_2, TD_PAYMENTANNOUNCEMENT_ID_3;
+ 		modulepar ASNAUX.GeneralizedTime TD_PAYMENTANNOUNCEMENT_DUE_DATE;
+ 		modulepar ExtendedPaymentAmount TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_1, TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_2,
+ 			TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_3;
+ 		modulepar ExtendedPaymentAmount TD_BILLINGDETAILS_AMOUNT_1; TD_BILLINGDETAILS_AMOUNT_2,
+ 			TD_BILLINGDETAILS_AMOUNT_3;		 
+	}
+	
+
 /*		modulepar record {
       		ASNAUX.UTF8String contextName,
       		ASNAUX.UTF8String appliedUserClass,
