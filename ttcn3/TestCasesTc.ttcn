@@ -2723,11 +2723,12 @@ module EfcInfoExchange_TestCasesTc {
 						[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
 							// Log what we received, no minimum time	
 							f_logReceivedThenCheckAndStopTime(0.0);					              		
-							// Step 2: Send Ack within time constraints
-							f_wait(DSRC_BILLINGDETAILS_TIME1_MIN_TC);
-							f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
 						}
 					} // End of alt statement
+
+					// Step 2: Send Ack within time constraints
+					f_wait(DSRC_BILLINGDETAILS_TIME1_MIN_TC);
+					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
 				} // end if-branch
 				else { // else-branch for GNSS Toll Charger
 					
@@ -2744,14 +2745,16 @@ module EfcInfoExchange_TestCasesTc {
 						[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
 							// Log what we received, no minimum time	
 							f_logReceivedThenCheckAndStopTime(0.0);					              		
-							// Step 2: Send Ack within time constraints
-							f_wait(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC);
-							f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
 						}
 					} // End of alt statement
+
+					// Step 2: Send Ack within time constraints
+					f_wait(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC);
+					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
 				} // end else-branch      	                              
   
-  				// capture received userIds and billingDetailsIds
+  				// capture received userIds and billingDetailsIds in record of as we may have received many ADUs with different
+  				// userIds and billingDetailsIds for later comparisoon with data in PaymentClaim
  				type record of UserId ReceivedUserIdList;
  				type record of BillingDetailsList ReceivedBillingDetailsIdList;
  				
@@ -2761,8 +2764,7 @@ module EfcInfoExchange_TestCasesTc {
  				// define templates required for later matching with data in PaymentClaim
  				var template ReceivedUserIdList v_receivedBillingDetailsUserIdList;
  				var template ReceivedBillingDetailsIdList v_receivedBillingDetailsBillingDetailsIdList;
-
- 				
+				
 				var integer v_i, v_numberOfReceivedBillingDetailsAdus, v_numberOfReceivedPaymentClaimAdus;
  				
  				v_numberOfReceivedBillingDetailsAdus := lengthof(v_apduReceived.infoExchangeContent.adus);
@@ -2774,16 +2776,23 @@ module EfcInfoExchange_TestCasesTc {
 				}
   				  
                 // Step 1:
-                // Prepare APDU to be received
+                // Payment Claim transaction
 
+                // Start timer for TIMEB_MAX (time between receiving the AckADU of the BillingDeatails transaction and
+                // sending an corresponding PaymentClaim ADU)
+                // PT140 TODO: this may be a long time (days, weeks) which may create a problem in testing  
+                t_step.start(PAYMENTCLAIM_TIMEB_MIN_TC);               
+
+				// Send trigger (IuT to perform a Payment Claim transaction
+				// containing exactly one PaymentClaim ADU with action_code = send 
+				f_sendAndLogTrigger(PAYMENTCLAIM_TR_TC_1_SEND);
+
+                // Prepare APDU to be received
 				var InfoExchange v_apduToBeReceived := {
 				  	mw_apduNoAuthInitIut({{mw_aduPaymentClaim:= {
-				  		paymentClaimStatus := firstVersion	(0),
+				  		paymentClaimStatus := firstVersion (0),
 				  		actionCode := ActionCode_send_ }}}) 
            		};                 
-
-				// Send trigger
-				f_sendAndLogTrigger(PAYMENTCLAIM_TR_TC_1_SEND);
 
                 // Wait for above specified APDU within time constraints
                 // if not received or received outside specification or time constraints set test fail (done in the altstep)
@@ -2801,40 +2810,26 @@ module EfcInfoExchange_TestCasesTc {
 						}
 						
 						// Validate content of received APDU ...
-						// if userId are amongst the userIds received in previose BillingDetails; and
-						var integer v_j;
-						var boolean v_matchedUserIdInnerLoop, v_matchedUserIdOuterLoop := true; 
+						// ... check if userId are amongst the userIds received in previose BillingDetails, and
+						var boolean v_matchedUserId, v_matchedBillingDetailsId := false; 
 
-						for (v_i := 0; v_i < v_numberOfReceivedPaymentClaimAdus; v_i := v_i + 1) { // for each PaymentClaim ADU ...
-							for (v_j := 0; v_j < v_numberOfReceivedBillingDetailsAdus; v_j := v_j + 1) { // for each BillingDetails ADU
-								v_matchedUserIdInnerLoop := false;
-								if (match (v_apduReceived.infoExchangeContent.adus.paymentClaimADUs[v_i].userId, v_receivedBillingDetailsUserIdList[v_j]) == true)
-									{v_matchedUserIdInnerLoop := true; // userId found
-									break;
-									}
+						for (v_i := 0; v_i < v_numberOfReceivedBillingDetailsAdus; v_i := v_i + 1) { // for each BillingDetails ADU
+							if (match (v_apduReceived.infoExchangeContent.adus.paymentClaimADUs.userId, v_receivedBillingDetailsUserIdList[v_i])) {
+								v_matchedUserId := true; // matching userId found
+								break; // end for-loop if matched
 							}
-							v_matchedUserIdIOuterLoop := v_matchedUserIdIOuterLoop and v_matchedUserIdInnerLoop;
-							// remains only true in case all inner loops are true
 						}
 
 						// Validate content of received APDU ...
-						// if billingDetailsIds are amongst the billingDetailsIds received in previose BillingDetails 
-						var integer v_j;
-						var boolean v_matchedBillingDetailsIdInnerLoop, v_matchedBillingDetailsOuterLoop := true; 
-
-						for (v_i := 0; v_i < v_numberOfReceivedPaymentClaimAdus; v_i := v_i + 1) { // for each PaymentClaim ADU ...
-							for (v_j := 0; v_j < v_numberOfReceivedBillingDetailsAdus; v_j := v_j + 1) { // for each BillingDetails ADU
-								v_matchedBillingDetailsInnerLoop := false;
-								if (match (v_apduReceived.infoExchangeContent.adus.paymentClaimADUs[v_i].billingDetailsId, v_receivedBillingDetailsbillingDetailsIdList[v_j]) == true)
-									{v_matchedBillingDetailsInnerLoop := true; // billingDetails Id found
-									break;
-									}
+						// ... check if billingDetailsIds are amongst the billingDetailsIds received in previose BillingDetails 
+						for (v_i := 0; v_i < v_numberOfReceivedBillingDetailsAdus; v_i := v_i + 1) { // for each BillingDetails ADU
+							if (match (v_apduReceived.infoExchangeContent.adus.paymentClaimADUs.billingDetailsId, v_receivedBillingDetailsbillingDetailsIdList[v_i])) {
+								v_matchedBillingDetailsInnerLoop := true; // billingDetails Id found
+								break; // end for-loop if matched
 							}
-							v_matchedBillingDetailsOuterLoop := v_matchedBillingDetailsIOuterLoop and v_matchedBillingDetailsInnerLoop;
-							// remains only true in case all inner loops are true
 						}
 			
-						if (v_matchedUserIdIOuterLoop and v_matchedBillingDetailsOuterLoop) { 
+						if (v_matchedUserIdI and v_matchedBillingDetailsId) { 
 							// Step 2: Send Ack within time constraints
 							f_wait(PAYMENTCLAIM_TIME1_MIN_TC);
 							f_sendAndLogApdu(m_apduDefaultAckTester(v_apduReceived));
@@ -2881,11 +2876,12 @@ module EfcInfoExchange_TestCasesTc {
 						[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
 							// Log what we received, no minimum time	
 							f_logReceivedThenCheckAndStopTime(0.0);					              		
-							// Step 2: Send Ack within time constraints
-							f_wait(DSRC_BILLINGDETAILS_TIME1_MIN_TC);
-							f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
 						}
 					} // End of alt statement
+
+					// Step 2: Send Ack within time constraints
+					f_wait(DSRC_BILLINGDETAILS_TIME1_MIN_TC);
+					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
 				} // end if-branch
 				else { // else-branch for GNSS Toll Charger
 					
@@ -2902,14 +2898,20 @@ module EfcInfoExchange_TestCasesTc {
 						[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
 							// Log what we received, no minimum time	
 							f_logReceivedThenCheckAndStopTime(0.0);					              		
-							// Step 2: Send Ack within time constraints
-							f_wait(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC);
-							f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
 						}
 					} // End of alt statement
+					
+					// Step 2: Send Ack within time constraints
+					f_wait(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC);
+					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
 				} // end else-branch      	                              
 
                 // Step 1:
+                // Start timer for TIMEB_MAX (time between receiving the AckADU of the BillingDeatails transaction and
+                // sending an corresponding PaymentClaim ADU)
+                // PT140 TODO: this may be a long time (days, weeks) which may create a problem in testing  
+                t_step.start(PAYMENTCLAIM_TIMEB_MIN_TC);                
+ 
                 // Let the IuT perform a PaymentClaim transaction with exactly one PaymentClain ADU with actionCode = SEND
 				// Send trigger
 				f_sendAndLogTrigger(PAYMENTCLAIM_TR_TC_1_SEND);
@@ -2931,17 +2933,16 @@ module EfcInfoExchange_TestCasesTc {
 					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
 						// Log what we received, no minimum time required	
 						f_logReceivedThenCheckAndStopTime(0.0);
-						// Step 2: Send NAck (except of issueCode "acceptedWithWarning")
-						// within time constraints to initiate adjust
-						f_wait(PAYMENTCLAIM_TIME1_MIN_TC);
-						f_sendAndLogApdu(m_apduNAckIndividualIssuesTester(v_apduReceived, {1, AduReasonCode_semanticError_}));
 					}
 				}
 
+				// Step 2: Send NAck (except of issueCode "acceptedWithWarning")
+				// within time constraints to initiate adjust
+				f_wait(PAYMENTCLAIM_TIME1_MIN_TC);
+				f_sendAndLogApdu(m_apduNAckIndividualIssuesTester(v_apduReceived, {1, AduReasonCode_semanticError_}));
+
                 // Step 3:
                 // Let the IuT perform a PaymentClaim transaction with exactly one PaymentClaim ADU with actionCode = ADJUST
-				// Send trigger
-				f_sendAndLogTrigger(PAYMENTCLAIM_TR_TC_1_ADJUST);
 
                 // Prepare APDU to be received
                 // PaymentId shall be the same as in the previous PaymentClaim ADU
@@ -2952,24 +2953,31 @@ module EfcInfoExchange_TestCasesTc {
 				  		actionCode := ActionCode_adjust_ }}}) 
            		};                 
 
+ 				// Send trigger
+				f_sendAndLogTrigger(PAYMENTCLAIM_TR_TC_1_ADJUST);
+
+				// start time to check compliance to TIMEEA_MIN
+				// PT140 TODO there is no maximum time defined but a timer shall be started
+				// to check below minimum PAYMENTCLAIM_TIMEA_MIN_TC 
+                t_step.start(c_veryLongTime);                
+ 
                 // Wait for above specified APDU within time constraints
                 // if not received or received outside specification or time constraints set test fail (done in the altstep)
 
 				alt {
 					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
 						// Log what we received, no minimum time required	
-						f_logReceivedThenCheckAndStopTime(0.0);
-						// Step 4: Send Ack within time constraints
-						f_wait(PAYMENTCLAIM_TIME1_MIN_TC);
-						f_sendAndLogApdu(m_apduDefaultAckTester(v_apduReceived));
+						f_logReceivedThenCheckAndStopTime(PAYMENTCLAIM_TIMEA_MIN_TC);
 						f_addLogEntry("Adjust transaction passed");
 					}
 				}
-                  
+
+				// Step 4: Send Ack within time constraints
+				f_wait(PAYMENTCLAIM_TIME1_MIN_TC);
+				f_sendAndLogApdu(m_apduDefaultAckTester(v_apduReceived));
+                 
                 // Step 5:
                 // Let the IuT perform a PaymentClaim transaction with exactly one PaymentClaim ADU with actionCode = REVOKE
-				// Send trigger
-				f_sendAndLogTrigger(PAYMENTCLAIM_TR_TC_1_REVOKE);
 
                 // Prepare APDU to be received
                 // PaymentId shall be the same as in the previous PaymentClaim ADU
@@ -2980,13 +2988,21 @@ module EfcInfoExchange_TestCasesTc {
 				  		actionCode := ActionCode_revoke_ }}}) 
            		};                 
 
+				// Send trigger
+				f_sendAndLogTrigger(PAYMENTCLAIM_TR_TC_1_REVOKE);
+
+				// start time to check compliance to TIMEEA_MIN
+				// PT140 TODO there is no maximum time defined but a timer shall be started
+				// to check below minimum PAYMENTCLAIM_TIMEA_MIN_TC 
+                t_step.start(c_veryLongTime);                
+
                 // Wait for above specified APDU within time constraints
                 // if not received or received outside specification or time constraints set test fail (done in the altstep)
 
 				alt {
 					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
 						// Log what we received, no minimum time required	
-						f_logReceivedThenCheckAndStopTime(0.0);
+						f_logReceivedThenCheckAndStopTime(PAYMENTCLAIM_TIMEA_MIN_TC);
 						// Step 6: Send Ack within time constraints
 						f_wait(PAYMENTCLAIM_TIME1_MIN_TC);
 						f_sendAndLogApdu(m_apduDefaultAckTester(v_apduReceived));
