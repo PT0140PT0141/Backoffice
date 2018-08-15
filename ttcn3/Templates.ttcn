@@ -1462,7 +1462,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 					valueDate := *,
 					interestAmount := *
 				}},
-				attachment := (*, (0..(2E63)-1)), // restrictions from IAP
+				attachment := (*, (0..(2E31)-1)), // restrictions from IAP
 				actionCode := (ActionCode_send_, ActionCode_revoke_ ,ActionCode_adjust_ )
 			} 					
 		}
