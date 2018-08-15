@@ -540,11 +540,6 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		
 
 		group PAYMENTCLAIM {
-
-   			// I dounbt we need the two apdu temnplate defined below. If yes, they may require an update to the new apdu generic template (Jan).
-   			template InfoExchange mw_apduPaymentClaim := m_apduNoSec(mw_apci, Adus:{paymentClaimADUs:=?});
-			
-			template InfoExchange mw_apduAuthPaymentClaim := mw_apduSec(mw_apci, Adus:{paymentClaimADUs:=?});
 			
 			template PaymentClaimADU mw_aduPaymentClaim := {
 				paymentClaimId := ?,
@@ -566,8 +561,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
     			}}, // mandatory in IAP and the only value allowed in IAP
 				actionCode := (ActionCode_send_, ActionCode_revoke_ ,ActionCode_adjust_ ), // onyl allowed values in IAP
 				paymentReference := *
-			}
-			 					
+			}			 					
 		}
 
 		group DSRC_CONTRACTISSUERLIST {		
@@ -1454,9 +1448,24 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		}
 
 		group GNSS_PAYMENTANNOUNCEMENT {
-   			template InfoExchange mw_apduPaymentAnnouncement := m_apduNoSec(mw_apci, Adus:{paymentAnnouncementADUs:=?});
-			
-			template InfoExchange mw_apduAuthPaymentAnnouncement := mw_apduSec(mw_apci, Adus:{paymentAnnouncementADUs:=?});
+
+			template PaymentAnnouncmentADU mw_aduPaymentAnnouncement := {
+				paymentAnnouncementID := (0..(2E63)-1), // range restriction from IAP
+				dueDate := ?,
+				totalamount := ?,
+				paymentStatus := ?,
+				numberOfItems := ?, // mandatory according to IAP
+				referenceDetailsList := {{// mandatory according to IAP
+					referenceDetail := (billingDetailsList, tollDeclarationList, tollEventList),
+					amount := ?,
+					paymentMeansType := (*, (0..255)),
+					valueDate := *,
+					interestAmount := *
+				}},
+				attachment := (*, (0..(2E63)-1)), // restrictions from IAP
+				actionCode := (ActionCode_send_, ActionCode_revoke_ ,ActionCode_adjust_ )
+			} 					
 		}
 	}
+}
 }
