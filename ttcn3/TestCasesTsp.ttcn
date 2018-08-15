@@ -1820,7 +1820,6 @@ module EfcInfoExchange_TestCasesTsp {
                 		// UserId within declared valid values
                 		// valid values of TypeOfFee
                 		// paymentReference valid and not present
-                 // PT140 TODO : mw_aduPaymentClaim template and related fields to be defined
 
 				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(
 					{modifies mw_aduPaymentClaim:= {
@@ -1830,7 +1829,7 @@ module EfcInfoExchange_TestCasesTsp {
 					  		paymentClaimStatus := PaymentClaimStatus_firstVersion_,
 					  		paymentClaimAmount := 45,
 					  		typeOfFee := TypeOfFee_toll_,
-					  		referenceDetailsList := {1}
+					  		referenceDetailsList := {{TD_APDU_ORIGINATOR_FOR_TESTER, 1}}
 					  		}
 						});                 
 				f_sendAndLogApdu(v_apduRespondedTo);                 
@@ -1919,7 +1918,7 @@ module EfcInfoExchange_TestCasesTsp {
 					  	paymentClaimStatus := PaymentClaimStatus_firstVersion_,
 					  	paymentClaimAmount := 45,
 					  	typeOfFee := TypeOfFee_toll_,
-					  	referenceDetailsList := {1}
+					  	referenceDetailsList := {{TD_APDU_ORIGINATOR_FOR_TESTER, 1}}
 					  	}
 					});                 
 				f_sendAndLogApdu(v_apduRespondedTo);                 
@@ -1946,7 +1945,7 @@ module EfcInfoExchange_TestCasesTsp {
 					  	paymentClaimStatus := PaymentClaimStatus_firstVersion_,
 					  	paymentClaimAmount := 44,
 					  	typeOfFee := TypeOfFee_toll_,
-					  	referenceDetailsList := {1}
+					  	referenceDetailsList := {{TD_APDU_ORIGINATOR_FOR_TESTER, 1}}
 					  	}
 					});                 
 				f_sendAndLogApdu(v_apduRespondedTo);                 
@@ -1972,7 +1971,7 @@ module EfcInfoExchange_TestCasesTsp {
 					  	paymentClaimStatus := PaymentClaimStatus_firstVersion_,
 					  	paymentClaimAmount := 0,
 					  	typeOfFee := TypeOfFee_toll_,
-					  	referenceDetailsList := {1}
+					  	referenceDetailsList := {{TD_APDU_ORIGINATOR_FOR_TESTER, 1}}
 					  	}
 					});                 
 				f_sendAndLogApdu(v_apduRespondedTo);                 
@@ -2032,7 +2031,7 @@ module EfcInfoExchange_TestCasesTsp {
 					  	paymentClaimStatus := PaymentClaimStatus_firstVersion_,
 					  	paymentClaimAmount := 45,
 					  	typeOfFee := TypeOfFee_toll_,
-					  	referenceDetailsList := {1}
+					  	referenceDetailsList := {{TD_APDU_ORIGINATOR_FOR_TESTER, 1}}
 					  	}
 					});                 
 				f_sendAndLogApdu(v_apduRespondedTo);                 
@@ -2059,7 +2058,7 @@ module EfcInfoExchange_TestCasesTsp {
 					  	paymentClaimStatus := PaymentClaimStatus_firstVersion_,
 					  	paymentClaimAmount := 0,
 					  	typeOfFee := TypeOfFee_toll_,
-					  	referenceDetailsList := {1}
+					  	referenceDetailsList := {{TD_APDU_ORIGINATOR_FOR_TESTER, 1}}
 					  	}
 					});                 
 				f_sendAndLogApdu(v_apduRespondedTo);                 
@@ -2108,7 +2107,6 @@ module EfcInfoExchange_TestCasesTsp {
                 		// UserId within declared valid values
                 		// valid values of TypeOfFee
                 		// paymentReference valid and not present
-                 // PT140 TODO : mw_aduPaymentClaim template and related fields to be defined
 				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(
 					{modifies mw_aduPaymentClaim:= {
 					  	userId := EXISTING_USER_ID,
@@ -2118,7 +2116,7 @@ module EfcInfoExchange_TestCasesTsp {
 					  	actionCode := ActionCode_send_,
 					  	paymentClaimAmount := 45,
 					  	typeOfFee := TypeOfFee_toll_,
-					  	referenceDetailsList := {1}
+					  	referenceDetailsList := {{TD_APDU_ORIGINATOR_FOR_TESTER, 1}}
 					  	}
 					});                 
 				f_sendAndLogApdu(v_apduRespondedTo);                 
@@ -2133,7 +2131,6 @@ module EfcInfoExchange_TestCasesTsp {
 					} // End of Alt statement
 					// Step 1: send invalid PAYMENTCLAIM				
                 	// Send PAYMENTCLAIM with ActionCode=ADJUST, but with status = first version
-                 // PT140 TODO : mw_aduPaymentClaim template and related fields to be defined
 
 				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(
 					{modifies mw_aduPaymentClaim:= {
@@ -2144,7 +2141,7 @@ module EfcInfoExchange_TestCasesTsp {
 					  	paymentClaimStatus := PaymentClaimStatus_firstVersion_,
 					  	paymentClaimAmount := 45,
 					  	typeOfFee := TypeOfFee_toll_,
-					  	referenceDetailsList := {1}
+					  	referenceDetailsList := {{TD_APDU_ORIGINATOR_FOR_TESTER, 1}}
 					  	}
 					});                 
 				f_sendAndLogApdu(v_apduRespondedTo);                 
@@ -2188,7 +2185,6 @@ module EfcInfoExchange_TestCasesTsp {
 						}
 					} // End of Alt statement					
                 	// Send PAYMENTCLAIM with ActionCode=SEND and referring to a wrong reference details list
-                 // PT140 TODO : mw_aduPaymentClaim template and related fields to be defined
 
 				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(
 					{modifies mw_aduPaymentClaim:= {
@@ -2199,7 +2195,7 @@ module EfcInfoExchange_TestCasesTsp {
 					  	paymentClaimStatus := PaymentClaimStatus_firstVersion_,
 					  	paymentClaimAmount := 45,
 					  	typeOfFee := TypeOfFee_toll_,
-					  	referenceDetailsList := {2}
+					  	referenceDetailsList := {{TD_APDU_ORIGINATOR_FOR_TESTER, 2}}
 					  	}
 					});                 
 				f_sendAndLogApdu(v_apduRespondedTo);                 
@@ -2246,7 +2242,6 @@ module EfcInfoExchange_TestCasesTsp {
                 // PT 140: TODO Probably there is no need to have an initial PAYMENTCLAIM for this test case as stated in the TSS&TP
 
                 // Send PAYMENTCLAIM with ActionCode=SEND and with action code = credit (not allowed)
-                 // PT140 TODO : mw_aduPaymentClaim template and related fields to be defined
 
 				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(
 					{modifies mw_aduPaymentClaim:= {
@@ -2257,7 +2252,7 @@ module EfcInfoExchange_TestCasesTsp {
 					  	paymentClaimStatus := PaymentClaimStatus_firstVersion_,
 					  	paymentClaimAmount := 45,
 					  	typeOfFee := TypeOfFee_toll_,
-					  	referenceDetailsList := {1}
+					  	referenceDetailsList := {{TD_APDU_ORIGINATOR_FOR_TESTER, 1}}
 					  	}
 					});                 
 				f_sendAndLogApdu(v_apduRespondedTo);                 
@@ -2309,7 +2304,6 @@ module EfcInfoExchange_TestCasesTsp {
 					} // End of Alt statement				
 
                 // Send PAYMENTCLAIM with ActionCode=SEND and referencing the two performed BillingDetails transactions
-                 // PT140 TODO : mw_aduPaymentClaim template and related fields to be defined
 
 				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(
 					{modifies mw_aduPaymentClaim:= {
@@ -2321,7 +2315,7 @@ module EfcInfoExchange_TestCasesTsp {
 					  	paymentClaimStatus := PaymentClaimStatus_firstVersion_,
 					  	paymentClaimAmount := 900,
 					  	typeOfFee := TypeOfFee_toll_,
-					  	referenceDetailsList := {1, 2}
+					  	referenceDetailsList := {{TD_APDU_ORIGINATOR_FOR_TESTER, 1},{TD_APDU_ORIGINATOR_FOR_TESTER, 2}}
 					  	}
 					});                 
 				f_sendAndLogApdu(v_apduRespondedTo);                 
@@ -2339,7 +2333,6 @@ module EfcInfoExchange_TestCasesTsp {
 					} // End of Alt statement
 
                 // Send PAYMENTCLAIM with ActionCode=SEND and referencing the two performed BillingDetails transactions, and containing userId unknown to the IUT
-                 // PT140 TODO : mw_aduPaymentClaim template and related fields to be defined
 
 				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(
 					{modifies mw_aduPaymentClaim:= {
@@ -2350,7 +2343,7 @@ module EfcInfoExchange_TestCasesTsp {
 					  	paymentClaimStatus := PaymentClaimStatus_firstVersion_,
 					  	paymentClaimAmount := 900,
 					  	typeOfFee := TypeOfFee_toll_,
-					  	referenceDetailsList := {1, 2}
+					  	referenceDetailsList := {{TD_APDU_ORIGINATOR_FOR_TESTER, 1},{TD_APDU_ORIGINATOR_FOR_TESTER, 2}}
 					  	}
 					});                 
 				f_sendAndLogApdu(v_apduRespondedTo);                 
@@ -2368,7 +2361,6 @@ module EfcInfoExchange_TestCasesTsp {
 					} // End of Alt statement
 
                 // Send PAYMENTCLAIM with ActionCode=SEND and referencing the two performed BillingDetails transactions, and containing paymentClaimAmount = 1000
-                 // PT140 TODO : mw_aduPaymentClaim template and related fields to be defined
 
 				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(
 					{modifies mw_aduPaymentClaim:= {
@@ -2379,7 +2371,7 @@ module EfcInfoExchange_TestCasesTsp {
 					  	paymentClaimStatus := PaymentClaimStatus_firstVersion_,
 					  	paymentClaimAmount := 1000,
 					  	typeOfFee := TypeOfFee_toll_,
-					  	referenceDetailsList := {1, 2}
+					  	referenceDetailsList := {{TD_APDU_ORIGINATOR_FOR_TESTER, 1},{TD_APDU_ORIGINATOR_FOR_TESTER, 2}}
 					  	}
 					});                 
 				f_sendAndLogApdu(v_apduRespondedTo);                 
@@ -2397,7 +2389,6 @@ module EfcInfoExchange_TestCasesTsp {
 					} // End of Alt statement
 
                 // Send PAYMENTCLAIM with ActionCode=SEND and referencing the two performed BillingDetails transactions, and containing paymentClaimStatus = 2
-                 // PT140 TODO : mw_aduPaymentClaim template and related fields to be defined
 
 				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(
 					{modifies mw_aduPaymentClaim:= {
@@ -2408,7 +2399,7 @@ module EfcInfoExchange_TestCasesTsp {
 					  	paymentClaimStatus := 2,
 					  	paymentClaimAmount := 900,
 					  	typeOfFee := TypeOfFee_toll_,
-					  	referenceDetailsList := {1, 2}
+					  	referenceDetailsList := {{TD_APDU_ORIGINATOR_FOR_TESTER, 1},{TD_APDU_ORIGINATOR_FOR_TESTER, 2}}
 					  	}
 					});                 
 				f_sendAndLogApdu(v_apduRespondedTo);                 
@@ -2426,7 +2417,6 @@ module EfcInfoExchange_TestCasesTsp {
 					} // End of Alt statement
 
                 // Send PAYMENTCLAIM with ActionCode=SEND and referencing the two performed BillingDetails transactions, and containing typeOfFee omitted
-                 // PT140 TODO : mw_aduPaymentClaim template and related fields to be defined
 
 				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(
 					{modifies mw_aduPaymentClaim:= {
@@ -2437,7 +2427,7 @@ module EfcInfoExchange_TestCasesTsp {
 					  	paymentClaimStatus := PaymentClaimStatus_firstVersion_,
 					  	paymentClaimAmount := 900,
 					  	typeOfFee := omit,
-					  	referenceDetailsList := {1, 2}
+					  	referenceDetailsList := {{TD_APDU_ORIGINATOR_FOR_TESTER, 1},{TD_APDU_ORIGINATOR_FOR_TESTER, 2}}
 					  	}
 					});                 
 				f_sendAndLogApdu(v_apduRespondedTo);                 
@@ -2486,7 +2476,6 @@ module EfcInfoExchange_TestCasesTsp {
 						}
 					} // End of Alt statement					
 				// Send one PAYMENTCLAIM related to the sent BILLINGDETAILS within allowed time constraints
-                 // PT140 TODO : mw_aduPaymentClaim template and related fields to be defined
 
 				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(
 					{modifies mw_aduPaymentClaim:= {
@@ -2497,7 +2486,7 @@ module EfcInfoExchange_TestCasesTsp {
 					  	paymentClaimStatus := PaymentClaimStatus_firstVersion_,
 					  	paymentClaimAmount := 45,
 					  	typeOfFee := TypeOfFee_toll_,
-					  	referenceDetailsList := {1}
+					  	referenceDetailsList := {{TD_APDU_ORIGINATOR_FOR_TESTER, 1}}
 					  	}
 					});                 
 				f_sendAndLogApdu(v_apduRespondedTo);                 
@@ -2505,7 +2494,6 @@ module EfcInfoExchange_TestCasesTsp {
                 // Step 1:
                 	// Send PAYMENTCLAIM with ActionCode=REVOKE before TIMEA_MIN
               		// Wait for negative Ack (if positive Ack or not received set test failure) 
-              		// PT140 TODO : mw_aduPaymentClaim template and related fields to be defined
 
 				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(
 					{modifies mw_aduPaymentClaim:= {
@@ -2516,7 +2504,7 @@ module EfcInfoExchange_TestCasesTsp {
 					  	paymentClaimStatus := PaymentClaimStatus_amendedVersion_,
 					  	paymentClaimAmount := 0,
 					  	typeOfFee := TypeOfFee_toll_,
-					  	referenceDetailsList := {1}
+					  	referenceDetailsList := {{TD_APDU_ORIGINATOR_FOR_TESTER, 1}}
 					  	}
 					});                 
 				f_sendAndLogApdu(v_apduRespondedTo); 
