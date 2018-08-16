@@ -340,7 +340,7 @@ module EfcInfoExchange_TestCasesTsp {
 				var UserParameterRequest v_userParameterRequests := f_userDetailsParameters();                
 				
 				// Step 1: Send Initiating APDU containing a valid RequestADU with APCI parameter field containing nextApduId
-				template (value) ApciFields m_apciNextApduId modifies sometingsomethinsomething:= {nextApduId := 1};				
+				template (value) ApciFields m_apciNextApduId modifies sometingsomethinsomething:= {nextApduId := 1};	//TODO Fausto			
 
 				// Then send it together with the request ADU
 				var InfoExchange v_apduForSending := m_apduNoAuth(

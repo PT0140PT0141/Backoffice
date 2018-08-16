@@ -5,7 +5,7 @@
  */
 
 module EfcInfoExchange_TesterData{
-
+	//TODO Prefix every modulepar with "TD" and add tags for semantic definitions in comments
 	//importing other modules
 	import from EfcInfoExchange_Functions all;
 		

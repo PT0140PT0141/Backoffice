@@ -4,10 +4,10 @@
  * @version   $id$
  */
 module EfcInfoExchange_Ics {
-    
     /**
      * @desc    Replicate the PICS in TTCN3 code
      */
+	//TODO add tags for semantic definitions in comments
     modulepar boolean ICS_A1_1_isTc := true; 
     modulepar boolean ICS_A1_2_isTsp := true;
     modulepar boolean ICS_A2_1_isDsrc := true; 

@@ -4,6 +4,7 @@
  * @version    $id$
  */
 module EfcInfoExchange_Pixits {
+	//TODO Prefix every modulepar with "PX" and add tags for semantic definitions in comments
 	//importing other modules
 	
 	//importing ASN.1 data automatically translated into TTCN-3	
