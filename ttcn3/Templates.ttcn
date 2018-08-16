@@ -76,7 +76,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		template ApciFields mw_apciInitIut modifies mw_apci :={
 			apduOriginator := APDU_ORIGINATOR_FOR_IUT,  
 			informationSenderID := INFORMATION_SENDER_ID_FOR_IUT, 
-			informationrecipientID := INFORMATION_SENDER_ID_FOR_TESTER,
+			informationrecipientID := TD_INFORMATION_SENDER_ID_FOR_TESTER,
 			inResponseToApduId := omit
 		}
 		

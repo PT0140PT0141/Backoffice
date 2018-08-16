@@ -162,7 +162,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Step 1: Send Initiating APDU containing a valid RequestADU with requestedADUType=provideUserDetailsADU
 				// containing apduOriginator different from  value declared in the PIXIT
 				// Retrieve and alter apduOriginator value
-				var Provider apduWrongOriginator := APDU_ORIGINATOR_FOR_TESTER;
+				var Provider apduWrongOriginator := TD_APDU_ORIGINATOR_FOR_TESTER;
 				apduWrongOriginator.providerIdentifier := apduWrongOriginator.providerIdentifier + 1;
 				template (value) ApciFields m_apciInvalidOriginator modifies m_apciInitTester:= {apduOriginator := apduWrongOriginator};
 				// Then send it together with the request ADU
@@ -204,7 +204,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Step 1: Send Initiating APDU containing a valid RequestADU with requestedADUType=provideUserDetailsADU
 				// containing informationSenderID â‰  value declared in the PIXIT
 				// Retrieve and alter informationSenderID value
-				var Provider apduWrongSender := INFORMATION_SENDER_ID_FOR_TESTER;
+				var Provider apduWrongSender := TD_INFORMATION_SENDER_ID_FOR_TESTER;
 				apduWrongSender.providerIdentifier := apduWrongSender.providerIdentifier + 1;
 				template (value) ApciFields m_apciInvalidSender modifies m_apciInitTester:= {informationSenderID := apduWrongSender};
 				// Then send it together with the request ADU
@@ -340,7 +340,7 @@ module EfcInfoExchange_TestCasesTsp {
 				var UserParameterRequest v_userParameterRequests := f_userDetailsParameters();                
 				
 				// Step 1: Send Initiating APDU containing a valid RequestADU with APCI parameter field containing nextApduId
-				template (value) ApciFields m_apciNextApduId modifies := {nextApduId := 1};				
+				template (value) ApciFields m_apciNextApduId modifies sometingsomethinsomething:= {nextApduId := 1};				
 
 				// Then send it together with the request ADU
 				var InfoExchange v_apduForSending := m_apduNoAuth(
@@ -459,8 +459,8 @@ module EfcInfoExchange_TestCasesTsp {
 				// Step 1: Send Initiating APDU containing a valid TrustObjectADU with inResponseToApduId not equal to the value of the previously sent APDU
 				// Answer with the correct requested Trust Object, but using the incorrect inResponseToApduId in the apci
 				var TrustObjectADU v_aduTrustObject;
-					if (isCertificate) {v_aduTrustObject:= m_aduTrustObject(v_receivedPurposes,CERTIFICATE_TESTER_VALUE)};									
-					if (isPublicKey)   {v_aduTrustObject:= m_aduTrustObject(v_receivedPurposes,PUBLICKEY_TESTER_VALUE)};								
+					if (isCertificate) {v_aduTrustObject:= m_aduTrustObject(v_receivedPurposes,TD_CERTIFICATE)};									
+					if (isPublicKey)   {v_aduTrustObject:= m_aduTrustObject(v_receivedPurposes,TD_PUBLICKEY)};								
 					if (isCertificateRevocationList) {v_aduTrustObject:= m_aduTrustObject(v_receivedPurposes, TD_CERT_REVOKE_LIST)};
 					//TODO PT140 According to the current version of the 12855 or 16986, there is no way to request a MAC or DSRC key is to be sent. Using symmetric key provisionally 
 					if (isMacMasterOrDsrcKey) {

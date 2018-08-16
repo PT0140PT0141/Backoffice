@@ -21,7 +21,8 @@ module EfcInfoExchange_TesterData{
 	
 	modulepar EfcDsrcApplication.Provider TD_IDENTIFIER; //TODO this modulepar seems redundant with the ones below
 	modulepar EfcDsrcApplication.Provider TD_APDU_ORIGINATOR_FOR_TESTER; //value of the InfoExchange.infoExchangeContent.apci.apduOriginator
-	modulepar EfcDSRCApplication.Provider TD_INVALID_APDU_ORIGINATOR_FOR_TESTER // for base test cases
+	modulepar EfcDsrcApplication.Provider TD_INFORMATION_SENDER_FOR_TESTER; //value of the InfoExchange.infoExchangeContent.apci.informationrecipientID
+	modulepar EfcDsrcApplication.Provider TD_INVALID_APDU_ORIGINATOR_FOR_TESTER; // for base test cases
 	modulepar EfcDsrcApplication.Provider TD_INFORMATION_SENDER_ID_FOR_TESTER;	//value of the InfoExchange.infoExchangeContent.apci.informationSenderID
 	modulepar EfcDsrcApplication.Provider TD_INVALID_INFORMATION_SENDER_ID_FOR_TESTER; // for base test cases
 	modulepar EfcDsrcApplication.Provider TD_INVALID_INFORMATION_RECEPIENT_ID_FOR_IUT; // for base test cases
@@ -99,6 +100,8 @@ module EfcInfoExchange_TesterData{
 		modulepar VehicleParameters TD_VEHICLE_PARAMETERS;
 		modulepar ASNAUX.UTF8String TD_VAT_ID;  
 		modulepar UserId TD_USERID_1, TD_USERID_2, TD_USERID_3, TD_USERID_4, TD_USERID_5, TD_USERID_6, TD_USERID_7, TD_USERID_8;
+		modulepar UserId TD_USER_ID_NOT_PRESENT_AT_IUT_1,TD_USER_ID_NOT_PRESENT_AT_IUT_2,TD_USER_ID_NOT_PRESENT_AT_IUT_3;
+
 		type record of UserId UserIdList;
 		modulepar UserIdList TD_USER_ID_NOT_PRESENT_AT_IUT :={
 			TD_USER_ID_NOT_PRESENT_AT_IUT_1,
@@ -164,9 +167,9 @@ module EfcInfoExchange_TesterData{
 
 	group TRUSTOBJECTS {
 		modulepar TrustObjectCode TD_CERT_REVOKE_LIST;
-		modulepar octetstring certificateTESTER_VALUE;
+		modulepar octetstring TD_CERTIFICATE;
 	 	modulepar octetstring genericTrustObjectTESTER_VALUE;
-	 	modulepar PublicKeyObject publicKeyTESTER_VALUE;
+	 	modulepar PublicKeyObject TD_PUBLICKEY;
     	modulepar DsrcKeyObject symmetricKeyTESTER_VALUE;
     	modulepar DsrcKeyObject symmetricKeyEncryptedTESTER_VALUE;
     	modulepar DsrcKeyRef dsrcKeyRefObjectTESTER_VALUE := {
@@ -176,7 +179,7 @@ module EfcInfoExchange_TesterData{
     	};
     	modulepar CertificateObject certificateTESTER_OBJECT := {
     	  certificateType := CertificateType_certTcHTTPS_,
-    	  certificate := certificateTESTER_VALUE
+    	  certificate := TD_CERTIFICATE
     	};
 		modulepar GenericTrustObject invalidTESTERGenericObject := {
 		  typeOfTrustObject := TrustObjectTypes_certificate_,
@@ -236,7 +239,7 @@ module EfcInfoExchange_TesterData{
 
 	group TOLLDECLARATION{
 		modulepar EfcDsrcApplication.PaymentMeans TD_PAYMENT_MEANS_1;//:= {PAN1,{2030,12,31}, "1234"};
-		modulepar EfcDsrcApplication.EFC_ContextMark TD_SERVICE_PROVIDER_CONTRACT := {INFORMATION_SENDER_ID_FOR_TESTER, '11'O ,99};
+		modulepar EfcDsrcApplication.EFC_ContextMark TD_SERVICE_PROVIDER_CONTRACT := {TD_INFORMATION_SENDER_ID_FOR_TESTER, '11'O ,99};
 		modulepar Provider TD_TOLL_CONTEXT;	//value of the InfoExchange.infoExchangeContent.apci.informationSenderID	
 	}
 
@@ -261,7 +264,7 @@ module EfcInfoExchange_TesterData{
  		modulepar ASNAUX.GeneralizedTime TD_PAYMENTANNOUNCEMENT_DUE_DATE;
  		modulepar ExtendedPaymentAmount TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_1, TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_2,
  			TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_3;
- 		modulepar ExtendedPaymentAmount TD_BILLINGDETAILS_AMOUNT_1; TD_BILLINGDETAILS_AMOUNT_2,
+ 		modulepar ExtendedPaymentAmount TD_BILLINGDETAILS_AMOUNT_1, TD_BILLINGDETAILS_AMOUNT_2,
  			TD_BILLINGDETAILS_AMOUNT_3;		 
 	}
 	

@@ -154,7 +154,7 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
 			f_logApduReceivedAndTStep();						         		
 			// Send Ack within time constraints
 			f_wait(p_wait);
-			f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+			f_sendAndLogApdu(m_apduDefaultAckTester(v_apduReceived));
 		}
 		
 		/**

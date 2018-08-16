@@ -149,8 +149,8 @@ module EfcInfoExchange_InteroperabilityStatement {
     modulepar float GNSS_BILLINGDETAILS_TC_TIME0_MAX_TSP := c_veryLongTime;
     modulepar float GNSS_BILLINGDETAILS_TC_TIME0_MIN_TSP := 0.0;  
     modulepar float GNSS_BILLINGDETAILS_TC_TIME1_MAX_TC := c_veryLongTime;
-    modulepar float GNSS_BILLINGDETAILS_TC_TIME1_MIN_TSP := 0.0;
-    modulepar float GNSS_BILLINGDETAILS_TC_TIME1_MAX_TC := c_veryLongTime;
+    modulepar float GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC := 0.0;
+    modulepar float GNSS_BILLINGDETAILS_TC_TIME1_MAX_TSP := c_veryLongTime;
     modulepar float GNSS_BILLINGDETAILS_TC_TIME1_MIN_TSP := 0.0;
     modulepar float GNSS_BILLINGDETAILS_TC_PARAM1_MAX_TC := c_veryHighNumber;
     modulepar float GNSS_BILLINGDETAILS_TC_PARAM1_MAX_TSP := c_veryHighNumber;
