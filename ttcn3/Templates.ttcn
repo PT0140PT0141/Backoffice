@@ -1449,7 +1449,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 
 		group GNSS_PAYMENTANNOUNCEMENT {
 
-			template PaymentAnnouncmentADU mw_aduPaymentAnnouncement := {
+			template PaymentAnnouncementADU mw_aduPaymentAnnouncement := {
 				paymentAnnouncementID := (0..(2E63)-1), // range restriction from IAP
 				dueDate := ?,
 				totalamount := ?,
