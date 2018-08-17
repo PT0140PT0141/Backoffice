@@ -430,10 +430,10 @@ module EfcInfoExchange_TestCasesTsp {
 						f_logApduReceivedAndTStep();	// Do not wait to send an Ack whichever object received
 						
 						//Read the trustObjectPurpose received and set corresponding boolean			
-						if (match(v_apduReceived, mw_apduRequestTrustObjectCertificate)) {isCertificate:=true;}
+						if (match(v_apduReceived, mw_apduRequestTrustObjectCertificate)) {isCertificate:=true;} //Templates to be written TODO FAusto
 						if (match(v_apduReceived, mw_apduRequestTrustObjectPublicKey)) {isPublicKey:=true;}
 						if (match(v_apduReceived, mw_apduRequestTrustObjectGeneric)) {isCertificateRevocationList := true;}
-						if (match(v_apduReceived, mw_apduTrustObjectSymmetricKey)) {isMacMasterOrDsrcKey:=true;}
+						if (match(v_apduReceived, mw_apduTrustObjectSymmetricKey)) {isMacMasterOrDsrcKey:=true;} //TOD Fausto correct, this one is impossible (only REQUESTS can be received here)
 					}										
 				} // End of alt statement
 
@@ -464,9 +464,9 @@ module EfcInfoExchange_TestCasesTsp {
 					if (isCertificateRevocationList) {v_aduTrustObject:= m_aduTrustObject(v_receivedPurposes, TD_CERT_REVOKE_LIST)};
 					//TODO PT140 According to the current version of the 12855 or 16986, there is no way to request a MAC or DSRC key is to be sent. Using symmetric key provisionally 
 					if (isMacMasterOrDsrcKey) {
-						if (v_encryptedKey) {v_aduTrustObject:= m_aduTrustObject(v_receivedPurposes,SYMMETRICKEY_ENCRYPTED_TESTER_VALUE)}
+						if (v_encryptedKey) {v_aduTrustObject:= m_aduTrustObject(v_receivedPurposes,TD_SYMMETRIC_KEY_ENCRYPTED)}
 					} else { 
-						v_aduTrustObject:= m_aduTrustObject(v_receivedPurposes,SYMMETRICKEY_TESTER_VALUE);
+						v_aduTrustObject:= m_aduTrustObject(v_receivedPurposes,TD_SYMMETRIC_KEY);
 					}
 					 							
 				//Prepare a faulty inResponseTo-field. The originator is set to the Tester value which CANNOT be correct.
@@ -660,10 +660,9 @@ module EfcInfoExchange_TestCasesTsp {
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
-				var UserParameterRequests v_userParameterRequests := PRIVACYBOUND_LIST_OF_PARAMETERS;   
 				// Check if there are parameters that are privacy bound
 				// If not, exit test
-				if (sizeof (v_userParameterRequests) == 0) {
+				if (sizeof (TD_PRIVACYBOUND_USER_PARAM_REQS) == 0) {
 					setverdict(inconc);
 					f_addLogEntry("Privacy bound parameters missing. Test cannot be executed");
 					stop;
@@ -671,9 +670,9 @@ module EfcInfoExchange_TestCasesTsp {
                 
 				// Step1: send RequestADU
 				
-				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester({m_aduRequestProvideUserDetails(v_userParameterRequests)});
+				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester({m_aduRequestProvideUserDetails(TD_PRIVACYBOUND_USER_PARAM_REQS)});
 				f_sendAndLogApdu(
-					m_apduNoSecInit(v_apduRespondedTo)
+					m_apduNoAuthInit(v_apduRespondedTo)
 					);   	  
                                 
 				//Set timer
@@ -1467,7 +1466,7 @@ module EfcInfoExchange_TestCasesTsp {
 						// Prepare a request of a Trust Object by taking allowed type and purpose from the RECEIVED_TRUST_OBJECTS_SUPPORTED Pixit value
 						
 						var integer v_requestedTrustObjectType := SENT_TRUST_OBJECTS_SUPPORTED[v_trustObjectsReceived].trustObjectType;
-						var TrustObjectPurposes v_requestedTrustObjectPurposes := SENT_TRUST_OBJECTS_SUPPORTED[v_trustObjectsReceived].trustObjectPurpose
+						var TrustObjectPurposes v_requestedTrustObjectPurposes := SENT_TRUST_OBJECTS_SUPPORTED[v_trustObjectsReceived].trustObjectPurpose;
 						
 						var InfoExchange v_apduRequestForTrustObject := m_apduNoAuth(
 							m_apciInitTester, Adus:{
@@ -3820,7 +3819,7 @@ module EfcInfoExchange_TestCasesTsp {
 				alt {
 					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
 						// Log what we received
-						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATION_MIN_TSP); 
+						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIMEA_MIN_TSP); 
 					
 						// PT140 TODO: verify that the extraction of the tollDeclarationId from the received apdu is correct
 						var TollDeclarationId v_idReceived1 := v_apduReceived.infoExchangeContent.adus.tollDeclarationADUs[1].tollDeclarationId;
@@ -3830,7 +3829,7 @@ module EfcInfoExchange_TestCasesTsp {
 						if ((v_idReceived1 == v_idReceived2) and (v_idReceived1 == v_idReceived3)){
 							setverdict(pass);
 							// Step3: Send DefaultAck with correct identifier and set verdict
-							f_logReceivedWaitAndAcknowledge(GNSSTOLLDECLARATION_TIME1_TC);
+							f_logReceivedWaitAndAcknowledge(GNSS_TOLLDECLARATIONS_TIME1_MIN_TSP);
 							} else {
 							f_addLogEntry("TollDeclaration Ids mismatch");
 							setverdict(fail);
@@ -3849,29 +3848,26 @@ module EfcInfoExchange_TestCasesTsp {
 
     } // End of group GNSS.TOLLDECLARATION
     group GNSS_BILLINGDETAILS_TSP {
-         group Valid_Behaviour {
-
-           testcase TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_01() runs on MainTestComponent system TestAdapter {
-                  /**
+    	group Valid_Behaviour {
+    		testcase TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_01() runs on MainTestComponent system TestAdapter {
+    			/**
                   * @desc    TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_01: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TSP transaction with BillingDetailsADUs
 				  * @desc 	 containing all permutations of present and not present optional fields that vary in the IUT implementation, all with actionCode=send 
                   * @remark  [16986:2016], Clause 8.2.2 AND 8.2.4 and Table A.1/2 AND Table A.2/1 AND Table A.52/1 AND Table A.56/6
                   */
-                 // Initialisation 
+                // Initialisation 
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A52_3_implementedGNSSTOLLDECLARATION and ICS_A52_1_implementedGNSSBILLINGDETAILSTSP;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1_SEND);												
 				//  Wait for GNSS.TOLLDECLARATION
 				// PT140 TODO: mw_aduGnssTollDeclaration template to be defined
-				var InfoExchange v_apduToBeReceived := mw_apduNoAuthInitIut(mw_aduGnssTollDeclaration);
-				
 				// Receive the correct adu, send positive ack
 				alt {
-					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNoAuthInitIut(mw_aduGnssTollDeclaration)) -> value v_apduReceived {
 						// Log what we received
-						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATION_MIN_TSP); 		
-						}				
- 					} // End of alt statement 
+						f_logReceivedWaitAndAcknowledge(GNSS_TOLLDECLARATIONS_TIME1_MIN_TSP); 	
+					}				
+ 				} // End of alt statement 
 				
 				// Step 1: Trigger IUT with GNSS.BILLINGDETAILS_TSP_1_A to send  valid BillingDetailsADUs with:
 					// actionCode = send
@@ -3890,10 +3886,10 @@ module EfcInfoExchange_TestCasesTsp {
 						setverdict(pass);						
 						}
  					} // End of alt statement
-				f_closeDownMtc();   						           				                                
-                } // End of TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_01           
-          
-           testcase TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_02() runs on MainTestComponent system TestAdapter {
+				f_closeDownMtc();
+    		} // End of TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_01           
+    		
+    		testcase TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_02() runs on MainTestComponent system TestAdapter {
              
                   /**
                   * @desc    TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_06: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TSP transaction with single BillingDetailsADU with actionCode = adjust and no optional fields 
@@ -3906,13 +3902,13 @@ module EfcInfoExchange_TestCasesTsp {
 				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1_SEND);												
 				//  Wait for GNSS.TOLLDECLARATION
 				// PT140 TODO: mw_aduGnssTollDeclaration template to be defined
-				var InfoExchange v_apduToBeReceived := mw_apduNoAuthInitIut(mw_aduGnssTollDeclaration);
 				
 				// Receive the correct adu, send positive ack
 				alt {
-					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
-						f_logReceivedWaitAndAcknowledge(GNSSTOLLDECLARATION_TIME1_TC);
-					}
+					[] mtcPort.receive(mw_apduNoAuthInitIut(mw_aduGnssTollDeclaration)) -> value v_apduReceived {
+						// Log what we received
+						f_logReceivedWaitAndAcknowledge(GNSS_TOLLDECLARATIONS_TIME1_MIN_TSP); 	
+					}				
 				} // End of alt statement 
 				f_sendAndLogTrigger(GNSS_BILLINGDETAILS_TSP_TR_TSP_1_SEND);				
 				
@@ -3959,16 +3955,14 @@ module EfcInfoExchange_TestCasesTsp {
 				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1_SEND);												
 				//  Wait for GNSS.TOLLDECLARATION
 				// PT140 TODO: mw_aduGnssTollDeclaration template to be defined
-				var InfoExchange v_apduToBeReceived := mw_apduNoAuthInitIut(mw_aduGnssTollDeclaration);
 				
 				// Receive the correct adu, send positive ack
 				alt {
-					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNoAuthInitIut(mw_aduGnssTollDeclaration)) -> value v_apduReceived {
 						// Log what we received
-						// Send Ack within time constraints
-						f_logReceivedWaitAndAcknowledge(GNSSTOLLDECLARATION_TIME1_TC);
-						}
- 					} // End of alt statement 
+						f_logReceivedWaitAndAcknowledge(GNSS_TOLLDECLARATIONS_TIME1_MIN_TSP); 	
+					}				
+ 				} // End of alt statement 
 				f_sendAndLogTrigger(GNSS_BILLINGDETAILS_TSP_TR_TSP_1_SEND);				
 				
 				//  Wait for GNSS.BILLINGDETAILS
@@ -4020,12 +4014,13 @@ module EfcInfoExchange_TestCasesTsp {
 				// Trigger IUT with GNSS_TOLLDECLARATION_TR_TSP_1_SEND to send one valid TollDeclarationADU with actionCode = send
 				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1_SEND);
 				//  PT140 TODO: Template for Toll Declaration to be defined
+				// Receive the correct adu, send positive ack
 				alt {
-					[] mtcPort.receive(mw_apduTollDeclaration) -> value v_apduReceived {
-						f_logReceivedWaitAndAcknowledge(TOLLDECLARATION_TIME1_TC);
-						}
-					} // End of first alt statement
-				
+					[] mtcPort.receive(mw_apduNoAuthInitIut(mw_aduGnssTollDeclaration)) -> value v_apduReceived {
+						// Log what we received
+						f_logReceivedWaitAndAcknowledge(GNSS_TOLLDECLARATIONS_TIME1_MIN_TSP); 	
+					}				
+				} // End of alt statement 
                  // Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
                  	// action code = send
                  	// includedDiscounts in usageList with textDetail field being set according to values specified in Table A.54 of CEN/TS 16986:2016
@@ -4066,23 +4061,26 @@ module EfcInfoExchange_TestCasesTsp {
 				// PT 140 TODO Trigger definition missing
 				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1);
 				//  PT140 TODO: Template for Toll Declaration to be defined
+				// Receive the correct adu, send positive ack
 				alt {
-					[] mtcPort.receive(mw_apduTollDeclaration) -> value v_apduReceived {
-						f_logReceivedWaitAndAcknowledge(TOLLDECLARATION_TIME1_TC);
-                	// Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
-                 	// action code = send
-                 	// CHOICE forSectionedRoads
-                  	// PT140 TODO: Correct template to be defined. Using basic BillingDetails template in what follows (to be changed)
-						var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(
-							{modifies mw_aduBillingDetails:= {
-					  			billingDetailsId := 1, actionCode := ActionCode_send_ }
-							});                 
-						f_sendAndLogApdu(v_apduRespondedTo);                 						
-						}
-					} // End of first alt statement
-                 // Step 2: Wait for positive Ack within GNSS_BILLINGDETAILS_TC_TIME1_MAX_TC
+					[] mtcPort.receive(mw_apduNoAuthInitIut(mw_aduGnssTollDeclaration)) -> value v_apduReceived {
+						// Log what we received
+						f_logReceivedWaitAndAcknowledge(GNSS_TOLLDECLARATIONS_TIME1_MIN_TSP); 	
+					}				
+				} // End of alt statement 
+                	
+				// Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
+                // action code = send
+                // CHOICE forSectionedRoads
+                // PT140 TODO: Correct template to be defined. Using basic BillingDetails template in what follows (to be changed)
+				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(
+					{modifies mw_aduBillingDetails:= {billingDetailsId := 1, actionCode := ActionCode_send_ }}
+				);                 
+				f_sendAndLogApdu(v_apduRespondedTo);                 						
+				
+				// Step 2: Wait for positive Ack within GNSS_BILLINGDETAILS_TC_TIME1_MAX_TC
 				// Set timer
-                 t_step.start(GNSS_BILLINGDETAILS_TC_TIME1_MAX_TC);                 
+                t_step.start(GNSS_BILLINGDETAILS_TC_TIME1_MAX_TC);                 
 				alt {
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduRespondedTo)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC);
@@ -4105,23 +4103,22 @@ module EfcInfoExchange_TestCasesTsp {
 				// PT 140 TODO Trigger definition missing
 				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1);
 				//  PT140 TODO: Template for Toll Declaration to be defined
+				// Receive the correct adu, send positive ack
 				alt {
-					[] mtcPort.receive(mw_apduTollDeclaration) -> value v_apduReceived {
-						f_logReceivedWaitAndAcknowledge(TOLLDECLARATION_TIME1_TC);
-               			// Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
-                 			// action code = send
-                 			// CHOICE forTravellingInArea
-                  	// PT140 TODO: Correct template to be defined. Using basic BillingDetails template in what follows (to be changed)
-						var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(
-						{modifies mw_aduBillingDetails:= {
-					  	billingDetailsId := 1, actionCode := ActionCode_send_ }
-						});                 
-						f_sendAndLogApdu(v_apduRespondedTo);                 					
-						}
-					} // End of first alt statement
-                  // Step 2: Wait for positive Ack within GNSS_BILLINGDETAILS_TC_TIME1_MAX_TC
+					[] mtcPort.receive(mw_apduNoAuthInitIut(mw_aduGnssTollDeclaration)) -> value v_apduReceived {
+						// Log what we received
+						f_logReceivedWaitAndAcknowledge(GNSS_TOLLDECLARATIONS_TIME1_MIN_TSP); 	
+					}				
+				} // End of alt statement 
+      			// Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
+     			// action code = send
+     			// CHOICE forTravellingInArea
+              	// PT140 TODO: Correct template to be defined. Using basic BillingDetails template in what follows (to be changed)
+				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester({modifies mw_aduBillingDetails:= {billingDetailsId := 1, actionCode := ActionCode_send_ }}); 
+				f_sendAndLogApdu(v_apduRespondedTo);                 					
+                // Step 2: Wait for positive Ack within GNSS_BILLINGDETAILS_TC_TIME1_MAX_TC
 				// Set timer
-                 t_step.start(GNSS_BILLINGDETAILS_TC_TIME1_MAX_TC);                 
+                t_step.start(GNSS_BILLINGDETAILS_TC_TIME1_MAX_TC);                 
 				alt {
 					[] mtcPort.receive(mw_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC);
@@ -4146,9 +4143,9 @@ module EfcInfoExchange_TestCasesTsp {
 				// PT 140 TODO Trigger definition missing
 				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1);
 				//  PT140 TODO: Template for Toll Declaration to be defined
-				alt {
+				alt { //TODO Ulrik continue to correct the receiveing of TOllDeclarations as in preceeding Test cases
 					[] mtcPort.receive(mw_apduTollDeclaration) -> value v_apduReceived {
-						f_logReceivedWaitAndAcknowledge(TOLLDECLARATION_TIME1_TC);
+						f_logReceivedWaitAndAcknowledge(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
                			// Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
                  			// action code = send
                  			// CHOICE forStayingInArea
@@ -4188,7 +4185,7 @@ module EfcInfoExchange_TestCasesTsp {
 				//  PT140 TODO: Template for Toll Declaration to be defined
 				alt {
 					[] mtcPort.receive(mw_apduTollDeclaration) -> value v_apduReceived {
-						f_logReceivedWaitAndAcknowledge(TOLLDECLARATION_TIME1_TC);
+						f_logReceivedWaitAndAcknowledge(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
                			// Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
                  		// action code = send
                  			// CHOICE forCordonCrossings
@@ -4229,7 +4226,7 @@ module EfcInfoExchange_TestCasesTsp {
 				//  PT140 TODO: Template for Toll Declaration to be defined
 				alt {
 					[] mtcPort.receive(mw_apduTollDeclaration) -> value v_apduReceived {
-						f_logReceivedWaitAndAcknowledge(TOLLDECLARATION_TIME1_TC);
+						f_logReceivedWaitAndAcknowledge(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
                  		// Step 1: Send one valid APDU containing a number of valid BillingDetailsADU equal to GNSS.BILLINGDETAILS.TSP.PARAM1_MAX, with
                  			// action code = send 
                  			// no optional fields
@@ -4237,17 +4234,16 @@ module EfcInfoExchange_TestCasesTsp {
                 		var BillingDetailsADUs v_adusToBeSent;
 						// Set all  elements of apdu
 						for (var integer v_ind := 0; v_ind < (GNSS.BILLINGDETAILS_TSP_PARAM1_MAX - 1); v_ind := v_ind + 1){
-								v_adusToBeSent[v_ind] := modifies m_aduBillingDetails:= {
+							v_adusToBeSent[v_ind] := modifies m_aduBillingDetails:= {
 					  			billingDetailsId := v_ind,
 					  			actionCode := ActionCode_send_,
 					  			billingDetailsAmount := 10000
-					  			}};
-								continue;
-							}
+					  		}
+						};
 						var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester(v_adusToBeSent);
 						f_sendAndLogApdu(v_apduToBeSent);                 
-						}
-					} // End of first alt statement
+					}
+				} // End of first alt statement
 				
                  // Step 2: Wait for positive Ack within GNSS_BILLINGDETAILS_TC_TIME1_MAX_TC
 				// Set timer
@@ -4277,7 +4273,7 @@ module EfcInfoExchange_TestCasesTsp {
 				//  PT140 TODO: Template for Toll Declaration to be defined
 				alt {
 					[] mtcPort.receive(mw_apduTollDeclaration) -> value v_apduReceived {
-						f_logReceivedWaitAndAcknowledge(TOLLDECLARATION_TIME1_TC);
+						f_logReceivedWaitAndAcknowledge(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
                  		// Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
                  			// action code = send
                  			// billingDetailsAmount set to a value (to be modified later)
@@ -4347,7 +4343,7 @@ module EfcInfoExchange_TestCasesTsp {
 				//  PT140 TODO: Template for Toll Declaration to be defined
 				alt {
 					[] mtcPort.receive(mw_apduTollDeclaration) -> value v_apduReceived {
-						f_logReceivedWaitAndAcknowledge(TOLLDECLARATION_TIME1_TC);
+						f_logReceivedWaitAndAcknowledge(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
 						}
 					} // End of first alt statement
 
@@ -4405,7 +4401,7 @@ module EfcInfoExchange_TestCasesTsp {
 				//  PT140 TODO: Template for Toll Declaration to be defined
 				alt {
 					[] mtcPort.receive(mw_apduTollDeclaration) -> value v_apduReceived {
-						f_logReceivedWaitAndAcknowledge(TOLLDECLARATION_TIME1_TC);
+						f_logReceivedWaitAndAcknowledge(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
                 		// Step 1: Send one valid APDU containing 13 valid BillingDetailsADUs, each one with the following parameters respectively set to one incorrect value:
                  			// billingDetailsId.issuerId, tollContext, userId, Period, billingDetailsAmount, usageDetails.contextName, usageDetails.appliedUserClass, usageDetails.perDeclaredVehicleClasses, usageDetails.appliedTimeClass, usageDetails.entranceTime, usageList.ListofSections.chargeObjectId, exitChargeObject, exitTime
                  		// PT140 TODO: template to be defined. Using mw_aduBillingDetails provisionally.
@@ -4483,7 +4479,7 @@ module EfcInfoExchange_TestCasesTsp {
 				//  PT140 TODO: Template for Toll Declaration to be defined
 				alt {
 					[] mtcPort.receive(mw_apduTollDeclaration) -> value v_apduReceived {
-						f_logReceivedWaitAndAcknowledge(TOLLDECLARATION_TIME1_TC);
+						f_logReceivedWaitAndAcknowledge(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
 					}
 				} // End of first alt statement
 
@@ -4525,7 +4521,7 @@ module EfcInfoExchange_TestCasesTsp {
 				//PT140 TODO: Template for Toll Declaration to be defined
 				alt {
 					[] mtcPort.receive(mw_apduTollDeclaration) -> value v_apduReceived {
-						f_logReceivedWaitAndAcknowledge(TOLLDECLARATION_TIME1_TC);
+						f_logReceivedWaitAndAcknowledge(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
 						}
 					} // End of first alt statement
 
@@ -4574,7 +4570,7 @@ module EfcInfoExchange_TestCasesTsp {
 				//  PT140 TODO: Template for Toll Declaration to be defined
 				alt {
 					[] mtcPort.receive(mw_apduTollDeclaration) -> value v_apduReceived {
-						f_logReceivedWaitAndAcknowledge(TOLLDECLARATION_TIME1_TC);
+						f_logReceivedWaitAndAcknowledge(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
 						}
 					} // End of first alt statement
 

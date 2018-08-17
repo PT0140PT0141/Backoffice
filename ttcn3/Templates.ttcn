@@ -428,7 +428,8 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
             	listOfUserParameters := *
         	}
         	
-   			template InfoExchange mw_apduProvideUserDetails(InfoExchange p_apduRespondedTo) := m_apduNoAuth(m_apciSendResponse(p_apduRespondedTo), Adus:{provideUserDetailsADUs:=?});
+   			template InfoExchange mw_apduProvideUserDetails(InfoExchange p_apduRespondedTo) := 
+   				m_apduNoAuth(m_apciRespTester(p_apduRespondedTo), Adus:{provideUserDetailsADUs:=?});
 			
 			template InfoExchange mw_apduAuthProvideUserDetails := mw_apduAuth(mw_apci, Adus:{provideUserDetailsADUs:=?});
 		}
@@ -461,7 +462,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 
    			template InfoExchange mw_apduProvideUserIdList := m_apduNoAuth(mw_apci, Adus:{provideUserIdListADUs:=?});
 			
-			template InfoExchange mw_apduAuthProvideUserIdList := mw_apduSec(mw_apci, Adus:{provideUserIdListADUs:=?});
+			template InfoExchange mw_apduAuthProvideUserIdList := mw_apduAuth(mw_apci, Adus:{provideUserIdListADUs:=?});
 			
 		}
 
@@ -512,15 +513,15 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			}
 			
 			
-   			template InfoExchange mw_apduExceptionList := m_apduNoSec(mw_apci, Adus:{exceptionListADUs:=?});
+   			template InfoExchange mw_apduExceptionList := m_apduNoAuth(mw_apci, Adus:{exceptionListADUs:=?});
 			
-			template InfoExchange mw_apduAuthExceptionList := mw_apduSec(mw_apci, Adus:{exceptionListADUs:=?});
+			template InfoExchange mw_apduAuthExceptionList := mw_apduAuth(mw_apci, Adus:{exceptionListADUs:=?});
 
-			template InfoExchange mw_apduExceptionListOneBlackList := m_apduNoSec(mw_apci, mw_recordOfOneAduExceptionListBlack);
+			template InfoExchange mw_apduExceptionListOneBlackList := m_apduNoAuth(mw_apci, mw_recordOfOneAduExceptionListBlack);
 
-			template InfoExchange mw_apduExceptionListOneWhiteList := m_apduNoSec(mw_apci, mw_recordOfOneAduExceptionListWhite);
+			template InfoExchange mw_apduExceptionListOneWhiteList := m_apduNoAuth(mw_apci, mw_recordOfOneAduExceptionListWhite);
 
-			template InfoExchange mw_apduExceptionListOneDiscountedList := m_apduNoSec(mw_apci, mw_recordOfOneAduExceptionListDiscounted);
+			template InfoExchange mw_apduExceptionListOneDiscountedList := m_apduNoAuth(mw_apci, mw_recordOfOneAduExceptionListDiscounted);
 
 
 //			template InfoExchange mw_apduExceptionListOneBlackList modifies mw_apduExceptionList := {
@@ -547,7 +548,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				endDateTime := ?, // mandatory according to IAP,
 				userId := ? length (1..4), // mandatory according to IAP and at least one element shall be present
 				paymentClaimAmount := ?,
-				paymentClaimStatus := (firstVersion	(0), amendedVersion	(1)), // restrictions according to IAP
+				paymentClaimStatus := (PaymentClaimStatus_firstVersion_, PaymentClaimStatus_amendedVersion_), // restrictions according to IAP
 				typeOfFee := ?, // mandatory according to IAP
 				referenceDetailsList := {{
 					billingDetailsList := {{
@@ -581,9 +582,9 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				contractIssuerListADUs := ?
 			}
 
-   			template InfoExchange mw_apduContractIssuerList := m_apduNoSec(mw_apci, Adus:{contractIssuerListADUs:=?});
+   			template InfoExchange mw_apduContractIssuerList := m_apduNoAuth(mw_apci, Adus:{contractIssuerListADUs:=?});
 			
-			template InfoExchange mw_apduAuthContractIssuerList := mw_apduSec(mw_apci, Adus:{contractIssuerListADUs:=?});
+			template InfoExchange mw_apduAuthContractIssuerList := mw_apduAuth(mw_apci, Adus:{contractIssuerListADUs:=?});
 
 
 		}
@@ -747,9 +748,9 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			} 
 			
 
-   			template InfoExchange mw_apduEfcContextData := m_apduNoSec(mw_apci, Adus:{efcContextDataADUs:=?});
+   			template InfoExchange mw_apduEfcContextData := m_apduNoAuth(mw_apci, Adus:{efcContextDataADUs:=?});
 			
-			template InfoExchange mw_apduAuthEfcContextData := mw_apduSec(mw_apci, Adus:{efcContextDataADUs:=?});
+			template InfoExchange mw_apduAuthEfcContextData := mw_apduAuth(mw_apci, Adus:{efcContextDataADUs:=?});
 
 			template (value) LocalVehicleClassDefinition m_localVehicleClassDefinition:={
 				localVehicleClasses := {
@@ -807,7 +808,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				in InfoExchange p_apduBeingRespondedTo, 
 				in RecOfTrustObjectPurposes p_recOfTrustObjectPurposes,
 				in TrustObjectCode p_trustObjectCode			
-			) := m_apduNoSec(
+			):= m_apduNoSec(
 				m_apciSendResponse(p_apduBeingRespondedTo),
 				Adus: {
 					trustObjectAdus:={
@@ -817,7 +818,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 						)
 					}
 				}
-			)
+			);
 			
 			template TrustObjectADU mw_aduTrustObject(
 				template RecOfTrustObjectPurposes p_recOfTrustObjectPurposes,

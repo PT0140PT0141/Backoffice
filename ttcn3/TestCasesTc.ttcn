@@ -620,7 +620,7 @@ module EfcInfoExchange_TestCasesTc {
 					v_theAdu.statusFlag := UserStatus_standardCommercialUserContract_;
 					for (var integer v_loop2 :=0; v_loop2<sizeof(v_listOfParametersRequested);v_loop2:=v_loop2+1) {
 						v_theAdu.listOfUserParameters[v_loop2].requestedUserParameter:=omit;   //TODO is this necessary. I think that if we do not set it then it is omitted 
-						v_theAdu.listOfUserParameters[v_loop2].userParameterResponse:= UserParameterResponseDetails_TESTER_VALUES[v_listOfParametersRequested[v_loop2]];					
+						v_theAdu.listOfUserParameters[v_loop2].userParameterResponse:= TD_USER_PARAM_RESP_DETAILS[v_listOfParametersRequested[v_loop2]];					
 						v_theAdu.listOfUserParameters[v_loop2].userParameterStatus:= UserParameterStatus_userParameterAvailable_;					
 						v_theAdu.listOfUserParameters[v_loop2].userInfoValidityPeriod:=omit; //TODO is this necessary. I think that if we do not set it then it is omitted
 					}

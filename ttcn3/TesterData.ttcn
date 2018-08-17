@@ -170,8 +170,8 @@ module EfcInfoExchange_TesterData{
 		modulepar octetstring TD_CERTIFICATE;
 	 	modulepar octetstring genericTrustObjectTESTER_VALUE;
 	 	modulepar PublicKeyObject TD_PUBLICKEY;
-    	modulepar DsrcKeyObject symmetricKeyTESTER_VALUE;
-    	modulepar DsrcKeyObject symmetricKeyEncryptedTESTER_VALUE;
+    	modulepar DsrcKeyObject TD_SYMMETRIC_KEY;
+    	modulepar DsrcKeyObject TD_SYMMETRIC_KEY_ENCRYPTED;
     	modulepar DsrcKeyRef dsrcKeyRefObjectTESTER_VALUE := {
     	 	eFCContextMark := TD_EFC_CONTEXT_MARK,
     	 	keyRef := 0,
@@ -188,7 +188,8 @@ module EfcInfoExchange_TesterData{
 	}	
 
 	group USERDETAILS {
-		modulepar UserParameterResponseDetails UserParameterResponseDetails_TESTER_VALUES[27]:={};
+		modulepar UserParameterResponseDetails TD_USER_PARAM_RESP_DETAILS[27]:={};
+		modulepar UserParameterRequests TD_PRIVACYBOUND_USER_PARAM_REQS:={}; 
 	}
 	
 	group EFCCONTEXTDATA {
