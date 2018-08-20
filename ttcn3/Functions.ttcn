@@ -182,25 +182,7 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
             	stop
         	};
     	}
-    	
-    	//TODO this function does not seem correct (no return value, parameter declared as "in") - check and update
-    	// function to set a variable with the DSRC system description
-    	function f_setDsrcContextData(in Iso17575_3AduBody v_ContextDescription)  runs on MainTestComponent {
-    	  v_ContextDescription.tollContextOverview := tollContextOverviewTESTER_VALUE;
-    	  v_ContextDescription.tollContextPartitionOverview := tollContextPartitionOverviewTESTER_VALUE;
-    	  v_ContextDescription.tariffTable := tariffTableTESTER_VALUE;
-    	  v_ContextDescription.currencyConversionTable := currencyConversionTableTESTER_VALUE;
-    	  v_ContextDescription.tariffClassDefinition := optSignedTariffClassDefinitionTESTER_VALUE;
-    	  v_ContextDescription.localVehicleClassDefinition := optSignedLocalVehicleClassDefinitionTESTER_VALUE;
-    	  v_ContextDescription.timeClassDefinition := optSignedTimeClassDefinitionTESTER_VALUE;
-    	  v_ContextDescription.userClassDefinition := optSignedUserClassDefinitionTESTER_VALUE;
-    	  v_ContextDescription.tollContextLayout := tollContextLayoutTESTER_VALUE;
-    	  v_ContextDescription.chargeReportingEvents := chargeReportingEventsTESTER_VALUE;
-    	  v_ContextDescription.chargeReportConfiguration := chargeReportConfigurationTESTER_VALUE;
-    	  v_ContextDescription.tollContextVersion := tollContextVersionTESTER_VALUE;
-    	  
-    	}
-		       	
+    			       	
         // Function which inserts a waiting time - parameter t_wait - and waits in a "do-nothing-loop"
     	function f_wait(in float p_wait){
     		timer t_waitTime;

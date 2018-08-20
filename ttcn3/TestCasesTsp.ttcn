@@ -71,14 +71,12 @@ module EfcInfoExchange_TestCasesTsp {
                // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS and ICS_A3_3_useAuthenticator;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
-
-				var UserParameterRequest v_userParameterRequests := f_userDetailsParameters();               
                               
                // Step 1: Send Initiating APDU containing a valid RequestADU with requestedADUType=provideUserDetailsADU
                // and in addition an infoExchangeAuthenticator = value calculated according to clause 7.3 of EN ISO 12855
 
 				// Prepare the APDU 
-				var InfoExchange apduToBeSent := m_apduAuthInitTester({m_aduRequestProvideUserDetails(v_userParameterRequests)});
+				var InfoExchange apduToBeSent := m_apduAuthInitTester(m_adusProvideUserDetailsRandomParams);
                 
 				// send RequestADU
 				f_sendAndLogApdu(apduToBeSent);                                          
@@ -121,14 +119,15 @@ module EfcInfoExchange_TestCasesTsp {
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
-				var UserParameterRequest v_userParameterRequests := f_userDetailsParameters();                
-				
 				// Step 1: Send Initiating APDU containing a valid RequestADU with requestedADUType=provideUserDetailsADU
 				// and in addition containing APCI parameter field containing aidIdentifier and valid RequestADU with requestedADUType=provideUserDetailsADU
 				// Just modify the APCI
 				template (value) ApciFields m_apciInvalidAid modifies m_apciInitTester:= {aidIdentifier:=0};
 				// Then send it together with the request ADU
-				var InfoExchange v_apduForSending:=m_apduNoAuth(m_apciInvalidAid,{m_aduRequestProvideUserDetails(v_userParameterRequests)});
+				var InfoExchange v_apduForSending:=m_apduNoAuth(
+					m_apciInvalidAid,
+					m_adusProvideUserDetailsRandomParams
+				);
   				f_sendAndLogApdu(v_apduForSending);
                
                //Set timer
@@ -156,9 +155,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
-
-				var UserParameterRequest v_userParameterRequests := f_userDetailsParameters();                
-				
+			
 				// Step 1: Send Initiating APDU containing a valid RequestADU with requestedADUType=provideUserDetailsADU
 				// containing apduOriginator different from  value declared in the PIXIT
 				// Retrieve and alter apduOriginator value
@@ -168,7 +165,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Then send it together with the request ADU
 				var InfoExchange v_apduForSending := m_apduNoAuth(
 					m_apciInvalidOriginator,
-					{m_aduRequestProvideUserDetails(v_userParameterRequests)}
+					m_adusProvideUserDetailsRandomParams
 				);
   				f_sendAndLogApdu(v_apduForSending);
  				               
@@ -199,8 +196,6 @@ module EfcInfoExchange_TestCasesTsp {
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
-				var UserParameterRequest v_userParameterRequests := f_userDetailsParameters();                
-				
 				// Step 1: Send Initiating APDU containing a valid RequestADU with requestedADUType=provideUserDetailsADU
 				// containing informationSenderID â‰  value declared in the PIXIT
 				// Retrieve and alter informationSenderID value
@@ -210,7 +205,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Then send it together with the request ADU
 				var InfoExchange v_apduForSending := m_apduNoAuth(
 					m_apciInvalidSender,
-					{m_aduRequestProvideUserDetails(v_userParameterRequests)}
+					m_adusProvideUserDetailsRandomParams
 				); 
   				f_sendAndLogApdu(v_apduForSending);
                
@@ -240,8 +235,6 @@ module EfcInfoExchange_TestCasesTsp {
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
-
-				var UserParameterRequest v_userParameterRequests := f_userDetailsParameters();                
 				
 				// Step 1: Send Initiating APDU containing a valid RequestADU with requestedADUType=provideUserDetailsADU
 				// containing informationrecipientID  different from  value declared in the PIXIT
@@ -252,7 +245,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Then send it together with the request ADU
 				var InfoExchange v_apduForSending := m_apduNoAuth(
 					m_apciInvalidIuT,
-					{m_aduRequestProvideUserDetails(v_userParameterRequests)}
+					m_adusProvideUserDetailsRandomParams
 				); 
   				f_sendAndLogApdu(v_apduForSending);
                
@@ -283,12 +276,8 @@ module EfcInfoExchange_TestCasesTsp {
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
-				var UserParameterRequest v_userParameterRequests := f_userDetailsParameters();                
-
 				// First, get the apdu to be sent in a variable to avoid apduIdentifier to be re-generated, then send the Apdu
-				var InfoExchange v_apduForSending := m_apduNoAuth(
-						{m_aduRequestProvideUserDetails(v_userParameterRequests)}
-					);
+				var InfoExchange v_apduForSending := m_apduNoAuth(m_adusProvideUserDetailsRandomParams);
 				// send RequestADU
 				f_sendAndLogApdu(v_apduForSending);
                                
@@ -337,15 +326,13 @@ module EfcInfoExchange_TestCasesTsp {
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
-				var UserParameterRequest v_userParameterRequests := f_userDetailsParameters();                
-				
 				// Step 1: Send Initiating APDU containing a valid RequestADU with APCI parameter field containing nextApduId
 				template (value) ApciFields m_apciNextApduId modifies sometingsomethinsomething:= {nextApduId := 1};	//TODO Fausto			
 
 				// Then send it together with the request ADU
 				var InfoExchange v_apduForSending := m_apduNoAuth(
 					m_apciNextApduId,
-					{m_aduRequestProvideUserDetails(v_userParameterRequests)}
+					m_adusProvideUserDetailsRandomParams
 				);
   				f_sendAndLogApdu(v_apduForSending);
                //Set timer
@@ -371,14 +358,12 @@ module EfcInfoExchange_TestCasesTsp {
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
-				var UserParameterRequest v_userParameterRequests := f_userDetailsParameters();                
-				
 				// Step 1: Send Initiating APDU containing a valid RequestADU with APCI parameter field containing inResponseToApduId
 				template (value) ApciFields m_apciInvalidInResponse modifies m_apciInitTester:= {inResponseToApduId := 1};
 				// Then send it together with the request ADU
 				var InfoExchange v_apduForSending := m_apduNoAuth(
 					m_apciInvalidInResponse,
-					{m_aduRequestProvideUserDetails(v_userParameterRequests)}
+					m_adusProvideUserDetailsRandomParams
 				);
   				f_sendAndLogApdu(v_apduForSending);
                //Set timer
@@ -515,8 +500,6 @@ module EfcInfoExchange_TestCasesTsp {
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
-				var UserParameterRequest v_userParameterRequests := f_userDetailsParameters();                
-				
 				// Step 1: Send an Initiating_Apdu containing APCI parameter field with apduDate = invalid
 				// and valid RequestADU with requestedADUType=provideUserDetailsADU
 
@@ -524,7 +507,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Then send it together with the request ADU
 				var InfoExchange v_apduForSending := m_apduNoAuth(
 					m_apciInvalidDate,
-					{m_aduRequestProvideUserDetails(v_userParameterRequests)}
+					m_adusProvideUserDetailsRandomParams
 				);
   				f_sendAndLogApdu(v_apduForSending);
 
@@ -553,13 +536,14 @@ module EfcInfoExchange_TestCasesTsp {
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS and ICS_A3_3_useAuthenticator;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
-				var UserParameterRequest v_userParameterRequest := f_userDetailsParameters();                
-				
 				// Step 1: Send an Initiating_Apdu containing invalid authenticator
 				// and valid RequestADU with requestedADUType=provideUserDetailsADU
 
 				// Set up a correct apdu without authenticator to start with		
-				var InfoExchange apduToBeSent := m_apduNoAuth(m_apciInitTester,{m_aduRequestProvideUserDetails(v_userParameterRequest)});
+				var InfoExchange apduToBeSent := m_apduNoAuth(
+					m_apciInitTester,
+					m_adusProvideUserDetailsRandomParams
+				);
 
 				// Get a correctly computed authenticator, then corrupt it				
 				var ApduAuthenticator authenticator:= fx_computeAuthenticator(apduToBeSent);
@@ -605,17 +589,9 @@ module EfcInfoExchange_TestCasesTsp {
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
-				
-				// Prepare a list of parameters to be requested
-				
-				var UserParameterRequest v_userParameterRequests := f_userDetailsParameters();
-                
+				            
 				// Step1: send RequestADU
-				f_sendAndLogApdu(
-					m_apduNoAuthInitTester(
-						{m_aduRequestProvideUserDetails(v_userParameterRequests)}
-						)
-					);
+				f_sendAndLogApdu(m_apduNoAuthInitTester(m_adusProvideUserDetailsRandomParams));
                                
 				//Set timer
 				t_step.start(USERDETAILS_TIME1_MAX_TSP);
@@ -671,9 +647,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Step1: send RequestADU
 				
 				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester({m_aduRequestProvideUserDetails(TD_PRIVACYBOUND_USER_PARAM_REQS)});
-				f_sendAndLogApdu(
-					m_apduNoAuthInit(v_apduRespondedTo)
-					);   	  
+				f_sendAndLogApdu(m_apduNoAuthInitTester(v_apduRespondedTo));   	  
                                 
 				//Set timer
 				t_step.start(USERDETAILS_TIME1_MAX_TSP);
@@ -726,7 +700,7 @@ module EfcInfoExchange_TestCasesTsp {
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
              
 				// Step 1: Send APDU with 2 incorrect ADUs, the first one without userDetails, the second one with empty userDetails
-				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester({m_aduRequestProvideUserDetails(omit), m_aduRequestProvideUserDetails({})});
+				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester({m_aduRequestProvideUserDetails(omit), m_aduRequestProvideUserDetails({})}); //TODO Fausto is this omit even allowed?
 				f_sendAndLogApdu(v_apduRespondedTo);                               
 
 				// Step 2: wait for a Invalid ADU Error code Nack 
@@ -903,17 +877,9 @@ module EfcInfoExchange_TestCasesTsp {
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
-				
-				// Prepare and send the record of ADUs with 1 ADU
-
-				var UserParameterRequest v_userParameterRequests := f_userDetailsParameters();                
-                
+				             
 				// Step1: send RequestADU
-				f_sendAndLogApdu(
-					m_apduNoAuthInitTester(
-						{m_aduRequestProvideUserDetails(v_userParameterRequests)}
-						)
-					);
+				f_sendAndLogApdu(m_apduNoAuthInitTester(m_adusProvideUserDetailsRandomParams));
        			// Send again immediately same ADU with different  valid user
 				var InfoExchange v_apduToSend := m_apduNoAuthInitTester(
 					{modifies m_aduProvideUserDetails:= {
@@ -2585,15 +2551,7 @@ module EfcInfoExchange_TestCasesTsp {
                  	// iso17573ADU containing only mandatory field with valid values
                  	// feeModifiers set to null
 				// set tester tolling domain characteristics
-				var Iso17575_3AduBody v_contextData;
-				f_setDsrcContextData(v_contextData);				
-				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(
-					{ 
-						modifies mw_aduDsrcEfcContextData := {
-						  	iso175753ADU := v_contextData,
-						  	regimeContextData.feeModifiers := omit
-						}
-					});                 
+				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester({m_aduDsrcEfcContextDataTestValues});                 
 				f_sendAndLogApdu(v_apduRespondedTo);                 
                  // Step 2: Wait for positive Ack within DSRC.EFCCONTEXTDATA.TIME1
 				// Set timer
@@ -2616,28 +2574,23 @@ module EfcInfoExchange_TestCasesTsp {
                   * @remark  [16986:2016], Clause 7.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/2
                   */
                                    
-                 // Initialisation
+                // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_2_implementedDSRCEFCCONTEXTDATA;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				
+                // Step 1: Send EFCCONTEXTDATA with:
+               	// domainType = dsrcClosedContext 
+               	// ClosedContextDefinition containing only mandatory field with valid values
+               	// feeModifiers set to null
+				// Only tollContextOverview in ClosedContextDefinition set to a valid value
+				var InfoExchange v_apduForSending :=m_apduNoAuthInitTester({m_aduEfcContextDataDsrcClosedContextTollContextOverview});
+				f_sendAndLogApdu(v_apduForSending);                 
 
-                 // Step 1: Send EFCCONTEXTDATA with:
-                 	// domainType = dsrcClosedContext 
-                 	// ClosedContextDefinition containing only mandatory field with valid values
-                 	// feeModifiers set to null
-
-					// Only tollContextOverview in ClosedContextDefinition set to a valid value
-				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(
-					{modifies mw_aduDsrcClosedContextEfcContextData := {
-					  	closedContext.closedSystem.tollContextOverview := tollContextOverviewTESTER_VALUE,
-					  	feeModifiers := omit
-						}
-					});                 
-				f_sendAndLogApdu(v_apduRespondedTo);                 
-                 // Step 2: Wait for positive Ack within DSRC.EFCCONTEXTDATA.TIME1
+                // Step 2: Wait for positive Ack within DSRC.EFCCONTEXTDATA.TIME1
 				// Set timer
-                 t_step.start(DSRC_EFCCONTEXTDATA_TIME1_MAX_TSP);                 
+                t_step.start(DSRC_EFCCONTEXTDATA_TIME1_MAX_TSP);                 
 				alt {
-					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduRespondedTo)) -> value v_apduReceived {					  
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received
 						f_logReceivedThenCheckAndStopTime(DSRC_EFCCONTEXTDATA_TIME1_MIN_TSP); 
 						setverdict(pass);
@@ -2659,16 +2612,16 @@ module EfcInfoExchange_TestCasesTsp {
                  // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_2_implementedDSRCEFCCONTEXTDATA;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
-
+				var InfoExchange v_apduForSending := m_apduNoAuthInitTester({m_aduEfcContextDataDsrcClosedContextTariffClassDefinition});
                  // Step 1: Send EFCCONTEXTDATA with:
                  	// domainType = dsrcClosedContext 
                  	// dsrcClosedContext with valid values and feeModifiers set to null
                  	// closedSystem with tariffClassDefinition = {valid contents} and all other fields set to null
-				var InfoExchange v_apduForSending := m_apduNoAuthInitTester({m_aduEfcContextDataDsrcClosedContextTariffClassDefinition});                 
-				f_sendAndLogApdu(v_apduForSending);                 
-                 // Step 2: Wait for positive Ack within DSRC.EFCCONTEXTDATA.TIME1
+				f_sendAndLogApdu();                 
+
+                // Step 2: Wait for positive Ack within DSRC.EFCCONTEXTDATA.TIME1
 				// Set timer
-                 t_step.start(DSRC_EFCCONTEXTDATA_TIME1_MAX_TSP);                 
+                t_step.start(DSRC_EFCCONTEXTDATA_TIME1_MAX_TSP);                 
 				alt {
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received
@@ -2830,13 +2783,7 @@ module EfcInfoExchange_TestCasesTsp {
                  	// set tester tolling domain characteristics
                  	// PT140 TODO: which field to be set to a wrong value? Is this test doable?
 				var Iso17575_3AduBody v_contextData;
-				f_setDsrcContextData(v_contextData);				
-				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(
-					{modifies mw_aduDsrcEfcContextData := {
-					  	iso175753ADU := v_contextData,
-					  	regimeContextData.feeModifiers := omit
-						}
-					});                 
+				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester({m_aduDsrcEfcContextDataTestValues});                 
 				f_sendAndLogApdu(v_apduRespondedTo);                 
                  // Step 2: Wait for negative Ack within DSRC.EFCCONTEXTDATA.TIME1
 				// Set timer
@@ -2873,13 +2820,7 @@ module EfcInfoExchange_TestCasesTsp {
                  	// feeModifiers set to null
                  	// all other mandatory fields set to valid values
 					// Only tollContextOverview in ClosedContextDefinition set to a valid value
-				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(
-					{modifies mw_aduDsrcClosedContextEfcContextData := {
-					  	closedContext.closedSystem.tollContextOverview := tollContextOverviewTESTER_VALUE,
-					  	closedContext.closedContextType := 3, // only 1 or 2 are allowed
-					  	feeModifiers := omit
-						}
-					});                 
+				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester({m_aduEfcContextDataDsrcClosedContextTollContextOverviewInvalidCCT});                 
 				f_sendAndLogApdu(v_apduRespondedTo);                 
                  // Step 2: Wait for negative Ack within DSRC.EFCCONTEXTDATA.TIME1
 				// Set timer
@@ -2890,7 +2831,10 @@ module EfcInfoExchange_TestCasesTsp {
 						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
 						setverdict(pass);
 						}
-					[] mtcPort.receive(mw_apduNAck_IndividualAdus(v_apduRespondedTo, {{1, AduReasonCode_semanticError_},{2,AduReasonCode_semanticError_}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(
+						v_apduRespondedTo, 
+						{{1, AduReasonCode_semanticError_},{2,AduReasonCode_semanticError_}}
+					)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
 						setverdict(pass);
 						}
@@ -2916,14 +2860,7 @@ module EfcInfoExchange_TestCasesTsp {
                  	// iso17573ADU containing only mandatory field with valid values
                  	// feeModifiers set to null
 				// set tester tolling domain characteristics
-				var Iso17575_3AduBody v_contextData;
-				f_setDsrcContextData(v_contextData);				
-				var InfoExchange v_apduToSend := m_apduNoAuthInitTester(
-					{modifies mw_aduDsrcEfcContextData := {
-					  	iso175753ADU := v_contextData,
-					  	regimeContextData.feeModifiers := omit
-						}
-					});                 
+				var InfoExchange v_apduToSend := m_apduNoAuthInitTester({m_aduDsrcEfcContextDataTestValues});     
 				f_sendAndLogApdu(v_apduToSend);                 
                 // Step 1: Do not wait for positive Ack but send immediately another EFCCONTEXTDATA before TIME1
                 f_sendAndLogApdu(v_apduToSend);                 

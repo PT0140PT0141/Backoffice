@@ -189,7 +189,7 @@ module EfcInfoExchange_TesterData{
 
 	group USERDETAILS {
 		modulepar UserParameterResponseDetails TD_USER_PARAM_RESP_DETAILS[27]:={};
-		modulepar UserParameterRequests TD_PRIVACYBOUND_USER_PARAM_REQS:={}; 
+		modulepar RecOfUserParameterRequest TD_PRIVACYBOUND_USER_PARAM_REQS:={}; 
 	}
 	
 	group EFCCONTEXTDATA {

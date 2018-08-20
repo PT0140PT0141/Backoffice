@@ -387,8 +387,6 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		
 		group USERDETAILS {
 	
-			type record of UserParameterRequest UserParameterRequests;
-
     		template RequestADU mw_aduRequestProvideUserDetails := {
         		userDetailsRequest :={	
             	  	requestedADUType                := AduType_provideUserDetailsADU_,
@@ -400,7 +398,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
         	}
         	
         	template (value) RequestADU m_aduRequestProvideUserDetails(
-        		in UserParameterRequests p_userParameterRequests
+        		in RecOfUserParameterRequest p_userParameterRequests
         	) modifies mw_aduRequestProvideUserDetails := {
         		userDetailsRequest:={
         			requestedADUType := AduType_provideUserDetailsADU_,	
@@ -410,6 +408,10 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
             		userInfoValidityPeriod := omit
         		}
         	}
+        	
+        	template (value) Adus m_adusProvideUserDetailsRandomParams:={
+        		m_aduRequestProvideUserDetails(f_userDetailsParameters())
+        	} 
         	       			
 //        	template ProvideUserDetailsADU mw_userDetailsPrivacy_apduIdentifier := {
 //                originaluserIdRequest := DEFINED_USERID,
@@ -627,6 +629,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			type record of UserClassId RecOfUserClassId; 
 			
 			template (value) EfcContextDataADU m_aduEfcContextDataDsrcClosedContext(
+				template TollContextOverview p_tollContextOverview,
 				RecOfLocalVehicleClassId p_ROfLocVehClassId,
 				template LocalVehicleClassDefinition p_localVehicleClassDefinition, 
 				template RecOfTimeClassId p_ROfTimeClassId, 
@@ -664,6 +667,29 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				}
 			}	
 
+			template EfcContextDataADU m_aduDsrcEfcContextDataTestValues modifies mw_aduDsrcEfcContextData := {
+				domainType:={
+					dsrcContext:= {
+						regimeContextData := {
+							iso175753ADU := {	
+								tollContextOverview := tollContextOverviewTESTER_VALUE,
+								tollContextPartitionOverview := tollContextPartitionOverviewTESTER_VALUE,
+								tariffTable := tariffTableTESTER_VALUE,
+								currencyConversionTable := currencyConversionTableTESTER_VALUE,
+								tariffClassDefinition := optSignedTariffClassDefinitionTESTER_VALUE,
+								localVehicleClassDefinition := optSignedLocalVehicleClassDefinitionTESTER_VALUE,
+								timeClassDefinition := optSignedTimeClassDefinitionTESTER_VALUE,
+								userClassDefinition := optSignedUserClassDefinitionTESTER_VALUE,
+								tollContextLayout := tollContextLayoutTESTER_VALUE,
+								chargeReportingEvents := chargeReportingEventsTESTER_VALUE,
+								chargeReportConfiguration := chargeReportConfigurationTESTER_VALUE,
+								tollContextVersion := tollContextVersionTESTER_VALUE
+							}
+						}
+					}
+				}
+			}
+			
 			
 			template (value) VersionAndValidity m_basicVersionValidFromNow :={
 				version:={
@@ -672,16 +698,30 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				validFrom:=fx_getUtc()
 			}			
 			
+			template (value) EfcContextDataADU m_aduEfcContextDataDsrcClosedContextTollContextOverview := 
+				m_aduEfcContextDataDsrcClosedContext(tollContextOverviewTESTER_VALUE,{},omit,omit,omit,omit,omit,omit);
+
+			template (value) EfcContextDataADU m_aduEfcContextDataDsrcClosedContextTollContextOverviewInvalidCCT 
+			modifies m_aduEfcContextDataDsrcClosedContextTollContextOverview := {
+				domainType:={
+					dsrcClosedContext := {
+						closedContext:={
+							closedContextType:= 3 // only 1 or 2 are allowed
+						}
+					}
+				}
+			}
+
 			template (value) EfcContextDataADU m_aduEfcContextDataDsrcClosedContextTariffClassDefinition := 
-				m_aduEfcContextDataDsrcClosedContext({},omit,omit,omit,omit,omit,omit);
+				m_aduEfcContextDataDsrcClosedContext(omit,{},omit,omit,omit,omit,omit,omit);
 			template (value) EfcContextDataADU m_aduEfcContextDataDsrcClosedContextLocVehClass := 
-				m_aduEfcContextDataDsrcClosedContext({1,2,3},m_localVehicleClassDefinition,omit,omit,omit,omit,omit);
+				m_aduEfcContextDataDsrcClosedContext(omit,{1,2,3},m_localVehicleClassDefinition,omit,omit,omit,omit,omit);
 			template (value) EfcContextDataADU m_aduEfcContextDataDsrcClosedContextTimeClass := 
-				m_aduEfcContextDataDsrcClosedContext({},omit,{1,2,3},m_timeClassDefinition,omit,omit,omit);
+				m_aduEfcContextDataDsrcClosedContext(omit,{},omit,{1,2,3},m_timeClassDefinition,omit,omit,omit);
 			template (value) EfcContextDataADU m_aduEfcContextDataDsrcClosedContextUserClass := 
-				m_aduEfcContextDataDsrcClosedContext({},omit,omit,omit,{1,2,3},m_userClassDefinition,omit);
+				m_aduEfcContextDataDsrcClosedContext(omit,{},omit,omit,omit,{1,2,3},m_userClassDefinition,omit);
 			template (value) EfcContextDataADU m_aduEfcContextDataDsrcClosedContextFeeDefinition := 
-				m_aduEfcContextDataDsrcClosedContext({},omit, omit,omit,omit,omit, m_feeDefinition);
+				m_aduEfcContextDataDsrcClosedContext(omit,{},omit, omit,omit,omit,omit, m_feeDefinition);
 			
 			template (value) FeeDefinition m_feeDefinition:={
 				actualPath:={
@@ -798,7 +838,10 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				},
 				userClassDefinitionVersion:=omit
 			}
-		}	
+		}
+			
+		
+			
 		group TRUSTOBJECTS {
 			
 			type record of TrustObjectPurposes RecOfTrustObjectPurposes; 	
@@ -808,8 +851,8 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				in InfoExchange p_apduBeingRespondedTo, 
 				in RecOfTrustObjectPurposes p_recOfTrustObjectPurposes,
 				in TrustObjectCode p_trustObjectCode			
-			):= m_apduNoSec(
-				m_apciSendResponse(p_apduBeingRespondedTo),
+			):= m_apduNoAuth(
+				m_apciRespTester(p_apduBeingRespondedTo),
 				Adus: {
 					trustObjectAdus:={
 						m_aduTrustObject(
@@ -846,18 +889,26 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			}
 			
 			
-   			// General template to receive Trust Objects
-   			template InfoExchange mw_apduTrustObject := m_apduNoSec(mw_apci, Adus:{trustObjectAdus:=?});
+			// General template to receive Trust Objects w/o a Request
+			template InfoExchange mw_apduTrustObjectNoReq := mw_apduNoAuthInitIut(Adus:{trustObjectAdus:=?});
    			
-			// General template to receive Trust Objects on a secure connection
-			template InfoExchange mw_apduAuthTrustObject := mw_apduSec(mw_apci, Adus:{trustObjectAdus:=?});
+			// General template to receive Trust Objects on a secure connection w/o a Request
+			template InfoExchange mw_apduAuthTrustObjectNoReq := mw_apduAuthInitIut(Adus:{trustObjectAdus:=?});
+
+   			// General template to receive Trust Objects w a Request
+   			template InfoExchange mw_apduTrustObject(in InfoExchange p_apduBeingRespondedTo) := 
+   			mw_apduNoAuthRespIut(p_apduBeingRespondedTo,Adus:{trustObjectAdus:=?});
+   			
+			// General template to receive Trust Objects on a secure connection w a Request
+			template InfoExchange mw_apduAuthTrustObject(in InfoExchange p_apduBeingRespondedTo) := 
+			mw_apduAuthRespIut(p_apduBeingRespondedTo, Adus:{trustObjectAdus:=?});
 
 			//template for building templates
-			template InfoExchange mw_apduTrustObjectProtoTemp(template TrustObjectCode p_trustObjectCode) := m_apduNoSec(
+			template InfoExchange mw_apduTrustObjectProtoTemp(template TrustObjectCode p_trustObjectCode) := m_apduNoAuthTester(
    				mw_apci, 
    				Adus:{trustObjectAdus:={mw_aduTrustObject(?,p_trustObjectCode)}
    				}
-   			)
+   			);
 			
 			// Template for a generic object. According to the profile, only certificate revocation lists can be sent as generic trust objects
    			template InfoExchange mw_apduTrustObjectGeneric := mw_apduTrustObjectProtoTemp(mw_genericTrustObject);
@@ -889,7 +940,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			template InfoExchange m_apduRequestTrustObject := {}
 						
 			// Generic received Request for Trust Object, to receive a requestADU for any Trust Object 			
-			template InfoExchange mw_apduRequestTrustObject := m_apduNoSec(
+			template InfoExchange mw_apduRequestTrustObject := mw_apduNoAuthIut(
 				mw_apci, 
 				Adus:{requestAdus:={
 					requestedADUType := 3,
@@ -912,7 +963,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 						}
 					}
 				}
-			)
+			);
 			
 			// Received Request for a Public Key Trust Object			
 			template InfoExchange mw_apduRequestTrustObjectPublicKey := m_apduNoSec(
@@ -920,7 +971,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				Adus:{
 					requestAdus:={{mw_aduRequestTrustObjectPublicKey}}
 				}
-			)
+			);
 
 			template RequestADU mw_aduRequestTrustObjectPublicKey:={
 				trustObjectRequest:={
@@ -936,10 +987,13 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			}
 
 			// Received Generic Trust Object is requested though a requestADU carrying only the type of ADU requested			
-			template InfoExchange mw_apduRequestTrustObjectGeneric := m_apduNoSec(mw_apci, Adus:{requestAdus:= {
-			  requestedADUType := 3,
-			  requestedTrustObject:={trustObjectSpec := omit}
-			}})
+			template InfoExchange mw_apduRequestTrustObjectGeneric := m_apduNoSec(
+				mw_apci, 
+				Adus:{requestAdus:= {
+					requestedADUType := 3,
+					requestedTrustObject:={trustObjectSpec := omit}
+				}}
+			);
 			
 			// Received Request for a Symmetric Key Trust Object
 			template InfoExchange m_apduTrustObjectSymmetricKey := m_apduNoSec(
