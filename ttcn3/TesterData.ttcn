@@ -80,6 +80,14 @@ module EfcInfoExchange_TesterData{
 		modulepar ContractIssuerListADU TD_CONTRACT_ISSUER_DATA_INVALID_3 := m_contractIssuerListADU_Invalid_3(TD_MANUFACTURER_ID_1);
 		
 	} // end group ContractIssuerData	
+
+	group DSRC_BILLINGDETAILS {
+		modulepar UserId TD_USERID_BILLINDETAILS; //[SEMANTIC DEFINITION] The ID of the user that is to be billed in when the tester sends a BillingDetailsADU in the DSRC.BILLINGDETAILS transaction	
+		modulepar Int8Signed TD_DSRC_PAYMENT_FEE_AMOUNT:=10;//[SEMANTIC DEFINITION] The fee that will appear on the bill
+		modulepar PayUnit TD_DSRC_BILLINGDETAILS_PAYUNIT:='0978'H; //Currency EUR in main units [SEMANTIC DEFINITION]The currency unit that will appear on the bill according to ISO 4217
+	    modulepar integer TD_DSRC_BILLINGDETAILS_VAT:=0;//[SEMANTIC DEFINITION]The VAT rate expressed in 0.01% 
+		modulepar integer TD_BILLING_DETAILS_NUM:=1;//[SEMATIC DEFINITION] Identifer that together with the issuerId forms a unique BillingDetailsId 
+	}
 	
 	group ExceptionListTesterData {
 	

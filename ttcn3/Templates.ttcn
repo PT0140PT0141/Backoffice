@@ -1038,7 +1038,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			template (value) BillingDetailsADU mw_aduGnssBillingDetails :={
     			billingDetailsId :={
     				issuerId := ?,
-    				billingDetailsNum := (0..(2E63)-1),
+    				billingDetailsNum := (0..9223372036854775807), // range 0..2^63-1
     				dateOfService := omit
     				},
     			tollContext := ?,
@@ -1073,7 +1073,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			template (value) UsageList mw_sectionedRoadGnssUsageList := {
 				usageListEntry :={
 					forSectionedRoads := {		
-						howManyTimes := (1..(2E63)-1),
+						howManyTimes := (0..9223372036854775807), // range 0..2^63-1
 						listOfSections := {mw_sections}, // mandatory in IAP 
 						invoiceAggregationNumber := omit, //shall not be used in IAP
 						fee := omit, // shall mot be used in IAP,
@@ -1146,10 +1146,10 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 										 							
 		group DSRC_BILLINGDETAILS {
 		
-			template (value) BillingDetailsADU mw_aduDsrcBillingDetails :={
+			template BillingDetailsADU mw_aduDsrcBillingDetails :={
     			billingDetailsId :={
     				issuerId := ?,
-    				billingDetailsNum := ?, // range 0 - 2'(63-1)
+    				billingDetailsNum := (0..9223372036854775807), // range 0..2^63-1
     				dateOfService := omit
     				},
     			tollContext := ?,
@@ -1166,13 +1166,57 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 					paymentFeeUnit := ?,
 					vatRate := ?
 					}, 
-    			usageDetails := mw_dsrcUsageDetails, // TPDO PT140: template mw_dsrcUsageDetails to be created
+    			usageDetails := mw_dsrcUsageDetails, // TODO PT140: template mw_dsrcUsageDetails to be created
     			refTollDeclaration := {omit},
     			associatedEventData := {omit},
     			actionCode := (ActionCode_send_, ActionCode_revoke_ ,ActionCode_adjust_ ),
     			paymentReference := *
-  			}					
+  			}
+  			
+  			template (value) BillingDetailsADU m_aduDsrcBillingDetails:={
+				billingDetailsId := {
+					issuerId:=TD_INFORMATION_SENDER_FOR_TESTER,
+					billingDetailsNum:=TD_BILLING_DETAILS_NUM,
+					dateOfService:=omit				
+				}, 
+				tollContext:=TD_TOLL_CONTEXT,
+    			userId :=TD_USERID_BILLINDETAILS,
+    			relatedBillingDetails :=omit,
+    			period :=omit,
+    			billingDetailsAmount:={
+					paymentFeeAmount:=TD_DSRC_PAYMENT_FEE_AMOUNT,
+					paymentFeeUnit := TD_DSRC_BILLINGDETAILS_PAYUNIT,
+					vatRate:=TD_DSRC_BILLINGDETAILS_VAT
+			  	},
+			    usageDetails:= m_dsrcUsageDetails,
+			    refTollDeclaration:=omit,
+			    associatedEventData:=omit,
+			    actionCode:= ActionCode_send_,
+			    paymentReference:=omit
+  			}					  			
+  			
+			template (value) m_dsrcUsageDetails:={
+				UTF8String contextName:=TD_DSRC_,
+				UTF8String appliedUserClass:=TD_DSRC_,
+				perDeclaredVehicleClasses:={{
+					UTF8String declaredVehicleClass:=TD_DSRC_,
+					perUsedTimeClasses:={{
+						UTF8String appliedTimeClass:=TD_DSRC_,
+						usageList:={{
+							freeTextDetail:={
+								textLanguage:=XXXXXX,
+								textDetail:='Free text detail'
+							}
+						}}
+					}}
+				}}
+			}
 		}
+			    
+//										includedDiscounts.discounts := 10, 
+//										billingDetailsAmount.paymentFeeAmount := 400,
+//										includedDiscounts.discountQualifier := DiscountQualifier_userDiscount_,
+//										}
 			
 		
 		group GNSS_TOLLDECLARATIONS {
@@ -1511,7 +1555,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				paymentStatus := ?,
 				numberOfItems := ?, // mandatory according to IAP
 				referenceDetailsList := {{// mandatory according to IAP
-					referenceDetail := (billingDetailsList, tollDeclarationList, tollEventList),
+					referenceDetail := ?,
 					amount := ?,
 					paymentMeansType := (*, (0..255)),
 					valueDate := *,

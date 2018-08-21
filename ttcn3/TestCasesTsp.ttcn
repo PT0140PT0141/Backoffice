@@ -2898,23 +2898,16 @@ module EfcInfoExchange_TestCasesTsp {
 
                  // Step 1: Send one valid APDU containing one valid BillingDetailsADU with no optional fields except includedDiscounts
                  // PT140 TODO : mw_aduBillingDetails template to be defined and includedDiscounts to be set
-				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(
-					{modifies mw_aduBillingDetails:= {
-					  	billingDetailsId := 1, 
-					  	includedDiscounts.discounts := 10, billingDetailsAmount.paymentFeeAmount := 400,
-					  	includedDiscounts.discountQualifier := DiscountQualifier_userDiscount_,
-					  	actionCode := ActionCode_send_
-						}
-					});                 
+				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester({m_aduDsrcBillingDetails});                 
 				f_sendAndLogApdu(v_apduRespondedTo);                 
                  // Step 2: Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
 				// Set timer
-                 t_step.start(BILLINGDETAILS_TIME1_MAX_TSP);                 
+                 t_step.start(DSRC_BILLINGDETAILS_TIME1_MAX_TSP);                 
 				alt {
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduRespondedTo)) -> value v_apduReceived {
 					  
 						// Log what we received
-						f_logReceivedThenCheckAndStopTime(BILLINGDETAILS_TIME1_MIN_TSP); 
+						f_logReceivedThenCheckAndStopTime(DSRC_BILLINGDETAILS_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					} // End of Alt statement 
