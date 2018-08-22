@@ -207,24 +207,27 @@ module EfcInfoExchange_ParameterisedAsn1Data language "TTCN-3:2010 Advanced Para
     BillingDetailsId relatedBillingDetails optional,
     EfcAutonomousCharging.Period period optional,
     ExtendedPaymentAmount billingDetailsAmount,
-    record {
-      ASNAUX.UTF8String contextName,
-      ASNAUX.UTF8String appliedUserClass,
-      record of record {
-        ASNAUX.UTF8String declaredVehicleClass,
-        record of record {
-          ASNAUX.UTF8String appliedTimeClass,
-          ASNAUX.UTF8String costCenter optional,
-          record of UsageList usageList
-        } perUsedTimeClasses
-      } perDeclaredVehicleClasses
-    } usageDetails optional,
+	UsageDetails usageDetails optional,
     record of TollDeclarationId refTollDeclaration optional,
     record of AssociatedEventData associatedEventData optional,
     ActionCode actionCode optional,
-    ASNAUX.UTF8String paymentReference optional
+    UTF8String paymentReference optional
   }
 
+	//Definition broken out of BillingDetailsADU in order 
+	//to be able to define substructures as templates
+	type record UsageDetails {
+	  UTF8String contextName,
+	  UTF8String appliedUserClass,
+	  record of record {
+	    UTF8String declaredVehicleClass,
+	    record of record {
+	      UTF8String appliedTimeClass,
+	      UTF8String costCenter optional,
+	      record of UsageList usageList
+	    } perUsedTimeClasses
+	  } perDeclaredVehicleClasses
+	}
 
 
 
@@ -296,7 +299,7 @@ module EfcInfoExchange_ParameterisedAsn1Data language "TTCN-3:2010 Advanced Para
         FeeQualifier feeQualifier optional
       } forSectionedRoads,
       record {
-        ASNAUX.UTF8String areaDisplayName,
+        UTF8String areaDisplayName,
         integer accumulatedDistance,
         ASNAUX.GeneralizedTime beginOfAccumulation optional,
         ASNAUX.GeneralizedTime endOfAccumulation optional,
@@ -304,7 +307,7 @@ module EfcInfoExchange_ParameterisedAsn1Data language "TTCN-3:2010 Advanced Para
         FeeQualifier feeQualifier optional
       } forTravellingInArea,
       record {
-        ASNAUX.UTF8String areaDisplayName,
+        UTF8String areaDisplayName,
         union {
           integer howOften,
           ASNAUX.GeneralizedTime entranceTime

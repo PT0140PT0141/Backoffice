@@ -398,7 +398,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
         	}
         	
         	template (value) RequestADU m_aduRequestProvideUserDetails(
-        		in RecOfUserParameterRequest p_userParameterRequests
+        		in template RecOfUserParameterRequest p_userParameterRequests
         	) modifies mw_aduRequestProvideUserDetails := {
         		userDetailsRequest:={
         			requestedADUType := AduType_provideUserDetailsADU_,	
@@ -890,10 +890,10 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			
 			
 			// General template to receive Trust Objects w/o a Request
-			template InfoExchange mw_apduTrustObjectNoReq := mw_apduNoAuthInitIut(Adus:{trustObjectAdus:=?});
+			template InfoExchange mw_apduTrustObjectInit := mw_apduNoAuthInitIut(Adus:{trustObjectAdus:=?});
    			
 			// General template to receive Trust Objects on a secure connection w/o a Request
-			template InfoExchange mw_apduAuthTrustObjectNoReq := mw_apduAuthInitIut(Adus:{trustObjectAdus:=?});
+			template InfoExchange mw_apduAuthTrustObjectInit := mw_apduAuthInitIut(Adus:{trustObjectAdus:=?});
 
    			// General template to receive Trust Objects w a Request
    			template InfoExchange mw_apduTrustObject(in InfoExchange p_apduBeingRespondedTo) := 
@@ -904,11 +904,9 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			mw_apduAuthRespIut(p_apduBeingRespondedTo, Adus:{trustObjectAdus:=?});
 
 			//template for building templates
-			template InfoExchange mw_apduTrustObjectProtoTemp(template TrustObjectCode p_trustObjectCode) := m_apduNoAuthTester(
-   				mw_apci, 
-   				Adus:{trustObjectAdus:={mw_aduTrustObject(?,p_trustObjectCode)}
-   				}
-   			);
+			template Adus mw_adusTrustObjectProtoTemp(template TrustObjectCode p_trustObjectCode) := {
+				trustObjectAdus:={mw_aduTrustObject(?,p_trustObjectCode)}
+			};
 			
 			// Template for a generic object. According to the profile, only certificate revocation lists can be sent as generic trust objects
    			template InfoExchange mw_apduTrustObjectGeneric := mw_apduTrustObjectProtoTemp(mw_genericTrustObject);
@@ -921,26 +919,31 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			}
 
 
-			// Template for a certificate object
-   			template InfoExchange mw_apduTrustObjectCertificate:=mw_apduTrustObjectProtoTemp(TrustObjectCode:{certificate:=?});
-			
-			// Template for a public key object
-   			template InfoExchange mw_apduTrustObjectPublicKey := mw_apduTrustObjectProtoTemp(TrustObjectCode:{publicKey:=?});
-			
-			// Template for a Dsrc key object
-   			template InfoExchange mw_apduTrustObjectDsrcKey := mw_apduTrustObjectProtoTemp(TrustObjectCode:{dsrcMasterKeys:=?});
+			// Templates for a certificate object
+			template Adus mw_adusTrustObjectCertificate:=
+			mw_adusTrustObjectProtoTemp(TrustObjectCode:{certificate:=?});
 
-			// Template for a Mac Key object
-   			template InfoExchange mw_apduTrustObjectMacKey := mw_apduTrustObjectProtoTemp(TrustObjectCode:{macMasterKey:=?});
+			// Templates for a public key object
+   			template Adus mw_adusTrustObjectPublicKey := 
+   			mw_adusTrustObjectProtoTemp(TrustObjectCode:{publicKey:=?});
+			
+			// Templates for a Dsrc key object
+   			template Adus mw_adusTrustObjectDsrcKey := 
+   			mw_adusTrustObjectProtoTemp(TrustObjectCode:{dsrcMasterKeys:=?});
 
-			// Template for a Dsrc keyRef object
-   			template InfoExchange mw_apduTrustObjectDsrcKeyRef:=mw_apduTrustObjectProtoTemp(TrustObjectCode:{dsrcKeyRef:=?});
+			// Templates for a Mac Key object
+   			template Adus mw_adusTrustObjectMacKey := 
+   			mw_adusTrustObjectProtoTemp(TrustObjectCode:{macMasterKey:=?});
+
+			// Templates for a Dsrc keyRef object
+   			template Adus mw_adusTrustObjectDsrcKeyRef:=
+   			mw_adusTrustObjectProtoTemp(TrustObjectCode:{dsrcKeyRef:=?});
 
 			// PT140 TODO to be defined Generic Request for Trust Object with one parameter as apduToBeRespondedTo, and another as TrustObjectCode - Ulrik: still needed? not used anywhere... 
 			template InfoExchange m_apduRequestTrustObject := {}
 						
 			// Generic received Request for Trust Object, to receive a requestADU for any Trust Object 			
-			template InfoExchange mw_apduRequestTrustObject := mw_apduNoAuthIut(
+			template InfoExchange mw_apduRequestTrustObject := mw_apduNoAuthInitIut(
 				mw_apci, 
 				Adus:{requestAdus:={
 					requestedADUType := 3,
@@ -950,8 +953,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			
 			
 			// Received Request for a Certificate Trust Object
-			template InfoExchange mw_apduRequestTrustObjectCertificate := m_apduNoSec(
-				mw_apci, 
+			template InfoExchange mw_apduRequestTrustObjectCertificate := mw_apduNoAuthInitIut(
 				Adus:{
 					requestAdus:={
 						requestedADUType := 3,
@@ -966,7 +968,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			);
 			
 			// Received Request for a Public Key Trust Object			
-			template InfoExchange mw_apduRequestTrustObjectPublicKey := m_apduNoSec(
+			template InfoExchange mw_apduRequestTrustObjectPublicKey := mw_apduNoAuthInitIut(
 				mw_apci, 
 				Adus:{
 					requestAdus:={{mw_aduRequestTrustObjectPublicKey}}
@@ -986,9 +988,8 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				}
 			}
 
-			// Received Generic Trust Object is requested though a requestADU carrying only the type of ADU requested			
-			template InfoExchange mw_apduRequestTrustObjectGeneric := m_apduNoSec(
-				mw_apci, 
+			// Generic Trust Object is requested though a requestADU carrying only the type of ADU requested			
+			template InfoExchange mw_apduRequestTrustObjectGeneric := mw_apduNoAuthInitIut(
 				Adus:{requestAdus:= {
 					requestedADUType := 3,
 					requestedTrustObject:={trustObjectSpec := omit}
@@ -996,8 +997,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			);
 			
 			// Received Request for a Symmetric Key Trust Object
-			template InfoExchange m_apduTrustObjectSymmetricKey := m_apduNoSec(
-				mw_apci, 
+			template InfoExchange m_apduRequestTrustObjectSymmetricKey := m_apduNoSec( //TODO PT140 This is never used, and it mixes m with mw, seems weird. Do we need it? Delete?
 				Adus:{
 					requestAdus:={
 						{
@@ -1180,7 +1180,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 					dateOfService:=omit				
 				}, 
 				tollContext:=TD_TOLL_CONTEXT,
-    			userId :=TD_USERID_BILLINDETAILS,
+    			userId :=TD_BILLINGDETAILS_USERID,
     			relatedBillingDetails :=omit,
     			period :=omit,
     			billingDetailsAmount:={
@@ -1195,17 +1195,23 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			    paymentReference:=omit
   			}					  			
   			
-			template (value) m_dsrcUsageDetails:={
-				UTF8String contextName:=TD_DSRC_,
-				UTF8String appliedUserClass:=TD_DSRC_,
+			template (value) UsageDetails m_dsrcUsageDetails:={
+				contextName:=TD_DSRC_BILLINGDETAILS_CONTEXTNAME,
+				appliedUserClass:=TD_DSRC_BILLINGDETAILS_USERCLASS,
 				perDeclaredVehicleClasses:={{
-					UTF8String declaredVehicleClass:=TD_DSRC_,
+					declaredVehicleClass:=TD_DSRC_BILLINGDETAILS_DECLAREDVEHCLASS,
 					perUsedTimeClasses:={{
-						UTF8String appliedTimeClass:=TD_DSRC_,
+						appliedTimeClass:=TD_DSRC_BILLINGDETAILS_TIMECLASS,
 						usageList:={{
 							freeTextDetail:={
-								textLanguage:=XXXXXX,
-								textDetail:='Free text detail'
+								textLanguage:=TD_DSRC_BILLINGDETAILS_LANG,
+								textDetail:=TD_DSRC_BILLINGDETAILS_TEXT,
+								fee:={
+									paymentFeeAmount:=TD_DSRC_PAYMENT_FEE_AMOUNT,
+									paymentFeeUnit := TD_DSRC_BILLINGDETAILS_PAYUNIT,
+									vatRate:=TD_DSRC_BILLINGDETAILS_VAT
+								},
+								feeQualifier:=FeeQualifier_standardCharge_
 							}
 						}}
 					}}
