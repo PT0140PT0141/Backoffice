@@ -418,7 +418,7 @@ module EfcInfoExchange_TestCasesTsp {
 						if (match(v_apduReceived, mw_apduRequestTrustObjectCertificate)) {isCertificate:=true;} 
 						if (match(v_apduReceived, mw_apduRequestTrustObjectPublicKey)) {isPublicKey:=true;}
 						if (match(v_apduReceived, mw_apduRequestTrustObjectGeneric)) {isCertificateRevocationList := true;}
-						if (match(v_apduReceived, mw_apduRequestTrustObjectSymmetricKey)) {isMacMasterOrDsrcKey:=true;} //TODO PT140 the base standard is not expressive enough to request a SymmetricKey, skip test from part 1 and 2?
+						if (match(v_apduReceived, mw_apduRequestTrustObjectSymmetricKey)) {isMacMasterOrDsrcKey:=true;} //This request allows both MacMasterKey and DsrcKey as an answer, this test implementation will use DsrcKey
 					}										
 				} // End of alt statement
 
@@ -447,7 +447,7 @@ module EfcInfoExchange_TestCasesTsp {
 					if (isCertificate) {v_aduTrustObject:= m_aduTrustObject(v_receivedPurposes,TD_CERTIFICATE)};									
 					if (isPublicKey)   {v_aduTrustObject:= m_aduTrustObject(v_receivedPurposes,TD_PUBLICKEY)};								
 					if (isCertificateRevocationList) {v_aduTrustObject:= m_aduTrustObject(v_receivedPurposes, TD_CERT_REVOKE_LIST)};
-					//TODO PT140 According to the current version of the 12855 or 16986, there is no way to request a MAC or DSRC key is to be sent. Using symmetric key provisionally 
+					//According to the current version of the 12855 or 16986, there is no way to request a MAC or DSRC key is to be sent. Using symmetric key provisionally 
 					if (isMacMasterOrDsrcKey) {
 						if (v_encryptedKey) {v_aduTrustObject:= m_aduTrustObject(v_receivedPurposes,TD_SYMMETRIC_KEY_ENCRYPTED)}
 					} else { 
@@ -1351,8 +1351,6 @@ module EfcInfoExchange_TestCasesTsp {
 
 				//  Wait for TRUSTOBJECTS
 				// We expect to receive as many APDUs containing TRUSTOBJECTS ADUs as the number of declared supported trust objects
-				// PT140 TODO: No timeout set, so risk to wait indifinetely to receive all APDUs. Alternative is to set a PIXIT timeout parameter
-
 				alt {
 					[] mtcPort.receive(mw_apduTrustObjectInit) -> value v_apduReceived {
 						//send Ack whichever object received
@@ -1501,35 +1499,42 @@ module EfcInfoExchange_TestCasesTsp {
 						if (ispresent(v_apduReceived.infoExchangeContent.adus.requestAdus.trustObjectRequest.requestedTrustObject.trustObjectId)) {
 							f_addLogEntry("Received a request for a specific TrustObjectId, this is not supported according to CEN/TS 16986:2016");
 							setverdict(fail);
-							break;					
-							}
+							stop;					
+						}
 						var TrustObjectSpec v_requestedTrustObjectSpec := v_apduReceived.infoExchangeContent.adus.requestAdus.trustObjectRequest.requestedTrustObject.trustObjectSpec;
 						var TrustObjectTypes v_requestedTrustObjectType := v_requestedTrustObjectSpec.typeOfTrustObject;
 						var RecOfTrustObjectPurposes v_requestedTrustObjectPurposesRecords := v_requestedTrustObjectSpec.purposesOfTrustObject;
-						var InfoExchange v_apduToSend; 
-						                												
-						//TODO this is not complete! THere are other possibilities as well that can be requested
-						if (v_requestedTrustObjectType == TrustObjectTypes_certificate_){
-							v_apduToSend := m_apduTrustObjectResponse(
-								v_apduReceived, 
-								v_requestedTrustObjectPurposesRecords,
-								TD_CERTIFICATE			
+						var InfoExchange v_apduToSend;
+															
+						select (v_requestedTrustObjectType) {
+							case (TrustObjectTypes_certificate_){
+								v_apduToSend := m_apduTrustObjectResponse(
+									v_apduReceived, 
+									v_requestedTrustObjectPurposesRecords,
+									TD_CERTIFICATE			
 								);
-							};
-						if (v_requestedTrustObjectType == TrustObjectTypes_publicKey_){
-							v_apduToSend := m_apduTrustObjectResponse(
-								v_apduReceived, 
-								v_requestedTrustObjectPurposesRecords,
-								TD_PUBLICKEY
+							}
+							case (TrustObjectTypes_publicKey_){
+								v_apduToSend := m_apduTrustObjectResponse(
+									v_apduReceived, 
+									v_requestedTrustObjectPurposesRecords,
+									TD_PUBLICKEY
 								);                 												
-							};
-						if (v_requestedTrustObjectType == TrustObjectTypes_symmetricKey_){
-							v_apduToSend := m_apduTrustObjectResponse(
-								v_apduReceived, 
-								v_requestedTrustObjectPurposesRecords,
-								TD_DSRCKEY_OBJECT
+							}
+							case (TrustObjectTypes_symmetricKey_){
+								v_apduToSend := m_apduTrustObjectResponse(
+									v_apduReceived, 
+									v_requestedTrustObjectPurposesRecords,
+									TD_DSRCKEY_OBJECT
 								);                 												
-							};
+							}
+							case else {
+								f_addLogEntry("Received a request trust object type other than certificate, publicKey or symmetricKey, this is not allowed according to CEN/TS 16986:2016");
+								setverdict(fail);
+								stop;					
+							}
+						};						
+
 						f_sendAndLogApdu(v_apduToSend);                 
                 
                 		// Step 2: Wait for positive Ack within TRUSTOBJECTS.TIME2
@@ -1756,17 +1761,16 @@ module EfcInfoExchange_TestCasesTsp {
          group Valid_Behaviour {
             testcase TP_TSP_PAYMENTCLAIM_BV_01() runs on MainTestComponent system TestAdapter {
                    /**    
-				  * @desc	TP_TSP_PAYMENTCLAIM_BV_01: Verify that a TSP performs the PAYMENTCLAIM transaction correctly when using the actionCode=send 
+				  * @desc	TP_TSP_PAYMENTCLAIM_BV_01: Verify that a TSP performs the PAYMENTCLAIM 
+				  * @desc	transaction correctly when using the actionCode=send 
                   * @remark  [16986:2016], Clause 6.8 and Table A.1/2 AND Table A.7/5 
                   */
  				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_5_implementedPAYMENTCLAIM and ICS_A26_3_implementedDSRCBILLINGDETAILS;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
                  
-                // PT 140: TODO Probably there is no need to have an initial PAYMENTCLAIM for this test case as stated in the TSS&TP
                 // Step 1: First interaction
-                	// Send one preset Billing Details
-                 // PT140 TODO : mw_aduBillingDetails template and related fields to be defined
+                // Send one preset Billing Details
 
 				var InfoExchange v_apduRespondedTo := m_apduNoAuthInitTester(
 					{modifies mw_aduBillingDetails:= {

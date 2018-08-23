@@ -1029,7 +1029,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 
 			template Adus mw_adusBillingDetails := Adus:{billingDetailsADUs:=?};
 
-			template (value) BillingDetailsADU mw_aduGnssBillingDetails :={
+			template BillingDetailsADU mw_aduGnssBillingDetails :={
     			billingDetailsId :={
     				issuerId := ?,
     				billingDetailsNum := (0..9223372036854775807), // range 0..2^63-1
@@ -1210,14 +1210,55 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 						}}
 					}}
 				}}
-			}
-		}
-			    
-//										includedDiscounts.discounts := 10, 
-//										billingDetailsAmount.paymentFeeAmount := 400,
-//										includedDiscounts.discountQualifier := DiscountQualifier_userDiscount_,
-//										}
+			};
 			
+			template (value) m_aduGnssBillingDetails modifies mw_aduGnssBillingDetails:= { // original template with wildcards, but now all given values below
+				billingDetailsId {
+					issuerId := TD_IDENTIFIER,
+					billingDetailsNum := 1
+					},
+				tollContext := TOLL_CONTEXT_ID_IUT,
+				userId := TD_USERID_1,
+				period := TD_PERIOD_1,
+				usageDetails := {
+					contextName := TOLL_CONTEXT_NAME_IUT,
+					appliedUserClass := TD_USER_CLASS,
+					perDeclaredVehicleClass := {{
+						declaredVehicleClass := TD_DECLARED_VEHICLE_CLASS,
+						perUsedTimeClasses := {{
+							appliedTimeClass := TD_APPLIED_TIME_CLASS,
+							costCenter := TD_COST_CENTER,
+							usageList := {m_sectionsUsed} 
+						}}
+					}}
+				},
+				refTollDeclaration := {TD_IDENTIFIER, 1},
+				actionCode := ActionCode_send_,
+				paymentReference := omit 				  		
+			};
+			
+			template (value) m_sectionsUsed modifies mw_sectionedRoadGnssUsageList := {
+				usageListEntry {
+					forSectionedRoads {		
+						howManyTimes := 1,
+						listOfSections := {mw_section := {
+							chargeObjectId := TD_CHARGE_OBJECT_ID,
+							tollEventId := TD_TOLL_EVENT_ID, // mandatory in IAP
+							tollEventTime := TD_TOLL_EVENT_TIME // mandatory in IAP
+						}} 
+					}
+				},
+				includedDiscounts := {{
+					textLanguage := omit,
+					textDetail := omit,
+					discount := TD_DISCOUNT_AMOUNT,
+					discountQualifier := TD_DISCOUNT_QUALIFIER
+				}},
+				externalCosts := omit
+			};
+			
+		}
+			    			
 		
 		group GNSS_TOLLDECLARATIONS {
    			template Adus mw_adusTollDeclaration := Adus:{tollDeclarationADUs:=?};

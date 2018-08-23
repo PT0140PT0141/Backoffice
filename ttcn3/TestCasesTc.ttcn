@@ -4105,52 +4105,8 @@ module EfcInfoExchange_TestCasesTc {
 				//		- includedDiscounts is present; and
 				//		- actionCode=send
 
-				var UsageList v_sectionUsedWithDiscount;
-				v_sectionsUsed := mw_sectionedRoadGnssUsageList := {
-					usageListEntry {
-						forSectionedRoads {		
-							howManyTimes := 1,
-							listOfSections := {mw_section := {
-								chargeObjectId := TD_CHARGE_OBJECT_ID,
-								tollEventId := TD_TOLL_EVENT_ID, // mandatory in IAP
-								tollEventTime := TD_TOLL_EVENT_TIME // mandatory in IAP
-							}} 
-						}
-					},
-					includedDiscounts := {{
-						textLanguage := omit,
-      					textDetail := omit,
-						discount := TD_DISCOUNT_AMOUNT,
-						discountQualifier := TD_DISCOUNT_QUALIFIER
-					}},
-					externalCosts := omit
-				};
-
 				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester(
-				  	{mw_aduGnssBillingDetails:= { // original template with wildcards, but now all given values below
-				  		billingDetailsId {
-				  			issuerId := TD_IDENTIFIER,
-				  			billingDetailsNum := 1
-				  			},
-				  		tollContext := TOLL_CONTEXT_ID_IUT,
-				  		userId := TD_USERID_1,
-				  		period := TD_PERIOD_1,
-				  		usageDetails := {
-							contextName := TOLL_CONTEXT_NAME_IUT,
-      						appliedUserClass := TD_USER_CLASS,
-      						perDeclaredVehicleClass := {{
-        						declaredVehicleClass := TD_DECLARED_VEHICLE_CLASS,
-        						perUsedTimeClasses := {{
-          							appliedTimeClass := TD_APPLIED_TIME_CLASS,
-          							costCenter := TD_COST_CENTER,
-          							usageList := {v_sectionsUsed} 
-          						}}
- 				  			}}
- 				  		},
- 				  		refTollDeclaration := {TD_IDENTIFIER, 1},
-    					actionCode := ActionCode_send_,
-    					paymentReference := omit 				  		
-				  	}});	
+				  	{m_aduGnssBillingDetails});	
 				
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
                 // Start timer
