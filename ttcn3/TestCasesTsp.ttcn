@@ -2920,7 +2920,9 @@ module EfcInfoExchange_TestCasesTsp {
 
            testcase TP_TSP_DSRC_BILLINGDETAILS_BV_02() runs on MainTestComponent system TestAdapter {
                   /**
-                  * @desc    TP_TSP_DSRC_BILLINGDETAILS_BV_02: Verify that the TSP correctly performs a DSRC.BILLINGDETAILS transaction when the TC provides multiple BillingDetailsADUs with no optional fields  
+                  * @desc    TP_TSP_DSRC_BILLINGDETAILS_BV_02: Verify that the TSP correctly performs a 
+                  * @desc    DSRC.BILLINGDETAILS transaction when the TC provides multiple BillingDetailsADUs 
+                  * @desc    with no optional fields  
                   * @remark  [16986:2016], Clause 7.3.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/3
                   */
                  // Initialisation 
@@ -2929,56 +2931,24 @@ module EfcInfoExchange_TestCasesTsp {
 
                  // Step 1: Send one valid APDU containing 10 valid BillingDetailsADU with actionCode = SEND
                  // PT140 TODO : mw_aduBillingDetails template and related fields to be defined
-				var InfoExchange v_apduRespondedTo :=
-					{m_apduNoAuthInitTester({modifies mw_aduBillingDetails:= {
-					  	billingDetailsId := 1,
-					  	billingDetailsAmount.paymentFeeAmount := 400,
-					  	actionCode := ActionCode_send_
-					  	}
-					}),
-					m_apduNoAuthInitTester({modifies mw_aduBillingDetails:= {
-					  	billingDetailsId := 2, billingDetailsAmount.paymentFeeAmount := 500, actionCode := ActionCode_send_
-					  	}
-					}),
-					m_apduNoAuthInitTester({modifies mw_aduBillingDetails:= {
-					  	billingDetailsId := 3, billingDetailsAmount.paymentFeeAmount := 500, actionCode := ActionCode_send_
-					  	}
-					}),					
-					m_apduNoAuthInitTester({modifies mw_aduBillingDetails:= {
-					  	billingDetailsId := 4, billingDetailsAmount.paymentFeeAmount := 500, actionCode := ActionCode_send_
-					  	}
-					}),					
-					m_apduNoAuthInitTester({modifies mw_aduBillingDetails:= {
-					  	billingDetailsId := 5, billingDetailsAmount.paymentFeeAmount := 500, actionCode := ActionCode_send_
-					  	}
-					}),					
-					m_apduNoAuthInitTester({modifies mw_aduBillingDetails:= {
-					  	billingDetailsId := 6, billingDetailsAmount.paymentFeeAmount := 500, actionCode := ActionCode_send_
-					  	}
-					}),					
-					m_apduNoAuthInitTester({modifies mw_aduBillingDetails:= {
-					  	billingDetailsId := 7, billingDetailsAmount.paymentFeeAmount := 500, actionCode := ActionCode_send_
-					  	}
-					}),					
-					m_apduNoAuthInitTester({modifies mw_aduBillingDetails:= {
-					  	billingDetailsId := 8, billingDetailsAmount.paymentFeeAmount := 500, actionCode := ActionCode_send_
-					  	}
-					}),					
-					m_apduNoAuthInitTester({modifies mw_aduBillingDetails:= {
-					  	billingDetailsId := 9, billingDetailsAmount.paymentFeeAmount := 500, actionCode := ActionCode_send_
-					  	}
-					}),					
-					m_apduNoAuthInitTester({modifies mw_aduBillingDetails:= {
-					  	billingDetailsId := 10, billingDetailsAmount.paymentFeeAmount := 500, actionCode := ActionCode_send_
-					  	}
-					})          	
-            	};                 
-				f_sendAndLogApdu(v_apduRespondedTo);                 
+				var InfoExchange v_apduForSending := m_apduNoAuthInitTester({
+					m_aduDsrcBillingDetails(1),                 
+					m_aduDsrcBillingDetails(2),                 
+					m_aduDsrcBillingDetails(3),                 
+					m_aduDsrcBillingDetails(4),                 
+					m_aduDsrcBillingDetails(5),                 
+					m_aduDsrcBillingDetails(6),                 
+					m_aduDsrcBillingDetails(7),                 
+					m_aduDsrcBillingDetails(8),                 
+					m_aduDsrcBillingDetails(9),                 
+					m_aduDsrcBillingDetails(10),                 
+				});                 
+				f_sendAndLogApdu(v_apduForSending);                 
                  // Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
 				// Set timer
                  t_step.start(BILLINGDETAILS_TIME1_MAX_TSP);                 
 				alt {
-					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduRespondedTo)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduforSending)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(BILLINGDETAILS_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}

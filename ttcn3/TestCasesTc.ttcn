@@ -2269,7 +2269,7 @@ module EfcInfoExchange_TestCasesTc {
 				// We expect to receive as many APDUs containing TRUSTOBJECTS ADUs as the number of declared supported trust objects
 				// PT140 TODO: No timeout set, so risk to wait indifinetely to receive all APDUs. Alternative is to set a PIXIT timeout parameter
 
-				alt {
+				alt { //TODO Jan this section of code is roken now. Look at corresponding code in TSP test cases and use as a template
 					[] mtcPort.receive(mw_apduTrustObject) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();	

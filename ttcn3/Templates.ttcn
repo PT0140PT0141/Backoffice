@@ -909,7 +909,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			};
 			
 			// Template for a generic object. According to the profile, only certificate revocation lists can be sent as generic trust objects
-   			template InfoExchange mw_apduTrustObjectGeneric := mw_apduTrustObjectProtoTemp(mw_genericTrustObject);
+   			template Adus mw_adusTrustObjectGeneric := mw_adusTrustObjectProtoTemp(mw_genericTrustObject);
 
 			template TrustObjectCode mw_genericTrustObject:={
 				otherTrustObject:={
@@ -997,21 +997,19 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			);
 			
 			// Received Request for a Symmetric Key Trust Object
-			template InfoExchange m_apduRequestTrustObjectSymmetricKey := m_apduNoSec( //TODO PT140 This is never used, and it mixes m with mw, seems weird. Do we need it? Delete?
-				Adus:{
-					requestAdus:={
-						{
-							requestedADUType := 3,
-							requestedTrustObject:={
-								trustObjectSpec:={
-									typeOfTrustObject:=(TrustObjectTypes_symmetricKey_, TrustObjectTypes_encryptedSymmetricKey_),
-								    purposesOfTrustObject := *
-								}
+			template Adus m_adusRequestTrustObjectSymmetricKey := {
+				requestAdus:={
+					{
+						requestedADUType := 3,
+						requestedTrustObject:={
+							trustObjectSpec:={
+								typeOfTrustObject:=(TrustObjectTypes_symmetricKey_, TrustObjectTypes_encryptedSymmetricKey_),
+								purposesOfTrustObject := *
 							}
 						}
 					}
 				}
-			);
+			};
 			
 		}
 
@@ -1023,17 +1021,13 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				abnormalOBEReasonCode := ? length (1..255) //= at least one reason code shall be present in this record of integer
 			}
 
-   			template InfoExchange mw_apduReportAbnormalOBE := m_apduNoSec(mw_apci, Adus:{reportAbnormalOBEADUs:=?});
-			
-			template InfoExchange mw_apduAuthReportAbnormalOBE := mw_apduSec(mw_apci, Adus:{reportAbnormalOBEADUs:=?});
+			template Adus mw_adusReportAbnormalOBE := Adus:{reportAbnormalOBEADUs:=?};
 
 		}
 				
 		group BILLINGDETAILS{
 
-			template InfoExchange mw_apduBillingDetails := m_apduNoSec(mw_apci, Adus:{billingDetailsADUs:=?});
-			
-			template InfoExchange mw_apduAuthBillingDetails := mw_apduSec(mw_apci, Adus:{billingDetailsADUs:=?});		  
+			template Adus mw_adusBillingDetails := Adus:{billingDetailsADUs:=?};
 
 			template (value) BillingDetailsADU mw_aduGnssBillingDetails :={
     			billingDetailsId :={
@@ -1173,10 +1167,10 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
     			paymentReference := *
   			}
   			
-  			template (value) BillingDetailsADU m_aduDsrcBillingDetails:={
+  			template (value) BillingDetailsADU m_aduDsrcBillingDetails(in integer p_billingDetailsNum:=TD_BILLING_DETAILS_NUM):={
 				billingDetailsId := {
 					issuerId:=TD_INFORMATION_SENDER_FOR_TESTER,
-					billingDetailsNum:=TD_BILLING_DETAILS_NUM,
+					billingDetailsNum:=p_billingDetailsNum,
 					dateOfService:=omit				
 				}, 
 				tollContext:=TD_TOLL_CONTEXT,
@@ -1226,10 +1220,8 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			
 		
 		group GNSS_TOLLDECLARATIONS {
-   			template InfoExchange mw_apduTollDeclaration := m_apduNoSec(mw_apci, Adus:{tollDeclarationADUs:=?});
+   			template Adus mw_adusTollDeclaration := Adus:{tollDeclarationADUs:=?};
 			
-			template InfoExchange mw_apduAuthTollDeclaration := mw_apduSec(mw_apci, Adus:{tollDeclarationADUs:=?});
-
 			template (value) TollDeclarationADU m_aduTollDeclaration(in integer p_declarationId, in EfcAutonomousContextData.Int4 p_chargeReportCounter):={
 				tollDeclarationId:={
 					issuerId:=TD_IDENTIFIER,
@@ -1381,7 +1373,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				p_usageStatement,
 				p_chargeReportCounter,
 				p_actionCode
-			) 
+			); 
 
 			// below this is a generic template for a ChargeReprt
 			template ChargeReport mw_chargeReport := {
@@ -1396,9 +1388,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				reportPeriod := *, // may or may not be present
 				versionId := *, // may or may not be present
 				usageStatementList := {  // shall be present in ISO 16986
-					{
-						usageStatement := ?
-					}
+					{usageStatement := ?}
 				}, 
 				sumVatForThisSession := omit, // shall not be used in ISO 16986 
 				accountStatus := omit, // shall not be used in ISO 16986
