@@ -541,6 +541,178 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 //
 		}
 		
+		group TRUSTOBJECTS {
+			
+			type record of TrustObjectPurposes RecOfTrustObjectPurposes; 	
+
+			//note that an APDU containing TrustObjects is only allowed to carry ONE TrustObjectADU
+			template (value) InfoExchange m_apduTrustObjectResponse(
+				in InfoExchange p_apduBeingRespondedTo, 
+				in RecOfTrustObjectPurposes p_recOfTrustObjectPurposes,
+				in TrustObjectCode p_trustObjectCode			
+			):= m_apduNoAuth(
+				m_apciRespTester(p_apduBeingRespondedTo),
+				Adus: {
+					trustObjectAdus:={
+						m_aduTrustObject(
+							p_recOfTrustObjectPurposes,
+							p_trustObjectCode
+						)
+					}
+				}
+			);
+			
+			template TrustObjectADU mw_aduTrustObject(
+				template RecOfTrustObjectPurposes p_recOfTrustObjectPurposes,
+				template TrustObjectCode p_trustObjectCode
+			):={
+				trustObjectID := float2int(rnd()),
+				purposesOfTrustObject := p_recOfTrustObjectPurposes,
+				startValidity := fx_getUtc(),
+				endValidity := omit,
+				trustObjectStatus := TrustObjectStatus_valid_,
+				trustObject := p_trustObjectCode
+			}
+
+			template (value) TrustObjectADU m_aduTrustObject(RecOfTrustObjectPurposes p_recOfTrustObjectPurposes,
+				TrustObjectCode p_trustObjectCode
+			):=mw_aduTrustObject(p_recOfTrustObjectPurposes,p_trustObjectCode);
+			
+			template TrustObjectADU m_aduTrustObjectInvalidStatus:= {
+				trustObjectID := float2int(rnd()),
+				purposesOfTrustObject := {TrustObjectPurposes_dSRCCharging_,TrustObjectPurposes_dSRCAC_,TrustObjectPurposes_oBEInterrogation_,TrustObjectPurposes_oBEInterrogationAC_},
+				startValidity := fx_getUtc(),
+				endValidity := omit,
+				trustObjectStatus := 5,
+				trustObject := {dsrcKeyRef:=dsrcKeyRefObjectTESTER_VALUE}
+			}
+			
+			
+			// General template to receive Trust Objects w/o a Request
+			template InfoExchange mw_apduTrustObjectInit := mw_apduNoAuthInitIut(Adus:{trustObjectAdus:=?});
+   			
+			// General template to receive Trust Objects on a secure connection w/o a Request
+			template InfoExchange mw_apduAuthTrustObjectInit := mw_apduAuthInitIut(Adus:{trustObjectAdus:=?});
+
+   			// General template to receive Trust Objects w a Request
+   			template InfoExchange mw_apduTrustObject(in InfoExchange p_apduBeingRespondedTo) := 
+   			mw_apduNoAuthRespIut(p_apduBeingRespondedTo,Adus:{trustObjectAdus:=?});
+   			
+			// General template to receive Trust Objects on a secure connection w a Request
+			template InfoExchange mw_apduAuthTrustObject(in InfoExchange p_apduBeingRespondedTo) := 
+			mw_apduAuthRespIut(p_apduBeingRespondedTo, Adus:{trustObjectAdus:=?});
+
+			//template for building templates
+			template Adus mw_adusTrustObjectProtoTemp(template TrustObjectCode p_trustObjectCode) := {
+				trustObjectAdus:={mw_aduTrustObject(?,p_trustObjectCode)}
+			};
+			
+			// Template for a generic object. According to the profile, only certificate revocation lists can be sent as generic trust objects
+   			template Adus mw_adusTrustObjectGeneric := mw_adusTrustObjectProtoTemp(mw_genericTrustObject);
+
+			template TrustObjectCode mw_genericTrustObject:={
+				otherTrustObject:={
+					typeOfTrustObject := TrustObjectTypes_crl_,
+					genericTrustObject := ?
+				}
+			}
+
+
+			// Templates for a certificate object
+			template Adus mw_adusTrustObjectCertificate:=
+			mw_adusTrustObjectProtoTemp(TrustObjectCode:{certificate:=?});
+
+			// Templates for a public key object
+   			template Adus mw_adusTrustObjectPublicKey := 
+   			mw_adusTrustObjectProtoTemp(TrustObjectCode:{publicKey:=?});
+			
+			// Templates for a Dsrc key object
+   			template Adus mw_adusTrustObjectDsrcKey := 
+   			mw_adusTrustObjectProtoTemp(TrustObjectCode:{dsrcMasterKeys:=?});
+
+			// Templates for a Mac Key object
+   			template Adus mw_adusTrustObjectMacKey := 
+   			mw_adusTrustObjectProtoTemp(TrustObjectCode:{macMasterKey:=?});
+
+			// Templates for a Dsrc keyRef object
+   			template Adus mw_adusTrustObjectDsrcKeyRef:=
+   			mw_adusTrustObjectProtoTemp(TrustObjectCode:{dsrcKeyRef:=?});
+
+			// PT140 TODO to be defined Generic Request for Trust Object with one parameter as apduToBeRespondedTo, and another as TrustObjectCode - Ulrik: still needed? not used anywhere... 
+			template InfoExchange m_apduRequestTrustObject := {}
+						
+			// Generic received Request for Trust Object, to receive a requestADU for any Trust Object 			
+			template InfoExchange mw_apduRequestTrustObject := mw_apduNoAuthInitIut(
+				mw_apci, 
+				Adus:{requestAdus:={
+					requestedADUType := 3,
+					requestedTrustObject := ?
+				}}
+			);
+			
+			
+			// Received Request for a Certificate Trust Object
+			template InfoExchange mw_apduRequestTrustObjectCertificate := mw_apduNoAuthInitIut(
+				Adus:{
+					requestAdus:={
+						requestedADUType := 3,
+						requestedTrustObject:={
+							trustObjectSpec :={
+								typeOfTrustObject := TrustObjectTypes_certificate_,
+								purposesOfTrustObject := *
+							}
+						}
+					}
+				}
+			);
+			
+			// Received Request for a Public Key Trust Object			
+			template InfoExchange mw_apduRequestTrustObjectPublicKey := mw_apduNoAuthInitIut(
+				mw_apci, 
+				Adus:{
+					requestAdus:={{mw_aduRequestTrustObjectPublicKey}}
+				}
+			);
+
+			template RequestADU mw_aduRequestTrustObjectPublicKey:={
+				trustObjectRequest:={
+					requestedADUType := 3,
+					requestedTrustObject:={
+						trustObjectId:=?,
+						trustObjectSpec:={
+							typeOfTrustObject:= TrustObjectTypes_publicKey_,
+							purposesOfTrustObject := *
+						}
+					}
+				}
+			}
+
+			// Generic Trust Object is requested though a requestADU carrying only the type of ADU requested			
+			template InfoExchange mw_apduRequestTrustObjectGeneric := mw_apduNoAuthInitIut(
+				Adus:{requestAdus:= {
+					requestedADUType := 3,
+					requestedTrustObject:={trustObjectSpec := omit}
+				}}
+			);
+			
+			// Received Request for a Symmetric Key Trust Object
+			template InfoExchange mw_apduRequestTrustObjectSymmetricKey := mw_apduNoAuthInitIut(
+				Adus:{
+					requestAdus:={
+						{
+							requestedADUType := 3,
+							requestedTrustObject:={
+								trustObjectSpec:={
+									typeOfTrustObject:=(TrustObjectTypes_symmetricKey_, TrustObjectTypes_encryptedSymmetricKey_),
+									purposesOfTrustObject := *
+								}
+							}
+						}
+					}
+				}
+			);
+			
+		}
 
 		group PAYMENTCLAIM {
 			
@@ -842,177 +1014,6 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			
 		
 			
-		group TRUSTOBJECTS {
-			
-			type record of TrustObjectPurposes RecOfTrustObjectPurposes; 	
-
-			//note that an APDU containing TrustObjects is only allowed to carry ONE TrustObjectADU
-			template (value) InfoExchange m_apduTrustObjectResponse(
-				in InfoExchange p_apduBeingRespondedTo, 
-				in RecOfTrustObjectPurposes p_recOfTrustObjectPurposes,
-				in TrustObjectCode p_trustObjectCode			
-			):= m_apduNoAuth(
-				m_apciRespTester(p_apduBeingRespondedTo),
-				Adus: {
-					trustObjectAdus:={
-						m_aduTrustObject(
-							p_recOfTrustObjectPurposes,
-							p_trustObjectCode
-						)
-					}
-				}
-			);
-			
-			template TrustObjectADU mw_aduTrustObject(
-				template RecOfTrustObjectPurposes p_recOfTrustObjectPurposes,
-				template TrustObjectCode p_trustObjectCode
-			):={
-				trustObjectID := float2int(rnd()),
-				purposesOfTrustObject := p_recOfTrustObjectPurposes,
-				startValidity := fx_getUtc(),
-				endValidity := omit,
-				trustObjectStatus := TrustObjectStatus_valid_,
-				trustObject := p_trustObjectCode
-			}
-
-			template (value) TrustObjectADU m_aduTrustObject(RecOfTrustObjectPurposes p_recOfTrustObjectPurposes,
-				TrustObjectCode p_trustObjectCode
-			):=mw_aduTrustObject(p_recOfTrustObjectPurposes,p_trustObjectCode);
-			
-			template TrustObjectADU m_aduTrustObjectInvalidStatus:= {
-				trustObjectID := float2int(rnd()),
-				purposesOfTrustObject := {TrustObjectPurposes_dSRCCharging_,TrustObjectPurposes_dSRCAC_,TrustObjectPurposes_oBEInterrogation_,TrustObjectPurposes_oBEInterrogationAC_},
-				startValidity := fx_getUtc(),
-				endValidity := omit,
-				trustObjectStatus := 5,
-				trustObject := {dsrcKeyRef:=dsrcKeyRefObjectTESTER_VALUE}
-			}
-			
-			
-			// General template to receive Trust Objects w/o a Request
-			template InfoExchange mw_apduTrustObjectInit := mw_apduNoAuthInitIut(Adus:{trustObjectAdus:=?});
-   			
-			// General template to receive Trust Objects on a secure connection w/o a Request
-			template InfoExchange mw_apduAuthTrustObjectInit := mw_apduAuthInitIut(Adus:{trustObjectAdus:=?});
-
-   			// General template to receive Trust Objects w a Request
-   			template InfoExchange mw_apduTrustObject(in InfoExchange p_apduBeingRespondedTo) := 
-   			mw_apduNoAuthRespIut(p_apduBeingRespondedTo,Adus:{trustObjectAdus:=?});
-   			
-			// General template to receive Trust Objects on a secure connection w a Request
-			template InfoExchange mw_apduAuthTrustObject(in InfoExchange p_apduBeingRespondedTo) := 
-			mw_apduAuthRespIut(p_apduBeingRespondedTo, Adus:{trustObjectAdus:=?});
-
-			//template for building templates
-			template Adus mw_adusTrustObjectProtoTemp(template TrustObjectCode p_trustObjectCode) := {
-				trustObjectAdus:={mw_aduTrustObject(?,p_trustObjectCode)}
-			};
-			
-			// Template for a generic object. According to the profile, only certificate revocation lists can be sent as generic trust objects
-   			template Adus mw_adusTrustObjectGeneric := mw_adusTrustObjectProtoTemp(mw_genericTrustObject);
-
-			template TrustObjectCode mw_genericTrustObject:={
-				otherTrustObject:={
-					typeOfTrustObject := TrustObjectTypes_crl_,
-					genericTrustObject := ?
-				}
-			}
-
-
-			// Templates for a certificate object
-			template Adus mw_adusTrustObjectCertificate:=
-			mw_adusTrustObjectProtoTemp(TrustObjectCode:{certificate:=?});
-
-			// Templates for a public key object
-   			template Adus mw_adusTrustObjectPublicKey := 
-   			mw_adusTrustObjectProtoTemp(TrustObjectCode:{publicKey:=?});
-			
-			// Templates for a Dsrc key object
-   			template Adus mw_adusTrustObjectDsrcKey := 
-   			mw_adusTrustObjectProtoTemp(TrustObjectCode:{dsrcMasterKeys:=?});
-
-			// Templates for a Mac Key object
-   			template Adus mw_adusTrustObjectMacKey := 
-   			mw_adusTrustObjectProtoTemp(TrustObjectCode:{macMasterKey:=?});
-
-			// Templates for a Dsrc keyRef object
-   			template Adus mw_adusTrustObjectDsrcKeyRef:=
-   			mw_adusTrustObjectProtoTemp(TrustObjectCode:{dsrcKeyRef:=?});
-
-			// PT140 TODO to be defined Generic Request for Trust Object with one parameter as apduToBeRespondedTo, and another as TrustObjectCode - Ulrik: still needed? not used anywhere... 
-			template InfoExchange m_apduRequestTrustObject := {}
-						
-			// Generic received Request for Trust Object, to receive a requestADU for any Trust Object 			
-			template InfoExchange mw_apduRequestTrustObject := mw_apduNoAuthInitIut(
-				mw_apci, 
-				Adus:{requestAdus:={
-					requestedADUType := 3,
-					requestedTrustObject := ?
-				}}
-			);
-			
-			
-			// Received Request for a Certificate Trust Object
-			template InfoExchange mw_apduRequestTrustObjectCertificate := mw_apduNoAuthInitIut(
-				Adus:{
-					requestAdus:={
-						requestedADUType := 3,
-						requestedTrustObject:={
-							trustObjectSpec :={
-								typeOfTrustObject := TrustObjectTypes_certificate_,
-								purposesOfTrustObject := *
-							}
-						}
-					}
-				}
-			);
-			
-			// Received Request for a Public Key Trust Object			
-			template InfoExchange mw_apduRequestTrustObjectPublicKey := mw_apduNoAuthInitIut(
-				mw_apci, 
-				Adus:{
-					requestAdus:={{mw_aduRequestTrustObjectPublicKey}}
-				}
-			);
-
-			template RequestADU mw_aduRequestTrustObjectPublicKey:={
-				trustObjectRequest:={
-					requestedADUType := 3,
-					requestedTrustObject:={
-						trustObjectId:=?,
-						trustObjectSpec:={
-							typeOfTrustObject:= TrustObjectTypes_publicKey_,
-							purposesOfTrustObject := *
-						}
-					}
-				}
-			}
-
-			// Generic Trust Object is requested though a requestADU carrying only the type of ADU requested			
-			template InfoExchange mw_apduRequestTrustObjectGeneric := mw_apduNoAuthInitIut(
-				Adus:{requestAdus:= {
-					requestedADUType := 3,
-					requestedTrustObject:={trustObjectSpec := omit}
-				}}
-			);
-			
-			// Received Request for a Symmetric Key Trust Object
-			template Adus m_adusRequestTrustObjectSymmetricKey := {
-				requestAdus:={
-					{
-						requestedADUType := 3,
-						requestedTrustObject:={
-							trustObjectSpec:={
-								typeOfTrustObject:=(TrustObjectTypes_symmetricKey_, TrustObjectTypes_encryptedSymmetricKey_),
-								purposesOfTrustObject := *
-							}
-						}
-					}
-				}
-			};
-			
-		}
-
 		group DSRC_REPORTABNORMALOBE {
 			template ReportAbnormalOBEADU mw_aduDsrcReportAbnormalObe := {
 				userId := ? length(1..4), //at least one element of userId shall be present
@@ -1028,238 +1029,241 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		group BILLINGDETAILS{
 
 			template Adus mw_adusBillingDetails := Adus:{billingDetailsADUs:=?};
+			
+			group DSRC_BILLINGDETAILS{		
 
-			template BillingDetailsADU mw_aduGnssBillingDetails :={
-    			billingDetailsId :={
-    				issuerId := ?,
-    				billingDetailsNum := (0..9223372036854775807), // range 0..2^63-1
-    				dateOfService := omit
-    				},
-    			tollContext := ?,
-    			userId :={
-    				pan := *, 
-					contractSerialNumber := *,
-					licencePlateNumber := *, 
-					obeID := *
+				template BillingDetailsADU mw_aduGnssBillingDetails :={
+	    			billingDetailsId :={
+	    				issuerId := ?,
+	    				billingDetailsNum := (0..9223372036854775807), // range 0..2^63-1
+	    				dateOfService := omit
+	    				},
+	    			tollContext := ?,
+	    			userId :={
+	    				pan := *, 
+						contractSerialNumber := *,
+						licencePlateNumber := *, 
+						obeID := *
+						},
+	    			relatedBillingDetails := omit,
+	    			period := ?,
+	    			billingDetailsAmount := omit, 
+	    			usageDetails := {
+						contextName := ?,
+	      				appliedUserClass := ?,
+	      				perDeclaredVehicleClass := {{
+	        				declaredVehicleClass := ?,
+	        				perUsedTimeClasses := {{
+	          					appliedTimeClass := ?,
+	          					costCenter := ?, // mandatory in IAP
+	          					usageList := ({mw_sectionedRoadGnssUsageList}, {mw_travellingInAreaGnssUsageList},
+	          					{mw_stayingInAreaGnssUsageList}, {mw_cordonCrossingGnssUsageList})
+	          				}}
+	          			}}  			
 					},
-    			relatedBillingDetails := omit,
-    			period := ?,
-    			billingDetailsAmount := omit, 
-    			usageDetails := {
-					contextName := ?,
-      				appliedUserClass := ?,
-      				perDeclaredVehicleClass := {{
-        				declaredVehicleClass := ?,
-        				perUsedTimeClasses := {{
-          					appliedTimeClass := ?,
-          					costCenter := ?, // mandatory in IAP
-          					usageList := ({mw_sectionedRoadGnssUsageList}, {mw_travellingInAreaRoadGnssUsageList},
-          					{mw_stayingInAreaRoadGnssUsageList}, {mw_cordonCrossingRoadGnssUsageList})
-          				}}
-          			}}  			
-				},
-    			refTollDeclaration := ?,
-    			associatedEventData := omit,
-    			actionCode := (ActionCode_send_, ActionCode_revoke_ ,ActionCode_adjust_ ),
-    			paymentReference := *
-  			}			
-		
-			template (value) UsageList mw_sectionedRoadGnssUsageList := {
-				usageListEntry :={
-					forSectionedRoads := {		
-						howManyTimes := (0..9223372036854775807), // range 0..2^63-1
-						listOfSections := {mw_sections}, // mandatory in IAP 
-						invoiceAggregationNumber := omit, //shall not be used in IAP
-						fee := omit, // shall mot be used in IAP,
-						feeQualifier := omit // shall not be used in IAP
-					}
-				},
-				includedDiscounts := *,
-				associatedEventData := omit, // shall not be used in IAP
-				externalCosts := *
-			}
-
-			template (value) Section mw_sections := {
-				tollContext := omit, // shall not be used in IAP
-				chargeObjectId := ?,
-				chargeObjectName := omit, // shall not be used in IAP
-				tollEventId := ?, // mandatory in IAP
-				tollEventTime := ?, // mandatory in IAP
-				modeOfOperation := omit // shall not be used in IAP
-  			}
-
-			template (value) UsageList mw_travellingInAreaRoadGnssUsageList := {
-				usageListEntry := {
-					forTravellingInArea := {		
-        				areaDisplayName := ?,
-        				accumulatedDistance := ?,
-        				beginOfAccumulation := *,
-        				endOfAccumulation := *,
-        				fee := omit, // shall not be used in IAP
-        				feeQualifier := omit // shall not be used in IAP
-					}
-				},
-				includedDiscounts := {{*}},
-				associatedEventData := omit, // shall not be used in IAP
-				externalCosts := *
-			}
-
-			template (value) UsageList mw_stayingInAreaGnssUsageList := {
-				usageListEntry :={
-					forStayingInArea :={		
-						areaDisplayName := ?,
-						qualifier := *,
-						stayedDuration := ?,
-        				chargeUnit := (time), //event and distance shall not be used
-        				fee := omit, // shall not be used in IAP
-        				feeQualifier := omit // shall not be used in IAP
-					}
-				},
-				includedDiscounts := {{*}},
-				associatedEventData := omit, // shall not be used in IAP
-				externalCosts := *
-			}
-
-			template (value) UsageList mw_cordonCrossingRoadGnssUsageList := {
-				usageListEntry :={
-					forCordonCrossing :={		
-						qualifier := *,
-        				entranceChargeObject := ?,
-        				entranceChargeObjectName := *,
-        				exitChargeObject := ?, // mandatory in IAP
-        				exitChargeObjectName := omit, //shall not be used in IAP
-        				exitTime := ?, // mandatory in IAP
-        				fee := omit, // shall not be used in IAP
-        				feeQualifier := omit // shall not be used in IAP				}
-				},
-				includedDiscounts := {{*}},
-				associatedEventData := omit, // shall not be used in IAP
-				externalCosts := *
-			}
-		}
-										 							
-		group DSRC_BILLINGDETAILS {
-		
-			template BillingDetailsADU mw_aduDsrcBillingDetails :={
-    			billingDetailsId :={
-    				issuerId := ?,
-    				billingDetailsNum := (0..9223372036854775807), // range 0..2^63-1
-    				dateOfService := omit
-    				},
-    			tollContext := ?,
-    			userId :={
-    				pan := *, 
-					contractSerialNumber := *,
-					licencePlateNumber := *, 
-					obeID := *
+	    			refTollDeclaration := ?,
+	    			associatedEventData := omit,
+	    			actionCode := (ActionCode_send_, ActionCode_revoke_ ,ActionCode_adjust_ ),
+	    			paymentReference := *
+	  			}			
+			
+				template (value) UsageList mw_sectionedRoadGnssUsageList := {
+					usageListEntry :={
+						forSectionedRoads := {		
+							howManyTimes := (0..9223372036854775807), // range 0..2^63-1
+							listOfSections := {mw_sections}, // mandatory in IAP 
+							invoiceAggregationNumber := omit, //shall not be used in IAP
+							fee := omit, // shall mot be used in IAP,
+							feeQualifier := omit // shall not be used in IAP
+						}
 					},
-    			relatedBillingDetails := *,
-    			period := omit,
-    			billingDetailsAmount := {
-    				paymentFeeAmount := ?,
-					paymentFeeUnit := ?,
-					vatRate := ?
+					includedDiscounts := *,
+					associatedEventData := omit, // shall not be used in IAP
+					externalCosts := *
+				}
+	
+				template (value) Section mw_sections := {
+					tollContext := omit, // shall not be used in IAP
+					chargeObjectId := ?,
+					chargeObjectName := omit, // shall not be used in IAP
+					tollEventId := ?, // mandatory in IAP
+					tollEventTime := ?, // mandatory in IAP
+					modeOfOperation := omit // shall not be used in IAP
+	  			}
+	
+				template (value) UsageList mw_travellingInAreaGnssUsageList := {
+					usageListEntry := {
+						forTravellingInArea := {		
+	        				areaDisplayName := ?,
+	        				accumulatedDistance := ?,
+	        				beginOfAccumulation := *,
+	        				endOfAccumulation := *,
+	        				fee := omit, // shall not be used in IAP
+	        				feeQualifier := omit // shall not be used in IAP
+						}
+					},
+					includedDiscounts := {{*}},
+					associatedEventData := omit, // shall not be used in IAP
+					externalCosts := *
+				}
+	
+				template (value) UsageList mw_stayingInAreaGnssUsageList := {
+					usageListEntry :={
+						forStayingInArea :={		
+							areaDisplayName := ?,
+							qualifier := *,
+							stayedDuration := ?,
+	        				chargeUnit := (ChargeUnit:{time:=?}), //event and distance shall not be used
+	        				fee := omit, // shall not be used in IAP
+	        				feeQualifier := omit // shall not be used in IAP
+						}
+					},
+					includedDiscounts := {{*}},
+					associatedEventData := omit, // shall not be used in IAP
+					externalCosts := *
+				}
+	
+				template (value) UsageList mw_cordonCrossingGnssUsageList := {
+					usageListEntry :={
+						forCordonCrossing :={		
+							qualifier := *,
+	        				entranceChargeObject := ?,
+	        				entranceChargeObjectName := *,
+	        				exitChargeObject := ?, // mandatory in IAP
+	        				exitChargeObjectName := omit, //shall not be used in IAP
+	        				exitTime := ?, // mandatory in IAP
+	        				fee := omit, // shall not be used in IAP
+	        				feeQualifier := omit // shall not be used in IAP				}
+					},
+					includedDiscounts := {{*}},
+					associatedEventData := omit, // shall not be used in IAP
+					externalCosts := *
+				}
+			}
+			}
+													 							
+			group DSRC_BILLINGDETAILS {
+			
+				template BillingDetailsADU mw_aduDsrcBillingDetails :={
+	    			billingDetailsId :={
+	    				issuerId := ?,
+	    				billingDetailsNum := (0..9223372036854775807), // range 0..2^63-1
+	    				dateOfService := omit
+	    				},
+	    			tollContext := ?,
+	    			userId :={
+	    				pan := *, 
+						contractSerialNumber := *,
+						licencePlateNumber := *, 
+						obeID := *
+						},
+	    			relatedBillingDetails := *,
+	    			period := omit,
+	    			billingDetailsAmount := {
+	    				paymentFeeAmount := ?,
+						paymentFeeUnit := ?,
+						vatRate := ?
+						}, 
+	    			usageDetails := mw_dsrcUsageDetails, // TODO PT140: template mw_dsrcUsageDetails to be created
+	    			refTollDeclaration := {omit},
+	    			associatedEventData := {omit},
+	    			actionCode := (ActionCode_send_, ActionCode_revoke_ ,ActionCode_adjust_ ),
+	    			paymentReference := *
+	  			}
+	  			
+	  			template (value) BillingDetailsADU m_aduDsrcBillingDetails(in integer p_billingDetailsNum:=TD_BILLING_DETAILS_NUM):={
+					billingDetailsId := {
+						issuerId:=TD_INFORMATION_SENDER_FOR_TESTER,
+						billingDetailsNum:=p_billingDetailsNum,
+						dateOfService:=omit				
 					}, 
-    			usageDetails := mw_dsrcUsageDetails, // TODO PT140: template mw_dsrcUsageDetails to be created
-    			refTollDeclaration := {omit},
-    			associatedEventData := {omit},
-    			actionCode := (ActionCode_send_, ActionCode_revoke_ ,ActionCode_adjust_ ),
-    			paymentReference := *
-  			}
-  			
-  			template (value) BillingDetailsADU m_aduDsrcBillingDetails(in integer p_billingDetailsNum:=TD_BILLING_DETAILS_NUM):={
-				billingDetailsId := {
-					issuerId:=TD_INFORMATION_SENDER_FOR_TESTER,
-					billingDetailsNum:=p_billingDetailsNum,
-					dateOfService:=omit				
-				}, 
-				tollContext:=TD_TOLL_CONTEXT,
-    			userId :=TD_BILLINGDETAILS_USERID,
-    			relatedBillingDetails :=omit,
-    			period :=omit,
-    			billingDetailsAmount:={
-					paymentFeeAmount:=TD_DSRC_PAYMENT_FEE_AMOUNT,
-					paymentFeeUnit := TD_DSRC_BILLINGDETAILS_PAYUNIT,
-					vatRate:=TD_DSRC_BILLINGDETAILS_VAT
-			  	},
-			    usageDetails:= m_dsrcUsageDetails,
-			    refTollDeclaration:=omit,
-			    associatedEventData:=omit,
-			    actionCode:= ActionCode_send_,
-			    paymentReference:=omit
-  			}					  			
-  			
-			template (value) UsageDetails m_dsrcUsageDetails:={
-				contextName:=TD_DSRC_BILLINGDETAILS_CONTEXTNAME,
-				appliedUserClass:=TD_DSRC_BILLINGDETAILS_USERCLASS,
-				perDeclaredVehicleClasses:={{
-					declaredVehicleClass:=TD_DSRC_BILLINGDETAILS_DECLAREDVEHCLASS,
-					perUsedTimeClasses:={{
-						appliedTimeClass:=TD_DSRC_BILLINGDETAILS_TIMECLASS,
-						usageList:={{
-							freeTextDetail:={
-								textLanguage:=TD_DSRC_BILLINGDETAILS_LANG,
-								textDetail:=TD_DSRC_BILLINGDETAILS_TEXT,
-								fee:={
-									paymentFeeAmount:=TD_DSRC_PAYMENT_FEE_AMOUNT,
-									paymentFeeUnit := TD_DSRC_BILLINGDETAILS_PAYUNIT,
-									vatRate:=TD_DSRC_BILLINGDETAILS_VAT
-								},
-								feeQualifier:=FeeQualifier_standardCharge_
-							}
+					tollContext:=TD_TOLL_CONTEXT,
+	    			userId :=TD_BILLINGDETAILS_USERID,
+	    			relatedBillingDetails :=omit,
+	    			period :=omit,
+	    			billingDetailsAmount:={
+						paymentFeeAmount:=TD_DSRC_PAYMENT_FEE_AMOUNT,
+						paymentFeeUnit := TD_DSRC_BILLINGDETAILS_PAYUNIT,
+						vatRate:=TD_DSRC_BILLINGDETAILS_VAT
+				  	},
+				    usageDetails:= m_dsrcUsageDetails,
+				    refTollDeclaration:=omit,
+				    associatedEventData:=omit,
+				    actionCode:= ActionCode_send_,
+				    paymentReference:=omit
+	  			}					  			
+	  			
+				template (value) UsageDetails m_dsrcUsageDetails:={
+					contextName:=TD_DSRC_BILLINGDETAILS_CONTEXTNAME,
+					appliedUserClass:=TD_DSRC_BILLINGDETAILS_USERCLASS,
+					perDeclaredVehicleClasses:={{
+						declaredVehicleClass:=TD_DSRC_BILLINGDETAILS_DECLAREDVEHCLASS,
+						perUsedTimeClasses:={{
+							appliedTimeClass:=TD_DSRC_BILLINGDETAILS_TIMECLASS,
+							usageList:={{
+								freeTextDetail:={
+									textLanguage:=TD_DSRC_BILLINGDETAILS_LANG,
+									textDetail:=TD_DSRC_BILLINGDETAILS_TEXT,
+									fee:={
+										paymentFeeAmount:=TD_DSRC_PAYMENT_FEE_AMOUNT,
+										paymentFeeUnit := TD_DSRC_BILLINGDETAILS_PAYUNIT,
+										vatRate:=TD_DSRC_BILLINGDETAILS_VAT
+									},
+									feeQualifier:=FeeQualifier_standardCharge_
+								}
+							}}
 						}}
 					}}
-				}}
-			};
-			
-			template (value) m_aduGnssBillingDetails modifies mw_aduGnssBillingDetails:= { // original template with wildcards, but now all given values below
-				billingDetailsId {
-					issuerId := TD_IDENTIFIER,
-					billingDetailsNum := 1
+				};
+				
+				template (value) BillingDetailsADU m_aduGnssBillingDetails modifies mw_aduGnssBillingDetails:= { // original template with wildcards, but now all given values below
+					billingDetailsId:= {
+						issuerId := TD_IDENTIFIER,
+						billingDetailsNum := 1
+						},
+					tollContext := TOLL_CONTEXT_ID_IUT,
+					userId := TD_USERID_1,
+					period := TD_PERIOD_1,
+					usageDetails := {
+						contextName := TOLL_CONTEXT_NAME_IUT,
+						appliedUserClass := TD_USER_CLASS,
+						perDeclaredVehicleClass := {{
+							declaredVehicleClass := TD_DECLARED_VEHICLE_CLASS,
+							perUsedTimeClasses := {{
+								appliedTimeClass := TD_APPLIED_TIME_CLASS,
+								costCenter := TD_COST_CENTER,
+								usageList := {m_sectionsUsed} 
+							}}
+						}}
 					},
-				tollContext := TOLL_CONTEXT_ID_IUT,
-				userId := TD_USERID_1,
-				period := TD_PERIOD_1,
-				usageDetails := {
-					contextName := TOLL_CONTEXT_NAME_IUT,
-					appliedUserClass := TD_USER_CLASS,
-					perDeclaredVehicleClass := {{
-						declaredVehicleClass := TD_DECLARED_VEHICLE_CLASS,
-						perUsedTimeClasses := {{
-							appliedTimeClass := TD_APPLIED_TIME_CLASS,
-							costCenter := TD_COST_CENTER,
-							usageList := {m_sectionsUsed} 
-						}}
-					}}
-				},
-				refTollDeclaration := {TD_IDENTIFIER, 1},
-				actionCode := ActionCode_send_,
-				paymentReference := omit 				  		
-			};
-			
-			template (value) m_sectionsUsed modifies mw_sectionedRoadGnssUsageList := {
-				usageListEntry {
-					forSectionedRoads {		
-						howManyTimes := 1,
-						listOfSections := {mw_section := {
-							chargeObjectId := TD_CHARGE_OBJECT_ID,
-							tollEventId := TD_TOLL_EVENT_ID, // mandatory in IAP
-							tollEventTime := TD_TOLL_EVENT_TIME // mandatory in IAP
-						}} 
-					}
-				},
-				includedDiscounts := {{
-					textLanguage := omit,
-					textDetail := omit,
-					discount := TD_DISCOUNT_AMOUNT,
-					discountQualifier := TD_DISCOUNT_QUALIFIER
-				}},
-				externalCosts := omit
-			};
-			
+					refTollDeclaration := {TD_IDENTIFIER, 1},
+					actionCode := ActionCode_send_,
+					paymentReference := omit 				  		
+				};
+				
+				template (value) UsageList m_sectionsUsed modifies mw_sectionedRoadGnssUsageList := {
+					usageListEntry:= {
+						forSectionedRoads:= {		
+							howManyTimes := 1,
+							listOfSections := {mw_section := {
+								chargeObjectId := TD_CHARGE_OBJECT_ID,
+								tollEventId := TD_TOLL_EVENT_ID, // mandatory in IAP
+								tollEventTime := TD_TOLL_EVENT_TIME // mandatory in IAP
+							}} 
+						}
+					},
+					includedDiscounts := {{
+						textLanguage := omit,
+						textDetail := omit,
+						discount := TD_DISCOUNT_AMOUNT,
+						discountQualifier := TD_DISCOUNT_QUALIFIER
+					}},
+					externalCosts := omit
+				};
+				
+			}	    			
 		}
-			    			
-		
+				
 		group GNSS_TOLLDECLARATIONS {
    			template Adus mw_adusTollDeclaration := Adus:{tollDeclarationADUs:=?};
 			
@@ -1577,12 +1581,6 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
     
 		}
 
-		group GNSS_BILLINGDETAILS_TSP{
-		}
-
-		group GNSS_BILLINGDETAILS_TC {
-		}
-
 		group GNSS_PAYMENTANNOUNCEMENT {
 
 			template PaymentAnnouncementADU mw_aduPaymentAnnouncement := {
@@ -1598,10 +1596,10 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 					valueDate := *,
 					interestAmount := *
 				}},
-				attachment := (*, (0..(2E31)-1)), // restrictions from IAP
+				attachment := (*, (0..2147483647)), //2^31-1, restrictions from IAP
 				actionCode := (ActionCode_send_, ActionCode_revoke_ ,ActionCode_adjust_ )
 			} 					
 		}
 	}
 }
-}
+

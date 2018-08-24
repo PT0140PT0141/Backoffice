@@ -6730,9 +6730,9 @@ module EfcInfoExchange_TestCasesTc {
                 //		- one valid PaymentAnnouncementADU, and
                 //		- one PaymentAnnouncementADU with actionCode=send containing an attachment larger than (2^31)-1 kbytes
  
- 				var octetstring v_attachement length (2E31);
+ 				var octetstring v_attachement length (2147483648);//length 2^31
  				
- 				for (var integer v_i; v_i == ((2E31)/8); v_i := v_i + 1) {
+ 				for (var integer v_i; v_i == ((2147483648)/8); v_i := v_i + 1) {
  					v_attachement := v_attachement & '0123456789ABCDEF'O;
  				}
  

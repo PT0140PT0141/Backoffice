@@ -875,7 +875,8 @@ module EfcInfoExchange_TestCasesTsp {
             testcase TP_TSP_USERDETAILS_BI_04() runs on MainTestComponent system TestAdapter {
              
               /**
-              * @desc    TP_TSP_USERDETAILS_BI_04: Verify that a TSP responds correctly to a RequestADU sent earlier than allowed 
+              * @desc    TP_TSP_USERDETAILS_BI_04: Verify that a TSP responds correctly to a 
+              * @desc    RequestADU sent earlier than allowed 
               * @remark  [16986:2016], Clause 6.4 and Table A.1/2 AND Table A.7/1  
               */
 				// Initialisation
@@ -883,8 +884,10 @@ module EfcInfoExchange_TestCasesTsp {
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				             
 				// Step1: send RequestADU
-				f_sendAndLogApdu(m_apduNoAuthInitTester(m_adusProvideUserDetailsRandomParams));
-       			// Send again immediately same ADU with different  valid user
+				f_sendAndLogApdu(m_apduNoAuthInitTester(m_aduRequestProvideUserDetails));
+
+       			// Send again immediately same ADU with different  valid user and different ADPU-id
+       			//TODO there are errors here. Should send a request
 				var InfoExchange v_apduToSend := m_apduNoAuthInitTester(
 					{modifies m_aduProvideUserDetails:= {
 					  	userId:= EMPTYLIST_USER_ID
