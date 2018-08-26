@@ -8,12 +8,12 @@
  
  
  /**
- * work in progress Status overview
+ * work in progress status overview
  *
  *	Transaction type			!	BV					! BI			! Comments
  * 	----------------------------!-----------------------!---------------!--------------------------------
  *	Base						! done					! done			! ready for compile
- *	Userdetails					! open					! open			! available but to be reworked
+ *	UserDetails					! done					! done			! ready for compile
  *	ListOfUsers					! done					! done			! ready for compile
  *	ExceptionList				! done					! done			! ready for compile
  *	TrustObjects				! done					! done			! ready for compile
@@ -30,29 +30,28 @@
  
 module EfcInfoExchange_TestCasesTc {
 	import from EfcInfoExchange_ParameterisedAsn1Data all;
-
-    /**
-     * @desc    [12855:2015]: 
-     * @see     Annex A (normative)  data type specifications
-     * @remark	TODO PT140 to be updated / completed
-     */ 
+	/**
+    * @desc    [12855:2015]: 
+    * @see     Annex A (normative)  data type specifications
+    */
     import from EfcAutonomousCharging language "ASN.1:1997" all;
     import from EfcDsrcApplication language "ASN.1:1997" all;
     import from EfcInfoExchange language "ASN.1:1997" all;
     
     /**
-     * @desc    TTCN-3 does not support ASN.1 parameterization (ETSI ES 201 873-7 V4.5.1 Clause 10)
-     * @remark	Common_Parameterised_Asn1_Data TTCN-3 module is a workaround
-     */
+    * @desc    TTCN-3 does not support ASN.1 parameterization (ETSI ES 201 873-7 V4.5.1 Clause 10)
+    *          Common_Parameterised_Asn1_Data TTCN-3 module is a workaround
+    */
     import from LibEfc_Common_Parameterised_Asn1_Data all;
+	import from EfcInfoExchange_ParameterisedAsn1Data all;
     import from EfcInfoExchange_Interfaces all;
-    import from EfcInfoExchange_Functions all;
+	import from EfcInfoExchange_InteroperabilityStatement all;
+    import from EfcInfoExchange_Functions all;	
     import from EfcInfoExchange_Pixits all;
     import from EfcInfoExchange_Ics all;
     import from EfcInfoExchange_Templates all;
-	import from EfcInfoExchange_InteroperabilityStatement all;
 	import from EfcInfoExchange_TesterData all;
-	import from EfcInfoExchangeProfile all;
+    import from EfcInfoExchangeProfile all;
 		
      /**
       * @desc    These test cases apply to Toll Charger claiming conformance to [16986:2016]
@@ -423,7 +422,7 @@ module EfcInfoExchange_TestCasesTc {
 				// Prepare ProvideUserIdListADUs depending on received request
 				type record of ProvideUserIdListADU ProvideUserIdListAduList;
 				var template ProvideUserIdListAduList v_provideUserIdListAduList;
-				var integer v_i, v_numberOfRequestAdus := lengthof(v_apduReceived.infoExchangeContent.adus);
+				var integer v_i, v_numberOfRequestAdus := lengthof(v_apduReceived.infoExchangeContent.adusprovideUserIdListADUs);
 				
 				for (var integer v_i := 0; v_i < v_numberOfRequestAdus; v_i := v_i + 1) {
 					v_provideUserIdListAduList[v_i] modifies mw_aduProvideUserIdList := {
@@ -556,501 +555,616 @@ module EfcInfoExchange_TestCasesTc {
               
          	testcase TP_TC_USERDETAILS_BV_01() runs on MainTestComponent system TestAdapter {
 				/**
-				 * @desc    TP_TC_USERDETAILS_BV_01: Verify that the TC correctly sends an APDU containing valid RequestADUs
-				 * and provides valid ProvideUserDetailsADUs 
-				 * @remark  [16986:2016], Clause 6.4 and Table A.1/2 AND Table A.7/1  
+				 * @desc	TP_TC_USERDETAILS_BV_01: Verify that the TC correctly sends an APDU containing valid RequestADUs
+				 *			and provides valid ProvideUserDetailsADUs 
+				 * @remark	[16986:2016], Clause 6.4 and Table A.1/1 AND Table A.7/1  
 				 */
                    
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A7_1_implementedUSERDETAILS;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
-				//Step 1: wait for user details request
-				mtcAccessPort.send(USERDETAILS_TR_TC_1);
-
-				var integer v_noReqAdusReceived;
-				var RecordOfUserParameterRequest v_listOfParametersRequested;
-				alt {
-					[] mtcPort.receive(mw_apduRequest) -> value v_apduReceived {
-                		                    		
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						//TODO PT140 this needs to be checked against USERDETAILS_TIMEA f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
-						
-						//Set default verdict
-						setverdict(pass);
-
-						v_noReqAdusReceived := sizeof(v_apduReceived.infoExchangeContent.adus.requestAdus);
-						//Set verdict to fail in case it fails
-						
-						
-						
-						for (var integer v_loop1 :=0; v_loop1<v_noReqAdusReceived;v_loop1:=v_loop1+1) {	
-							var RequestADU v_receivedRequestAdu:=v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1];
- 							if ( match(v_receivedRequestAdu, mw_aduRequestProvideUserDetails)) {
-								v_listOfParametersRequested := v_receivedRequestAdu.userDetailsRequest.listOfParametersRequested;
-								for (var integer v_loop2 :=0; v_loop2<sizeof(v_listOfParametersRequested);v_loop2:=v_loop2+1) {
-									if (not (match(v_listOfParametersRequested[v_loop2], mw_userDetailsSupportedListOfParameters ))) {
-										setverdict(fail);
-										stop;
-									}
-								}
- 							} else {
- 								setverdict(fail);
- 								stop;
- 							}						
-						}								                   
-					}
-				} // End of alt statement
+				//Step 1: Trigger IUT with USERDETAILS_TR_TC_1 t send Initiating_APDU
+				// containing one or more valid RequestADUs of type userDetailsRequest
+				f_sendAndLogTrigger(USERDETAILS_TR_TC_1);
 				
-				//Step 2 send ProvideUserDetails within TIME1
+             	// Wait for expected RequestADU 
+              	// if not received set test failure --> is done in altstep				
+				
+				alt {
+					[] mtcPort.receive(mw_apduNoAuthInitIut({{mw_aduRequestProvideUserDetails}})) -> value v_apduReceived {
+						// Log what we received, check and stop time
+						f_logReceivedThenCheckAndStopTime(0.0); // no minimum time specified
+					}
+				}
+
+				// Capture the number of Adus received
+				var integer v_noReqAdusReceived;
+				// PT140 TODO: shouln't the assigment below read like
+				// v_noReqAdusReceived := lengthof(v_apduReceived.infoExchangeContent.adus.requestAdus) ??
+				// Attention: sizeof shall not be used any longer for getting the length of a record of
+				// according to TTCN-3 and is replaced by lengthof !!!
+				v_noReqAdusReceived := sizeof(v_apduReceived.infoExchangeContent.adus.requestAdus);
+			
+				//TODO PT140. I think we don't need the piece in comments now below
+				// allowed values of UserParameterRequest (=0..255) are implicitely checked by the template
+				// mw_aduRequestProvideUserDetails
+				// the tester is anyhow prepared with tester data for all predefined user details parameters
+				// Note: in case we finally need it we need to introduce the template mw_userDetailsSupportedListOfParameters
+				// which could also be included in the template mw_aduRequestProvideUserDetails
+				// remeining usefull part (get list of requested user parameters per adu) is mooved downwards
+
+				/* 
+				var RecordOfUserParameterRequest v_listOfParametersRequested;
+												
+				for (var integer v_loop1 :=0; v_loop1<v_noReqAdusReceived;v_loop1:=v_loop1+1) {	
+					var RequestADU v_receivedRequestAdu:=v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1];
+ 					if ( match(v_receivedRequestAdu, mw_aduRequestProvideUserDetails)) {
+						v_listOfParametersRequested := v_receivedRequestAdu.userDetailsRequest.listOfParametersRequested;
+						for (var integer v_loop2 :=0; v_loop2<sizeof(v_listOfParametersRequested);v_loop2:=v_loop2+1) {
+							if (not (match(v_listOfParametersRequested[v_loop2], mw_userDetailsSupportedListOfParameters))) {
+								setverdict(fail);
+								stop;
+							}
+						}
+ 					} else {
+ 						setverdict(fail);
+ 						stop;
+ 					}						
+				}
+				*/								                   
+				
+				//Step 2 send ProvideUserDetails after TIME1
 				f_wait(USERDETAILS_TIME1_MIN_TC);
 
+				//Prepare ProvideUserDetailsADUs
 				//All ADUs will be put in the array v_adus
 				var Adus v_adus[v_noReqAdusReceived];
 				
 				//Build v_adus by looping through it
 				for (var integer v_loop1 :=0; v_loop1<v_noReqAdusReceived;v_loop1:=v_loop1+1) {
 					var ProvideUserDetailsADU v_theAdu;
+					var RecordOfUserParameterRequest v_listOfParametersRequested;
+					// capture the requested user parameters for this individual adu
+					v_listOfParametersRequested := v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1].listOfParametersRequested;
+					// prepare adu elements
 					v_theAdu.originaluserIdRequest := v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1].userId;
-					v_theAdu.userId := v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1].userId; //TODO this simply copies the ID of the original request. Is that enough?
+					v_theAdu.userId := v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1].userId; // It is enough to resend the received UserIds
 					v_theAdu.statusFlag := UserStatus_standardCommercialUserContract_;
 					for (var integer v_loop2 :=0; v_loop2<sizeof(v_listOfParametersRequested);v_loop2:=v_loop2+1) {
-						v_theAdu.listOfUserParameters[v_loop2].requestedUserParameter:=omit;   //TODO is this necessary. I think that if we do not set it then it is omitted 
+						v_theAdu.listOfUserParameters[v_loop2].requestedUserParameter:= omit;
+						// PT140 TODO: below assignmet will NOT work in this way, cause TD_USER_PARAM_RESP_DETAILS is not an array or record of
 						v_theAdu.listOfUserParameters[v_loop2].userParameterResponse:= TD_USER_PARAM_RESP_DETAILS[v_listOfParametersRequested[v_loop2]];					
 						v_theAdu.listOfUserParameters[v_loop2].userParameterStatus:= UserParameterStatus_userParameterAvailable_;					
-						v_theAdu.listOfUserParameters[v_loop2].userInfoValidityPeriod:=omit; //TODO is this necessary. I think that if we do not set it then it is omitted
+						v_theAdu.listOfUserParameters[v_loop2].userInfoValidityPeriod:= omit;
 					}
 					v_adus[v_loop1]:=v_theAdu;
 				}								                   
 				
-				var InfoExchange v_apduProvideUserDetailsSend:=m_apduNoSecOld( m_apciSendResponse(v_apduReceived), v_adus);
-				f_sendAndLogApdu(v_apduProvideUserDetailsSend);
+                // Prepare Apdu to be sent
+                var InfoExchange v_apduToBeSent := m_apduNoAuthRespTester(v_apduReceived, v_adus);              	
 
-				//Set timer
+				// Send Apdu
+				f_sendAndLogApdu(v_apduToBeSent);
+
+				//Start timer
 				t_step.start(USERDETAILS_TIME2_MAX_TC);
 				
-				//step 3 wait for AckADU
+				//Step 3 wait for AckADU
 				alt {
-					[] mtcPort.receive(m_apduDefaultAck(v_apduProvideUserDetailsSend)) -> value v_apduReceived{
-             		                    		
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(USERDETAILS_TIME2_MIN_TC); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {
+						// Log what we received, check minimum time and stop time
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME2_MIN_TC);
+						setverdict(pass);
 					}
 				} // End of alt statement
-				
-				f_closeDownMtc();  
-			
+				f_closeDownMtc();   						           
 			} // End of TP_TC_USERDETAILS_BV_01
 		} //end group valid behaviour         
          
 		group Invalid_Behaviour { 	
 			testcase TP_TC_USERDETAILS_BI_01() runs on MainTestComponent system TestAdapter {             
-/**
-				 * @desc    TP_TC_USERDETAILS_BI_01: Verify that the TC correctly responds to an incorrect ProvideUserDetailsADUs 
-				 * @remark  [16986:2016], Clause 6.4 and Table A.1/2 AND Table A.7/1  
-				 */
+				/**
+				* @desc    TP_TC_USERDETAILS_BI_01: Verify that the TC correctly responds to an incorrect ProvideUserDetailsADUs 
+				* @remark  [16986:2016], Clause 6.4 and Table A.1/1 AND Table A.7/1  
+				*/
                    
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A7_1_implementedUSERDETAILS;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
-				//Step 1: wait for user details request
-				mtcAccessPort.send(USERDETAILS_TR_TC_1);
-
-				var integer v_noReqAdusReceived ;
-				var RecordOfUserParameterRequest listOfParametersRequested;
+				//Step 1: Trigger IUT with USERDETAILS_TR_TC_1 t send Initiating_APDU
+				// containing one or more valid RequestADUs of type userDetailsRequest
+				f_sendAndLogTrigger(USERDETAILS_TR_TC_1);
+				
+             	// Wait for expected RequestADU 
+              	// if not received set test failure --> is done in altstep				
+				
 				alt {
-					[] mtcPort.receive(mw_apduRequest) -> value v_apduReceived{
-                		                    		
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						//TODO PT140 this needs to be checked against USERDETAILS_TIMEA f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
-						
-						//Set default verdict
-						setverdict(pass);
-
-						v_noReqAdusReceived := sizeof(v_apduReceived.infoExchangeContent.adus.requestAdus);
-						//Set verdict to fail in case it fails
-						
-						for (var integer v_loop1 :=0; v_loop1<v_noReqAdusReceived;v_loop1:=v_loop1+1) {	
- 							if ( match(v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1], mw_aduRequestProvideUserDetails)) {
-								listOfParametersRequested := v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1].userDetailsRequest.listOfParametersRequested;
-								for (var integer v_loop2 :=0; v_loop2<sizeof(listOfParametersRequested);v_loop2:=v_loop2+1) {
-									if (not (match(listOfParametersRequested[v_loop2], mw_userDetailsSupportedListOfParameters ))) {
-										setverdict(fail);
-										stop;
-									}
-								}
- 							} else {
- 								setverdict(fail);
- 								stop;
- 							}						
-						}								                   
+					[] mtcPort.receive(mw_apduNoAuthInitIut({{mw_aduRequestProvideUserDetails}})) -> value v_apduReceived {
+						// Log what we received, check and stop time
+						f_logReceivedThenCheckAndStopTime(0.0); // no minimum time specified
 					}
-				} // End of alt statement
+				}
 
-				//Step 2 send ProvideUserDetails within TIME1
+				// Capture the number of Adus received
+				var integer v_noReqAdusReceived;
+				// PT140 TODO: shouln't the assigment below read like
+				// v_noReqAdusReceived := lengthof(v_apduReceived.infoExchangeContent.adus.requestAdus) ??
+				// Attention: sizeof shall not be used any longer for getting the length of a record of
+				// according to TTCN-3 and is replaced by lengthof !!!
+				v_noReqAdusReceived := sizeof(v_apduReceived.infoExchangeContent.adus.requestAdus);
+
+				//Step 2 send ProvideUserDetails after TIME1
 				f_wait(USERDETAILS_TIME1_MIN_TC);
+
+				//Prepare ProvideUserDetailsADUs
+				//All ADUs will be put in the array v_adus
 				var Adus v_adus[v_noReqAdusReceived];
 				
-				// TODO PT140: prepare in v_adus provideUserDetailsADU not corresponding to requested parameters, that is v_adus is NEVER SET								                   
-				
-				var InfoExchange v_apduToSend:=m_apduNoSecOld(m_apciSendResponse(v_apduReceived), v_adus);
-				f_sendAndLogApdu(v_apduToSend);
-
-				//Set timer
-				t_step.start(USERDETAILS_TIME2_MAX_TC);
-				
-				//step 3 wait for AckADU with NAckApdu and semantic error (3000)
-				var NAckParams v_nAckParams1 :=m_nAckParamsSingle(0, AduReasonCode_semanticError_);
-				// TODO PT140 prepare second alternative for providing semantic error
-				
-				alt {
-					[] mtcPort.receive(m_apduNAck(v_apduToSend, v_nAckParams1)) -> value v_apduReceived{
-             		                    		
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(USERDETAILS_TIME2_MIN_TC); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
+				//Build v_adus by looping through it
+				for (var integer v_loop1 :=0; v_loop1<v_noReqAdusReceived;v_loop1:=v_loop1+1) {
+					var ProvideUserDetailsADU v_theAdu;
+					var RecordOfUserParameterRequest v_listOfParametersRequested;
+					// capture the requested user parameters for this individual adu
+					v_listOfParametersRequested := v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1].listOfParametersRequested;
+					// prepare adu elements
+					v_theAdu.originaluserIdRequest := v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1].userId;
+					v_theAdu.userId := v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1].userId; // It is enough to resend the received UserIds
+					v_theAdu.statusFlag := UserStatus_standardCommercialUserContract_;
+					for (var integer v_loop2 :=0; v_loop2<sizeof(v_listOfParametersRequested);v_loop2:=v_loop2+1) {
+						v_theAdu.listOfUserParameters[v_loop2].requestedUserParameter:= omit;
+						// PT140 TODO: below assignmet will NOT work in this way, cause TD_USER_PARAM_RESP_DETAILS is not an array or record of
+						// PT140 TODO: ensure the provided perameter does never match the requested one 
+						v_theAdu.listOfUserParameters[v_loop2].userParameterResponse:= TD_USER_PARAM_RESP_DETAILS[v_listOfParametersRequested[v_loop2]];					
+						v_theAdu.listOfUserParameters[v_loop2].userParameterStatus:= UserParameterStatus_userParameterAvailable_;					
+						v_theAdu.listOfUserParameters[v_loop2].userInfoValidityPeriod:= omit;
 					}
-				} // End of alt statement
-				
-				f_closeDownMtc();  
-			
+					v_adus[v_loop1]:=v_theAdu;
+				}								                   
+
+				// Prepare Apdu to be sent
+                var InfoExchange v_apduToBeSent := m_apduNoAuthRespTester(v_apduReceived, v_adus);              	
+
+				// Send Apdu
+				f_sendAndLogApdu(v_apduToBeSent);
+
+				//Start timer
+				t_step.start(USERDETAILS_TIME2_MAX_TC);
+
+				// Step 3: Wait for
+                //		- NAck_Apdu with aduReasonCode = semantic error (3000) for all ADUs, or
+                //		- NAck_Apdu with aduReasonCode = semantic error (3000) for ADU#1 ...#n
+              	// if not received set test failure --> is done in altstep
+              	
+              	// prepare nackParams for second alternative
+				var NAckParams v_nAckParamsList; //Nte, this is a record of record
+				for (var integer v_loop1 :=0; v_loop1<v_noReqAdusReceived;v_loop1:=v_loop1+1) {
+					v_nAckParamsList[v_loop1] := {
+						issueADUStruct := v_loop1+1,
+						issueLocation := omit,
+						issueContent := omit,
+						issueCode := AduReasonCode_semanticError_,
+						issueText := omit
+					}
+				}
+              	
+				alt {
+					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduToBeSent, AduReasonCode_semanticError_)) -> value v_apduReceived {
+						// Log what we received, check minimum time and stop time
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME2_MIN_TC);
+						setverdict(pass);
+					}					
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent, v_nAckParamsList)) -> value v_apduReceived {
+						// Log what we received, check minimum time and stop time
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME2_MIN_TC);
+						setverdict(pass);
+					}										
+				}
+				f_closeDownMtc();   						           
 			} // End of TP_TC_USERDETAILS_BI_01				
 				
 			testcase TP_TC_USERDETAILS_BI_02() runs on MainTestComponent system TestAdapter {             
-/**
-				 * @desc    TP_TC_USERDETAILS_BI_02: Verify that the TC correctly responds to a provideUserDetailsADU
-				 * 			with no statusFlag being present 
-				 * @remark  [16986:2016], Clause 6.4 and Table A.1/2 AND Table A.7/1  
-				 */
+				/**
+				* @desc		TP_TC_USERDETAILS_BI_02: Verify that the TC correctly responds to a provideUserDetailsADU
+				*			with no statusFlag being present 
+				* @remark	[16986:2016], Clause 6.4 and Table A.1/1 AND Table A.7/1  
+				*/
                    
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A7_1_implementedUSERDETAILS;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
-				//Step 1: wait for user details request
-				mtcAccessPort.send(USERDETAILS_TR_TC_1);
-
-				var integer v_noReqAdusReceived ;
-				var RecordOfUserParameterRequest listOfParametersRequested;
+				//Step 1: Trigger IUT with USERDETAILS_TR_TC_1 t send Initiating_APDU
+				// containing one or more valid RequestADUs of type userDetailsRequest
+				f_sendAndLogTrigger(USERDETAILS_TR_TC_1);
+				
+             	// Wait for expected RequestADU 
+              	// if not received set test failure --> is done in altstep				
+				
 				alt {
-					[] mtcPort.receive(mw_apduRequest) -> value v_apduReceived{
-                		                    		
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						//TODO PT140 this needs to be checked against USERDETAILS_TIMEA f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
-						
-						//Set default verdict
-						setverdict(pass);
-
-						v_noReqAdusReceived := sizeof(v_apduReceived.infoExchangeContent.adus.requestAdus);
-						//Set verdict to fail in case it fails
-						
-						for (var integer v_loop1 :=0; v_loop1<v_noReqAdusReceived;v_loop1:=v_loop1+1) {	
- 							if ( match(v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1], mw_aduRequestProvideUserDetails)) {
-								listOfParametersRequested := v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1].userDetailsRequest.listOfParametersRequested;
-								for (var integer v_loop2 :=0; v_loop2<sizeof(listOfParametersRequested);v_loop2:=v_loop2+1) {
-									if (not (match(listOfParametersRequested[v_loop2], mw_userDetailsSupportedListOfParameters ))) {
-										setverdict(fail);
-										stop;
-									}
-								}
- 							} else {
- 								setverdict(fail);
- 								stop;
- 							}						
-						}								                   
+					[] mtcPort.receive(mw_apduNoAuthInitIut({{mw_aduRequestProvideUserDetails}})) -> value v_apduReceived {
+						// Log what we received, check and stop time
+						f_logReceivedThenCheckAndStopTime(0.0); // no minimum time specified
 					}
-				} // End of alt statement
+				}
 
-				//Step 2 send ProvideUserDetails within TIME1
+				// Capture the number of Adus received
+				var integer v_noReqAdusReceived;
+				// PT140 TODO: shouln't the assigment below read like
+				// v_noReqAdusReceived := lengthof(v_apduReceived.infoExchangeContent.adus.requestAdus) ??
+				// Attention: sizeof shall not be used any longer for getting the length of a record of
+				// according to TTCN-3 and is replaced by lengthof !!!
+				v_noReqAdusReceived := sizeof(v_apduReceived.infoExchangeContent.adus.requestAdus);
+
+				//Step 2 send ProvideUserDetails after TIME1
 				f_wait(USERDETAILS_TIME1_MIN_TC);
+
+				//Prepare ProvideUserDetailsADUs
+				// StatusFlg not present
+				//All ADUs will be put in the array v_adus
 				var Adus v_adus[v_noReqAdusReceived];
 				
-				// TODO PT140: prepare in v_adus provideUserDetailsADU with no Status Flag being present								                   
-				
-				var InfoExchange v_apduForSending:=m_apduNoSecOld(m_apciSendResponse(v_apduReceived), v_adus);
-				f_sendAndLogApdu(v_apduForSending);
-
-				//Set timer
-				t_step.start(USERDETAILS_TIME2_MAX_TC);
-				
-				//step 3 wait for AckADU with NAckApdu and invaldAdu error (0)
-				var NAckParams v_nAckParams1 :=m_nAckParamsSingle(0, AduReasonCode_invalidADU_);
-						
-				alt {
-					[] mtcPort.receive(m_apduNAck(v_apduForSending, v_nAckParams1)) -> value v_apduReceived{
-             		                    		
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(USERDETAILS_TIME2_MIN_TC); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
+				//Build v_adus by looping through it
+				for (var integer v_loop1 :=0; v_loop1<v_noReqAdusReceived;v_loop1:=v_loop1+1) {
+					var ProvideUserDetailsADU v_theAdu;
+					var RecordOfUserParameterRequest v_listOfParametersRequested;
+					// capture the requested user parameters for this individual adu
+					v_listOfParametersRequested := v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1].listOfParametersRequested;
+					// prepare adu elements
+					v_theAdu.originaluserIdRequest := v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1].userId;
+					v_theAdu.userId := v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1].userId; // It is enough to resend the received UserIds
+					v_theAdu.statusFlag := omit;
+					for (var integer v_loop2 :=0; v_loop2<sizeof(v_listOfParametersRequested);v_loop2:=v_loop2+1) {
+						v_theAdu.listOfUserParameters[v_loop2].requestedUserParameter:= omit;
+						// PT140 TODO: below assignmet will NOT work in this way, cause TD_USER_PARAM_RESP_DETAILS is not an array or record of
+						v_theAdu.listOfUserParameters[v_loop2].userParameterResponse:= TD_USER_PARAM_RESP_DETAILS[v_listOfParametersRequested[v_loop2]];					
+						v_theAdu.listOfUserParameters[v_loop2].userParameterStatus:= UserParameterStatus_userParameterAvailable_;					
+						v_theAdu.listOfUserParameters[v_loop2].userInfoValidityPeriod:= omit;
 					}
-				} // End of alt statement
-				
-				f_closeDownMtc();  
-			
+					v_adus[v_loop1]:=v_theAdu;
+				}								                   
+
+				// Prepare Apdu to be sent
+                var InfoExchange v_apduToBeSent := m_apduNoAuthRespTester(v_apduReceived, v_adus);              	
+
+				// Send Apdu
+				f_sendAndLogApdu(v_apduToBeSent);
+
+				//Start timer
+				t_step.start(USERDETAILS_TIME2_MAX_TC);
+
+				// Step 3: Wait for
+                //		- NAck_Apdu with aduReasonCode = invalidADU (0) for all ADUs, or
+                //		- NAck_Apdu with aduReasonCode = invalidADU (0) for ADU#1 ...#n
+              	// if not received set test failure --> is done in altstep
+              	
+              	// prepare nackParams for second alternative
+				var NAckParams v_nAckParamsList; //Nte, this is a record of record
+				for (var integer v_loop1 :=0; v_loop1<v_noReqAdusReceived;v_loop1:=v_loop1+1) {
+					v_nAckParamsList[v_loop1] := {
+						issueADUStruct := v_loop1+1,
+						issueLocation := omit,
+						issueContent := omit,
+						issueCode := AduReasonCode_invalidADU_,
+						issueText := omit
+					}
+				}
+              	
+				alt {
+					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduToBeSent, AduReasonCode_invalidADU_)) -> value v_apduReceived {
+						// Log what we received, check minimum time and stop time
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME2_MIN_TC);
+						setverdict(pass);
+					}					
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent, v_nAckParamsList)) -> value v_apduReceived {
+						// Log what we received, check minimum time and stop time
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME2_MIN_TC);
+						setverdict(pass);
+					}										
+				}
+				f_closeDownMtc();   						           
 			} // End of TP_TC_USERDETAILS_BI_02				
 				
 			testcase TP_TC_USERDETAILS_BI_03() runs on MainTestComponent system TestAdapter {             
-/**
-				 * @desc    TP_TC_USERDETAILS_BI_03: Verify that the TC correctly responds to a ProvideUserDetailsADU
-				 *			with statusFlag ranging from 1 to 5 and no listOfUserParameters being present
-				 * @remark  [16986:2016], Clause 6.4 and Table A.1/2 AND Table A.7/1  
-				 */
+				/**
+				* @desc		TP_TC_USERDETAILS_BI_03: Verify that the TC correctly responds to a ProvideUserDetailsADU
+				*			with statusFlag ranging from 1 to 5 and no listOfUserParameters being present
+				* @remark	[16986:2016], Clause 6.4 and Table A.1/1 AND Table A.7/1  
+				*/
                    
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A7_1_implementedUSERDETAILS;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
-				//Step 1: wait for user details request
-				mtcAccessPort.send(USERDETAILS_TR_TC_1);
-
-				var integer v_noReqAdusReceived;
-				var RecordOfUserParameterRequest listOfParametersRequested;
+				//Step 1: Trigger IUT with USERDETAILS_TR_TC_1 t send Initiating_APDU
+				// containing one or more valid RequestADUs of type userDetailsRequest
+				f_sendAndLogTrigger(USERDETAILS_TR_TC_1);
+				
+             	// Wait for expected RequestADU 
+              	// if not received set test failure --> is done in altstep				
+				
 				alt {
-					[] mtcPort.receive(mw_apduRequest) -> value v_apduReceived{
-                		                    		
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						//TODO PT140 this needs to be checked against USERDETAILS_TIMEA f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
-						
-						//Set default verdict
-						setverdict(pass);
-
-						v_noReqAdusReceived := sizeof(v_apduReceived.infoExchangeContent.adus.requestAdus);
-						//Set verdict to fail in case it fails
-						
-						for (var integer v_loop1 :=0; v_loop1<v_noReqAdusReceived;v_loop1:=v_loop1+1) {	
- 							if ( match(v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1], mw_aduRequestProvideUserDetails)) {
-								listOfParametersRequested := v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1].userDetailsRequest.listOfParametersRequested;
-								for (var integer v_loop2 :=0; v_loop2<sizeof(listOfParametersRequested);v_loop2:=v_loop2+1) {
-									if (not (match(listOfParametersRequested[v_loop2], mw_userDetailsSupportedListOfParameters ))) {
-										setverdict(fail);
-										stop;
-									}
-								}
- 							} else {
- 								setverdict(fail);
- 								stop;
- 							}						
-						}								                   
+					[] mtcPort.receive(mw_apduNoAuthInitIut({{mw_aduRequestProvideUserDetails}})) -> value v_apduReceived {
+						// Log what we received, check and stop time
+						f_logReceivedThenCheckAndStopTime(0.0); // no minimum time specified
 					}
-				} // End of alt statement
+				}
 
-				//Step 2 send ProvideUserDetails within TIME1
+				// Capture the number of Adus received
+				var integer v_noReqAdusReceived;
+				// PT140 TODO: shouln't the assigment below read like
+				// v_noReqAdusReceived := lengthof(v_apduReceived.infoExchangeContent.adus.requestAdus) ??
+				// Attention: sizeof shall not be used any longer for getting the length of a record of
+				// according to TTCN-3 and is replaced by lengthof !!!
+				v_noReqAdusReceived := sizeof(v_apduReceived.infoExchangeContent.adus.requestAdus);
+
+				// Step 2 send ProvideUserDetails after TIME1
 				f_wait(USERDETAILS_TIME1_MIN_TC);
+
+				// Prepare ProvideUserDetailsADUs
+				// with statusFlag ranging from 1 to 5 and no listOfUserParameters being present
+				// All ADUs will be put in the array v_adus
 				var Adus v_adus[v_noReqAdusReceived];
 				
-				// TODO PT140: prepare in v_adus provideUserDetailsADU with Status Flag = 1..5 and no listOfUserParameters begin present								                   
-				
-				var InfoExchange v_apduForSending:=m_apduNoSecOld(m_apciSendResponse(v_apduReceived), v_adus);
-				f_sendAndLogApdu(v_apduForSending);
+				//Build v_adus by looping through it
+				for (var integer v_loop1 :=0; v_loop1<v_noReqAdusReceived;v_loop1:=v_loop1+1) {
+					var ProvideUserDetailsADU v_theAdu;
+					var RecordOfUserParameterRequest v_listOfParametersRequested;
+					// capture the requested user parameters for this individual adu
+					v_listOfParametersRequested := v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1].listOfParametersRequested;
+					// prepare adu elements
+					v_theAdu.originaluserIdRequest := v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1].userId;
+					v_theAdu.userId := v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1].userId; // It is enough to resend the received UserIds
+					v_theAdu.statusFlag := UserStatus_standardPrivateUserContract_;
+					v_theAdu.listOfUserParameters := omit;
+					v_adus[v_loop1]:= v_theAdu;
+				}								                   
 
-				//Set timer
+				// Prepare Apdu to be sent
+                var InfoExchange v_apduToBeSent := m_apduNoAuthRespTester(v_apduReceived, v_adus);              	
+
+				// Send Apdu
+				f_sendAndLogApdu(v_apduToBeSent);
+
+				//Start timer
 				t_step.start(USERDETAILS_TIME2_MAX_TC);
-				
-				//step 3 wait for AckADU with NAckApdu and invaldAdu error (0)
-				var NAckParams v_nAckParams1 :=m_nAckParamsSingle(0, AduReasonCode_invalidADU_);
-						
-				alt {
-					[] mtcPort.receive(m_apduNAck(v_apduForSending, v_nAckParams1)) -> value v_apduReceived{
-             		                    		
-						// Log what we received
-						f_logApduReceivedAndTStep();
 
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(USERDETAILS_TIME2_MIN_TC); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
+				// Step 3: Wait for
+                //		- NAck_Apdu with aduReasonCode = invalidADU (0) for all ADUs, or
+                //		- NAck_Apdu with aduReasonCode = invalidADU (0) for ADU#1 ...#n
+              	// if not received set test failure --> is done in altstep
+              	
+              	// prepare nackParams for second alternative
+				var NAckParams v_nAckParamsList; //Nte, this is a record of record
+				for (var integer v_loop1 :=0; v_loop1<v_noReqAdusReceived;v_loop1:=v_loop1+1) {
+					v_nAckParamsList[v_loop1] := {
+						issueADUStruct := v_loop1+1,
+						issueLocation := omit,
+						issueContent := omit,
+						issueCode := AduReasonCode_invalidADU_,
+						issueText := omit
 					}
-				} // End of alt statement
-				
-				f_closeDownMtc();  
-			
+				}
+              	
+				alt {
+					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduToBeSent, AduReasonCode_invalidADU_)) -> value v_apduReceived {
+						// Log what we received, check minimum time and stop time
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME2_MIN_TC);
+						setverdict(pass);
+					}					
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent, v_nAckParamsList)) -> value v_apduReceived {
+						// Log what we received, check minimum time and stop time
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME2_MIN_TC);
+						setverdict(pass);
+					}										
+				}
+				f_closeDownMtc();   						           
 			} // End of TP_TC_USERDETAILS_BI_03				
 
 			testcase TP_TC_USERDETAILS_BI_04() runs on MainTestComponent system TestAdapter {             
-/**
-				 * @desc    TP_TC_USERDETAILS_BI_04: Verify that the TC correctly responds to a provideUserDetailsADU with statusFlag value
-				 *			not included in the interval from 1 to 5 and listOfUserParameters being present
-				 * @remark  [16986:2016], Clause 6.4 and Table A.1/2 AND Table A.7/1  
-				 */
+				/**
+				* @desc		TP_TC_USERDETAILS_BI_04: Verify that the TC correctly responds to a provideUserDetailsADU with statusFlag value
+				*			not included in the interval from 1 to 5 and listOfUserParameters being present
+				* @remark	[16986:2016], Clause 6.4 and Table A.1/1 AND Table A.7/1  
+				*/
                    
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A7_1_implementedUSERDETAILS;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
-				//Step 1: wait for user details request
-				mtcAccessPort.send(USERDETAILS_TR_TC_1);
-
-				var integer v_noReqAdusReceived;
-				var RecordOfUserParameterRequest listOfParametersRequested;
+				//Step 1: Trigger IUT with USERDETAILS_TR_TC_1 t send Initiating_APDU
+				// containing one or more valid RequestADUs of type userDetailsRequest
+				f_sendAndLogTrigger(USERDETAILS_TR_TC_1);
+				
+             	// Wait for expected RequestADU 
+              	// if not received set test failure --> is done in altstep				
+				
 				alt {
-					[] mtcPort.receive(mw_apduRequest) -> value v_apduReceived{
-                		                    		
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						//TODO PT140 this needs to be checked against USERDETAILS_TIMEA f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
-						
-						//Set default verdict
-						setverdict(pass);
-
-						v_noReqAdusReceived := sizeof(v_apduReceived.infoExchangeContent.adus.requestAdus);
-						//Set verdict to fail in case it fails
-						
-						for (var integer v_loop1 :=0; v_loop1<v_noReqAdusReceived;v_loop1:=v_loop1+1) {	
- 							if ( match(v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1], mw_aduRequestProvideUserDetails)) {
-								listOfParametersRequested := v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1].userDetailsRequest.listOfParametersRequested;
-								for (var integer v_loop2 :=0; v_loop2<sizeof(listOfParametersRequested);v_loop2:=v_loop2+1) {
-									if (not (match(listOfParametersRequested[v_loop2], mw_userDetailsSupportedListOfParameters ))) {
-										setverdict(fail);
-										stop;
-									}
-								}
- 							} else {
- 								setverdict(fail);
- 								stop;
- 							}						
-						}								                   
+					[] mtcPort.receive(mw_apduNoAuthInitIut({{mw_aduRequestProvideUserDetails}})) -> value v_apduReceived {
+						// Log what we received, check and stop time
+						f_logReceivedThenCheckAndStopTime(0.0); // no minimum time specified
 					}
-				} // End of alt statement
+				}
 
-				//Step 2 send ProvideUserDetails within TIME1
+				// Capture the number of Adus received
+				var integer v_noReqAdusReceived;
+				// PT140 TODO: shouln't the assigment below read like
+				// v_noReqAdusReceived := lengthof(v_apduReceived.infoExchangeContent.adus.requestAdus) ??
+				// Attention: sizeof shall not be used any longer for getting the length of a record of
+				// according to TTCN-3 and is replaced by lengthof !!!
+				v_noReqAdusReceived := sizeof(v_apduReceived.infoExchangeContent.adus.requestAdus);
+
+				//Step 2 send ProvideUserDetails after TIME1
 				f_wait(USERDETAILS_TIME1_MIN_TC);
+
+				// Prepare ProvideUserDetailsADUs
+				// with statusFlag value not included in the interval from 1 to 5
+				// All ADUs will be put in the array v_adus
 				var Adus v_adus[v_noReqAdusReceived];
 				
-				// TODO PT140: prepare in v_adus provideUserDetailsADU with Status Flag /= 1..5 and listOfUserParameters begin present								                   
-				
-				var InfoExchange v_apduForSending:=m_apduNoSecOld(m_apciSendResponse(v_apduReceived), v_adus);
-				f_sendAndLogApdu(v_apduForSending);
-
-				//Set timer
-				t_step.start(USERDETAILS_TIME2_MAX_TC);
-				
-				//step 3 wait for AckADU with NAckApdu and invaldAdu error (0)
-				var NAckParams v_nAckParams1 :=m_nAckParamsSingle(0, AduReasonCode_invalidADU_);
-						
-				alt {
-					[] mtcPort.receive(m_apduNAck(v_apduForSending, v_nAckParams1)) -> value v_apduReceived{
-             		                    		
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(USERDETAILS_TIME2_MIN_TC); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
+				//Build v_adus by looping through it
+				for (var integer v_loop1 :=0; v_loop1<v_noReqAdusReceived;v_loop1:=v_loop1+1) {
+					var ProvideUserDetailsADU v_theAdu;
+					var RecordOfUserParameterRequest v_listOfParametersRequested;
+					// capture the requested user parameters for this individual adu
+					v_listOfParametersRequested := v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1].listOfParametersRequested;
+					// prepare adu elements
+					v_theAdu.originaluserIdRequest := v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1].userId;
+					v_theAdu.userId := v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1].userId; // It is enough to resend the received UserIds
+					v_theAdu.statusFlag := UserStatus_noContractualRelation_; //i.e. "0"
+					for (var integer v_loop2 :=0; v_loop2<sizeof(v_listOfParametersRequested);v_loop2:=v_loop2+1) {
+						v_theAdu.listOfUserParameters[v_loop2].requestedUserParameter:= omit;
+						// PT140 TODO: below assignmet will NOT work in this way, cause TD_USER_PARAM_RESP_DETAILS is not an array or record of
+						v_theAdu.listOfUserParameters[v_loop2].userParameterResponse:= TD_USER_PARAM_RESP_DETAILS[v_listOfParametersRequested[v_loop2]];					
+						v_theAdu.listOfUserParameters[v_loop2].userParameterStatus:= UserParameterStatus_userParameterAvailable_;					
+						v_theAdu.listOfUserParameters[v_loop2].userInfoValidityPeriod:= omit;
 					}
-				} // End of alt statement
-				
-				f_closeDownMtc();  
-			
+					v_adus[v_loop1]:=v_theAdu;
+				}								                   
+
+				// Prepare Apdu to be sent
+                var InfoExchange v_apduToBeSent := m_apduNoAuthRespTester(v_apduReceived, v_adus);              	
+
+				// Send Apdu
+				f_sendAndLogApdu(v_apduToBeSent);
+
+				//Start timer
+				t_step.start(USERDETAILS_TIME2_MAX_TC);
+
+				// Step 3: Wait for
+                //		- NAck_Apdu with aduReasonCode = invalidADU (0) for all ADUs, or
+                //		- NAck_Apdu with aduReasonCode = invalidADU (0) for ADU#1 ...#n
+              	// if not received set test failure --> is done in altstep
+              	
+              	// prepare nackParams for second alternative
+				var NAckParams v_nAckParamsList; //Nte, this is a record of record
+				for (var integer v_loop1 :=0; v_loop1<v_noReqAdusReceived;v_loop1:=v_loop1+1) {
+					v_nAckParamsList[v_loop1] := {
+						issueADUStruct := v_loop1+1,
+						issueLocation := omit,
+						issueContent := omit,
+						issueCode := AduReasonCode_invalidADU_,
+						issueText := omit
+					}
+				}
+              	
+				alt {
+					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduToBeSent, AduReasonCode_invalidADU_)) -> value v_apduReceived {
+						// Log what we received, check minimum time and stop time
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME2_MIN_TC);
+						setverdict(pass);
+					}					
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent, v_nAckParamsList)) -> value v_apduReceived {
+						// Log what we received, check minimum time and stop time
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME2_MIN_TC);
+						setverdict(pass);
+					}										
+				}
+				f_closeDownMtc();   						           
 			} // End of TP_TC_USERDETAILS_BI_04				
 
 			testcase TP_TC_USERDETAILS_BI_05() runs on MainTestComponent system TestAdapter {             
-/**
-				 * @desc    TP_TC_USERDETAILS_BI_05: Verify that the TC correctly responds to a provideUserDetailsADU
-				 *			with invalid parameters in the UserParameterResponse field
-				 * @remark  [16986:2016], Clause 6.4 and Table A.1/2 AND Table A.7/1  
-				 */
+				/**
+				* @desc		TP_TC_USERDETAILS_BI_05: Verify that the TC correctly responds to a provideUserDetailsADU
+				*			with invalid parameters in the UserParameterResponse field
+				* @remark	[16986:2016], Clause 6.4 and Table A.1/1 AND Table A.7/1  
+				*/
                    
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A7_1_implementedUSERDETAILS;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
-				//Step 1: wait for user details request
-				mtcAccessPort.send(USERDETAILS_TR_TC_1);
-
-				var integer v_noReqAdusReceived;
-				var RecordOfUserParameterRequest listOfParametersRequested;
+				//Step 1: Trigger IUT with USERDETAILS_TR_TC_1 t send Initiating_APDU
+				// containing one or more valid RequestADUs of type userDetailsRequest
+				f_sendAndLogTrigger(USERDETAILS_TR_TC_1);
+				
+             	// Wait for expected RequestADU 
+              	// if not received set test failure --> is done in altstep				
+				
 				alt {
-					[] mtcPort.receive(mw_apduRequest) -> value v_apduReceived{
-                		                    		
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						//TODO PT140 this needs to be checked against USERDETAILS_TIMEA f_checkMinimumTStep(USERDETAILS_TIME1_MIN_TSP);
-						//t_step is an implicit argument and what we will compare against
-						t_step.stop;
-						
-						//Set default verdict
-						setverdict(pass);
-
-						v_noReqAdusReceived := sizeof(v_apduReceived.infoExchangeContent.adus.requestAdus);
-						//Set verdict to fail in case it fails
-						
-						for (var integer v_loop1 :=0; v_loop1<v_noReqAdusReceived;v_loop1:=v_loop1+1) {	
- 							if ( match(v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1], mw_aduRequestProvideUserDetails)) {
-								listOfParametersRequested := v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1].userDetailsRequest.listOfParametersRequested;
-								for (var integer v_loop2 :=0; v_loop2<sizeof(listOfParametersRequested);v_loop2:=v_loop2+1) {
-									if (not (match(listOfParametersRequested[v_loop2], mw_userDetailsSupportedListOfParameters ))) {
-										setverdict(fail);
-										stop;
-									}
-								}
- 							} else {
- 								setverdict(fail);
- 								stop;
- 							}						
-						}								                   
+					[] mtcPort.receive(mw_apduNoAuthInitIut({{mw_aduRequestProvideUserDetails}})) -> value v_apduReceived {
+						// Log what we received, check and stop time
+						f_logReceivedThenCheckAndStopTime(0.0); // no minimum time specified
 					}
-				} // End of alt statement
+				}
 
-				//Step 2 send ProvideUserDetails within TIME1
+				// Capture the number of Adus received
+				var integer v_noReqAdusReceived;
+				// PT140 TODO: shouln't the assigment below read like
+				// v_noReqAdusReceived := lengthof(v_apduReceived.infoExchangeContent.adus.requestAdus) ??
+				// Attention: sizeof shall not be used any longer for getting the length of a record of
+				// according to TTCN-3 and is replaced by lengthof !!!
+				v_noReqAdusReceived := sizeof(v_apduReceived.infoExchangeContent.adus.requestAdus);
+
+				//Step 2 send ProvideUserDetails after TIME1
 				f_wait(USERDETAILS_TIME1_MIN_TC);
+
+				// Prepare ProvideUserDetailsADUs
+				// with invalid parameters in the UserParameterResponse field; i.e. requestUserParameter present OR
+				// userParameterStatus not present OR userInfoValidityPeriod present OR userParameterResponse not present
+				// All ADUs will be put in the array v_adus
 				var Adus v_adus[v_noReqAdusReceived];
 				
-				// TODO PT140: prepare in v_adus provideUserDetailsADU with invalid parameters in UserParameterResponse field								                   
-				
-				var InfoExchange v_apduForSending:=m_apduNoSecOld(m_apciSendResponse(v_apduReceived), v_adus);
-				f_sendAndLogApdu(v_apduForSending);
-
-				//Set timer
-				t_step.start(USERDETAILS_TIME2_MAX_TC);
-				
-				//step 3 wait for AckADU with NAckApdu and invaldAdu error (0)
-				var NAckParams v_nAckParams1 :=m_nAckParamsSingle(0, AduReasonCode_invalidADU_);
-						
-				alt {
-					[] mtcPort.receive(m_apduNAck(v_apduForSending, v_nAckParams1)) -> value v_apduReceived{
-             		                    		
-						// Log what we received
-						f_logApduReceivedAndTStep();
-
-						//Check minumum time and stop timer
-						f_checkMinimumTStep(USERDETAILS_TIME2_MIN_TC); //t_step is an implicit argument and what we will compare against
-						t_step.stop;
+				//Build v_adus by looping through it
+				for (var integer v_loop1 :=0; v_loop1<v_noReqAdusReceived;v_loop1:=v_loop1+1) {
+					var ProvideUserDetailsADU v_theAdu;
+					var RecordOfUserParameterRequest v_listOfParametersRequested;
+					// capture the requested user parameters for this individual adu
+					v_listOfParametersRequested := v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1].listOfParametersRequested;
+					// prepare adu elements
+					v_theAdu.originaluserIdRequest := v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1].userId;
+					v_theAdu.userId := v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1].userId; // It is enough to resend the received UserIds
+					v_theAdu.statusFlag := UserStatus_tempExceptionListed_; //i.e. "§"
+					for (var integer v_loop2 :=0; v_loop2<sizeof(v_listOfParametersRequested);v_loop2:=v_loop2+1) {
+						v_theAdu.listOfUserParameters[v_loop2].requestedUserParameter:= omit;
+						// PT140 TODO: below assignmet will NOT work in this way, cause TD_USER_PARAM_RESP_DETAILS is not an array or record of
+						v_theAdu.listOfUserParameters[v_loop2].userParameterResponse:= TD_USER_PARAM_RESP_DETAILS[v_listOfParametersRequested[v_loop2]];					
+						v_theAdu.listOfUserParameters[v_loop2].userParameterStatus:= omit;					
+						v_theAdu.listOfUserParameters[v_loop2].userInfoValidityPeriod:= omit;
 					}
-				} // End of alt statement
-				
-				f_closeDownMtc();  
-			
+					v_adus[v_loop1]:=v_theAdu;
+				}								                   
+
+				// Prepare Apdu to be sent
+                var InfoExchange v_apduToBeSent := m_apduNoAuthRespTester(v_apduReceived, v_adus);              	
+
+				// Send Apdu
+				f_sendAndLogApdu(v_apduToBeSent);
+
+				//Start timer
+				t_step.start(USERDETAILS_TIME2_MAX_TC);
+
+				// Step 3: Wait for
+                //		- NAck_Apdu with aduReasonCode = invalidADU (0) for all ADUs, or
+                //		- NAck_Apdu with aduReasonCode = invalidADU (0) for ADU#1 ...#n
+              	// if not received set test failure --> is done in altstep
+              	
+              	// prepare nackParams for second alternative
+				var NAckParams v_nAckParamsList; //Nte, this is a record of record
+				for (var integer v_loop1 :=0; v_loop1<v_noReqAdusReceived;v_loop1:=v_loop1+1) {
+					v_nAckParamsList[v_loop1] := {
+						issueADUStruct := v_loop1+1,
+						issueLocation := omit,
+						issueContent := omit,
+						issueCode := AduReasonCode_invalidADU_,
+						issueText := omit
+					}
+				}
+              	
+				alt {
+					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduToBeSent, AduReasonCode_invalidADU_)) -> value v_apduReceived {
+						// Log what we received, check minimum time and stop time
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME2_MIN_TC);
+						setverdict(pass);
+					}					
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent, v_nAckParamsList)) -> value v_apduReceived {
+						// Log what we received, check minimum time and stop time
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME2_MIN_TC);
+						setverdict(pass);
+					}										
+				}
+				f_closeDownMtc();   						           
 			} // End of TP_TC_USERDETAILS_BI_05				
 
          } // End group Invalid_Behaviour
