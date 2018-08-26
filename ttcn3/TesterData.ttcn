@@ -202,7 +202,40 @@ module EfcInfoExchange_TesterData{
 	}	
 
 	group USERDETAILS {
-		modulepar UserParameterResponseDetails TD_USER_PARAM_RESP_DETAILS[27]:={};
+		modulepar UserParameterResponseDetails TD_USER_PARAM_RESP_DETAILS := {
+			UserPostalAddress userPostalAddress := {"TestUserName","TestCompany","TestStreet","999999","TestTown","TestCountry","TestCompanyTaxIdentifier"},
+			EfcDsrcApplication.ContractSerialNumber contractSerialNumber := 1234567890, //INT4 in ISO14906
+			EfcDsrcApplication.ContractValidity contractValidity := {'ABCD'O, {2030, 12, 31}},
+			EfcDsrcApplication.DriverCharacteristics driverCharacteristics := {10, 255}, //{INT!, INT1} in ISO14906
+			EfcDsrcApplication.EFC_ContextMark eFC_ContextMark := TD_EFC_CONTEXT_MARK,
+			EfcDsrcApplication.EnvironmentalCharacteristics environmentalCharacteristics := {euro_6(6), co2class4(4)}, 
+			EfcDsrcApplication.EngineCharacteristics engineCharacteristics := EngineCharacteristics_battery_,
+			EfcDsrcApplication.EquipmentOBUId equipmentOBUId:='11AA22BB33CC'O,
+			EfcDsrcApplication.EquipmentStatus equipmentStatus := '01010101010101'B,//BitString(16)
+			EfcDsrcApplication.PaymentMeans paymentMeans :=1000, //paymentmaens value for testing
+			EfcDsrcApplication.PaymentMeansBalance paymentMeansBalance := {"7FFFFF"},
+			EfcDsrcApplication.PaymentMeansUnit paymentMeansUnit := "3F784",
+			EfcDsrcApplication.PersonalAccountNumber personalAccountNumber := TD_PAN_1,
+			EfcDsrcApplication.Provider provider := TD_IDENTIFIER,
+			EfcDsrcApplication.ReceiptContract receiptContract := {TD_IDENTIFIER,"1F2E", 9999},
+			EfcDsrcApplication.ValidityOfContract validityOfContract := {2030, 12, 31},
+			EfcDsrcApplication.VehicleAuthenticator vehicleAuthenticator := "1234567890ABCDEF",
+			EfcDsrcApplication.VehicleClass vehicleClass := 15,
+			EfcDsrcApplication.VehicleDimensions vehicleDimensions := {99, 99, 99},
+			EfcDsrcApplication.VehicleLicencePlateNumber vehicleLicencePlateNumber := {"EU", 1, "1C75D9"},
+			EfcDsrcApplication.VehicleIdentificationNumber vehicleIdentificationNumber := 1234567890,
+			EfcDsrcApplication.VehicleWeightLaden vehicleWeightLaden := 255,
+			EfcDsrcApplication.VehicleWeightLimits vehicleWeightLimits := {99, 150, 50}, 
+			EfcDsrcApplication.VehicleAxles vehicleAxles := {15, {dualTyres,{4,3}}},
+			EfcDsrcApplication.ExhaustEmissionValues exhaustEmissionValues := {mg_km(0), 0, 0, 0, 0},
+			EfcDsrcApplication.DieselEmissionValues dieselEmissionValues := {mg_km(0), 0, 0},
+			ExtendedUserPostalAddress extendedUserPostalAddress := {"TestRDescr", "TestOrganisationName","TestOrganisationUnit",
+				"TestFunction",	"TestFormOfAddress", "TestQualification", "TestSurname", "TestGivenName", "TestDeliveryServicePoint",
+				"TestThouroughFare", "1234567890", "TestTown",	"TestRegion", "TestCountry", "00999", "9876543210",
+				"12345678901234567890", "00777", "9876543210", "12345678901234567890","00888", "9876543210",
+				"12345678901234567890","test@email.biz"}, 
+			ASNAUX.UTF8String preferredUserLanguage := "SE"
+		};	
 		modulepar RecOfUserParameterRequest TD_PRIVACYBOUND_USER_PARAM_REQS:={}; 
 	}
 	
@@ -322,76 +355,6 @@ module EfcInfoExchange_TesterData{
 	
 } // end module 
 	
-// 
-//    /**
-//     * @desc    Declare Testerdata of UserParameterResponseDetails
-//     */
-//
-//	//importing other modules
-//	import from EfcInfoExchange_Pixits all;
-//    //importing ASN.1 data automatically translated into TTCN-3	
-//    import from EfcInfoExchange language "ASN.1:1997" all;
-//    import from EfcDsrcApplication language "ASN.1:1997" all;
-//    
-//    //importing ASN.1 data manually translated into TTCN-3
-//    import from EfcInfoExchange_ParameterisedAsn1Data all;
-//    import from Common_ParametrisedAsn1Data all;
-//    
-//    //PT140 TODO redefine these as USER_PARAMETER_RESPONSE_DUMMY_VALUES record of
-//    modulepar UserPostalAddress TESTERUSERPOSTALADDRESS1 := {"UserName1","Company1","Street1","999999","Town1","Country1","CompanyTaxIdentifier1"};
-//    modulepar EfcDsrcApplication.ContractSerialNumber CONTRACT_SERIAL_NUMBER_1 := 1234567890; //INT4 in ISO14906
-//    modulepar EfcDsrcApplication.ContractValidity CONTRACT_VALIDITY_1 := {'ABCD'O, {2030, 12, 31}};
-//    modulepar EfcDsrcApplication.DriverCharacteristics DRIVER_CHARACTERISTICS_1 := {10, 255}; //INT!, INT1 in ISO14906
-//    modulepar EfcDsrcApplication.EFC_ContextMark EFC_CONTEXTMARK_1 := {INFORMATION_SENDER_ID_FOR_TESTER, '11'O ,99};
-//    modulepar EfcDsrcApplication.EnvironmentalCharacteristics ENVIRONMENTAL_CHARACTERISTICS_1 := {euro_6(6), co2class4(4)}; 
-//    modulepar EfcDsrcApplication.EngineCharacteristics ENGINECHARACTERISTICS_1 := EngineCharacteristics_battery_;  
-//    modulepar EfcDsrcApplication.EquipmentOBUId EQUIPMENT_OBU_ID_1:='11AA22BB33CC'O;
-//    modulepar EfcDsrcApplication.EquipmentStatus EQUIPMENT_STATUS_1 := '01010101010101'B;//BitString(16)
-//    modulepar EfcDsrcApplication.PersonalAccountNumber PAN1:=1000; //PAN value for testing
-//    modulepar EfcDsrcApplication.PaymentMeansBalance PAYMENT_MEANS_BALANCE := {"7FFFFF"};
-//    modulepar EfcDsrcApplication.PaymentMeansUnit PAYMENT_MEANS_UNIT_1 := "3F784";
-//    modulepar EfcDsrcApplication.PersonalAccountNumber PERSONAL_ACCOUNT_NUMBER_1 := PAN1;
-//    modulepar EfcDsrcApplication.Provider PROVIDER_1 := INFORMATION_SENDER_ID_FOR_TESTER;
-//    modulepar EfcDsrcApplication.ReceiptContract RECEIPT_CONTRACT_1 := {INFORMATION_SENDER_ID_FOR_TESTER,"1F2E", 9999};
-//    modulepar EfcDsrcApplication.ValidityOfContract VALIDITY_OF_CONTRACT_1 := {2030, 12, 31};
-//    modulepar EfcDsrcApplication.VehicleAuthenticator VEHICLE_AUTHENTICATOR_1 := "1234567890ABCDEF";
-//    modulepar EfcDsrcApplication.VehicleClass VEHICLE_CLASS_1 := 15;
-//    modulepar EfcDsrcApplication.VehicleDimensions VEHICLE_DIMENSIONS_1 := {99, 99, 99};
-//    modulepar EfcDsrcApplication.VehicleLicencePlateNumber VEHICLE_LICENSEPLATE_NUMBER_1 := {"EU", 1, "1C75D9"};
-//    modulepar EfcDsrcApplication.VehicleIdentificationNumber VEHICLE_IDENTIFICATION_NUMBER_1 := 1111111111;
-//    modulepar EfcDsrcApplication.VehicleWeightLaden c_VEHICLE_LADEN_WEIGHT_1 := 255;
-//    modulepar EfcDsrcApplication.VehicleWeightLimits VEHICLE_WEIGHT_LIMITS_1 := {99, 150, 50}; 
-//    modulepar EfcDsrcApplication.VehicleAxles VEHICLE_AXLES_1 := {15, {dualTyres,{4,3}}};
-//    modulepar EfcDsrcApplication.ExhaustEmissionValues EXHAUST_EMISSION_VALUES_1 := {mg_km(0), 0, 0, 0, 0};
-//    modulepar EfcDsrcApplication.DieselEmissionValues DIESEL_EMISSION_VALUES_1 := {mg_km(0), 0, 0}
-//    modulepar ExtendedUserPostalAddress EXTENDED_USER_POSTAL_ADDRESS_1 := {
-//    	"RoleDescriptor1",
-//    	"OrganisationName1",
-//    	"OrganisationUnit1",
-//    	"Function1",
-//    	"FormOfAddress1",
-//    	"Qualification1",
-//    	"Surname1",
-//    	"GivenName1",
-//    	"DeliveryServicePoint1",
-//    	"ThouroughFare1",
-//    	"Postcode1",
-//    	"Town1",
-//    	"Region1",
-//    	"Country1",
-//    	"Code1",
-//    	"Phone1",
-//    	"PhoneSubscriberNumber1",
-//    	"Code2",
-//    	"Mobile1",
-//    	"MobileSubscriberNumber2",
-//    	"Code3",
-//    	"Fax1",
-//    	"FaxSubscriberNumber1",
-//    	"Email1" 
-//    }; 
-//    	   	
-//    modulepar ASNAUX.UTF8String PREFERRED_USER_LANGUAGE1 := "SE";
 //    
 //    /**
 //     * @desc    Preparing test user id data
