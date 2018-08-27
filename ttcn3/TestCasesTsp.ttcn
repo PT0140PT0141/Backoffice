@@ -1710,7 +1710,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// timeout expiration is handled in the altstep branch
 				
 				alt {
-					[] mtcPort.receive(m_apduNAckRequestSentTooOften(v_apduRespondedTo)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNackRequestSentTooOften(v_apduRespondedTo)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TYPE1_TIME2_MIN_TSP);  
 						setverdict(pass);
 						}

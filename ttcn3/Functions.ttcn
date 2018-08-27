@@ -201,8 +201,7 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
     	// parameter requested in the requestADU
     	function f_provideUserDetailsParameter(in UserParameterRequest p_userParameterRequest) return UserParameterResponseDetails {
     		var UserParameterResponseDetails v_userParameterResponseDetails;
-    		select (p_userParameterRequest)
-				{
+    		select (p_userParameterRequest)	{
 				case (UserParameterRequest_userPostalAddress_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.userPostalAddress;}
 				case (UserParameterRequest_contractSerialNumber_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.contractSerialNumber;}
 				case (UserParameterRequest_contractValidity_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.contractValidity;}
@@ -231,7 +230,7 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
 				case (UserParameterRequest_dieselEmissionValues_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.dieselEmissionValues;} 
 				case (UserParameterRequest_extendedUserPostalAddress_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.extendedUserPostalAddress;} 
 				case (UserParameterRequest_preferredUserLanguage_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.preferredUserLanguage;} 
-				};
+			};
 			return v_userParameterResponseDetails;
 		}
 	}		

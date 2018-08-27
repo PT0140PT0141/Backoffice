@@ -311,7 +311,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		 * @desc Definition: NAck_requestSentTooOften "NAck_Protocol_Apdu(requestSentTooOften(10)"
 		*/ 
 		
-		template InfoExchange mw_apduNAckRequestSentTooOften(in InfoExchange p_apduToAck) := 
+		template InfoExchange mw_apduNackRequestSentTooOften(in InfoExchange p_apduToAck) := 
 		mw_apduNAckProtocolIut(p_apduToAck, ApduReasonCode_requestSentTooOften_);
 		
 
@@ -467,8 +467,16 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			template ProvideUserIdListADU mw_aduProvideUserIdList := {
 				originalUserIdRequestType := UserIdRequestType_allUserIdsToGivenCustomer_,
 				originalUserId := PX_EXISTING_USER_ID,
-            	userIdList := *
-        	};
+				userIdList := *
+			};
+        	
+			template ProvideUserIdListADU m_aduProvideUserIdList(in template UserId p_originalUserId):= {
+				originalUserIdRequestType := UserIdRequestType_allUserIdsToGivenCustomer_,
+				originalUserId := p_originalUserId, //PX_EXISTING_USER_ID,
+				userIdList :={TD_USERID_1,TD_USERID_2,TD_USERID_3}
+			};
+        	
+        	
 
    			template Adus mw_adusProvideUserIdList:={provideUserIdListADUs:=?};
 			
@@ -743,7 +751,15 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
     			}}, // mandatory in IAP and the only value allowed in IAP
 				actionCode := (ActionCode_send_, ActionCode_revoke_ ,ActionCode_adjust_ ), // onyl allowed values in IAP
 				paymentReference := *
-			}			 					
+			}	
+
+			//These are some extra type definitions needed for the building and matching of test data (see TP_TC_PAYMENTCLAIM_BV_01)			
+			// capture received userIds and billingDetailsIds in record of as we may have received many ADUs with different
+			// userIds and billingDetailsIds for later comparisoon with data in PaymentClaim
+			type record of UserId ReceivedUserIdList;
+			type record of BillingDetailsId BillingDetailsIdList;
+			type record of BillingDetailsList ReceivedBillingDetailsIdList;
+					 					
 		}
 
 		group DSRC_CONTRACTISSUERLIST {		
