@@ -54,9 +54,9 @@ module EfcInfoExchange_TestCasesTc {
     import from EfcInfoExchangeProfile all;
 		
      /**
-      * @desc    These test cases apply to Toll Charger claiming conformance to [16986:2016]
-      * and applying Test Purposes as from CEN/TS17154-1:xxxx Annex A
-      * @remark  nn TCs
+      * @desc	These test cases apply to Toll Charger claiming conformance to [16986:2016]
+      *			and applying Test Purposes as from CEN/TS17154-1:2018 Annex A
+      * @remark
       */
  
 	group BASE {
@@ -580,11 +580,10 @@ module EfcInfoExchange_TestCasesTc {
 
 				// Capture the number of Adus received
 				var integer v_noReqAdusReceived;
-				// PT140 TODO: shouln't the assigment below read like
-				// v_noReqAdusReceived := lengthof(v_apduReceived.infoExchangeContent.adus.requestAdus) ??
+				// PT140 TODO: I have replaced sizeof by lengthof in below assignment
 				// Attention: sizeof shall not be used any longer for getting the length of a record of
 				// according to TTCN-3 and is replaced by lengthof !!!
-				v_noReqAdusReceived := sizeof(v_apduReceived.infoExchangeContent.adus.requestAdus);
+				v_noReqAdusReceived := lengthof(v_apduReceived.infoExchangeContent.adus.requestAdus);
 			
 				//TODO PT140. I think we don't need the piece in comments now below
 				// allowed values of UserParameterRequest (=0..255) are implicitely checked by the template
@@ -592,7 +591,7 @@ module EfcInfoExchange_TestCasesTc {
 				// the tester is anyhow prepared with tester data for all predefined user details parameters
 				// Note: in case we finally need it we need to introduce the template mw_userDetailsSupportedListOfParameters
 				// which could also be included in the template mw_aduRequestProvideUserDetails
-				// remeining usefull part (get list of requested user parameters per adu) is mooved downwards
+				// remaining usefull part (get list of requested user parameters per adu) is mooved downwards
 
 				/* 
 				var RecordOfUserParameterRequest v_listOfParametersRequested;
@@ -633,8 +632,7 @@ module EfcInfoExchange_TestCasesTc {
 					v_theAdu.statusFlag := UserStatus_standardCommercialUserContract_;
 					for (var integer v_loop2 :=0; v_loop2<sizeof(v_listOfParametersRequested);v_loop2:=v_loop2+1) {
 						v_theAdu.listOfUserParameters[v_loop2].requestedUserParameter:= omit;
-						// PT140 TODO: below assignmet will NOT work in this way, cause TD_USER_PARAM_RESP_DETAILS is not an array or record of
-						v_theAdu.listOfUserParameters[v_loop2].userParameterResponse:= TD_USER_PARAM_RESP_DETAILS[v_listOfParametersRequested[v_loop2]];					
+						v_theAdu.listOfUserParameters[v_loop2].userParameterResponse:= f_provideUserDetailsParameter(v_listOfParametersRequested[v_loop2]);					
 						v_theAdu.listOfUserParameters[v_loop2].userParameterStatus:= UserParameterStatus_userParameterAvailable_;					
 						v_theAdu.listOfUserParameters[v_loop2].userInfoValidityPeriod:= omit;
 					}
@@ -689,12 +687,11 @@ module EfcInfoExchange_TestCasesTc {
 
 				// Capture the number of Adus received
 				var integer v_noReqAdusReceived;
-				// PT140 TODO: shouln't the assigment below read like
-				// v_noReqAdusReceived := lengthof(v_apduReceived.infoExchangeContent.adus.requestAdus) ??
+				// PT140 TODO: I have replaced sizeof by lengthof in below assignment
 				// Attention: sizeof shall not be used any longer for getting the length of a record of
 				// according to TTCN-3 and is replaced by lengthof !!!
-				v_noReqAdusReceived := sizeof(v_apduReceived.infoExchangeContent.adus.requestAdus);
-
+				v_noReqAdusReceived := lengthof(v_apduReceived.infoExchangeContent.adus.requestAdus);
+				
 				//Step 2 send ProvideUserDetails after TIME1
 				f_wait(USERDETAILS_TIME1_MIN_TC);
 
@@ -714,9 +711,8 @@ module EfcInfoExchange_TestCasesTc {
 					v_theAdu.statusFlag := UserStatus_standardCommercialUserContract_;
 					for (var integer v_loop2 :=0; v_loop2<sizeof(v_listOfParametersRequested);v_loop2:=v_loop2+1) {
 						v_theAdu.listOfUserParameters[v_loop2].requestedUserParameter:= omit;
-						// PT140 TODO: below assignmet will NOT work in this way, cause TD_USER_PARAM_RESP_DETAILS is not an array or record of
 						// PT140 TODO: ensure the provided perameter does never match the requested one 
-						v_theAdu.listOfUserParameters[v_loop2].userParameterResponse:= TD_USER_PARAM_RESP_DETAILS[v_listOfParametersRequested[v_loop2]];					
+						v_theAdu.listOfUserParameters[v_loop2].userParameterResponse:= f_provideUserDetailsParameter(v_listOfParametersRequested[v_loop2]);					
 						v_theAdu.listOfUserParameters[v_loop2].userParameterStatus:= UserParameterStatus_userParameterAvailable_;					
 						v_theAdu.listOfUserParameters[v_loop2].userInfoValidityPeriod:= omit;
 					}
@@ -791,12 +787,12 @@ module EfcInfoExchange_TestCasesTc {
 
 				// Capture the number of Adus received
 				var integer v_noReqAdusReceived;
-				// PT140 TODO: shouln't the assigment below read like
-				// v_noReqAdusReceived := lengthof(v_apduReceived.infoExchangeContent.adus.requestAdus) ??
+
+				// PT140 TODO: I have replaced sizeof by lengthof in below assignment
 				// Attention: sizeof shall not be used any longer for getting the length of a record of
 				// according to TTCN-3 and is replaced by lengthof !!!
-				v_noReqAdusReceived := sizeof(v_apduReceived.infoExchangeContent.adus.requestAdus);
-
+				v_noReqAdusReceived := lengthof(v_apduReceived.infoExchangeContent.adus.requestAdus);
+				
 				//Step 2 send ProvideUserDetails after TIME1
 				f_wait(USERDETAILS_TIME1_MIN_TC);
 
@@ -817,8 +813,7 @@ module EfcInfoExchange_TestCasesTc {
 					v_theAdu.statusFlag := omit;
 					for (var integer v_loop2 :=0; v_loop2<sizeof(v_listOfParametersRequested);v_loop2:=v_loop2+1) {
 						v_theAdu.listOfUserParameters[v_loop2].requestedUserParameter:= omit;
-						// PT140 TODO: below assignmet will NOT work in this way, cause TD_USER_PARAM_RESP_DETAILS is not an array or record of
-						v_theAdu.listOfUserParameters[v_loop2].userParameterResponse:= TD_USER_PARAM_RESP_DETAILS[v_listOfParametersRequested[v_loop2]];					
+						v_theAdu.listOfUserParameters[v_loop2].userParameterResponse:= f_provideUserDetailsParameter(v_listOfParametersRequested[v_loop2]);					
 						v_theAdu.listOfUserParameters[v_loop2].userParameterStatus:= UserParameterStatus_userParameterAvailable_;					
 						v_theAdu.listOfUserParameters[v_loop2].userInfoValidityPeriod:= omit;
 					}
@@ -893,12 +888,12 @@ module EfcInfoExchange_TestCasesTc {
 
 				// Capture the number of Adus received
 				var integer v_noReqAdusReceived;
-				// PT140 TODO: shouln't the assigment below read like
-				// v_noReqAdusReceived := lengthof(v_apduReceived.infoExchangeContent.adus.requestAdus) ??
+
+				// PT140 TODO: I have replaced sizeof by lengthof in below assignment
 				// Attention: sizeof shall not be used any longer for getting the length of a record of
 				// according to TTCN-3 and is replaced by lengthof !!!
-				v_noReqAdusReceived := sizeof(v_apduReceived.infoExchangeContent.adus.requestAdus);
-
+				v_noReqAdusReceived := lengthof(v_apduReceived.infoExchangeContent.adus.requestAdus);
+				
 				// Step 2 send ProvideUserDetails after TIME1
 				f_wait(USERDETAILS_TIME1_MIN_TC);
 
@@ -989,12 +984,12 @@ module EfcInfoExchange_TestCasesTc {
 
 				// Capture the number of Adus received
 				var integer v_noReqAdusReceived;
-				// PT140 TODO: shouln't the assigment below read like
-				// v_noReqAdusReceived := lengthof(v_apduReceived.infoExchangeContent.adus.requestAdus) ??
+
+				// PT140 TODO: I have replaced sizeof by lengthof in below assignment
 				// Attention: sizeof shall not be used any longer for getting the length of a record of
 				// according to TTCN-3 and is replaced by lengthof !!!
-				v_noReqAdusReceived := sizeof(v_apduReceived.infoExchangeContent.adus.requestAdus);
-
+				v_noReqAdusReceived := lengthof(v_apduReceived.infoExchangeContent.adus.requestAdus);
+				
 				//Step 2 send ProvideUserDetails after TIME1
 				f_wait(USERDETAILS_TIME1_MIN_TC);
 
@@ -1015,8 +1010,7 @@ module EfcInfoExchange_TestCasesTc {
 					v_theAdu.statusFlag := UserStatus_noContractualRelation_; //i.e. "0"
 					for (var integer v_loop2 :=0; v_loop2<sizeof(v_listOfParametersRequested);v_loop2:=v_loop2+1) {
 						v_theAdu.listOfUserParameters[v_loop2].requestedUserParameter:= omit;
-						// PT140 TODO: below assignmet will NOT work in this way, cause TD_USER_PARAM_RESP_DETAILS is not an array or record of
-						v_theAdu.listOfUserParameters[v_loop2].userParameterResponse:= TD_USER_PARAM_RESP_DETAILS[v_listOfParametersRequested[v_loop2]];					
+						v_theAdu.listOfUserParameters[v_loop2].userParameterResponse:= f_provideUserDetailsParameter(v_listOfParametersRequested[v_loop2]);					
 						v_theAdu.listOfUserParameters[v_loop2].userParameterStatus:= UserParameterStatus_userParameterAvailable_;					
 						v_theAdu.listOfUserParameters[v_loop2].userInfoValidityPeriod:= omit;
 					}
@@ -1091,12 +1085,12 @@ module EfcInfoExchange_TestCasesTc {
 
 				// Capture the number of Adus received
 				var integer v_noReqAdusReceived;
-				// PT140 TODO: shouln't the assigment below read like
-				// v_noReqAdusReceived := lengthof(v_apduReceived.infoExchangeContent.adus.requestAdus) ??
+
+				// PT140 TODO: I have replaced sizeof by lengthof in below assignment
 				// Attention: sizeof shall not be used any longer for getting the length of a record of
 				// according to TTCN-3 and is replaced by lengthof !!!
-				v_noReqAdusReceived := sizeof(v_apduReceived.infoExchangeContent.adus.requestAdus);
-
+				v_noReqAdusReceived := lengthof(v_apduReceived.infoExchangeContent.adus.requestAdus);
+				
 				//Step 2 send ProvideUserDetails after TIME1
 				f_wait(USERDETAILS_TIME1_MIN_TC);
 
@@ -1118,8 +1112,7 @@ module EfcInfoExchange_TestCasesTc {
 					v_theAdu.statusFlag := UserStatus_tempExceptionListed_; //i.e. "§"
 					for (var integer v_loop2 :=0; v_loop2<sizeof(v_listOfParametersRequested);v_loop2:=v_loop2+1) {
 						v_theAdu.listOfUserParameters[v_loop2].requestedUserParameter:= omit;
-						// PT140 TODO: below assignmet will NOT work in this way, cause TD_USER_PARAM_RESP_DETAILS is not an array or record of
-						v_theAdu.listOfUserParameters[v_loop2].userParameterResponse:= TD_USER_PARAM_RESP_DETAILS[v_listOfParametersRequested[v_loop2]];					
+						v_theAdu.listOfUserParameters[v_loop2].userParameterResponse:= f_provideUserDetailsParameter(v_listOfParametersRequested[v_loop2]);					
 						v_theAdu.listOfUserParameters[v_loop2].userParameterStatus:= omit;					
 						v_theAdu.listOfUserParameters[v_loop2].userInfoValidityPeriod:= omit;
 					}
