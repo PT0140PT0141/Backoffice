@@ -7048,7 +7048,7 @@ module EfcInfoExchange_TestCasesTc {
                 // Step 6: Wait for NAck_Apdu with APDU ReasonCode apduNotOK(3),
                 // within GNSS.PAYMENTANNOUNCEMENT.TIME1             
                 // if not received or received outside specification or time constraints set test fail (in altstep)
-
+ 
 				alt {
 					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduRespondedTo, ApduReasonCode_apduNotOK_)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
