@@ -29,7 +29,6 @@
  */
  
 module EfcInfoExchange_TestCasesTc {
-	import from EfcInfoExchange_ParameterisedAsn1Data all;
 	/**
     * @desc    [12855:2015]: 
     * @see     Annex A (normative)  data type specifications
@@ -1280,9 +1279,8 @@ module EfcInfoExchange_TestCasesTc {
 							TD_USERID_1, // and additional UserIds (from Tester data assumed belonging to the same customer
 							TD_USERID_2,
 							TD_USERID_3
-						}
-					};
-				}
+					}
+				};
 																	
                 // Prepare APDU to be sent
                 var InfoExchange v_apduToBeSent := m_apduNoAuthRespTester(v_apduReceived, v_provideUserIdListAdu);              	
