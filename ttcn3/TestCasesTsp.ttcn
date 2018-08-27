@@ -1230,7 +1230,7 @@ module EfcInfoExchange_TestCasesTsp {
 				
 				alt {
 					[] mtcPort.receive(mw_apduNAckRequestSentTooOften(v_apduRespondedTo)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME1_MIN_TSP); // No need to check for minimum response time
+						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					} // End of Alt statement
@@ -1261,7 +1261,7 @@ module EfcInfoExchange_TestCasesTsp {
                 t_step.start(EXCEPTIONLIST_BLACK_TIME1_MAX_TSP);
 				alt {
 					[] mtcPort.receive(mw_apduExceptionListOneBlackList) -> value v_apduReceived {
-						f_logReceivedWaitAndAcknowledge(0.0); // No need to check for minimum response time
+						f_logReceivedWaitAndAcknowledge(EXCEPTIONLIST_BLACK_TIME1_MIN_TSP); 
 					}
 				} // End of first alt statement
 					
@@ -1272,7 +1272,7 @@ module EfcInfoExchange_TestCasesTsp {
                 t_step.start(EXCEPTIONLIST_WHITE_TIME1_MAX_TSP);
 				alt {
 					[] mtcPort.receive(mw_apduExceptionListOneWhiteList) -> value v_apduReceived {
-						f_logReceivedWaitAndAcknowledge(EXCEPTIONLIST_WHITE_TIME1_MIN_TSP); // No need to check for minimum response time
+						f_logReceivedWaitAndAcknowledge(EXCEPTIONLIST_WHITE_TIME1_MIN_TSP); 
 						setverdict(pass);						
 					}
  				} // End of second alt statement
