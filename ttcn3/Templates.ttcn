@@ -433,6 +433,14 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
    			template InfoExchange mw_apduProvideUserDetails(InfoExchange p_apduRespondedTo) := 
    				m_apduNoAuth(m_apciRespTester(p_apduRespondedTo), Adus:{provideUserDetailsADUs:=?});
 			
+//			template ProvideUserDetailsADU m_aduProvideUserDetails:= {
+//            	originaluserIdRequest := EXISTING_USER_ID,
+//            	userId := ?, 
+//            	statusFlag := * ,
+//            	listOfUserParameters := *
+//        	}
+//			EMPTYLIST_USER_ID
+			
 			template InfoExchange mw_apduAuthProvideUserDetails := mw_apduAuth(mw_apci, Adus:{provideUserDetailsADUs:=?});
 		}
 
@@ -447,25 +455,24 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				}
 			}
 			  	
-		  	template (value) RequestADU m_aduRequestListOfUsers := {
+		  	template (value) RequestADU m_aduRequestListOfUsers(in UserId p_userId:=PX_EXISTING_USER_ID) := {
 	  			userListRequest :={
 	  				requestedADUType	:= AduType_provideUserIdListADU_,
   					userIdRequestType	:= 0,
-  					userId				:= EXISTING_USER_ID,
+  					userId				:= p_userId,
 					userIdRequestTime	:= fx_getUtc() 
 				}
 			}
 
 			template ProvideUserIdListADU mw_aduProvideUserIdList := {
 				originalUserIdRequestType := UserIdRequestType_allUserIdsToGivenCustomer_,
-				originalUserId := EXISTING_USER_ID,
+				originalUserId := PX_EXISTING_USER_ID,
             	userIdList := *
-        	}
+        	};
 
-   			template InfoExchange mw_apduProvideUserIdList := m_apduNoAuth(mw_apci, Adus:{provideUserIdListADUs:=?});
+   			template Adus mw_adusProvideUserIdList:={provideUserIdListADUs:=?};
 			
-			template InfoExchange mw_apduAuthProvideUserIdList := mw_apduAuth(mw_apci, Adus:{provideUserIdListADUs:=?});
-			
+		
 		}
 
 		group EXCEPTIONLIST {
@@ -1030,7 +1037,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 
 			template Adus mw_adusBillingDetails := Adus:{billingDetailsADUs:=?};
 			
-			group DSRC_BILLINGDETAILS{		
+			group GNSS_BILLINGDETAILS{		
 
 				template BillingDetailsADU mw_aduGnssBillingDetails :={
 	    			billingDetailsId :={
