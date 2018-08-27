@@ -89,7 +89,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// timeout expiration is handled in the altstep branch
 				alt {
 					[]	mtcPort.receive(mw_apduAuthProvideUserDetails) -> value v_apduReceived{    		                    		
-						f_logReceivedThenCheckAndStopTime(0.0); // No check on minimum wait time to respond
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); // No check on minimum wait time to respond
 						
 						if (fx_evaluateAuthenticator(v_apduReceived)) {
 							setverdict(pass);
@@ -139,7 +139,7 @@ module EfcInfoExchange_TestCasesTsp {
 				alt {
 					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduForSending, ApduReasonCode_protocolVersionError_)) -> value v_apduReceived {
 						// Log what we received
-						f_logReceivedThenCheckAndStopTime(0.0); //No minimum time to check for response
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); //No minimum time to check for response
 						setverdict(pass);
 					}
 				} 
@@ -178,7 +178,7 @@ module EfcInfoExchange_TestCasesTsp {
 				alt {
 					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduForSending, ApduReasonCode_originatorRejected_)) -> value v_apduReceived {
 						// Log what we received
-						f_logReceivedThenCheckAndStopTime(0.0); //No minimum time to check for response
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); //No minimum time to check for response
 						setverdict(pass);
 					}
 				} 
@@ -218,7 +218,7 @@ module EfcInfoExchange_TestCasesTsp {
 				alt {
 					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduForSending, ApduReasonCode_originatorRejected_)) -> value v_apduReceived {
 						// Log what we received
-						f_logReceivedThenCheckAndStopTime(0.0); //No minimum time to check for response
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); //No minimum time to check for response
 						setverdict(pass);
 					}
 				} 
@@ -258,7 +258,7 @@ module EfcInfoExchange_TestCasesTsp {
 				alt {
 					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduForSending, ApduReasonCode_recipientUnknown_)) -> value v_apduReceived {
 						// Log what we received
-						f_logReceivedThenCheckAndStopTime(0.0); //No minimum time to check for response
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); //No minimum time to check for response
 						setverdict(pass);
 					}
 				} 
@@ -289,7 +289,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// timeout expiration is handled in the altstep branch
 				alt {
 					[] mtcPort.receive(mw_apduProvideUserDetails) -> value v_apduReceived{
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); 
 						
 						// Step3: Send DefaultAck with correct identifier
 						f_logReceivedWaitAndAcknowledge(USERDETAILS_TIME2_MIN_TSP);
@@ -309,7 +309,7 @@ module EfcInfoExchange_TestCasesTsp {
 				alt {
 					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduForSending, ApduReasonCode_apduNotOK_)) -> value v_apduReceived {
 						// Log what we received
-						f_logReceivedThenCheckAndStopTime(0.0); //No minimum time to check for response
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); //No minimum time to check for response
 						setverdict(pass);
 					}
 				} 
@@ -341,7 +341,7 @@ module EfcInfoExchange_TestCasesTsp {
 				alt {
 					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduForSending, ApduReasonCode_apduNotOK_)) -> value v_apduReceived {
 						// Log what we received
-						f_logReceivedThenCheckAndStopTime(0.0); //No minimum time to check for response
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); //No minimum time to check for response
 						setverdict(pass);
 					}
 				} 
@@ -374,12 +374,12 @@ module EfcInfoExchange_TestCasesTsp {
 				alt {
 					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduForSending, ApduReasonCode_sequenceError_)) -> value v_apduReceived {
 						// Log what we received
-						f_logReceivedThenCheckAndStopTime(0.0); //No minimum time to check for response
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); //No minimum time to check for response
 						setverdict(pass);
 					}
 					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduForSending, ApduReasonCode_apduNotOK_)) -> value v_apduReceived {
 						// Log what we received
-						f_logReceivedThenCheckAndStopTime(0.0); //No minimum time to check for response
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); //No minimum time to check for response
 						setverdict(pass);
 					}
 
@@ -477,12 +477,12 @@ module EfcInfoExchange_TestCasesTsp {
 				alt {
 					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduForSending, ApduReasonCode_sequenceError_)) -> value v_apduReceived {
 						// Log what we received
-						f_logReceivedThenCheckAndStopTime(0.0); //No minimum time to check for response
+						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TYPE2_TIME1_MIN_TSP); //No minimum time to check for response
 						setverdict(pass);
 					}
 					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduForSending, ApduReasonCode_apduNotOK_)) -> value v_apduReceived {
 						// Log what we received
-						f_logReceivedThenCheckAndStopTime(0.0); //No minimum time to check for response
+						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TYPE2_TIME1_MIN_TSP); //No minimum time to check for response
 						setverdict(pass);
 					}
 
@@ -520,7 +520,7 @@ module EfcInfoExchange_TestCasesTsp {
 				alt {
 					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduForSending, ApduReasonCode_apduNotOK_)) -> value v_apduReceived {
 						// Log what we received
-						f_logReceivedThenCheckAndStopTime(0.0); //No minimum time to check for response
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); //No minimum time to check for response
 						setverdict(pass);
 					}
 				} 
@@ -567,7 +567,7 @@ module EfcInfoExchange_TestCasesTsp {
 				alt {
 					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduForSending, ApduReasonCode_apduNotOK_)) -> value v_apduReceived {
 						// Log what we received
-						f_logReceivedThenCheckAndStopTime(0.0); //No minimum time to check for response
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); //No minimum time to check for response
 						setverdict(pass);
 					}
 				} 
@@ -601,7 +601,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// timeout expiration is handled in the altstep branch
 				alt {
 					[] mtcPort.receive(mw_apduProvideUserDetails) -> value v_apduReceived{
-						f_logReceivedThenCheckAndStopTime(0.0); // No minimum time to be checked
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); // No minimum time to be checked
 						
 						// Check the ADU record and find the one we are expecting.
 						if (
@@ -659,7 +659,7 @@ module EfcInfoExchange_TestCasesTsp {
 
 				alt {
 					[] mtcPort.receive(mw_apduProvideUserDetails(v_apduRespondedTo)) -> value v_apduReceived{
-						f_logReceivedThenCheckAndStopTime(0.0);
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP);
  						                        
 						// Only one ProvideUserDetailsADU to be received
 						if (sizeof(v_apduReceived.adus.provideUserDetailsADUs) > 1) {
@@ -715,11 +715,11 @@ module EfcInfoExchange_TestCasesTsp {
 
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduToSend, AduReasonCode_invalidADU_)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduToSend, {{1, AduReasonCode_invalidADU_},{2,AduReasonCode_invalidADU_}})) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					} // End of Alt statement
@@ -898,8 +898,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// timeout expiration is handled in the altstep branch
 				alt {
 					[] mtcPort.receive(mw_apduNAckRequestSentTooOften(v_apduToSend)) -> value v_apduReceived {
-		                //TODO Fausto check all "f_logReceivedThenCheckAndStopTime(0.0)" and replace 0.0 with correct XXX__TIME1_MIN_TSP through ALL test cases 
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum time for response
+						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
                 	} // End of alt statement
@@ -1058,11 +1057,11 @@ module EfcInfoExchange_TestCasesTsp {
 
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduRespondedTo, AduReasonCode_invalidADU_)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduRespondedTo, {{1, AduReasonCode_invalidADU_},{2,AduReasonCode_invalidADU_}})) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					} // End of Alt statement
@@ -1100,11 +1099,11 @@ module EfcInfoExchange_TestCasesTsp {
 
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduRespondedTo, AduReasonCode_invalidADU_)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduRespondedTo, {{1, AduReasonCode_invalidADU_},{2,AduReasonCode_invalidADU_}})) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					} // End of Alt statement
@@ -1142,11 +1141,11 @@ module EfcInfoExchange_TestCasesTsp {
 
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduRespondedTo, AduReasonCode_invalidADU_)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduRespondedTo, {{1, AduReasonCode_invalidADU_},{2,AduReasonCode_invalidADU_}})) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					} // End of Alt statement
@@ -1182,11 +1181,11 @@ module EfcInfoExchange_TestCasesTsp {
 
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduRespondedTo, AduReasonCode_invalidADU_)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduRespondedTo, {{1, AduReasonCode_invalidADU_},{2,AduReasonCode_invalidADU_}})) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					} // End of Alt statement
@@ -1231,7 +1230,7 @@ module EfcInfoExchange_TestCasesTsp {
 				
 				alt {
 					[] mtcPort.receive(mw_apduNAckRequestSentTooOften(v_apduRespondedTo)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check for minimum response time
+						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME1_MIN_TSP); // No need to check for minimum response time
 						setverdict(pass);
 						}
 					} // End of Alt statement
@@ -1273,7 +1272,7 @@ module EfcInfoExchange_TestCasesTsp {
                 t_step.start(EXCEPTIONLIST_WHITE_TIME1_MAX_TSP);
 				alt {
 					[] mtcPort.receive(mw_apduExceptionListOneWhiteList) -> value v_apduReceived {
-						f_logReceivedWaitAndAcknowledge(0.0); // No need to check for minimum response time
+						f_logReceivedWaitAndAcknowledge(EXCEPTIONLIST_WHITE_TIME1_MIN_TSP); // No need to check for minimum response time
 						setverdict(pass);						
 					}
  				} // End of second alt statement
@@ -1586,11 +1585,11 @@ module EfcInfoExchange_TestCasesTsp {
 
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduRespondedTo, AduReasonCode_invalidADU_)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TYPE1_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduRespondedTo, {{1, AduReasonCode_invalidADU_},{2,AduReasonCode_invalidADU_}})) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TYPE1_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					} // End of Alt statement
@@ -1626,11 +1625,11 @@ module EfcInfoExchange_TestCasesTsp {
 
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduRespondedTo, AduReasonCode_semanticError_)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TYPE1_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduRespondedTo, {{1, AduReasonCode_semanticError_},{2,AduReasonCode_semanticError_}})) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TYPE1_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					} // End of Alt statement
@@ -1657,11 +1656,11 @@ module EfcInfoExchange_TestCasesTsp {
 
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduRespondedTo, AduReasonCode_semanticError_)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TYPE1_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduRespondedTo, {{1, AduReasonCode_semanticError_},{2,AduReasonCode_semanticError_}})) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TYPE1_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					} // End of Alt statement
@@ -1783,11 +1782,11 @@ module EfcInfoExchange_TestCasesTsp {
 				f_sendAndLogApdu(v_apduRespondedTo);                 
                  // Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
 				// Set timer
-                 t_step.start(BILLINGDETAILS_TIME1_MAX_TSP);                 
+                 t_step.start(DSRC_BILLINGDETAILS_TIME1_MAX_TSP);                 
 				alt {
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduRespondedTo)) -> value v_apduReceived {
 						// Log what we received
-						f_logReceivedThenCheckAndStopTime(BILLINGDETAILS_TIME1_MIN_TSP);
+						f_logReceivedThenCheckAndStopTime(DSRC_BILLINGDETAILS_TIME1_MIN_TSP);
 						}
 					} 	// End of Alt Statement				
                 	// Send PAYMENTCLAIM with ActionCode=SEND and setting:
@@ -1873,10 +1872,10 @@ module EfcInfoExchange_TestCasesTsp {
 				f_sendAndLogApdu(v_apduRespondedTo);                 
                  // Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
 				// Set timer
-                 t_step.start(BILLINGDETAILS_TIME1_MAX_TSP);                 
+                 t_step.start(DSRC_BILLINGDETAILS_TIME1_MAX_TSP);                 
 				alt {
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduRespondedTo)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(BILLINGDETAILS_TIME1_MIN_TSP);
+						f_logReceivedThenCheckAndStopTime(DSRC_BILLINGDETAILS_TIME1_MIN_TSP);
 						}
 					} // End of Alt statement					
 
@@ -1986,10 +1985,10 @@ module EfcInfoExchange_TestCasesTsp {
 				f_sendAndLogApdu(v_apduRespondedTo);                 
                  // Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
 				// Set timer
-                 t_step.start(BILLINGDETAILS_TIME1_MAX_TSP);                 
+                 t_step.start(DSRC_BILLINGDETAILS_TIME1_MAX_TSP);                 
 				alt {
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduRespondedTo)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(BILLINGDETAILS_TIME1_MIN_TSP);
+						f_logReceivedThenCheckAndStopTime(DSRC_BILLINGDETAILS_TIME1_MIN_TSP);
 						}
 					} // End of Alt Statement					
 
@@ -2039,11 +2038,11 @@ module EfcInfoExchange_TestCasesTsp {
 
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduRespondedTo, AduReasonCode_paymentClaimIdRejected_)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(PAYMENTCLAIM_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduRespondedTo, {{1, AduReasonCode_paymentClaimIdRejected_}})) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(PAYMENTCLAIM_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					} // End of Alt statement
@@ -2071,10 +2070,10 @@ module EfcInfoExchange_TestCasesTsp {
 				f_sendAndLogApdu(v_apduRespondedTo);                 
                  // Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
 				// Set timer
-                 t_step.start(BILLINGDETAILS_TIME1_MAX_TSP);                 
+                 t_step.start(DSRC_BILLINGDETAILS_TIME1_MAX_TSP);                 
 				alt {
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduRespondedTo)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(BILLINGDETAILS_TIME1_MIN_TSP);
+						f_logReceivedThenCheckAndStopTime(DSRC_BILLINGDETAILS_TIME1_MIN_TSP);
 						}
 					} // End of Alt statement
                 	// Send valid PAYMENTCLAIM with ActionCode=SEND and setting:
@@ -2122,11 +2121,11 @@ module EfcInfoExchange_TestCasesTsp {
 
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduRespondedTo, AduReasonCode_paymentClaimStatusRejected_)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(PAYMENTCLAIM_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduRespondedTo, {{1, AduReasonCode_paymentClaimStatusRejected_}})) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(PAYMENTCLAIM_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					} // End of Alt statement
@@ -2152,7 +2151,7 @@ module EfcInfoExchange_TestCasesTsp {
 				f_sendAndLogApdu(v_apduForSending);                 
                  // Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
 				// Set timer
-                 t_step.start(BILLINGDETAILS_TIME1_MAX_TSP);                 
+                 t_step.start(DSRC_BILLINGDETAILS_TIME1_MAX_TSP);                 
 				alt {
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(BILLINGDETAILS_TIME1_MIN_TSP); 
@@ -2176,11 +2175,11 @@ module EfcInfoExchange_TestCasesTsp {
 
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduForSending, AduReasonCode_invalidADU_)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(PAYMENTCLAIM_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduForSending, {{1, AduReasonCode_invalidADU_}})) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(PAYMENTCLAIM_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					} // End of Alt statement
@@ -2207,10 +2206,10 @@ module EfcInfoExchange_TestCasesTsp {
 				f_sendAndLogApdu(v_apduRespondedTo);                 
                  // Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
 				// Set timer
-                 t_step.start(BILLINGDETAILS_TIME1_MAX_TSP);                 
+                 t_step.start(DSRC_BILLINGDETAILS_TIME1_MAX_TSP);                 
 				alt {
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduRespondedTo)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(BILLINGDETAILS_TIME1_MIN_TSP);
+						f_logReceivedThenCheckAndStopTime(DSRC_BILLINGDETAILS_TIME1_MIN_TSP);
 						}
 					} // End of Alt statement					
                 // PT 140: TODO Probably there is no need to have an initial PAYMENTCLAIM for this test case as stated in the TSS&TP
@@ -2233,11 +2232,11 @@ module EfcInfoExchange_TestCasesTsp {
 
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduRespondedTo, AduReasonCode_paymentClaimStatusRejected_)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(PAYMENTCLAIM_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduRespondedTo, {{1, AduReasonCode_paymentClaimStatusRejected_}})) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(PAYMENTCLAIM_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					} // End of Alt statement
@@ -2270,10 +2269,10 @@ module EfcInfoExchange_TestCasesTsp {
 				f_sendAndLogApdu(v_apduRespondedTo);                 
                  // Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
 				// Set timer
-                 t_step.start(BILLINGDETAILS_TIME1_MAX_TSP);                 
+                 t_step.start(DSRC_BILLINGDETAILS_TIME1_MAX_TSP);                 
 				alt {
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduRespondedTo)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(BILLINGDETAILS_TIME1_MIN_TSP);
+						f_logReceivedThenCheckAndStopTime(DSRC_BILLINGDETAILS_TIME1_MIN_TSP);
 						}
 					} // End of Alt statement				
 
@@ -2297,11 +2296,11 @@ module EfcInfoExchange_TestCasesTsp {
 
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduRespondedTo, AduReasonCode_paymentClaimEndDateTimeRejected_)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(PAYMENTCLAIM_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduRespondedTo, {{1, AduReasonCode_paymentClaimEndDateTimeRejected_}})) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(PAYMENTCLAIM_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					} // End of Alt statement
@@ -2325,11 +2324,11 @@ module EfcInfoExchange_TestCasesTsp {
 
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduRespondedTo, AduReasonCode_paymentClaimUserIdRejected_)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(PAYMENTCLAIM_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduRespondedTo, {{1, AduReasonCode_paymentClaimUserIdRejected_}})) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(PAYMENTCLAIM_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					} // End of Alt statement
@@ -2353,11 +2352,11 @@ module EfcInfoExchange_TestCasesTsp {
 
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduRespondedTo, AduReasonCode_paymentClaimAmountRejected_)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(PAYMENTCLAIM_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduRespondedTo, {{1, AduReasonCode_paymentClaimAmountRejected_}})) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(PAYMENTCLAIM_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					} // End of Alt statement
@@ -2381,11 +2380,11 @@ module EfcInfoExchange_TestCasesTsp {
 
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduRespondedTo, AduReasonCode_paymentClaimStatusRejected_)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(PAYMENTCLAIM_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduRespondedTo, {{1, AduReasonCode_paymentClaimStatusRejected_}})) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(PAYMENTCLAIM_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					} // End of Alt statement
@@ -2409,11 +2408,11 @@ module EfcInfoExchange_TestCasesTsp {
 
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduRespondedTo, AduReasonCode_paymentClaimTypeOfFeeRejected_)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(PAYMENTCLAIM_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduRespondedTo, {{1, AduReasonCode_paymentClaimTypeOfFeeRejected_}})) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(PAYMENTCLAIM_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					} // End of Alt statement
@@ -2443,10 +2442,10 @@ module EfcInfoExchange_TestCasesTsp {
 				f_sendAndLogApdu(v_apduRespondedTo);                 
                  // Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
 				// Set timer
-                 t_step.start(BILLINGDETAILS_TIME1_MAX_TSP);                 
+                 t_step.start(DSRC_BILLINGDETAILS_TIME1_MAX_TSP);                 
 				alt {
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduRespondedTo)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(BILLINGDETAILS_TIME1_MIN_TSP); 
+						f_logReceivedThenCheckAndStopTime(DSRC_BILLINGDETAILS_TIME1_MIN_TSP); 
 						}
 					} // End of Alt statement					
 				// Send one PAYMENTCLAIM related to the sent BILLINGDETAILS within allowed time constraints
@@ -2799,11 +2798,11 @@ module EfcInfoExchange_TestCasesTsp {
                  t_step.start(DSRC_EFCCONTEXTDATA_TIME1_MAX_TSP);                 
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduRespondedTo, AduReasonCode_semanticError_)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(EFCCONTEXTDATA_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduRespondedTo, {{1, AduReasonCode_semanticError_},{2,AduReasonCode_semanticError_}})) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(EFCCONTEXTDATA_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					} // End of Alt statement
@@ -2837,14 +2836,14 @@ module EfcInfoExchange_TestCasesTsp {
 
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduRespondedTo, AduReasonCode_semanticError_)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(EFCCONTEXTDATA_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(
 						v_apduRespondedTo, 
 						{{1, AduReasonCode_semanticError_},{2,AduReasonCode_semanticError_}}
 					)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(EFCCONTEXTDATA_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					} // End of Alt statement
@@ -2878,11 +2877,11 @@ module EfcInfoExchange_TestCasesTsp {
 
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduRespondedTo, AduReasonCode_semanticError_)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(EFCCONTEXTDATA_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduRespondedTo, {{1, AduReasonCode_semanticError_}})) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(EFCCONTEXTDATA_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					} // End of Alt statement
@@ -2991,11 +2990,11 @@ module EfcInfoExchange_TestCasesTsp {
 
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduToSend, AduReasonCode_billingDetailsAmountRejected_)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(DSRC_BILLINGDETAILS_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduToSend, {{1, AduReasonCode_billingDetailsAmountRejected_}})) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(DSRC_BILLINGDETAILS_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					} // End of Alt statement
@@ -3046,7 +3045,7 @@ module EfcInfoExchange_TestCasesTsp {
                  t_step.start(DSRC_BILLINGDETAILS_TIME1_MAX_TSP);                 
 				alt {
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduRespondedTo)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(BILLINGDETAILS_TIME1_MIN_TSP); 
+						f_logReceivedThenCheckAndStopTime(DSRC_BILLINGDETAILS_TIME1_MIN_TSP); 
 						}
 					} // End of Alt statement
                  // Step 1: Send one valid APDU containing one valid BillingDetailsADU with only mandatory fields and with
@@ -3064,10 +3063,10 @@ module EfcInfoExchange_TestCasesTsp {
 				                 
                  // Step 2: Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
 				// Set timer
-                 t_step.start(BILLINGDETAILS_TIME1_MAX_TSP);                 
+                 t_step.start(DSRC_BILLINGDETAILS_TIME1_MAX_TSP);                 
 				alt {
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduRespondedTo)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(BILLINGDETAILS_TIME1_MIN_TSP); 
+						f_logReceivedThenCheckAndStopTime(DSRC_BILLINGDETAILS_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					}  // End of Alt statement
@@ -3160,7 +3159,7 @@ module EfcInfoExchange_TestCasesTsp {
 						f_logApduReceivedAndTStep();
 
 						//Check minumum time and stop timer
-						f_checkMinimumTStep(BILLINGDETAILS_TIME1_MIN_TSP);
+						f_checkMinimumTStep(DSRC_BILLINGDETAILS_TIME1_MIN_TSP);
 						t_step.stop;
 						// Check the issue list presence and contents
 						if (
@@ -3205,11 +3204,11 @@ module EfcInfoExchange_TestCasesTsp {
 				f_sendAndLogApdu(v_apduRespondedTo);                 
                  // Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
 				// Set timer
-                 t_step.start(BILLINGDETAILS_TIME1_MAX_TSP);                 
+                 t_step.start(DSRC_BILLINGDETAILS_TIME1_MAX_TSP);                 
 				alt {
 					[] mtcPort.receive(mw_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {					  
 						// Log what we received
-						f_logReceivedThenCheckAndStopTime(BILLINGDETAILS_TIME1_MIN_TSP); 
+						f_logReceivedThenCheckAndStopTime(DSRC_BILLINGDETAILS_TIME1_MIN_TSP); 
 						}
 					} // End of Alt statement 
 
@@ -3225,15 +3224,15 @@ module EfcInfoExchange_TestCasesTsp {
 				f_sendAndLogApdu(v_apduRespondedTo);                 
 
                  // Step 2: Wait for negative Ack within DSRC.BILLINGDETAILS.TIME1 identifying the APDU containing the BillingDetailsADU numbered 14 and with issueCode= semanticError 
-                t_step.start(BILLINGDETAILS_TIME1_MAX_TSP);                 
+                t_step.start(DSRC_BILLINGDETAILS_TIME1_MAX_TSP);                 
 
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduRespondedTo, AduReasonCode_semanticError_)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(DSRC_BILLINGDETAILS_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduRespondedTo, {{1, AduReasonCode_semanticError_}})) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(DSRC_BILLINGDETAILS_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					} // End of Alt statement
@@ -3261,11 +3260,11 @@ module EfcInfoExchange_TestCasesTsp {
 				f_sendAndLogApdu(v_apduRespondedTo);                 
                  // Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
 				// Set timer
-                 t_step.start(BILLINGDETAILS_TIME1_MAX_TSP);                 
+                 t_step.start(DSRC_BILLINGDETAILS_TIME1_MAX_TSP);                 
 				alt {
 					[] mtcPort.receive(mw_apduDefaultAck(v_apduRespondedTo)) -> value v_apduReceived {					  
 						// Log what we received
-						f_logReceivedThenCheckAndStopTime(BILLINGDETAILS_TIME1_MIN_TSP); 
+						f_logReceivedThenCheckAndStopTime(DSRC_BILLINGDETAILS_TIME1_MIN_TSP); 
 						}
 					} // End of Alt statement
 
@@ -3280,15 +3279,15 @@ module EfcInfoExchange_TestCasesTsp {
 				f_sendAndLogApdu(v_apduRespondedTo);                 
 
                  // Step 2: Wait for negative Ack within DSRC.BILLINGDETAILS.TIME1 identifying the APDU containing the BillingDetailsADU numbered 14 and with issueCode= semanticError 
-                t_step.start(BILLINGDETAILS_TIME1_MAX_TSP);                 
+                t_step.start(DSRC_BILLINGDETAILS_TIME1_MAX_TSP);                 
 
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduRespondedTo, AduReasonCode_semanticError_)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(DSRC_BILLINGDETAILS_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduRespondedTo, {{1, AduReasonCode_semanticError_}})) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(DSRC_BILLINGDETAILS_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					} // End of Alt statement
@@ -3330,10 +3329,10 @@ module EfcInfoExchange_TestCasesTsp {
               	// Wait for negative Ack with ADUReasonCode field = requestSentTooOften (if positive Ack or not received set test failure)                	
 				// Step #2: Wait for Nack ADU				 					
 				// Set timer
-                 t_step.start(BILLINGDETAILS_TIME1_MAX_TSP);
+                 t_step.start(DSRC_BILLINGDETAILS_TIME1_MAX_TSP);
 				alt {
 					[] mtcPort.receive(mw_apduNAckRequestSentTooOften(v_apduRespondedTo)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(BILLINGDETAILS_TIME1_MIN_TSP); 
+						f_logReceivedThenCheckAndStopTime(DSRC_BILLINGDETAILS_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					} // End of Alt statement             
@@ -3410,11 +3409,11 @@ module EfcInfoExchange_TestCasesTsp {
 
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduRespondedTo, AduReasonCode_semanticError_)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(REPORTABNORMALOBE_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduRespondedTo, {{1, AduReasonCode_semanticError_}})) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(REPORTABNORMALOBE_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					} // End of Alt statement
@@ -3457,7 +3456,7 @@ module EfcInfoExchange_TestCasesTsp {
               			// 2, abnormalObeUserIdRejected
 				alt {
 					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduRespondedTo, {{1, AduReasonCode_invalidADU_},{2, AduReasonCode_abnormalObeUserIdRejected_}})) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(REPORTABNORMALOBE_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					} // End of Alt statement
@@ -3492,11 +3491,11 @@ module EfcInfoExchange_TestCasesTsp {
 
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduRespondedTo, AduReasonCode_abnormalObeDateAndTimeRejected_)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(REPORTABNORMALOBE_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduRespondedTo, {{1, AduReasonCode_abnormalObeDateAndTimeRejected_}})) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(REPORTABNORMALOBE_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					} // End of Alt statement
@@ -3533,11 +3532,11 @@ module EfcInfoExchange_TestCasesTsp {
               	
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduRespondedTo, AduReasonCode_invalidADU_)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(REPORTABNORMALOBE_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduRespondedTo, {{1, AduReasonCode_invalidADU_}})) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(REPORTABNORMALOBE_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					} // End of Alt statement
@@ -3576,11 +3575,11 @@ module EfcInfoExchange_TestCasesTsp {
               			// 1, AduReasonCode_semanticError
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduRespondedTo, AduReasonCode_semanticError_)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(REPORTABNORMALOBE_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduRespondedTo, {{1, AduReasonCode_semanticError_}})) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(REPORTABNORMALOBE_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					} // End of Alt statement
@@ -3617,11 +3616,11 @@ module EfcInfoExchange_TestCasesTsp {
               			                	
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduRespondedTo, AduReasonCode_invalidADU_)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(REPORTABNORMALOBE_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduRespondedTo, {{1, AduReasonCode_invalidADU_}})) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(REPORTABNORMALOBE_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					} // End of Alt statement
@@ -3666,7 +3665,7 @@ module EfcInfoExchange_TestCasesTsp {
               			                	
 				alt {
 					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduRespondedTo, {{1, AduReasonCode_invalidADU_},{2, abnormalObeReasonCodeRejected}})) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(REPORTABNORMALOBE_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					} // End of Alt statement
@@ -4223,11 +4222,11 @@ module EfcInfoExchange_TestCasesTsp {
                  t_step.start(GNSS_BILLINGDETAILS_TC_TIME1_MAX_TC);                 
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduRespondedTo, AduReasonCode_billingDetailsAmountRejected_)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduRespondedTo, {{1, AduReasonCode_billingDetailsAmountRejected_}})) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					} // End of Alt statement
@@ -4424,11 +4423,11 @@ module EfcInfoExchange_TestCasesTsp {
 
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduRespondedTo, AduReasonCode_semanticError_)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduRespondedTo, {{1, AduReasonCode_semanticError_}})) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					} // End of Alt statement
@@ -4470,11 +4469,11 @@ module EfcInfoExchange_TestCasesTsp {
 
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduRespondedTo, AduReasonCode_semanticError_)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduRespondedTo, {{1, AduReasonCode_semanticError_}})) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(0.0); // No need to check minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					} // End of Alt statement
