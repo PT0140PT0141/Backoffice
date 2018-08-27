@@ -153,11 +153,16 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
 		function f_logReceivedWaitAndAcknowledge(in float p_wait) runs on MainTestComponent{
 			f_logApduReceivedAndTStep();						         		
 			// Send Ack within time constraints
+			f_waitAndAcknowledgeReceivedApdu(p_wait);
+		}
+		
+		function f_waitAndAcknowledgeReceivedApdu(in float p_wait) runs on MainTestComponent{
+			// Send Ack within time constraints
 			f_wait(p_wait);
 			f_sendAndLogApdu(m_apduDefaultAckTester(v_apduReceived));
 		}
 		
-		/**
+		/*
 		 * @desc A kind of ""macro"-function for very common steps.
 		 * @desc Calling other functions to log, check time and stop timer 
 		 * @desc It assumes that the received APDU is stored in the MainTestComponent
