@@ -867,9 +867,9 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 					dsrcContext:= {
 						regimeContextData := {
 							iso175753ADU := {	
-								tollContextOverview := tollContextOverviewTESTER_VALUE,
-								tollContextPartitionOverview := tollContextPartitionOverviewTESTER_VALUE,
-								tariffTable := tariffTableTESTER_VALUE,
+								tollContextOverview := TD_TOLL_CONTEXT_OVERVIEW,
+								tollContextPartitionOverview := TD_TOLL_CONTEXT_PARTITION_OVERVIEW,
+								tariffTable := TD_TARIFF_TABLE,
 								currencyConversionTable := currencyConversionTableTESTER_VALUE,
 								tariffClassDefinition := optSignedTariffClassDefinitionTESTER_VALUE,
 								localVehicleClassDefinition := optSignedLocalVehicleClassDefinitionTESTER_VALUE,
@@ -894,7 +894,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			}			
 			
 			template (value) EfcContextDataADU m_aduEfcContextDataDsrcClosedContextTollContextOverview := 
-				m_aduEfcContextDataDsrcClosedContext(tollContextOverviewTESTER_VALUE,{},omit,omit,omit,omit,omit,omit);
+				m_aduEfcContextDataDsrcClosedContext(TD_TOLL_CONTEXT_OVERVIEW,{},omit,omit,omit,omit,omit,omit);
 
 			template (value) EfcContextDataADU m_aduEfcContextDataDsrcClosedContextTollContextOverviewInvalidCCT 
 			modifies m_aduEfcContextDataDsrcClosedContextTollContextOverview := {
