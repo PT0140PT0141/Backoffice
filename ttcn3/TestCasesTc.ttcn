@@ -2114,7 +2114,7 @@ module EfcInfoExchange_TestCasesTc {
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc                 
 
             	// Step 1: Send Initiating_Apdu containing more than one ExceptionListADU indicating list type BLACK
-               	var InfoExchange v_apduToBeSent := m_apduNoSecInitTester({TD_EXCEPTIONLIST_ADU_BLACK_VALID, TD_EXCEPTIONLIST_ADU_BLACK_VALID});
+               	var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({TD_EXCEPTIONLIST_ADU_BLACK_VALID, TD_EXCEPTIONLIST_ADU_BLACK_VALID});
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
 		
                 // Start timer
@@ -2774,8 +2774,8 @@ module EfcInfoExchange_TestCasesTc {
 			testcase TP_TC_PAYMENTCLAIM_BV_01() runs on MainTestComponent system TestAdapter {
 							
                 /**
-                 * @desc    TP_TC_LISTOFUSERS_BV_01_DSRC: Verify that the TC correctly performs the PAYMENTCLAIM transaction with
-                 *			actionCode=send 
+                 * @desc    TP_TC_LISTOFUSERS_BV_01_DSRC: Verify that the TC correctly performs the PAYMENTCLAIM 
+                 * @desc	transaction with actionCode=send 
                  * @remark  [16986:2016], Clause 6.8 and Table A.1/1 AND Table A.7/5
                  */
                   
@@ -2791,9 +2791,8 @@ module EfcInfoExchange_TestCasesTc {
                 
 					f_sendAndLogTrigger(DSRC_BILLINGDETAILS_TR_TC_1_SEND);
 
-					var InfoExchange v_apduToBeReceived := {
-				  		mw_apduNoAuthInitIut({{mw_aduDsrcBillingDetails:= {actionCode := ActionCode_send_ }}}) 
-           			};                 
+					var InfoExchange v_apduToBeReceived := 	
+					mw_apduNoAuthInitIut({m_aduDsrcBillingDetails});                 
 
                 	// Wait for above specified APDU within time constraints
                 	// if not received or received outside specification or time constraints set test fail (done in the altstep)
@@ -2807,7 +2806,7 @@ module EfcInfoExchange_TestCasesTc {
 
 					// Step 2: Send Ack within time constraints
 					f_wait(DSRC_BILLINGDETAILS_TIME1_MIN_TC);
-					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+					f_sendAndLogApdu(m_apduDefaultAckTester(v_apduReceived));
 				} // end if-branch
 				else { // else-branch for GNSS Toll Charger
 					
@@ -2829,7 +2828,7 @@ module EfcInfoExchange_TestCasesTc {
 
 					// Step 2: Send Ack within time constraints
 					f_wait(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC);
-					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+					f_sendAndLogApdu(m_apduDefaultAckTester(v_apduReceived));
 				}; // end else-branch      	                              
   
  				
@@ -2941,7 +2940,7 @@ module EfcInfoExchange_TestCasesTc {
 					f_sendAndLogTrigger(DSRC_BILLINGDETAILS_TR_TC_1_SEND);
 
 					var InfoExchange v_apduToBeReceived := {
-				  		mw_apduNoAuthInitIut({{mw_aduDsrcBillingDetails:= {actionCode := ActionCode_send_ }}}) 
+				  		mw_apduNoAuthInitIut({m_aduDsrcBillingDetails}) 
            			};                 
 
                 	// Wait for above specified APDU within time constraints
@@ -2956,13 +2955,14 @@ module EfcInfoExchange_TestCasesTc {
 
 					// Step 2: Send Ack within time constraints
 					f_wait(DSRC_BILLINGDETAILS_TIME1_MIN_TC);
-					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+					
+					f_sendAndLogApdu(m_apduDefaultAckTester(v_apduReceived));
 				} // end if-branch
 				else { // else-branch for GNSS Toll Charger
 					
 					f_sendAndLogTrigger(GNSS_BILLINGDETAILS_TC_TR_TC_1_SEND);
 
-					var InfoExchange v_apduToBeReceived := {
+					v_apduToBeReceived := {
 				  		mw_apduNoAuthInitIut({{mw_aduGnssBillingDetails:= {actionCode := ActionCode_send_ }}}) 
            			};                 
 
@@ -2978,7 +2978,7 @@ module EfcInfoExchange_TestCasesTc {
 					
 					// Step 2: Send Ack within time constraints
 					f_wait(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC);
-					f_sendAndLogApdu(m_apduDefaultAck(v_apduReceived));
+					f_sendAndLogApdu(m_apduDefaultAckTester(v_apduReceived));
 				} // end else-branch      	                              
 
                 // Step 1:
@@ -3126,58 +3126,7 @@ module EfcInfoExchange_TestCasesTc {
                 // Prepare and send one Initiating_Apdu containing exactly ten TollDeclarationADUs with actionCode = send                // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for discounted user list
                 // TODO Jan: Define tester data required inside the module TesterData               
 
-				var InfoExchange v_apduToBeSent := m_apduNoSecInitTester({
-					m_aduTollDeclarationToSendOneObe(
-						{TD_IDENTIFIER, 1},
-						TD_USAGE_STATEMENT_VALID_1,
-						1,
-						Action_Code_send_),
-					m_aduTollDeclarationToSendOneObe(
-						{TD_IDENTIFIER, 2},
-						TD_USAGE_STATEMENT_VALID_2,
-						2,
-						Action_Code_send_),
-					m_aduTollDeclarationToSendOneObe(
-						{TD_IDENTIFIER, 3},
-						TD_USAGE_STATEMENT_VALID_3,
-						3,
-						Action_Code_send_),							
-					m_aduTollDeclarationToSendOneObe(
-						{TD_IDENTIFIER, 4},
-						TD_USAGE_STATEMENT_VALID_4,
-						4,
-						Action_Code_send_),
-					m_aduTollDeclarationToSendOneObe(
-						{TD_IDENTIFIER, 5},
-						TD_USAGE_STATEMENT_VALID_5,
-						5,
-						Action_Code_send_),
-					m_aduTollDeclarationToSendOneObe(
-						{TD_IDENTIFIER, 6},
-						TD_USAGE_STATEMENT_VALID_6,
-						6,
-						Action_Code_send_),
-					m_aduTollDeclarationToSendOneObe(
-						{TD_IDENTIFIER, 7},
-						TD_USAGE_STATEMENT_VALID_7,
-						7,
-						Action_Code_send_),
-					m_aduTollDeclarationToSendOneObe(
-						{TD_IDENTIFIER, 8},
-						TD_USAGE_STATEMENT_VALID_8,
-						8,
-						Action_Code_send_),
-					m_aduTollDeclarationToSendOneObe(
-						{TD_IDENTIFIER, 9},
-						TD_USAGE_STATEMENT_VALID_9,
-						9,
-						Action_Code_send_),
-					m_aduTollDeclarationToSendOneObe(
-						{TD_IDENTIFIER, 10},
-						TD_USAGE_STATEMENT_VALID_10,
-						10,
-						Action_Code_send_)
-				});
+				var InfoExchange v_apduToBeSent := m_apduTollDeclarationsTen;
 				                	               	                	                	                	                	                	              	
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
                 // Start timer
@@ -3188,7 +3137,7 @@ module EfcInfoExchange_TestCasesTc {
                 // use template for Default_Ack_Apdu
                 // if not received or received outside specification or time constraints set test fail
 				alt {
-					[] mtcPort.receive(m_apduDefaultAck(v_apduToBeSent)) -> value v_apduReceived {					  
+					[] mtcPort.receive(m_apduDefaultAckTester(v_apduToBeSent)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
 						//Set verdict
@@ -3220,58 +3169,7 @@ module EfcInfoExchange_TestCasesTc {
 
                 // Prepare and send one Initiating_Apdu containing exactly ten TollDeclarationADUs with actionCode = send
 
-				var InfoExchange v_apduToBeSent := m_apduNoSecInitTester({
-					m_aduTollDeclarationToSendOneObe(
-						{TD_IDENTIFIER, 1},
-						TD_USAGE_STATEMENT_VALID_1,
-						1,
-						Action_Code_send_),
-					m_aduTollDeclarationToSendOneObe(
-						{TD_IDENTIFIER, 2},
-						TD_USAGE_STATEMENT_VALID_2,
-						2,
-						Action_Code_send_),
-					m_aduTollDeclarationToSendOneObe(
-						{TD_IDENTIFIER, 3},
-						TD_USAGE_STATEMENT_VALID_3,
-						3,
-						Action_Code_send_),							
-					m_aduTollDeclarationToSendOneObe(
-						{TD_IDENTIFIER, 4},
-						TD_USAGE_STATEMENT_VALID_4,
-						4,
-						Action_Code_send_),
-					m_aduTollDeclarationToSendOneObe(
-						{TD_IDENTIFIER, 5},
-						TD_USAGE_STATEMENT_VALID_5,
-						5,
-						Action_Code_send_),
-					m_aduTollDeclarationToSendOneObe(
-						{TD_IDENTIFIER, 6},
-						TD_USAGE_STATEMENT_VALID_6
-						6,
-						Action_Code_send_),
-					m_aduTollDeclarationToSendOneObe(
-						{TD_IDENTIFIER, 7},
-						TD_USAGE_STATEMENT_VALID_7,
-						7,
-						Action_Code_send_),
-					m_aduTollDeclarationToSendOneObe(
-						{TD_IDENTIFIER, 8},
-						TD_USAGE_STATEMENT_VALID_8,
-						8,
-						Action_Code_send_),
-					m_aduTollDeclarationToSendOneObe(
-						{TD_IDENTIFIER, 9},
-						TD_USAGE_STATEMENT_VALID_9,
-						9,
-						Action_Code_send_),
-					m_aduTollDeclarationToSendOneObe(
-						{TD_IDENTIFIER, 10},
-						TD_USAGE_STATEMENT_VALID_10,
-						10,
-						Action_Code_send_)
-				});
+				var InfoExchange v_apduToBeSent := m_apduTollDeclarationsTen;
 				                	               	                	                	                	                	                	              	
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
                 // Start timer
@@ -3282,7 +3180,7 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail 
 
 				alt {
-					[] mtcPort.receive(m_apduDefaultAck(v_apduToBeSent)) -> value v_apduReceived {					  
+					[] mtcPort.receive(m_apduDefaultAckTester(v_apduToBeSent)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);												
 					}
@@ -3304,7 +3202,7 @@ module EfcInfoExchange_TestCasesTc {
                 // Prepare and send one Initiating_Apdu containing exactly ten TollDeclarationADUs with actionCode = revoke
                 // Note that it is required to send again with same TollDeclarationId,
                 // same TollDeclarations and same Charge Report Id
-				var InfoExchange v_apduToBeSent := m_apduNoSecInitTester({
+				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
 					m_aduTollDeclarationToSendOneObe(
 						{TD_IDENTIFIER, 1},
 						TD_USAGE_STATEMENT_VALID_1,
@@ -3332,7 +3230,7 @@ module EfcInfoExchange_TestCasesTc {
 						Action_Code_revoke_),
 					m_aduTollDeclarationToSendOneObe(
 						{TD_IDENTIFIER, 6},
-						TD_USAGE_STATEMENT_VALID_6
+						TD_USAGE_STATEMENT_VALID_6,
 						6,
 						Action_Code_revoke_),
 					m_aduTollDeclarationToSendOneObe(
@@ -3363,7 +3261,7 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail
 
 				alt {
-					[] mtcPort.receive(m_apduDefaultAck(v_apduToBeSent)) -> value v_apduReceived {					  
+					[] mtcPort.receive(m_apduDefaultAckTester(v_apduToBeSent)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);												
 						//Set verdict
@@ -3395,58 +3293,7 @@ module EfcInfoExchange_TestCasesTc {
 
                // Prepare and send one Initiating_Apdu containing exactly ten TollDeclarationADUs with actionCode = send
 
-				var InfoExchange v_apduToBeSent := m_apduNoSecInitTester({
-					m_aduTollDeclarationToSendOneObe(
-						{TD_IDENTIFIER, 1},
-						TD_USAGE_STATEMENT_VALID_1,
-						1,
-						Action_Code_send_),
-					m_aduTollDeclarationToSendOneObe(
-						{TD_IDENTIFIER, 2},
-						TD_USAGE_STATEMENT_VALID_2,
-						2,
-						Action_Code_send_),
-					m_aduTollDeclarationToSendOneObe(
-						{TD_IDENTIFIER, 3},
-						TD_USAGE_STATEMENT_VALID_3,
-						3,
-						Action_Code_send_),							
-					m_aduTollDeclarationToSendOneObe(
-						{TD_IDENTIFIER, 4},
-						TD_USAGE_STATEMENT_VALID_4,
-						4,
-						Action_Code_send_),
-					m_aduTollDeclarationToSendOneObe(
-						{TD_IDENTIFIER, 5},
-						TD_USAGE_STATEMENT_VALID_5,
-						5,
-						Action_Code_send_),
-					m_aduTollDeclarationToSendOneObe(
-						{TD_IDENTIFIER, 6},
-						TD_USAGE_STATEMENT_VALID_6
-						6,
-						Action_Code_send_),
-					m_aduTollDeclarationToSendOneObe(
-						{TD_IDENTIFIER, 7},
-						TD_USAGE_STATEMENT_VALID_7,
-						7,
-						Action_Code_send_),
-					m_aduTollDeclarationToSendOneObe(
-						{TD_IDENTIFIER, 8},
-						TD_USAGE_STATEMENT_VALID_8,
-						8,
-						Action_Code_send_),
-					m_aduTollDeclarationToSendOneObe(
-						{TD_IDENTIFIER, 9},
-						TD_USAGE_STATEMENT_VALID_9,
-						9,
-						Action_Code_send_),
-					m_aduTollDeclarationToSendOneObe(
-						{TD_IDENTIFIER, 10},
-						TD_USAGE_STATEMENT_VALID_10,
-						10,
-						Action_Code_send_)
-				});
+				var InfoExchange v_apduToBeSent := m_apduTollDeclarationsTen;
 				                	               	                	                	                	                	                	              	
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
                 // Start timer
@@ -3457,7 +3304,7 @@ module EfcInfoExchange_TestCasesTc {
 				// TODO JAN / PT140: below Ack to be preplaced by a negative ack according to the specifications of is16986
 				// for this case of adjusting TollDeclarationADUs
 				alt {
-					[] mtcPort.receive(m_apduDefaultAck(v_apduToBeSent)) -> value v_apduReceived {					  
+					[] mtcPort.receive(m_apduDefaultAckTester(v_apduToBeSent)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);												
 					}
@@ -3479,57 +3326,57 @@ module EfcInfoExchange_TestCasesTc {
                 // Prepare and send one Initiating_Apdu containing exactly ten TollDeclarationADUs with actionCode = adjust
                 // Note that it is required to send again with same TollDeclarationId,
                 // but "corrected" TollDeclarations and a new Charge Report Id
-				var InfoExchange v_apduToBeSent := m_apduNoSecInitTester({
+				var InfoExchange v_apduToBeSent := m_apduTollDeclarationsTen(ActionCode_adjust_)NoSecInitTester({
 					m_aduTollDeclarationToSendOneObe(
 						{TESTER_IDENTIFIER, 1},
 						TESTER_USAGE_STATEMENT_VALID_11,
 						11,
-						Action_Code_adjust_),
+						ActionCode_adjust_),
 					m_aduTollDeclarationToSendOneObe(
 						{TESTER_IDENTIFIER, 2},
 						TESTER_USAGE_STATEMENT_VALID_12,
 						12,
-						Action_Code_adjust_),
+						ActionCode_adjust_),
 					m_aduTollDeclarationToSendOneObe(
 						{TESTER_IDENTIFIER, 3},
 						TESTER_USAGE_STATEMENT_VALID_13,
 						13,
-						Action_Code_adjust_),							
+						ActionCode_adjust_),							
 					m_aduTollDeclarationToSendOneObe(
 						{TESTER_IDENTIFIER, 4},
 						TESTER_USAGE_STATEMENT_VALID_14,
 						14,
-						Action_Code_adjust_),
+						ActionCode_adjust_),
 					m_aduTollDeclarationToSendOneObe(
 						{TESTER_IDENTIFIER, 5},
 						TESTER_USAGE_STATEMENT_VALID_15,
 						15,
-						Action_Code_adjust_),
+						ActionCode_adjust_),
 					m_aduTollDeclarationToSendOneObe(
 						{TESTER_IDENTIFIER, 6},
 						TESTER_USAGE_STATEMENT_VALID_16
 						16,
-						Action_Code_adjust_),
+						ActionCode_adjust_),
 					m_aduTollDeclarationToSendOneObe(
 						{TESTER_IDENTIFIER, 7},
 						TESTER_USAGE_STATEMENT_VALID_17,
 						17,
-						Action_Code_adjust_),
+						ActionCode_adjust_),
 					m_aduTollDeclarationToSendOneObe(
 						{TESTER_IDENTIFIER, 8},
 						TESTER_USAGE_STATEMENT_VALID_18,
 						18,
-						Action_Code_adjust_),
+						ActionCode_adjust_),
 					m_aduTollDeclarationToSendOneObe(
 						{TESTER_IDENTIFIER, 9},
 						TESTER_USAGE_STATEMENT_VALID_19,
 						19,
-						Action_Code_adjust_),
+						ActionCode_adjust_),
 					m_aduTollDeclarationToSendOneObe(
 						{TESTER_IDENTIFIER, 10},
 						TESTER_USAGE_STATEMENT_VALID_20,
 						20,
-						Action_Code_adjust_)
+						ActionCode_adjust_)
 				});
 				
                 // Step 3:
@@ -3537,7 +3384,7 @@ module EfcInfoExchange_TestCasesTc {
                 // use template for Default_Ack_Apdu
                 // if not received or received outside specification or time constraints set test fail
 				alt {
-					[] mtcPort.receive(m_apduDefaultAck(v_apduToBeSent)) -> value v_apduReceived {					  
+					[] mtcPort.receive(m_apduDefaultAckTester(v_apduToBeSent)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);												
 						//Set verdict
@@ -3578,7 +3425,7 @@ module EfcInfoExchange_TestCasesTc {
 						usageStatementId := v_loop,
 						tollContext := TESTER_TOLL_CONTEXT,
 						aggregatedSingleTariffClassSession := TESTER_SINGLE_TARIFF_CLASS_SESSION,
-						listOfChargeObjects TESTER_LIST_OF_CHARGE_OBJECTS,
+						listOfChargeObjects:=TESTER_LIST_OF_CHARGE_OBJECTS,
 						listOfRawUsageData := TESTER_LIST_OF_RAW_USAGE_DATA,
 						additionalUsageInformation := omit
 					};
@@ -3586,10 +3433,10 @@ module EfcInfoExchange_TestCasesTc {
 							{TESTER_IDENTIFIER, v_loop},
 							v_usageStatementToBeSent,
 							v_loop,
-							Action_Code_send_);
+							ActionCode_send_);
 				}		
  					
-				var InfoExchange v_apduToBeSent := m_apduNoSecInitTester(v_adusToBeSent);
+				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester(v_adusToBeSent);
 				                	               	                	                	                	                	                	              	
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
                 // Start timer
@@ -3643,12 +3490,12 @@ module EfcInfoExchange_TestCasesTc {
 				
                 // Prepare and send one Initiating_Apdu containing exactly one TollDeclarationADUs with actionCode = send
 
-				var InfoExchange v_apduToBeSent := m_apduNoSecInitTester({
+				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
 					m_aduTollDeclarationToSendOneObe(
 						{TESTER_IDENTIFIER, 1},
 						TESTER_USAGE_STATEMENT_VALID_1,
 						1,
-						Action_Code_send_)
+						ActionCode_send_)
 					});
 
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
@@ -3659,7 +3506,7 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail 
 
 				alt {
-					[] mtcPort.receive(m_apduDefaultAck(v_apduToBeSent)) -> value v_apduReceived {					  
+					[] mtcPort.receive(m_apduDefaultAckTester(v_apduToBeSent)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);												
 					}
@@ -3680,7 +3527,7 @@ module EfcInfoExchange_TestCasesTc {
 
                 // Prepare and send one Initiating_Apdu containing exactly one TollDeclarationADUs with actionCode = revoke
                 // same TollDeclarations and same Charge Report Id
-				var InfoExchange v_apduToBeSent := m_apduNoSecInitTester({
+				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
 					m_aduTollDeclarationToSendOneObe(
 						{TESTER_IDENTIFIER, 2},
 						TESTER_USAGE_STATEMENT_VALID_2,
@@ -3736,12 +3583,12 @@ module EfcInfoExchange_TestCasesTc {
 				
                 // Prepare and send one Initiating_Apdu containing exactly one TollDeclarationADUs with actionCode = send
 
-				var InfoExchange v_apduToBeSent := m_apduNoSecInitTester({
+				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
 					m_aduTollDeclarationToSendOneObe(
 						{TESTER_IDENTIFIER, 1},
 						TESTER_USAGE_STATEMENT_VALID_1,
 						1,
-						Action_Code_send_)
+						ActionCode_send_)
 					});
 
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
@@ -3752,7 +3599,7 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail 
 
 				alt {
-					[] mtcPort.receive(m_apduDefaultAck(v_apduToBeSent)) -> value v_apduReceived {					  
+					[] mtcPort.receive(m_apduDefaultAckTester(v_apduToBeSent)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);												
 					}
@@ -3773,12 +3620,12 @@ module EfcInfoExchange_TestCasesTc {
 
                 // Prepare and send one Initiating_Apdu containing exactly one TollDeclarationADUs with actionCode = revoke
                 // same TollDeclarations and same Charge Report Id
-				var InfoExchange v_apduToBeSent := m_apduNoSecInitTester({
+				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
 					m_aduTollDeclarationToSendOneObe(
 						{TESTER_IDENTIFIER, 2},
 						TESTER_USAGE_STATEMENT_VALID_2,
 						2,
-						Action_Code_adjust_)
+						ActionCode_adjust_)
 					});
                 
                 // Step 3:
@@ -3826,17 +3673,17 @@ module EfcInfoExchange_TestCasesTc {
 				
                 // Prepare and send one Initiating_Apdu containing exactly one TollDeclarationADUs with actionCode = send
 
-				var InfoExchange v_apduToBeSent := m_apduNoSecInitTester({
+				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
 					m_aduTollDeclarationToSendOneObe(
 						{TESTER_IDENTIFIER, 1},
 						TESTER_USAGE_STATEMENT_VALID_1,
 						1,
-						Action_Code_send_),
+						ActionCode_send_),
 					m_aduTollDeclarationToSendOneObe(
 						{TESTER_IDENTIFIER, 1},
 						TESTER_USAGE_STATEMENT_VALID_1,
 						2,
-						Action_Code_send_),
+						ActionCode_send_),
 					});
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
                 
@@ -3888,7 +3735,7 @@ module EfcInfoExchange_TestCasesTc {
 				actionCode:= ActionCode_send_
 				};
 				
-				var InfoExchange v_apduToBeSent := m_apduNoSecInitTester({v_aduTollDeclarationAuthenticatedChargeReportm});
+				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({v_aduTollDeclarationAuthenticatedChargeReportm});
 
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
                 
@@ -3948,10 +3795,10 @@ module EfcInfoExchange_TestCasesTc {
 							{TESTER_IDENTIFIER, v_loop}, // TODO: is the assumption correct that one TD contains one ChargeReport?
 							v_usageStatementToBeSent,
 							v_loop,
-							Action_Code_send_);
+							ActionCode_send_);
 				};		
  					
-				var InfoExchange v_apduToBeSent := m_apduNoSecInitTester(v_adusToBeSent);
+				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester(v_adusToBeSent);
 				                	               	                	                	                	                	                	              	
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
                 // Start timer
@@ -3997,7 +3844,7 @@ module EfcInfoExchange_TestCasesTc {
 				template (value) TollDeclarationADU m_aduTollDeclarationToSendOneObeOtherActionCodes
 					modifies m_aduTollDeclarationToSendOneObe:={actionCode := ?); // to allow any value for actionCode
 
-				var InfoExchange v_apduToBeSent := m_apduNoSecInitTester({
+				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
 					m_aduTollDeclarationToSendOneObeOtherActionCodes(
 						{TESTER_IDENTIFIER, 1},
 						TESTER_USAGE_STATEMENT_VALID_1,
@@ -4057,7 +3904,7 @@ module EfcInfoExchange_TestCasesTc {
 				template (value) TollDeclarationADU m_aduTollDeclarationToSendOneObeOtherActionCodes
 					modifies m_aduTollDeclarationToSendOneObe:={actionCode := ?); // to allow any value for actionCode
 
-				var InfoExchange v_apduToBeSent := m_apduNoSecInitTester({
+				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
 					m_aduTollDeclarationToSendOneObeOtherActionCodes(
 						{TESTER_IDENTIFIER, 1},
 						TESTER_USAGE_STATEMENT_VALID_1,
@@ -4157,7 +4004,7 @@ module EfcInfoExchange_TestCasesTc {
 						{TD_IDENTIFIER, 1},
 						TD_USAGE_STATEMENT_VALID_1,
 						1,
-						Action_Code_send_),
+						ActionCode_send_),
 				});
 				                	               	                	                	                	                	                	              	
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
@@ -4228,7 +4075,7 @@ module EfcInfoExchange_TestCasesTc {
 						{TD_IDENTIFIER, 1},
 						TD_USAGE_STATEMENT_VALID_1,
 						1,
-						Action_Code_send_),
+						ActionCode_send_),
 				});
 				                	               	                	                	                	                	                	              	
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
@@ -4337,7 +4184,7 @@ module EfcInfoExchange_TestCasesTc {
 						{TD_IDENTIFIER, 1},
 						TD_USAGE_STATEMENT_VALID_1,
 						1,
-						Action_Code_send_),
+						ActionCode_send_),
 				});
 				                	               	                	                	                	                	                	              	
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
@@ -4414,7 +4261,7 @@ module EfcInfoExchange_TestCasesTc {
 						{TD_IDENTIFIER, 1},
 						TD_USAGE_STATEMENT_VALID_1,
 						1,
-						Action_Code_send_),
+						ActionCode_send_),
 				});
 				                	               	                	                	                	                	                	              	
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
@@ -4488,7 +4335,7 @@ module EfcInfoExchange_TestCasesTc {
 						{TD_IDENTIFIER, 1},
 						TD_USAGE_STATEMENT_VALID_1,
 						1,
-						Action_Code_send_),
+						ActionCode_send_),
 				});
 				                	               	                	                	                	                	                	              	
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
@@ -4818,27 +4665,27 @@ module EfcInfoExchange_TestCasesTc {
 						{TD_IDENTIFIER, 1},
 						TD_USAGE_STATEMENT_VALID_1,
 						1,
-						Action_Code_send_),
+						ActionCode_send_),
 					m_aduTollDeclarationToSendOneObe(
 						{TD_IDENTIFIER, 2},
 						TD_USAGE_STATEMENT_VALID_2,
 						2,
-						Action_Code_send_),
+						ActionCode_send_),
 					m_aduTollDeclarationToSendOneObe(
 						{TD_IDENTIFIER, 3},
 						TD_USAGE_STATEMENT_VALID_3,
 						3,
-						Action_Code_send_),							
+						ActionCode_send_),							
 					m_aduTollDeclarationToSendOneObe(
 						{TD_IDENTIFIER, 4},
 						TD_USAGE_STATEMENT_VALID_4,
 						4,
-						Action_Code_send_),
+						ActionCode_send_),
 					m_aduTollDeclarationToSendOneObe(
 						{TD_IDENTIFIER, 5},
 						TD_USAGE_STATEMENT_VALID_5,
 						5,
-						Action_Code_send_),
+						ActionCode_send_),
 				});
 				                	               	                	                	                	                	                	              	
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
@@ -4920,7 +4767,7 @@ module EfcInfoExchange_TestCasesTc {
 						{TD_IDENTIFIER, 1},
 						TD_USAGE_STATEMENT_VALID_1,
 						1,
-						Action_Code_send_),
+						ActionCode_send_),
 				});
 				                	               	                	                	                	                	                	              	
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
@@ -5022,7 +4869,7 @@ module EfcInfoExchange_TestCasesTc {
 						{TD_IDENTIFIER, 1},
 						TD_USAGE_STATEMENT_VALID_1,
 						1,
-						Action_Code_send_),
+						ActionCode_send_),
 				});
 				                	               	                	                	                	                	                	              	
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
@@ -5137,31 +4984,31 @@ module EfcInfoExchange_TestCasesTc {
 						{TD_IDENTIFIER, 1}, //tollDeclarationId
 						TD_USAGE_STATEMENT_VALID_1, // usageStatement
 						1, // chargeReportCounter
-						Action_Code_send_ // actionCode
+						ActionCode_send_ // actionCode
 					),
 					m_aduTollDeclarationToSendOneObe(
 						{TD_IDENTIFIER, 2}, //tollDeclarationId
 						TD_USAGE_STATEMENT_VALID_2, // usageStatement
 						2, // chargeReportCounter
-						Action_Code_send_ // actionCode
+						ActionCode_send_ // actionCode
 					),
 					m_aduTollDeclarationToSendOneObe(
 						{TD_IDENTIFIER, 3}, //tollDeclarationId
 						TD_USAGE_STATEMENT_VALID_3, // usageStatement
 						3, // chargeReportCounter
-						Action_Code_send_ // actionCode
+						ActionCode_send_ // actionCode
 					),
 					m_aduTollDeclarationToSendOneObe(
 						{TD_IDENTIFIER, 4}, //tollDeclarationId
 						TD_USAGE_STATEMENT_VALID_4, // usageStatement
 						4, // chargeReportCounter
-						Action_Code_send_ // actionCode
+						ActionCode_send_ // actionCode
 					),
 					m_aduTollDeclarationToSendOneObe(
 						{TD_IDENTIFIER, 5}, //tollDeclarationId
 						TD_USAGE_STATEMENT_VALID_5, // usageStatement
 						5, // chargeReportCounter
-						Action_Code_send_ // actionCode
+						ActionCode_send_ // actionCode
 					)
 				});
 				                	               	                	                	                	                	                	              	
@@ -5426,31 +5273,31 @@ module EfcInfoExchange_TestCasesTc {
 						{TD_IDENTIFIER, 1}, //tollDeclarationId
 						TD_USAGE_STATEMENT_VALID_1, // usageStatement
 						1, // chargeReportCounter
-						Action_Code_send_ // actionCode
+						ActionCode_send_ // actionCode
 					),
 					m_aduTollDeclarationToSendOneObe(
 						{TD_IDENTIFIER, 2}, //tollDeclarationId
 						TD_USAGE_STATEMENT_VALID_2, // usageStatement
 						2, // chargeReportCounter
-						Action_Code_send_ // actionCode
+						ActionCode_send_ // actionCode
 					),
 					m_aduTollDeclarationToSendOneObe(
 						{TD_IDENTIFIER, 3}, //tollDeclarationId
 						TD_USAGE_STATEMENT_VALID_3, // usageStatement
 						3, // chargeReportCounter
-						Action_Code_send_ // actionCode
+						ActionCode_send_ // actionCode
 					),
 					m_aduTollDeclarationToSendOneObe(
 						{TD_IDENTIFIER, 4}, //tollDeclarationId
 						TD_USAGE_STATEMENT_VALID_4, // usageStatement
 						4, // chargeReportCounter
-						Action_Code_send_ // actionCode
+						ActionCode_send_ // actionCode
 					),
 					m_aduTollDeclarationToSendOneObe(
 						{TD_IDENTIFIER, 5}, //tollDeclarationId
 						TD_USAGE_STATEMENT_VALID_5, // usageStatement
 						5, // chargeReportCounter
-						Action_Code_send_ // actionCode
+						ActionCode_send_ // actionCode
 					)
 				});
 				                	               	                	                	                	                	                	              	
@@ -5796,31 +5643,31 @@ module EfcInfoExchange_TestCasesTc {
 						{TD_IDENTIFIER, 1}, //tollDeclarationId
 						TD_USAGE_STATEMENT_VALID_1, // usageStatement
 						1, // chargeReportCounter
-						Action_Code_send_ // actionCode
+						ActionCode_send_ // actionCode
 					),
 					m_aduTollDeclarationToSendOneObe(
 						{TD_IDENTIFIER, 2}, //tollDeclarationId
 						TD_USAGE_STATEMENT_VALID_2, // usageStatement
 						2, // chargeReportCounter
-						Action_Code_send_ // actionCode
+						ActionCode_send_ // actionCode
 					),
 					m_aduTollDeclarationToSendOneObe(
 						{TD_IDENTIFIER, 3}, //tollDeclarationId
 						TD_USAGE_STATEMENT_VALID_3, // usageStatement
 						3, // chargeReportCounter
-						Action_Code_send_ // actionCode
+						ActionCode_send_ // actionCode
 					),
 					m_aduTollDeclarationToSendOneObe(
 						{TD_IDENTIFIER, 4}, //tollDeclarationId
 						TD_USAGE_STATEMENT_VALID_4, // usageStatement
 						4, // chargeReportCounter
-						Action_Code_send_ // actionCode
+						ActionCode_send_ // actionCode
 					),
 					m_aduTollDeclarationToSendOneObe(
 						{TD_IDENTIFIER, 5}, //tollDeclarationId
 						TD_USAGE_STATEMENT_VALID_5, // usageStatement
 						5, // chargeReportCounter
-						Action_Code_send_ // actionCode
+						ActionCode_send_ // actionCode
 					)
 				});
 				                	               	                	                	                	                	                	              	
@@ -6151,13 +5998,13 @@ module EfcInfoExchange_TestCasesTc {
                         {TD_IDENTIFIER, 1}, //tollDeclarationId
                         TD_USAGE_STATEMENT_VALID_1, // usageStatement
                         1, // chargeReportCounter
-                        Action_Code_send_ // actionCode
+                        ActionCode_send_ // actionCode
                     ),
                     m_aduTollDeclarationToSendOneObe(
                         {TD_IDENTIFIER, 2}, //tollDeclarationId
                         TD_USAGE_STATEMENT_VALID_2, // usageStatement
                         2, // chargeReportCounter
-                        Action_Code_send_ // actionCode
+                        ActionCode_send_ // actionCode
                     )
                 });
                                                                                                                                                                             
@@ -6610,7 +6457,7 @@ module EfcInfoExchange_TestCasesTc {
                         	{TD_IDENTIFIER, v_i}, //tollDeclarationId
                         	TD_USAGE_STATEMENT_VALID_1, // usageStatement (always the same)
                         	v_i, // chargeReportCounter
-                        	Action_Code_send_ // actionCode
+                        	ActionCode_send_ // actionCode
 						)
                 	});
                 }
@@ -6893,7 +6740,7 @@ module EfcInfoExchange_TestCasesTc {
                         	{TD_IDENTIFIER, v_i}, //tollDeclarationId
                         	TD_USAGE_STATEMENT_VALID_1, // usageStatement (always the same)
                         	v_i, // chargeReportCounter
-                        	Action_Code_send_ // actionCode
+                        	ActionCode_send_ // actionCode
 						)
                 	});
                 }

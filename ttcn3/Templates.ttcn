@@ -758,7 +758,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			// userIds and billingDetailsIds for later comparisoon with data in PaymentClaim
 			type record of UserId ReceivedUserIdList;
 			type record of BillingDetailsId BillingDetailsIdList;
-			type record of BillingDetailsList ReceivedBillingDetailsIdList;
+			type record of BillingDetailsIdList ReceivedBillingDetailsIdList;
 					 					
 		}
 
@@ -1478,129 +1478,182 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				listOfRawUsageData := *,// TC may use it, but mandatory for TSP
 				noUsage := omit, // shall not be used in ISO 16986
 				additionalUsageInformation := *
-			}
+			};
 
-		// Relevant data types below, for easy reference		
-		//
-		//		type record TollDeclarationId {
-		//		  EfcDsrcApplication.Provider issuerId,
-		//		  integer declarationId
-		//		}
-		//				
-		//		type record TollDeclarationADU {
-		//		  TollDeclarationId tollDeclarationId,
-		//		  record of union {
-		//			ChargeReport chargeReport,
-		//			EfcAutonomousCharging.AuthenticatedChargeReport authenticatedChargeReport
-		//		  } gnssTollDeclaration,
-		//		  ActionCode actionCode optional
-		//		}
-		//		
-		//		type record ChargeReport {
-		//	        EfcAutonomousCharging.AidIdentifier protocolVersion,
-		//	        ObeId                               obeId optional,
-		//	        VehicleLicencePlateNumber           vehicleLPNr optional,
-		//	        PaymentMeans                        paymentMeans optional, 
-		//	        EFC_ContextMark                     serviceProviderContract,
-		//	        Provider                            tollContext optional,
-		//	        Provider                            chargeReportFinalRecipient optional,
-		//			ASNAUX.GeneralizedTime              timeOfReport optional,
-		//	        Period                              reportPeriod optional,
-		//	        VersionId                           versionInfo optional,
-		//			record of union {
-		//				UsageStatement usageStatement,
-		//				AuthenticatedUsageStatement authenticatedUsageStatement
-		//			} usageStatementList,
-		//			PaymentFee                          sumVatForThisSession optional,
-		//	        AccountStatus                       accountStatus optional,
-		//	        EfcAutonomousContextData.Int4       chargeReportCounter optional,
-		//	        Distance                            mileage optional,
-		//	        set of CccAttributes                listOfCccAttributes optional
-		//		}
-		//		
-		//		type record EFC_ContextMark {
-		//			Provider contractProvider,
-		//			octetstring typeOfContract length (2),
-		//			integer contextVersion (
-		//			0 .. 127, 
-		//			?
-		//			)
-		//		}
-		//		
-		//		type record UsageStatement {
-		//			EfcDsrcApplication.Int2				usageStatementId optional,
-		//	        Provider                            tollContext optional,
-		//	        Provider                            chargeReportFinalRecipient optional,
-		//	        AggregatedFee                       aggregatedFee optional,
-		//	        PaymentFee                          sumVat optional,
-		//	        AggregatedSingleTariffClassSession  aggregatedSingleTariffClassSession optional,
-		//	        set of DetectedChargeObject         listOfChargeObjects optional,
-		//	        ListOfDsrcUsageData                 listOfDsrcUsageData optional,
-		//	        ListOfRawUsageData                  listOfRawUsageData optional,
-		//	        boolean                             noUsage optional,
-		//	        octetstring                         additionalUsageInformation optional
-		//	    }
-		//
-		//		ObeId ::= SEQUENCE {
-		//			manufacturerId			Int2, 			-- see ObeConfiguration in 14906
-		//			equipmentObuId			EquipmentOBUId
-		//		}
-				
-		//		LPN::= SEQUENCE {
-		//			countryCode CountryCode,
-		//			alphabetIndicator ENUMERATED {
-		//				latinAlphabetNo1 (1), -- encoded as 00 00 00'B
-		//				latinAlphabetNo2 (2), -- encoded as 00 00 01'B etc
-		//				latinAlphabetNo3 (3),
-		//				latinAlphabetNo4 (4),
-		//				latinCyrillicAlphabet (5),
-		//				latinArabicAlphabet (6),
-		//				latinGreekAlphabet (7),
-		//				latinHebrewAlphabet (8),
-		//				latinAlphabetNo5 (9),
-		//				latinAlphabetNo6 (10),
-		//				twoOctetBMP (11),
-		//				fourOctetCanonical (12),
-		//				reservedForUse1 (13),
-		//				reservedForUse2 (14),
-		//				reservedForUse3 (15),
-		//				reservedForUse4 (16),
-		//				reservedForUse5 (17),
-		//				reservedForUse6 (18),
-		//				reservedForUse7 (19),
-		//				reservedForUse8 (20),
-		//				reservedForUse9 (21),
-		//				reservedForUse10 (22),
-		//				reservedForUse11 (23),
-		//				reservedForUse12 (24),
-		//				reservedForUse13 (25),
-		//				reservedForUse14 (26),
-		//				reservedForUse15 (27),
-		//				reservedForUse16 (28),
-		//				reservedForUse17 (29),
-		//				reservedForUse18 (30),
-		//				reservedForUse19 (31),
-		//				reservedForUse20 (32),
-		//				reservedForUse21 (33)
-		//			} -- 6 bits, latinAlphabetNo1 recommended -- ,
-		//			-- refer to Annex E for conversion from LatinAlphabetNo 2
-		//			-- and 5 to Latin AlphabetNo1
-		//			licencePlateNumber OCTET STRING
-		//		}
-		//
-		//  type record PaymentMeans {
-		//    PersonalAccountNumber personalAccountNumber,
-		//    DateCompact paymentMeansExpiryDate,
-		//    octetstring pamentMeansUsageControl length (2)
-		//  }
-		//
-		//	DateCompact::= SEQUENCE {
-		//		year INTEGER (1990..2117),
-		//		month INTEGER (0..12), -- Value zero shall not be used
-		//		-- except with 1990 - see below.
-		//		day INTEGER (0..31) -- Value zero shall not be used
-		//		-- except with 1990 ï¿½ see below.
-		//	}	
+			// Relevant data types below, for easy reference		
+			//
+			//		type record TollDeclarationId {
+			//		  EfcDsrcApplication.Provider issuerId,
+			//		  integer declarationId
+			//		}
+			//				
+			//		type record TollDeclarationADU {
+			//		  TollDeclarationId tollDeclarationId,
+			//		  record of union {
+			//			ChargeReport chargeReport,
+			//			EfcAutonomousCharging.AuthenticatedChargeReport authenticatedChargeReport
+			//		  } gnssTollDeclaration,
+			//		  ActionCode actionCode optional
+			//		}
+			//		
+			//		type record ChargeReport {
+			//	        EfcAutonomousCharging.AidIdentifier protocolVersion,
+			//	        ObeId                               obeId optional,
+			//	        VehicleLicencePlateNumber           vehicleLPNr optional,
+			//	        PaymentMeans                        paymentMeans optional, 
+			//	        EFC_ContextMark                     serviceProviderContract,
+			//	        Provider                            tollContext optional,
+			//	        Provider                            chargeReportFinalRecipient optional,
+			//			ASNAUX.GeneralizedTime              timeOfReport optional,
+			//	        Period                              reportPeriod optional,
+			//	        VersionId                           versionInfo optional,
+			//			record of union {
+			//				UsageStatement usageStatement,
+			//				AuthenticatedUsageStatement authenticatedUsageStatement
+			//			} usageStatementList,
+			//			PaymentFee                          sumVatForThisSession optional,
+			//	        AccountStatus                       accountStatus optional,
+			//	        EfcAutonomousContextData.Int4       chargeReportCounter optional,
+			//	        Distance                            mileage optional,
+			//	        set of CccAttributes                listOfCccAttributes optional
+			//		}
+			//		
+			//		type record EFC_ContextMark {
+			//			Provider contractProvider,
+			//			octetstring typeOfContract length (2),
+			//			integer contextVersion (
+			//			0 .. 127, 
+			//			?
+			//			)
+			//		}
+			//		
+			//		type record UsageStatement {
+			//			EfcDsrcApplication.Int2				usageStatementId optional,
+			//	        Provider                            tollContext optional,
+			//	        Provider                            chargeReportFinalRecipient optional,
+			//	        AggregatedFee                       aggregatedFee optional,
+			//	        PaymentFee                          sumVat optional,
+			//	        AggregatedSingleTariffClassSession  aggregatedSingleTariffClassSession optional,
+			//	        set of DetectedChargeObject         listOfChargeObjects optional,
+			//	        ListOfDsrcUsageData                 listOfDsrcUsageData optional,
+			//	        ListOfRawUsageData                  listOfRawUsageData optional,
+			//	        boolean                             noUsage optional,
+			//	        octetstring                         additionalUsageInformation optional
+			//	    }
+			//
+			//		ObeId ::= SEQUENCE {
+			//			manufacturerId			Int2, 			-- see ObeConfiguration in 14906
+			//			equipmentObuId			EquipmentOBUId
+			//		}
+					
+			//		LPN::= SEQUENCE {
+			//			countryCode CountryCode,
+			//			alphabetIndicator ENUMERATED {
+			//				latinAlphabetNo1 (1), -- encoded as 00 00 00'B
+			//				latinAlphabetNo2 (2), -- encoded as 00 00 01'B etc
+			//				latinAlphabetNo3 (3),
+			//				latinAlphabetNo4 (4),
+			//				latinCyrillicAlphabet (5),
+			//				latinArabicAlphabet (6),
+			//				latinGreekAlphabet (7),
+			//				latinHebrewAlphabet (8),
+			//				latinAlphabetNo5 (9),
+			//				latinAlphabetNo6 (10),
+			//				twoOctetBMP (11),
+			//				fourOctetCanonical (12),
+			//				reservedForUse1 (13),
+			//				reservedForUse2 (14),
+			//				reservedForUse3 (15),
+			//				reservedForUse4 (16),
+			//				reservedForUse5 (17),
+			//				reservedForUse6 (18),
+			//				reservedForUse7 (19),
+			//				reservedForUse8 (20),
+			//				reservedForUse9 (21),
+			//				reservedForUse10 (22),
+			//				reservedForUse11 (23),
+			//				reservedForUse12 (24),
+			//				reservedForUse13 (25),
+			//				reservedForUse14 (26),
+			//				reservedForUse15 (27),
+			//				reservedForUse16 (28),
+			//				reservedForUse17 (29),
+			//				reservedForUse18 (30),
+			//				reservedForUse19 (31),
+			//				reservedForUse20 (32),
+			//				reservedForUse21 (33)
+			//			} -- 6 bits, latinAlphabetNo1 recommended -- ,
+			//			-- refer to Annex E for conversion from LatinAlphabetNo 2
+			//			-- and 5 to Latin AlphabetNo1
+			//			licencePlateNumber OCTET STRING
+			//		}
+			//
+			//  type record PaymentMeans {
+			//    PersonalAccountNumber personalAccountNumber,
+			//    DateCompact paymentMeansExpiryDate,
+			//    octetstring pamentMeansUsageControl length (2)
+			//  }
+			//
+			//	DateCompact::= SEQUENCE {
+			//		year INTEGER (1990..2117),
+			//		month INTEGER (0..12), -- Value zero shall not be used
+			//		-- except with 1990 - see below.
+			//		day INTEGER (0..31) -- Value zero shall not be used
+			//		-- except with 1990 ï¿½ see below.
+			//	}	
+	
+			template InfoExchange m_apduTollDeclarationsTen(in integer p_actionCode:=ActionCode_send_):=m_apduNoAuthInitTester({
+				m_aduTollDeclarationToSendOneObe(
+					{TD_IDENTIFIER, 1},
+					TD_USAGE_STATEMENT_VALID_1,
+					1,
+					p_actionCode),
+				m_aduTollDeclarationToSendOneObe(
+					{TD_IDENTIFIER, 2},
+					TD_USAGE_STATEMENT_VALID_2,
+					2,
+					p_actionCode),
+				m_aduTollDeclarationToSendOneObe(
+					{TD_IDENTIFIER, 3},
+					TD_USAGE_STATEMENT_VALID_3,
+					3,
+					p_actionCode),							
+				m_aduTollDeclarationToSendOneObe(
+					{TD_IDENTIFIER, 4},
+					TD_USAGE_STATEMENT_VALID_4,
+					4,
+					p_actionCode),
+				m_aduTollDeclarationToSendOneObe(
+					{TD_IDENTIFIER, 5},
+					TD_USAGE_STATEMENT_VALID_5,
+					5,
+					p_actionCode),
+				m_aduTollDeclarationToSendOneObe(
+					{TD_IDENTIFIER, 6},
+					TD_USAGE_STATEMENT_VALID_6,
+					6,
+					p_actionCode),
+				m_aduTollDeclarationToSendOneObe(
+					{TD_IDENTIFIER, 7},
+					TD_USAGE_STATEMENT_VALID_7,
+					7,
+					p_actionCode),
+				m_aduTollDeclarationToSendOneObe(
+					{TD_IDENTIFIER, 8},
+					TD_USAGE_STATEMENT_VALID_8,
+					8,
+					p_actionCode),
+				m_aduTollDeclarationToSendOneObe(
+					{TD_IDENTIFIER, 9},
+					TD_USAGE_STATEMENT_VALID_9,
+					9,
+					p_actionCode),
+				m_aduTollDeclarationToSendOneObe(
+					{TD_IDENTIFIER, 10},
+					TD_USAGE_STATEMENT_VALID_10,
+					10,
+					p_actionCode)
+			});
     
 		}
 
