@@ -39,7 +39,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 	import from EfcInfoExchange_ParameterisedAsn1Data all;  
     import from LibEfc_Common_Parameterised_Asn1_Data all;
 	import from EfcInfoExchangeProfile all;
-    
+    //TODO Ulrik templates that are marked as fuzzy that are themselves called b other templates, there the fuzzy-mark must be propagated to the higher level template
     group ApduTemplates {
     	
     	/* Underlaying definitions for APCI and security*/
@@ -59,7 +59,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
     		apduDate :=  ?
     	}
 
-		template (value) ApciFields m_apciInitTester modifies mw_apci :={
+		template (value) @fuzzy ApciFields m_apciInitTester modifies mw_apci :={
     		apduOriginator := TD_APDU_ORIGINATOR_FOR_TESTER,  
     		informationSenderID := TD_INFORMATION_SENDER_ID_FOR_TESTER, 
     		informationrecipientID := INFORMATION_SENDER_ID_FOR_IUT,
@@ -70,7 +70,13 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		}
 		
 		template (value) ApciFields m_apciRespTester(in InfoExchange p_apduBeingRespondedTo) modifies m_apciInitTester :={
-			inResponseToApduId:=p_apduBeingRespondedTo.infoExchangeContent.apci.apduIdentifier
+			apduOriginator := TD_APDU_ORIGINATOR_FOR_TESTER,  
+			informationSenderID := TD_INFORMATION_SENDER_ID_FOR_TESTER, 
+			informationrecipientID := INFORMATION_SENDER_ID_FOR_IUT,
+			apduIdentifier := float2int(rnd()) * 65535,
+			previousApduId := omit,
+			inResponseToApduId:=p_apduBeingRespondedTo.infoExchangeContent.apci.apduIdentifier,
+			apduDate:=fx_getUtc()
 		}
     	
 		template ApciFields mw_apciInitIut modifies mw_apci :={
@@ -108,7 +114,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		  infoExchangeAuthenticator := ?
 		}
 
-    	template InfoExchange m_apduAuth(in template ApciFields p_apci, in template Adus p_adus):={
+    	template @fuzzy InfoExchange m_apduAuth(in ApciFields p_apci, in Adus p_adus):={
     	  infoExchangeContent:={
     	  	apci:=p_apci,
     	  	adus:=p_adus
@@ -156,13 +162,13 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
     	 * @desc Definition: "An APDU with the APCI-fields set to informationRecipientId = Tester identifier and apduDate = valid date, 
     	 * @desc optional fields on all levels not present" 
     	 */ 
-    	template InfoExchange mw_apduNoAuthInitIut(in Adus p_adus) := m_apduNoAuth(
+    	template InfoExchange mw_apduNoAuthInitIut(in template Adus p_adus) := m_apduNoAuth(
      		mw_apciInitIut, 
      		p_adus
      	);
 
 
-    	template InfoExchange mw_apduAuthInitIut(in Adus p_adus) := mw_apduAuth(
+    	template InfoExchange mw_apduAuthInitIut(in template Adus p_adus) := mw_apduAuth(
      		mw_apciInitIut, 
      		p_adus
      	);
@@ -409,10 +415,10 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
         		}
         	}
         	
-        	template (value) Adus m_adusProvideUserDetailsRandomParams:={
+        	template (value) @fuzzy Adus m_adusProvideUserDetailsRandomParams:={
         		m_aduRequestProvideUserDetails(f_userDetailsParameters())
         	} 
-        	       			
+         	       			
 //        	template ProvideUserDetailsADU mw_userDetailsPrivacy_apduIdentifier := {
 //                originaluserIdRequest := DEFINED_USERID,
 //                userId := *,
@@ -455,7 +461,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				}
 			}
 			  	
-		  	template (value) RequestADU m_aduRequestListOfUsers(in UserId p_userId:=PX_EXISTING_USER_ID) := {
+		  	template (value) @fuzzy RequestADU m_aduRequestListOfUsers(in UserId p_userId:=PX_EXISTING_USER_ID) := {
 	  			userListRequest :={
 	  				requestedADUType	:= AduType_provideUserIdListADU_,
   					userIdRequestType	:= 0,
@@ -555,7 +561,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 //			
 //
 
-			template (value) ExceptionListADU m_aduExceptionList(
+			template (value) @fuzzy ExceptionListADU m_aduExceptionList(
 				in ExceptionListType p_exceptionListType,
 				in UserId p_userId,
 				in ExceptionListStatusType p_exceptionListStatusType,
@@ -602,7 +608,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				}
 			);
 			
-			template TrustObjectADU mw_aduTrustObject(
+			template @fuzzy TrustObjectADU mw_aduTrustObject(
 				template RecOfTrustObjectPurposes p_recOfTrustObjectPurposes,
 				template TrustObjectCode p_trustObjectCode
 			):={
@@ -618,7 +624,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				TrustObjectCode p_trustObjectCode
 			):=mw_aduTrustObject(p_recOfTrustObjectPurposes,p_trustObjectCode);
 			
-			template TrustObjectADU m_aduTrustObjectInvalidStatus:= {
+			template @fuzzy TrustObjectADU m_aduTrustObjectInvalidStatus:= {
 				trustObjectID := float2int(rnd()),
 				purposesOfTrustObject := {TrustObjectPurposes_dSRCCharging_,TrustObjectPurposes_dSRCAC_,TrustObjectPurposes_oBEInterrogation_,TrustObjectPurposes_oBEInterrogationAC_},
 				startValidity := fx_getUtc(),
@@ -910,7 +916,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			}
 			
 			
-			template (value) VersionAndValidity m_basicVersionValidFromNow :={
+			template (value) @fuzzy VersionAndValidity m_basicVersionValidFromNow :={
 				version:={
 					basicVersionId:=basicVersionIdTESTER_VALUE
 				},

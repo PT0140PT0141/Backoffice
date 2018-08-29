@@ -1391,7 +1391,8 @@ module EfcInfoExchange_TestCasesTsp {
            testcase TP_TSP_TRUSTOBJECTS_BV_02() runs on MainTestComponent system TestAdapter {
              
               /**
-              * @desc    TP_TSP_TRUSTOBJECTS_BV_02: Verify that the TSP correctly responds to a TrustObjectADU received from a TC without having issued a request 
+              * @desc    TP_TSP_TRUSTOBJECTS_BV_02: Verify that the TSP correctly responds to 
+              * @desc	 a TrustObjectADU received from a TC without having issued a request 
               * @remark  [16986:2016], Clause 6.6 and Table A.1/2 
               * @remark  Same as TP_TC_TRUSTOBJECTS_BV_02
               */
@@ -1400,8 +1401,18 @@ module EfcInfoExchange_TestCasesTsp {
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				
                  // Step 1: Send one valid APDU containing the a valid TrustObjectADU with the only mandatorily supported type in both profiles, for all possible purposes
-				var InfoExchange v_apduForSending := m_apduNoSecInit(m_aduTrustObject
-					({TrustObjectPurposes_dSRCCharging_,TrustObjectPurposes_dSRCAC_,TrustObjectPurposes_oBEInterrogation_,TrustObjectPurposes_oBEInterrogationAC_}, DSRCRF_OBJECT_TESTER_VALUE));                 
+				//TODO Fausto what is the DSRCRF_OBJECT_TESTER_VALUE supposed to be, could it be a constant instead? Why four trust object purposes 
+				var InfoExchange v_apduForSending := m_apduNoAuthInitTester(
+					m_aduTrustObject(
+						{
+							TrustObjectPurposes_dSRCCharging_,
+							TrustObjectPurposes_dSRCAC_,
+							TrustObjectPurposes_oBEInterrogation_,
+							TrustObjectPurposes_oBEInterrogationAC_
+						}, 
+						DSRCRF_OBJECT_TESTER_VALUE
+					)
+				);                 
 				f_sendAndLogApdu(v_apduForSending);                 
                  // Step 2: Wait for positive Ack within TRUSTOBJECTS.TIME2
 				// Set timer
@@ -1527,6 +1538,7 @@ module EfcInfoExchange_TestCasesTsp {
 								v_apduToSend := m_apduTrustObjectResponse(
 									v_apduReceived, 
 									v_requestedTrustObjectPurposesRecords,
+									//TODO Fausto, what is this supposed to be? TD_DSRCKEY_OBJECT is not defined
 									TD_DSRCKEY_OBJECT
 								);                 												
 							}
@@ -1577,8 +1589,8 @@ module EfcInfoExchange_TestCasesTsp {
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_4_implementedTRUSTOBJECTSElectronicTransfer;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
-				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester(m_aduTrustObjectInvalidStatus);                 
-				f_sendAndLogApdu(v_apduToBeSent);                 
+				var InfoExchange v_apduForSending := m_apduNoAuthInitTester(m_aduTrustObjectInvalidStatus);                 
+				f_sendAndLogApdu(v_apduForSending);                 
                 // Step 2: Wait for negative Ack within TRUSTOBJECTS.TIME2
 				// Set timer
                  t_step.start(TRUSTOBJECTS_TYPE1_TIME2_MAX_TSP);                		
@@ -1608,16 +1620,17 @@ module EfcInfoExchange_TestCasesTsp {
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_4_implementedTRUSTOBJECTSElectronicTransfer;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				// Set two different TrustObject adus by varying the type of trust object 
-				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester(
+				var InfoExchange v_apduForSending := m_apduNoAuthInitTester(
 					{
 					 m_aduTrustObject(
 						{TrustObjectPurposes_dSRCCharging_,TrustObjectPurposes_dSRCAC_,TrustObjectPurposes_oBEInterrogation_,TrustObjectPurposes_oBEInterrogationAC_},
+						//TODO Fausto define DSRCRF_OBJECT_TESTER_VALUE
 						DSRCRF_OBJECT_TESTER_VALUE),
 					 m_aduTrustObject(
 					 	{TrustObjectPurposes_dSRCCharging_},
 					 	certificateTESTER_OBJECT) }
 					);                 
-				f_sendAndLogApdu(v_apduToBeSent);                 
+				f_sendAndLogApdu(v_apduForSending);                 
                 // Step 2: Wait for negative Ack within TRUSTOBJECTS.TIME2
 				// Set timer
                  t_step.start(TRUSTOBJECTS_TYPE1_TIME2_MAX_TSP);                		
@@ -1692,7 +1705,7 @@ module EfcInfoExchange_TestCasesTsp {
 				var Adus requestAduInWrapper:= {requestAdus:={requestAdu}};
 				
 				var InfoExchange v_firstApduRequest:=m_apduNoAuthInitTester(requestAduInWrapper); 
-				var InfoExchange v_secondApduReqest:=m_apduNoAuthInitTester(requestAduInWrapper); 
+				var InfoExchange v_secondApduRequest:=m_apduNoAuthInitTester(requestAduInWrapper); 
 				
 				
 				// Now send the first apdu
@@ -1709,7 +1722,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// timeout expiration is handled in the altstep branch
 				
 				alt {
-					[] mtcPort.receive(mw_apduNackRequestSentTooOften(v_apduForSending)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNackRequestSentTooOften(v_secondApduRequest)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TYPE1_TIME2_MIN_TSP);  
 						setverdict(pass);
 						}
@@ -1729,6 +1742,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Step1: prepare TrustObjectADU by specifying KeyRef as type of trustobject
 				var TrustObjectADU v_trustObjectAdu:=	m_aduTrustObject(
 						{TrustObjectPurposes_dSRCCharging_,TrustObjectPurposes_dSRCAC_,TrustObjectPurposes_oBEInterrogation_,TrustObjectPurposes_oBEInterrogationAC_},
+						//TODO Fausto define DSRCRF_OBJECT_TESTER_VALUE
 						TrustObjectCode:{dsrcKeyRef:=DSRCRF_OBJECT_TESTER_VALUE}
 				);                 
 				
@@ -1747,7 +1761,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Either we receive an APDU containing  Nack or the timeout expires
 				// timeout expiration is handled in the altstep branch
 				alt {
-					[] mtcPort.receive(m_apduNAckRequestSentTooOften(v_secondApduToBeSent)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNackRequestSentTooOften(v_secondApduToBeSent)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TYPE1_TIME1_MIN_TSP);  
 						setverdict(pass);
 						}

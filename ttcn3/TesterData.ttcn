@@ -240,7 +240,7 @@ module EfcInfoExchange_TesterData{
 	group TRUSTOBJECTS {
 		modulepar TrustObjectCode TD_CERT_REVOKE_LIST;
 		modulepar octetstring TD_CERTIFICATE;
-	 	modulepar octetstring genericTrustObjectTESTER_VALUE;
+	 	modulepar octetstring TD_GENERIC_TRUST_OBJECT;
 	 	modulepar PublicKeyObject TD_PUBLICKEY;
     	modulepar DsrcKeyObject TD_SYMMETRIC_KEY;
     	modulepar DsrcKeyObject TD_SYMMETRIC_KEY_ENCRYPTED;
@@ -255,7 +255,7 @@ module EfcInfoExchange_TesterData{
     	};
 		modulepar GenericTrustObject invalidTESTERGenericObject := {
 		  typeOfTrustObject := TrustObjectTypes_certificate_,
-		  genericTrustObject := genericTrustObjectTESTER_VALUE
+		  genericTrustObject := TD_GENERIC_TRUST_OBJECT
 		};   
 	}	
 
