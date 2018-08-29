@@ -6,8 +6,10 @@
 
 module EfcInfoExchange_TesterData{
 	//TODO Prefix every modulepar with "TD" and add tags for semantic definitions in comments
+
 	//importing other modules
 	import from EfcInfoExchange_Functions all;
+	import from EfcInfoExchange_Templates all;
 		
 	//importing ASN.1 data automatically translated into TTCN-3	
 	import from EfcInfoExchange language "ASN.1:1997" all;	//from ISO 12855:2015
@@ -19,7 +21,7 @@ module EfcInfoExchange_TesterData{
 	import from EfcInfoExchange_ParameterisedAsn1Data all;
 	import from LibEfc_Common_Parameterised_Asn1_Data all;
 	
-	modulepar EfcDsrcApplication.Provider TD_IDENTIFIER := 'A40053'H; // [SEMANTIC DEFINITION] The provider identifier of the tester
+	modulepar EfcDsrcApplication.Provider TD_IDENTIFIER := 'A40053'H; // Default is Sweden 99 [SEMANTIC DEFINITION] The provider identifier of the tester
 		// acccording to ISO 14906 consisting of countryCode and issuerIdentifier
 	modulepar EfcDsrcApplication.Provider TD_APDU_ORIGINATOR_FOR_TESTER := 'A40053'H; // [SEMANTIC DEFINITION] The originator id of the tester
 		// that is used in the APCI field apdu originator. Same syntax as the provider identifier. 
@@ -110,8 +112,15 @@ module EfcInfoExchange_TesterData{
 	
 	group ExceptionListTesterData {
 	
+		//These values have different "errors"
+		//TODO replace with templates instead, consider defining as constant, or put template right into the testcase
+		modulepar ExceptionListADU TD_EXCEPTIONLIST_ADU_BLACK_INVALID_1;
+		modulepar ExceptionListADU TD_EXCEPTIONLIST_ADU_BLACK_INVALID_2;
+		modulepar ExceptionListADU TD_EXCEPTIONLIST_ADU_BLACK_INVALID_3;
+		modulepar ExceptionListADU TD_EXCEPTIONLIST_ADU_TYPE4_VALID;
+		
 		modulepar ExceptionListVersion TD_EXCEPTIONLIST_VERSION := 1; // defined as integer
-		modulepar ASNAUX.GeneralizedTime TD_EXCEPTIONLIST_VALIDITY_START;
+
 		
 		modulepar EfcDsrcApplication.PersonalAccountNumber TD_PAN_1;
 		modulepar EfcDsrcApplication.LPN TD_LPN_1;
@@ -123,7 +132,6 @@ module EfcInfoExchange_TesterData{
 			licencePlateNumber := TD_LPN_1,
 			obeID := TD_OBE_ID_1
 		}			
-		modulepar ASNAUX.GeneralizedTime TD_ENTRY_VALIDITY_START;
 		modulepar VehicleParameters TD_VEHICLE_PARAMETERS;
 		modulepar ASNAUX.UTF8String TD_VAT_ID;  
 		modulepar UserId TD_USERID_1, TD_USERID_2, TD_USERID_3, TD_USERID_4, TD_USERID_5, TD_USERID_6, TD_USERID_7, TD_USERID_8;
@@ -136,59 +144,96 @@ module EfcInfoExchange_TesterData{
 			TD_USER_ID_NOT_PRESENT_AT_IUT_3
 		};				
 		
-		modulepar ExceptionListADU TD_EXCEPTIONLIST_ADU_BLACK_VALID := {
-			exceptionListVersion := TD_EXCEPTIONLIST_VERSION,
-			exceptionListType := ExceptionListType_blackList_,
-		  	exceptionValidityStart := TD_EXCEPTIONLIST_VALIDITY_START,
-		  	exceptionValidityEnd := omit,
-		  	exceptionListEntries := {{	//Note: this is defined as record of ExceptionListEntry
-		  	  	userId := TD_USERID_1,
-		  	  	statusType := ExceptionListStatusType_locallyBlocked_,
-		  	  	reasonCode := ExceptionListReasonType_notToBeDisclosed_,
-		  	  	entryValidityStart := TD_ENTRY_VALIDITY_START,
-		  	  	entryValidityEnd := omit,
-		  	  	vehicleParameters := TD_VEHICLE_PARAMETERS,
-		  	  	actionRequested := ExceptionListActionType_rejectOBE_,
-		  	  	efcContextMark := omit,
-		  	  	vatId := TD_VAT_ID
-			}}
-		}
 
-		modulepar ExceptionListADU TD_EXCEPTIONLIST_ADU_WHITE_VALID := {
-			exceptionListVersion := TD_EXCEPTIONLIST_VERSION,
-			exceptionListType := ExceptionListType_whiteList_,
-		  	exceptionValidityStart := TD_EXCEPTIONLIST_VALIDITY_START,
-		  	exceptionValidityEnd := omit,
-		  	exceptionListEntries := {{	//Note: this is defined as record of ExceptionListEntry
-		  	  	userId := TD_USERID_1,
-		  	  	statusType := ExceptionListStatusType_allApplications_,
-		  	  	reasonCode := omit, //TODO Fausto/Jan not allowed to omit this field
-		  	  	entryValidityStart := TD_ENTRY_VALIDITY_START,
-		  	  	entryValidityEnd := omit,
-		  	  	vehicleParameters := TD_VEHICLE_PARAMETERS,
-		  	  	actionRequested := ExceptionListActionType_acceptOBE_,
-		  	  	efcContextMark := omit,
-		  	  	vatId := TD_VAT_ID
-			}}
-		}
+		
+//		modulepar ExceptionListADU TD_EXCEPTIONLIST_ADU_BLACK_VALID := {
+//			exceptionListVersion := TD_EXCEPTIONLIST_VERSION,
+//			exceptionListType := ExceptionListType_blackList_,
+//		  	exceptionValidityStart := fx_getUtc(),
+//		  	exceptionValidityEnd := omit,
+//		  	exceptionListEntries := {{	//Note: this is defined as record of ExceptionListEntry
+//		  	  	userId := TD_USERID_1,
+//		  	  	statusType := ExceptionListStatusType_locallyBlocked_,
+//		  	  	reasonCode := ExceptionListReasonType_notToBeDisclosed_,
+//		  	  	entryValidityStart := fx_getUtc(),
+//		  	  	entryValidityEnd := omit,
+//		  	  	vehicleParameters := TD_VEHICLE_PARAMETERS,
+//		  	  	actionRequested := ExceptionListActionType_rejectOBE_,
+//		  	  	efcContextMark := omit,
+//		  	  	vatId := TD_VAT_ID
+//			}}
+//		}
+		
+		const ExceptionListADU c_exceptionListAduBlackValid1:=m_aduExceptionList(
+			ExceptionListType_blackList_,
+			TD_USERID_1,
+			ExceptionListStatusType_locallyBlocked_,
+			ExceptionListReasonType_notToBeDisclosed_,
+			ExceptionListActionType_rejectOBE_
+		);
 
-		modulepar ExceptionListADU TD_EXCEPTIONLIST_ADU_DISCOUNTED_VALID := {
-			exceptionListVersion := TD_EXCEPTIONLIST_VERSION,
-			exceptionListType := ExceptionListType_discountedList_,
-		  	exceptionValidityStart := TD_EXCEPTIONLIST_VALIDITY_START,
-		  	exceptionValidityEnd := omit,
-		  	exceptionListEntries := {{	//Note: this is defined as record of ExceptionListEntry
-		  	  	userId := TD_USERID_1,
-		  	  	statusType := ExceptionListStatusType_allApplications_,
-		  	  	reasonCode := omit, //TODO Fausto/Jan not allowed to omit this field
-		  	  	entryValidityStart := TD_ENTRY_VALIDITY_START,
-		  	  	entryValidityEnd := omit,
-		  	  	vehicleParameters := TD_VEHICLE_PARAMETERS,
-		  	  	actionRequested := ExceptionListActionType_acceptOBE_,
-		  	  	efcContextMark := omit,
-		  	  	vatId := TD_VAT_ID
-			}}
-		}		
+		const ExceptionListADU c_exceptionListAduBlackValid2:=m_aduExceptionList(
+			ExceptionListType_blackList_,
+			TD_USERID_2,
+			ExceptionListStatusType_locallyBlocked_,
+			ExceptionListReasonType_notToBeDisclosed_,
+			ExceptionListActionType_rejectOBE_
+		);
+
+		const ExceptionListADU c_exceptionListAduWhiteValid:=m_aduExceptionList(
+			ExceptionListType_whiteList_,
+			TD_USERID_1,
+			ExceptionListStatusType_allApplications_,
+			ExceptionListReasonType_whiteListedUser_,
+			ExceptionListActionType_acceptOBE_
+		);
+
+
+//		modulepar ExceptionListADU TD_EXCEPTIONLIST_ADU_WHITE_VALID := {
+//			exceptionListVersion := TD_EXCEPTIONLIST_VERSION,
+//			exceptionListType := ExceptionListType_whiteList_,
+//		  	exceptionValidityStart := fx_getUtc(),
+//		  	exceptionValidityEnd := omit,
+//		  	exceptionListEntries := {{	//Note: this is defined as record of ExceptionListEntry
+//		  	  	userId := TD_USERID_1,
+//		  	  	statusType := ExceptionListStatusType_allApplications_,
+//		  	  	reasonCode := omit, //TODO Fausto/Jan not allowed to omit this field
+//		  	  	entryValidityStart := fx_getUtc(),
+//		  	  	entryValidityEnd := omit,
+//		  	  	vehicleParameters := TD_VEHICLE_PARAMETERS,
+//		  	  	actionRequested := ExceptionListActionType_acceptOBE_,
+//		  	  	efcContextMark := omit,
+//		  	  	vatId := TD_VAT_ID
+//			}}
+//		}
+		const UserId c_userIdDiscountedList:={};
+		//TODO Jan this User is not allowed for discounted lists, it has no ContractSeriaNUmber - replace
+		const ExceptionListADU c_exceptionListAduDiscountedValid:=m_aduExceptionList(
+			ExceptionListType_discountedList_,
+			c_userIdDiscountedList,
+			ExceptionListStatusType_allApplications_,
+			ExceptionListReasonType_notToBeDisclosed_,
+			ExceptionListActionType_acceptOBE_
+		);
+
+
+//		modulepar ExceptionListADU TD_EXCEPTIONLIST_ADU_DISCOUNTED_VALID := {
+//			exceptionListVersion := TD_EXCEPTIONLIST_VERSION,
+//			exceptionListType := ExceptionListType_discountedList_,
+//		  	exceptionValidityStart := fx_getUtc(),
+//		  	exceptionValidityEnd := omit,
+//		  	exceptionListEntries := {{	//Note: this is defined as record of ExceptionListEntry
+//		  	  	userId := TD_USERID_1,
+//		  	  	statusType := ExceptionListStatusType_allApplications_,
+//		  	  	reasonCode := omit, //TODO Fausto/Jan not allowed to omit this field
+//		  	  	entryValidityStart := fx_getUtc(),
+//		  	  	entryValidityEnd := omit,
+//		  	  	vehicleParameters := TD_VEHICLE_PARAMETERS,
+//		  	  	actionRequested := ExceptionListActionType_acceptOBE_,
+//		  	  	efcContextMark := omit,
+//		  	  	vatId := TD_VAT_ID
+//			}}
+//		}		
 	} // end group ExceptionListTesterData		
 
 
@@ -303,10 +348,18 @@ module EfcInfoExchange_TesterData{
 		modulepar EfcDsrcApplication.PaymentMeans TD_PAYMENT_MEANS_1;//:= {PAN1,{2030,12,31}, "1234"};
 		modulepar EfcDsrcApplication.EFC_ContextMark TD_SERVICE_PROVIDER_CONTRACT := {TD_INFORMATION_SENDER_ID_FOR_TESTER, '11'O ,99};
 		modulepar Provider TD_TOLL_CONTEXT;	//value of the InfoExchange.infoExchangeContent.apci.informationSenderID	
+		modulepar UsageStatement TD_USAGE_STATEMENT_VALID_1, TD_USAGE_STATEMENT_VALID_2, TD_USAGE_STATEMENT_VALID_3,
+		TD_USAGE_STATEMENT_VALID_4, TD_USAGE_STATEMENT_VALID_5, TD_USAGE_STATEMENT_VALID_6, TD_USAGE_STATEMENT_VALID_7, 
+		TD_USAGE_STATEMENT_VALID_8, TD_USAGE_STATEMENT_VALID_9, TD_USAGE_STATEMENT_VALID_10, TD_USAGE_STATEMENT_VALID_11, 
+		TD_USAGE_STATEMENT_VALID_12, TD_USAGE_STATEMENT_VALID_13, TD_USAGE_STATEMENT_VALID_14, TD_USAGE_STATEMENT_VALID_15, 
+		TD_USAGE_STATEMENT_VALID_16, TD_USAGE_STATEMENT_VALID_17, TD_USAGE_STATEMENT_VALID_18, TD_USAGE_STATEMENT_VALID_19, 
+		TD_USAGE_STATEMENT_VALID_20; 
+
+
 	}
 
 
-	group GNSSBILLINGDETAILS {	
+	group GNSS_BILLINGDETAILS {	
 		modulepar EfcAutonomousCharging.Period TD_PERIOD_1; // period in billing details
 		modulepar ASNAUX.UTF8String TD_USER_CLASS; // applied user class
 		modulepar ASNAUX.UTF8String TD_DECLARED_VEHICLE_CLASS; // declared vehicle class
@@ -317,8 +370,6 @@ module EfcInfoExchange_TesterData{
 		modulepar ASNAUX.GeneralizedTime TD_TOLL_EVENT_TIME;
 		modulepar ExtendedPaymentAmount TD_DISCOUNT_AMOUNT;
 		modulepar DiscountQualifier TD_DISCOUNT_QUALIFIER;
-		modulepar UsageStatement TD_USAGE_STATEMENT_VALID_1, TD_USAGE_STATEMENT_VALID_2, TD_USAGE_STATEMENT_VALID_3,
-			TD_USAGE_STATEMENT_VALID_4, TD_USAGE_STATEMENT_VALID_5; 
  	}
  	
  	group PAYMENTANNOUNCEMENT {

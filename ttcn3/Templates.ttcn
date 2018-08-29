@@ -402,7 +402,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
         	) modifies mw_aduRequestProvideUserDetails := {
         		userDetailsRequest:={
         			requestedADUType := AduType_provideUserDetailsADU_,	
-            	  	userId := EXISTING_USER_ID,
+            	  	userId := PX_EXISTING_USER_ID,
 					listOfParametersRequested := p_userParameterRequests,
             		userDetailsRequestReason := omit,
             		userInfoValidityPeriod := omit
@@ -424,7 +424,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 //        	}
         	
         	template ProvideUserDetailsADU mw_aduProvideUserDetails := {
-            	originaluserIdRequest := EXISTING_USER_ID,
+            	originaluserIdRequest := PX_EXISTING_USER_ID,
             	userId := ?, 
             	statusFlag := * ,
             	listOfUserParameters := *
@@ -434,7 +434,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
    				m_apduNoAuth(m_apciRespTester(p_apduRespondedTo), Adus:{provideUserDetailsADUs:=?});
 			
 //			template ProvideUserDetailsADU m_aduProvideUserDetails:= {
-//            	originaluserIdRequest := EXISTING_USER_ID,
+//            	originaluserIdRequest := PX_EXISTING_USER_ID,
 //            	userId := ?, 
 //            	statusFlag := * ,
 //            	listOfUserParameters := *
@@ -554,6 +554,31 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 //			}
 //			
 //
+
+			template (value) ExceptionListADU m_aduExceptionList(
+				in ExceptionListType p_exceptionListType,
+				in UserId p_userId,
+				in ExceptionListStatusType p_exceptionListStatusType,
+				in ExceptionListReasonType p_exceptionListReasonType,
+				in ExceptionListActionType p_exceptionListActionType
+			):= {
+				exceptionListVersion := TD_EXCEPTIONLIST_VERSION,
+				exceptionListType := p_exceptionListType,
+			  	exceptionValidityStart := fx_getUtc(),
+			  	exceptionValidityEnd := omit,
+			  	exceptionListEntries := {{	//Note: this is defined as record of ExceptionListEntry
+			  	  	userId := p_userId,
+			  	  	statusType := p_exceptionListStatusType,
+			  	  	reasonCode := p_exceptionListReasonType,
+			  	  	entryValidityStart := fx_getUtc(),
+			  	  	entryValidityEnd := omit,
+			  	  	vehicleParameters := TD_VEHICLE_PARAMETERS,
+			  	  	actionRequested := p_exceptionListActionType,
+			  	  	efcContextMark := omit,
+			  	  	vatId := TD_VAT_ID
+				}}
+			}
+
 		}
 		
 		group TRUSTOBJECTS {
@@ -756,9 +781,8 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			//These are some extra type definitions needed for the building and matching of test data (see TP_TC_PAYMENTCLAIM_BV_01)			
 			// capture received userIds and billingDetailsIds in record of as we may have received many ADUs with different
 			// userIds and billingDetailsIds for later comparisoon with data in PaymentClaim
-			type record of UserId ReceivedUserIdList;
 			type record of BillingDetailsId BillingDetailsIdList;
-			type record of BillingDetailsIdList ReceivedBillingDetailsIdList;
+			type record of BillingDetailsIdList BillingDetailsIdMatrix;
 					 					
 		}
 

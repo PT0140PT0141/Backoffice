@@ -955,7 +955,7 @@ module EfcInfoExchange_TestCasesTsp {
                           	setverdict(fail);
                           	stop;
                         };                        
-                        if (not (v_apduReceived.adus.provideUserIdListADUs.userId == PX_EXISTING_USER_ID)) {
+                        if (not (v_apduReceived.adus.provideUserIdListADUs.userId == PX_PX_EXISTING_USER_ID)) {
                           	f_addLogEntry("Wrong User ID received");
                           	setverdict(fail);
                           	stop;
@@ -1796,7 +1796,7 @@ module EfcInfoExchange_TestCasesTsp {
 
 				var InfoExchange v_apduForSending := m_apduNoAuthInitTester(
 					{modifies mw_aduPaymentClaim:= {
-					  		userId := EXISTING_USER_ID,
+					  		userId := PX_EXISTING_USER_ID,
 					  		paymentClaimId := 1,
 					  		startDateTime := now,
 					  		paymentClaimStatus := PaymentClaimStatus_firstVersion_,
@@ -1884,7 +1884,7 @@ module EfcInfoExchange_TestCasesTsp {
 
 				var InfoExchange v_apduForSending := m_apduNoAuthInitTester(
 					{modifies mw_aduPaymentClaim:= {
-					  	userId := EXISTING_USER_ID,
+					  	userId := PX_EXISTING_USER_ID,
 					  	paymentClaimId := 1,
 					  	startDateTime := now,
 					  	actionCode := ActionCode_send_,
@@ -1911,7 +1911,7 @@ module EfcInfoExchange_TestCasesTsp {
 
 				var InfoExchange v_apduForSending := m_apduNoAuthInitTester(
 					{modifies mw_aduPaymentClaim:= {
-					  	userId := EXISTING_USER_ID,
+					  	userId := PX_EXISTING_USER_ID,
 					  	paymentClaimId := 1,
 					  	startDateTime := now,
 					  	actionCode := ActionCode_adjust_,
@@ -1937,7 +1937,7 @@ module EfcInfoExchange_TestCasesTsp {
 
 				var InfoExchange v_apduForSending := m_apduNoAuthInitTester(
 					{modifies mw_aduPaymentClaim:= {
-					  	userId := EXISTING_USER_ID,
+					  	userId := PX_EXISTING_USER_ID,
 					  	paymentClaimId := 1,
 					  	startDateTime := now,
 					  	actionCode := ActionCode_revoke_,
@@ -1997,7 +1997,7 @@ module EfcInfoExchange_TestCasesTsp {
 
 				var InfoExchange v_apduForSending := m_apduNoAuthInitTester(
 					{modifies mw_aduPaymentClaim:= {
-					  	userId := EXISTING_USER_ID,
+					  	userId := PX_EXISTING_USER_ID,
 					  	paymentClaimId := 1,
 					  	startDateTime := now,
 					  	actionCode := ActionCode_send_,
@@ -2024,7 +2024,7 @@ module EfcInfoExchange_TestCasesTsp {
 
 				var InfoExchange v_apduForSending := m_apduNoAuthInitTester(
 					{modifies mw_aduPaymentClaim:= {
-					  	userId := EXISTING_USER_ID,
+					  	userId := PX_EXISTING_USER_ID,
 					  	paymentClaimId := 2,
 					  	startDateTime := now,
 					  	actionCode := ActionCode_revoke_,
@@ -2082,7 +2082,7 @@ module EfcInfoExchange_TestCasesTsp {
                 		// paymentReference valid and not present
 				var InfoExchange v_apduForSending := m_apduNoAuthInitTester(
 					{modifies mw_aduPaymentClaim:= {
-					  	userId := EXISTING_USER_ID,
+					  	userId := PX_EXISTING_USER_ID,
 					  	paymentClaimId := 1,
 					  	startDateTime := now,
 					  	paymentClaimStatus := PaymentClaimStatus_firstVersion_,
@@ -2107,7 +2107,7 @@ module EfcInfoExchange_TestCasesTsp {
 
 				var InfoExchange v_apduForSending := m_apduNoAuthInitTester(
 					{modifies mw_aduPaymentClaim:= {
-					  	userId := EXISTING_USER_ID,
+					  	userId := PX_EXISTING_USER_ID,
 					  	paymentClaimId := 1,
 					  	startDateTime := now,
 					  	actionCode := ActionCode_adjust_,
@@ -2161,7 +2161,7 @@ module EfcInfoExchange_TestCasesTsp {
 
 				v_apduForSending := m_apduNoAuthInitTester(
 					{modifies mw_aduPaymentClaim:= {
-					  	userId := EXISTING_USER_ID,
+					  	userId := PX_EXISTING_USER_ID,
 					  	paymentClaimId := 1,
 					  	startDateTime := now,
 					  	actionCode := ActionCode_send_,
@@ -2218,7 +2218,7 @@ module EfcInfoExchange_TestCasesTsp {
 
 				var InfoExchange v_apduForSending := m_apduNoAuthInitTester(
 					{modifies mw_aduPaymentClaim:= {
-					  	userId := EXISTING_USER_ID,
+					  	userId := PX_EXISTING_USER_ID,
 					  	paymentClaimId := 1,
 					  	startDateTime := now,
 					  	actionCode := ActionCode_credit_,
@@ -2282,7 +2282,7 @@ module EfcInfoExchange_TestCasesTsp {
 
 				var InfoExchange v_apduForSending := m_apduNoAuthInitTester(
 					{modifies mw_aduPaymentClaim:= {
-					  	userId := EXISTING_USER_ID,
+					  	userId := PX_EXISTING_USER_ID,
 					  	paymentClaimId := 1,
 					  	startDateTime := now,
 					  	endDateTime := 0,
@@ -2339,7 +2339,7 @@ module EfcInfoExchange_TestCasesTsp {
 
 				var InfoExchange v_apduForSending := m_apduNoAuthInitTester(
 					{modifies mw_aduPaymentClaim:= {
-					  	userId := EXISTING_USER_ID,
+					  	userId := PX_EXISTING_USER_ID,
 					  	paymentClaimId := 1,
 					  	startDateTime := now,
 					  	actionCode := ActionCode_send_,
@@ -2367,7 +2367,7 @@ module EfcInfoExchange_TestCasesTsp {
 
 				var InfoExchange v_apduForSending := m_apduNoAuthInitTester(
 					{modifies mw_aduPaymentClaim:= {
-					  	userId := EXISTING_USER_ID,
+					  	userId := PX_EXISTING_USER_ID,
 					  	paymentClaimId := 1,
 					  	startDateTime := now,
 					  	actionCode := ActionCode_send_,
@@ -2395,7 +2395,7 @@ module EfcInfoExchange_TestCasesTsp {
 
 				var InfoExchange v_apduForSending := m_apduNoAuthInitTester(
 					{modifies mw_aduPaymentClaim:= {
-					  	userId := EXISTING_USER_ID,
+					  	userId := PX_EXISTING_USER_ID,
 					  	paymentClaimId := 1,
 					  	startDateTime := now,
 					  	actionCode := ActionCode_send_,
@@ -2454,7 +2454,7 @@ module EfcInfoExchange_TestCasesTsp {
 
 				var InfoExchange v_apduForSending := m_apduNoAuthInitTester(
 					{modifies mw_aduPaymentClaim:= {
-					  	userId := EXISTING_USER_ID,
+					  	userId := PX_EXISTING_USER_ID,
 					  	paymentClaimId := 1,
 					  	startDateTime := now,
 					  	actionCode := ActionCode_send_,
@@ -2472,7 +2472,7 @@ module EfcInfoExchange_TestCasesTsp {
 
 				var InfoExchange v_apduForSending := m_apduNoAuthInitTester(
 					{modifies mw_aduPaymentClaim:= {
-					  	userId := EXISTING_USER_ID,
+					  	userId := PX_EXISTING_USER_ID,
 					  	paymentClaimId := 1,
 					  	startDateTime := now,
 					  	actionCode := ActionCode_revoke_,
@@ -3361,7 +3361,7 @@ module EfcInfoExchange_TestCasesTsp {
                  // PT140 TODO : mw_aduReportAbnormalOBE template to be defined
 				var InfoExchange v_apduForSending := m_apduNoAuthInitTester(
 					{modifies mw_aduReportAbnormalOBE:= {
-					  	userId := EXISTING_USER_ID,
+					  	userId := PX_EXISTING_USER_ID,
 					  	dateAndTime := now,
 					  	abnormalOBEReasonCode := AbnormalOBEReasonCode_reasonNotToBeDisclosed_
 					  	}
@@ -3478,7 +3478,7 @@ module EfcInfoExchange_TestCasesTsp {
                 // PT140 TODO : mw_aduReportAbnormalOBE template to be defined
 				var InfoExchange v_apduForSending := {
 					m_apduNoAuthInitTester({modifies mw_aduReportAbnormalOBE:= {
-					  	userId := EXISTING_USER_ID,
+					  	userId := PX_EXISTING_USER_ID,
 					  	dateAndTime := fx_getUtc() + 1000,
 					  	abnormalOBEReasonCode := AbnormalOBEReasonCode_reasonNotToBeDisclosed_
 					  	}
@@ -3519,7 +3519,7 @@ module EfcInfoExchange_TestCasesTsp {
                 // PT140 TODO : mw_aduReportAbnormalOBE template to be defined
 				var InfoExchange v_apduForSending := {
 					m_apduNoAuthInitTester({modifies mw_aduReportAbnormalOBE:= {					  	
-					  	userId := EXISTING_USER_ID,
+					  	userId := PX_EXISTING_USER_ID,
 					  	efcContextMark := omit,
 					  	dateAndTime := now,
 					  	abnormalOBEReasonCode := AbnormalOBEReasonCode_reasonNotToBeDisclosed_
@@ -3560,7 +3560,7 @@ module EfcInfoExchange_TestCasesTsp {
                 // PT140 TODO : mw_aduReportAbnormalOBE template to be defined
 				var InfoExchange v_apduForSending := {
 					m_apduNoAuthInitTester({modifies mw_aduReportAbnormalOBE:= {
-					  	userId := EXISTING_USER_ID,
+					  	userId := PX_EXISTING_USER_ID,
 					  	efcContextMark := 0,
 					  	dateAndTime := now,
 					  	abnormalOBEReasonCode := AbnormalOBEReasonCode_reasonNotToBeDisclosed_
@@ -3602,7 +3602,7 @@ module EfcInfoExchange_TestCasesTsp {
                 // PT140 TODO : mw_aduReportAbnormalOBE template to be defined
 				var InfoExchange v_apduForSending := {
 					m_apduNoAuthInitTester({modifies mw_aduReportAbnormalOBE:= {					  	
-					  		userId := EXISTING_USER_ID,
+					  		userId := PX_EXISTING_USER_ID,
 					  		dateAndTime := now,
 					  		abnormalOBEReasonCode := omit
 					  		}
@@ -3644,12 +3644,12 @@ module EfcInfoExchange_TestCasesTsp {
                 // PT140 TODO : mw_aduReportAbnormalOBE template to be defined
 				var InfoExchange v_apduForSending := {
 					m_apduNoAuthInitTester(modifies mw_aduReportAbnormalOBE:= {
-					  	userId := EXISTING_USER_ID,
+					  	userId := PX_EXISTING_USER_ID,
 					  	dateAndTime := now,
 					  	abnormalOBEReasonCode := omit
 						}),
 					m_apduNoAuthInitTester(modifies mw_aduReportAbnormalOBE:= {
-					  	userId := EXISTING_USER_ID,
+					  	userId := PX_EXISTING_USER_ID,
 					  	dateAndTime := now,
 					  	abnormalOBEReasonCode := 700
 						})	
@@ -3687,7 +3687,7 @@ module EfcInfoExchange_TestCasesTsp {
                  // PT140 TODO : mw_aduReportAbnormalOBE template to be defined
 				var InfoExchange v_apduForSending := m_apduNoAuthInitTester(
 					{modifies mw_aduReportAbnormalOBE:= {
-					  	userId := EXISTING_USER_ID,
+					  	userId := PX_EXISTING_USER_ID,
 					  	dateAndTime := now,
 					  	abnormalOBEReasonCode := AbnormalOBEReasonCode_reasonNotToBeDisclosed_
 					  	}
@@ -3700,7 +3700,7 @@ module EfcInfoExchange_TestCasesTsp {
                  // PT140 TODO : mw_aduReportAbnormalOBE template to be defined
 				var InfoExchange v_apduForSending := m_apduNoAuthInitTester(
 					{modifies mw_aduReportAbnormalOBE:= {
-					  	userId := EXISTING_USER_ID,
+					  	userId := PX_EXISTING_USER_ID,
 					  	dateAndTime := now,
 					  	abnormalOBEReasonCode := AbnormalOBEReasonCode_obeIsNotWorkingProperly_
 					  	}
