@@ -21,7 +21,10 @@ module EfcInfoExchange_TestCasesCommon {
     import from EfcInfoExchange_Templates all;
 	import from EfcInfoExchange_TesterData all;
     import from EfcInfoExchangeProfile all;
-     
+  
+  
+//TODO Ulrik edit the descriptive comments of the test cases to say IUT and Tester instead of TC and TSP     
+//TODO Ulrik reintroduce FAusto code from TSP test cases
     
 	 /**
 	  * @desc    These Test Cases are common for the Toll Service Provider and Toll Charger for claiming 

@@ -50,6 +50,7 @@
 //        execute(TP_TC_EXCEPTIONLIST_BI_06());
 //        execute(TP_TC_EXCEPTIONLIST_BI_07());
 //        execute(TP_TC_EXCEPTIONLIST_BI_08());
+// //		execute(TP_TRUSTOBJECTS_BV_01(type1,TC))
 //        execute(TP_TC_TRUSTOBJECTS_BV_01());
 //        execute(TP_TC_TRUSTOBJECTS_BV_02());
 //        execute(TP_TC_TRUSTOBJECTS_BV_03());

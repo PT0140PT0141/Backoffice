@@ -2923,12 +2923,11 @@ module EfcInfoExchange_TestCasesTsp {
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
                  // Step 1: Send one valid APDU containing one valid BillingDetailsADU with no optional fields except includedDiscounts
-                 // PT140 TODO : mw_aduBillingDetails template to be defined and includedDiscounts to be set
 				var InfoExchange v_apduToSend := m_apduNoAuthInitTester({m_aduDsrcBillingDetails});                 
 				f_sendAndLogApdu(v_apduToSend);                 
                  // Step 2: Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
 				// Set timer
-                 t_step.start(DSRC_BILLINGDETAILS_TIME1_MAX_TSP);                 
+                t_step.start(DSRC_BILLINGDETAILS_TIME1_MAX_TSP);                 
 				alt {
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToSend)) -> value v_apduReceived {
 					  
@@ -2971,7 +2970,6 @@ module EfcInfoExchange_TestCasesTsp {
 				alt {
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(DSRC_BILLINGDETAILS_TIME1_MIN_TSP); 
-						//TODO Fausto check for all "BILLINGDETAILS_TIME" and replace by either "DSRC_BILLINGDETAILS_TIME" or "GNSS_BILLINGDETAILS_TIME"
 						setverdict(pass);
 						}
 					} // End of Alt statement					
@@ -2992,7 +2990,7 @@ module EfcInfoExchange_TestCasesTsp {
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				// Prepare a billingdetails with excessive amount
 				var InfoExchange v_apduToSend :=m_apduNoAuthInitTester(
-				{modifies mw_aduDsrcBillingDetails:= {
+				{modifies mw_aduDsrcBillingDetails(1):= {
 					billingDetailsAmount:={
 						paymentFeeAmount := MAX_ACCEPTED_BILLINGDETAILS_AMOUNT.paymentFeeAmount + 4000
 					}
@@ -3022,8 +3020,11 @@ module EfcInfoExchange_TestCasesTsp {
 
 				v_apduToSend :=m_apduNoAuthInitTester(
 					{
-						modifies mw_aduDsrcBillingDetails:= {
-							actionCode:=ActionCode_adjust_
+						modifies mw_aduDsrcBillingDetails(1):= {
+							actionCode:=ActionCode_adjust_,
+							billingDetailsAmount:={
+							 	paymentFeeAmount:=45
+							}						
 						}
 					}
 				);                 
@@ -3053,8 +3054,11 @@ module EfcInfoExchange_TestCasesTsp {
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
                  // Send one valid APDU containing one valid BillingDetailsADU numbered 1 with only mandatory field
-                 // PT140 TODO : mw_aduBillingDetails template and related fields to be defined
-				var InfoExchange v_apduForSending := m_apduNoAuthInitTester(m_aduDsrcBillingDetails);                 
+				var InfoExchange v_apduForSending := m_apduNoAuthInitTester(
+					{modifies mw_aduDsrcBillingDetails(1):= {
+						actionCode := ActionCode_revoke_
+					}}
+				); 
 				f_sendAndLogApdu(v_apduForSending);                 
                  // Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
 				// Set timer
@@ -3105,8 +3109,8 @@ module EfcInfoExchange_TestCasesTsp {
                  //  Send one valid APDU containing one BillingDetailsADU numbered 3 with actionCode = SEND and only mandatory fields
                  // PT140 TODO : mw_aduBillingDetails template to be defined
 				var InfoExchange v_apduForSending := m_apduNoAuthInitTester(
-					{modifies mw_aduBillingDetails:= {
-					  	billingDetailsId := 3, actionCode := ActionCode_send_, billingDetailsAmount.paymentFeeAmount := 50
+					{modifies mw_aduBillingDetails(3):= {
+						billingDetailsAmount:={paymentFeeAmount := 50}
 					  	}
 					});                 
 				f_sendAndLogApdu(v_apduForSending);                 
@@ -3122,24 +3126,17 @@ module EfcInfoExchange_TestCasesTsp {
                  // Step 1: Send one valid APDU containing 10  BillingDetailsADUs with actionCode = SEND numbered from 4 to 13, each one with the following parameters respectively set to one incorrect value:
                  	// billingDetailsId.issuerId, tollContext, userId, billingDetailsAmount, usageDetails.contextName, usageDetails.appliedUserClass, usageDetails.perDeclaredVehicleClasses, usageDetails.appliedTimeClass, usageDetails.entranceTime, usageList.ListofSections.chargeObjectId
 				v_apduForSending := m_apduNoAuthInitTester({
-					{
-						modifies m_aduDsrcBillingDetails(4):={
-							billingDetailsId:={
-								issuerId := 0
-							}
-						}
-					},                 
-					m_aduDsrcBillingDetails(5),                 
-					m_aduDsrcBillingDetails(6),                 
-					m_aduDsrcBillingDetails(7),                 
-					m_aduDsrcBillingDetails(8),                 
-					m_aduDsrcBillingDetails(9),                 
-					m_aduDsrcBillingDetails(10),                 
-					m_aduDsrcBillingDetails(11),                 
-					m_aduDsrcBillingDetails(12),                 
-					m_aduDsrcBillingDetails(13)                 
+					{modifies m_aduDsrcBillingDetails(4):={billingDetailsId:={issuerId := 0}}},                 
+					{modifies m_aduDsrcBillingDetails(5):={tollContext:=0}},                 
+					{modifies m_aduDsrcBillingDetails(6):={userId:=omit}},                 
+					{modifies m_aduDsrcBillingDetails(7):={billingDetailsAmount:={paymentFeeAmount := -5}}},                 
+					{modifies m_aduDsrcBillingDetails(8):={usageDetails:={contextName := 42}}},                 
+					{modifies m_aduDsrcBillingDetails(9):={usageDetails:={appliedUserClass := 0}}},                 
+					{modifies m_aduDsrcBillingDetails(10):={usageDetails:={perDeclaredVehicleClasses := omit}}},                 
+					{modifies m_aduDsrcBillingDetails(11):={usageDetails:={appliedTimeClass := 0}}},                 
+					{modifies m_aduDsrcBillingDetails(12):={usageDetails:={entranceTime := 0}}},                
+					{modifies m_aduDsrcBillingDetails(13):={usageList:={ListofSections := {chargeObjectId := 0}}}}
 				});
-				//TODO Fausto update the v_apduForSending above to incorporate the errors represented in the commented out "pseudo-code" below
 				
 //				var InfoExchange v_apduRespondedTo :=
 //					{m_apduNoAuthInitTester(
@@ -3212,11 +3209,13 @@ module EfcInfoExchange_TestCasesTsp {
                  //  Send one valid APDU containing one BillingDetailsADU numbered 3 with actionCode = SEND and only mandatory fields
                  // PT140 TODO : mw_aduBillingDetails template to be defined
 				var InfoExchange v_apduForSending := m_apduNoAuthInitTester(
-					{modifies mw_aduBillingDetails:= {
-					  	billingDetailsId := 3, actionCode := ActionCode_send_, billingDetailsAmount.paymentFeeAmount := 50
-					  	}
-					});                 
-				f_sendAndLogApdu(v_apduForSending);                 
+				{modifies m_aduDsrcBillingDetails(3):={
+						billingDetailsAmount:={
+							paymentFeeAmount := 50
+						}
+					}
+				});                 
+					f_sendAndLogApdu(v_apduForSending);                 
                  // Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
 				// Set timer
                  t_step.start(DSRC_BILLINGDETAILS_TIME1_MAX_TSP);                 
@@ -3232,10 +3231,13 @@ module EfcInfoExchange_TestCasesTsp {
                  	// paymentFeeAmount = 45
                  // PT140 TODO : mw_aduBillingDetails template to be defined
 				var InfoExchange v_apduForSending := m_apduNoAuthInitTester(
-					{modifies mw_aduBillingDetails:= {
-					  	billingDetailsId := 14, actionCode := ActionCode_adjust_, billingDetailsAmount.paymentFeeAmount := 45
-					  	}
-					});                 
+				{modifies m_aduDsrcBillingDetails(14):={
+						actionCode := ActionCode_adjust_,
+						billingDetailsAmount:={
+							paymentFeeAmount := 45
+						}
+					}
+				});                 
 				f_sendAndLogApdu(v_apduForSending);                 
 
                  // Step 2: Wait for negative Ack within DSRC.BILLINGDETAILS.TIME1 identifying the APDU containing the BillingDetailsADU numbered 14 and with issueCode= semanticError 
@@ -3266,12 +3268,13 @@ module EfcInfoExchange_TestCasesTsp {
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
                  //  Send one valid APDU containing one BillingDetailsADU numbered 3 with actionCode = SEND and only mandatory fields
-                 // PT140 TODO : mw_aduBillingDetails template to be defined
-				var InfoExchange v_apduForSending := m_apduNoAuthInitTester(
-					{modifies mw_aduBillingDetails:= {
-					  	billingDetailsId := 3, actionCode := ActionCode_send_, billingDetailsAmount.paymentFeeAmount := 50
-					  	}
-					});                 
+ 				var InfoExchange v_apduForSending := m_apduNoAuthInitTester({
+				modifies m_aduDsrcBillingDetails(3):={
+						billingDetailsAmount:={
+							paymentFeeAmount := 50
+						}
+					}
+				});                 
 				f_sendAndLogApdu(v_apduForSending);                 
                  // Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
 				// Set timer
@@ -3286,11 +3289,11 @@ module EfcInfoExchange_TestCasesTsp {
                  // Step 1: Send one valid APDU containing one valid BillingDetailsADU numbered 14 with only mandatory fields with the following values:
                  	// actionCode = revoke
                  // PT140 TODO : mw_aduBillingDetails template to be defined
-				var InfoExchange v_apduForSending := m_apduNoAuthInitTester(
-					{modifies mw_aduBillingDetails:= {
-					  	billingDetailsId := 14, actionCode := ActionCode_revoke_
-					  	}
-					});                 
+				var InfoExchange v_apduForSending := m_apduNoAuthInitTester({
+					modifies m_aduDsrcBillingDetails(14):={
+							actionCode := ActionCode_revoke_
+					}
+				});                 
 				f_sendAndLogApdu(v_apduForSending);                 
 
                  // Step 2: Wait for negative Ack within DSRC.BILLINGDETAILS.TIME1 identifying the APDU containing the BillingDetailsADU numbered 14 and with issueCode= semanticError 
@@ -3322,11 +3325,11 @@ module EfcInfoExchange_TestCasesTsp {
 				// Send one valid DSRC.BILLINGDETAILS numbered 3
                  //  Send one valid APDU containing one BillingDetailsADU numbered 3 with actionCode = SEND and only mandatory fields
                  // PT140 TODO : mw_aduBillingDetails template to be defined
-				var InfoExchange v_apduForSending := m_apduNoAuthInitTester(
-					{modifies mw_aduBillingDetails:= {
-					  	billingDetailsId := 3, actionCode := ActionCode_send_, billingDetailsAmount.paymentFeeAmount := 50
-					  	}
-					});                 
+				var InfoExchange v_apduForSending := m_apduNoAuthInitTester({
+					modifies mw_aduBillingDetails(3):= {
+						billingDetailsAmount:={paymentFeeAmount := 50}
+						}
+				});                 
 				f_sendAndLogApdu(v_apduForSending);                 
 
 				// Do not wait for positive Ack
@@ -3334,11 +3337,11 @@ module EfcInfoExchange_TestCasesTsp {
                 // Step 1:
                 // Send one valid DSRC.BILLINGDETAILS numbered 4  before TIME1
                  // PT140 TODO : mw_aduBillingDetails template to be defined
-				v_apduForSending := m_apduNoAuthInitTester(
-					{modifies mw_aduBillingDetails:= {
-					  	billingDetailsId := 4, actionCode := ActionCode_send_, billingDetailsAmount.paymentFeeAmount := 45
-					  	}
-					});                 
+				v_apduForSending := m_apduNoAuthInitTester({
+					modifies mw_aduBillingDetails(4):= {
+						billingDetailsAmount:={paymentFeeAmount := 45}
+					}
+				});                 
 				f_sendAndLogApdu(v_apduForSending);                 
 
               	// Wait for negative Ack with ADUReasonCode field = requestSentTooOften (if positive Ack or not received set test failure)                	

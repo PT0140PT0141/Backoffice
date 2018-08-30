@@ -462,7 +462,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		  		userListRequest :={
 		  			requestedADUType	:= AduType_provideUserIdListADU_,
       				userIdRequestType	:= UserIdRequestType_allUserIdsToGivenCustomer_, // the only allowd type according to IAP restrictions 
-      				userId				:= ?, // at least one element inside userId shall be present, this is not checked by the template
+      				userId				:= ?, //TODO PT140 at least one element inside userId shall be present, this is not checked by the template
 					userIdRequestTime	:= ?
 				}
 			}
@@ -795,7 +795,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				paymentClaimId := ?,
 				startDateTime := ?,
 				endDateTime := ?, // mandatory according to IAP,
-				userId := ? , // mandatory according to IAP and at least one element shall be present, second req not checked by template
+				userId := ? , //TODO PT140 mandatory according to IAP and at least one element shall be present, second req not checked by template
 				paymentClaimAmount := ?,
 				paymentClaimStatus := (PaymentClaimStatus_firstVersion_, PaymentClaimStatus_amendedVersion_), // restrictions according to IAP
 				typeOfFee := ?, // mandatory according to IAP
@@ -810,7 +810,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				issuerId := ?,
 				billingDetailsNum := ?,//(0..9223372036854775807), // range 0..2^63-1
 				dateOfService := * //TODO PT140 definition for billingDetails is missing in IAP but at other locations
-															//inside IAP the billingDetailsId shall contain NO dateOfService
+									//inside IAP the billingDetailsId shall contain NO dateOfService
 			}
 			
 			//These are some extra type definitions needed for the building and matching of test data (see TP_TC_PAYMENTCLAIM_BV_01)			
@@ -1098,10 +1098,10 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			
 		group DSRC_REPORTABNORMALOBE {
 			template ReportAbnormalOBEADU mw_aduDsrcReportAbnormalObe := {
-				userId := ?, //at least one element of userId shall be present, this is not checked by template
+				userId := ?, //TODO PT140 at least one element of userId shall be present, this is not checked by template
 				dateAndTime := ?,
 				efcContextMark := ?,
-				abnormalOBEReasonCode := ? length (1..255) //= at least one reason code shall be present in this record of integer
+				abnormalOBEReasonCode := ? //TODO PT140 at least one reason code shall be present in this record of integer, template does not check this
 			}
 
 			template Adus mw_adusReportAbnormalOBE := Adus:{reportAbnormalOBEADUs:=?};
@@ -1119,37 +1119,39 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 	    				issuerId := ?,
 	    				billingDetailsNum := (0..9223372036854775807), // range 0..2^63-1
 	    				dateOfService := omit
-	    				},
+	    			},
 	    			tollContext := ?,
 	    			userId :={
 	    				pan := *, 
 						contractSerialNumber := *,
 						licencePlateNumber := *, 
 						obeID := *
-						},
+					},
 	    			relatedBillingDetails := omit,
 	    			period := ?,
 	    			billingDetailsAmount := omit, 
-	    			usageDetails := {
-						contextName := ?,
-	      				appliedUserClass := ?,
-	      				perDeclaredVehicleClass := {{
-	        				declaredVehicleClass := ?,
-	        				perUsedTimeClasses := {{
-	          					appliedTimeClass := ?,
-	          					costCenter := ?, // mandatory in IAP
-	          					usageList := ({mw_sectionedRoadGnssUsageList}, {mw_travellingInAreaGnssUsageList},
-	          					{mw_stayingInAreaGnssUsageList}, {mw_cordonCrossingGnssUsageList})
-	          				}}
-	          			}}  			
-					},
+	    			usageDetails := mw_usageBillingDetails,
 	    			refTollDeclaration := ?,
 	    			associatedEventData := omit,
 	    			actionCode := (ActionCode_send_, ActionCode_revoke_ ,ActionCode_adjust_ ),
 	    			paymentReference := *
 	  			}			
-			
-				template (value) UsageList mw_sectionedRoadGnssUsageList := {
+	  			
+				template UsageDetails mw_usageBillingDetails:={
+					contextName := ?,
+					appliedUserClass := ?,
+					perDeclaredVehicleClasses := {{
+						declaredVehicleClass := ?,
+						perUsedTimeClasses := {{
+							appliedTimeClass := ?,
+							costCenter := ?, // mandatory in IAP
+							usageList :={ (mw_sectionedRoadGnssUsageList, mw_travellingInAreaGnssUsageList, //usageList	SEQUENCE OF UsageList 
+							mw_stayingInAreaGnssUsageList, mw_cordonCrossingGnssUsageList)}
+						}}
+					}}  			
+				}
+				
+				template UsageList mw_sectionedRoadGnssUsageList := {
 					usageListEntry :={
 						forSectionedRoads := {		
 							howManyTimes := (0..9223372036854775807), // range 0..2^63-1
@@ -1164,7 +1166,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 					externalCosts := *
 				}
 	
-				template (value) Section mw_sections := {
+				template Section mw_sections := {
 					tollContext := omit, // shall not be used in IAP
 					chargeObjectId := ?,
 					chargeObjectName := omit, // shall not be used in IAP
@@ -1173,7 +1175,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 					modeOfOperation := omit // shall not be used in IAP
 	  			}
 	
-				template (value) UsageList mw_travellingInAreaGnssUsageList := {
+				template UsageList mw_travellingInAreaGnssUsageList := {
 					usageListEntry := {
 						forTravellingInArea := {		
 	        				areaDisplayName := ?,
@@ -1184,12 +1186,12 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 	        				feeQualifier := omit // shall not be used in IAP
 						}
 					},
-					includedDiscounts := {{*}},
+					includedDiscounts := *,
 					associatedEventData := omit, // shall not be used in IAP
 					externalCosts := *
 				}
 	
-				template (value) UsageList mw_stayingInAreaGnssUsageList := {
+				template UsageList mw_stayingInAreaGnssUsageList := {
 					usageListEntry :={
 						forStayingInArea :={		
 							areaDisplayName := ?,
@@ -1200,12 +1202,12 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 	        				feeQualifier := omit // shall not be used in IAP
 						}
 					},
-					includedDiscounts := {{*}},
+					 includedDiscounts := *,
 					associatedEventData := omit, // shall not be used in IAP
 					externalCosts := *
 				}
 	
-				template (value) UsageList mw_cordonCrossingGnssUsageList := {
+				template UsageList mw_cordonCrossingGnssUsageList := {
 					usageListEntry :={
 						forCordonCrossing :={		
 							qualifier := *,
@@ -1215,9 +1217,10 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 	        				exitChargeObjectName := omit, //shall not be used in IAP
 	        				exitTime := ?, // mandatory in IAP
 	        				fee := omit, // shall not be used in IAP
-	        				feeQualifier := omit // shall not be used in IAP				}
+	        				feeQualifier := omit // shall not be used in IAP				
+	        			}
 					},
-					includedDiscounts := {{*}},
+					includedDiscounts := *,
 					associatedEventData := omit, // shall not be used in IAP
 					externalCosts := *
 				}
@@ -1282,7 +1285,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 						declaredVehicleClass:=TD_DSRC_BILLINGDETAILS_DECLAREDVEHCLASS,
 						perUsedTimeClasses:={{
 							appliedTimeClass:=TD_DSRC_BILLINGDETAILS_TIMECLASS,
-							usageList:={{
+							usageList:={{		//Definition: SEQUENCE OF UsageList
 								freeTextDetail:={
 									textLanguage:=TD_DSRC_BILLINGDETAILS_LANG,
 									textDetail:=TD_DSRC_BILLINGDETAILS_TEXT,
@@ -1309,7 +1312,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 					usageDetails := {
 						contextName := TOLL_CONTEXT_NAME_IUT,
 						appliedUserClass := TD_USER_CLASS,
-						perDeclaredVehicleClass := {{
+						perDeclaredVehicleClasses := {{
 							declaredVehicleClass := TD_DECLARED_VEHICLE_CLASS,
 							perUsedTimeClasses := {{
 								appliedTimeClass := TD_APPLIED_TIME_CLASS,
@@ -1318,7 +1321,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 							}}
 						}}
 					},
-					refTollDeclaration := {TD_IDENTIFIER, 1},
+					refTollDeclaration := {{TD_IDENTIFIER, 1}}, //Definition: SEQUENCE OF TollDeclarationId OPTIONAL, TODO Jan "1" is a magic number that should be the declarationId and should be either a modulepar or a constant or a variable
 					actionCode := ActionCode_send_,
 					paymentReference := omit 				  		
 				};
