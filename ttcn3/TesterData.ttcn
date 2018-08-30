@@ -234,8 +234,9 @@ module EfcInfoExchange_TesterData{
 				"TestThouroughFare", "1234567890", "TestTown",	"TestRegion", "TestCountry", "00999", "9876543210",
 				"12345678901234567890", "00777", "9876543210", "12345678901234567890","00888", "9876543210",
 				"12345678901234567890","test@email.biz"}, 
-			ASNAUX.UTF8String preferredUserLanguage := "SE"
+			preferredUserLanguage := "SE"
 		};	
+		
 		modulepar RecOfUserParameterRequest TD_PRIVACYBOUND_USER_PARAM_REQS:={}; 
 	}
 	
@@ -245,10 +246,10 @@ module EfcInfoExchange_TesterData{
 //	 	modulepar  LocalVehicleClassDefinition localVehicleClassDefinitionTESTER_VALUE;
 //	 	modulepar  TimeClassDefinition timeClassDefinitionTESTER_VALUE;
 //	 	modulepar  UserClassDefinition userClassDefinitionTESTER_VALUE;
-	 	modulepar  FeeDefinition feeDefinitionTESTER_VALUE;
-	 	modulepar  Optionally_Signed<TollContextOverview> tollContextOverviewTESTER_VALUE;
-	 	modulepar  Optionally_Signed<TollContextPartitionOverviews> tollContextPartitionOverviewTESTER_VALUE;
-	 	modulepar  Optionally_Signed<TariffTables> tariffTableTESTER_VALUE;
+//	 	modulepar  FeeDefinition TD_FEE_DEFINITION;
+	 	modulepar  Optionally_Signed<TollContextOverview> TD_TOLL_CONTEXT_OVERVIEW;
+	 	modulepar  Optionally_Signed<TollContextPartitionOverviews> TD_TOLL_CONTEXT_PARTITION_OVERVIEW;
+	 	modulepar  Optionally_Signed<TariffTables> TD_TARIFF_TABLE;
 	 	modulepar  Optionally_Signed<CurrencyConversionTable> currencyConversionTableTESTER_VALUE;
 	 	modulepar  Optionally_Signed<TariffClassDefinition> optSignedTariffClassDefinitionTESTER_VALUE;
 	 	modulepar  Optionally_Signed<LocalVehicleClassDefinition> optSignedLocalVehicleClassDefinitionTESTER_VALUE;

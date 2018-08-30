@@ -897,7 +897,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Either we receive an APDU containing  Nack or the timeout expires
 				// timeout expiration is handled in the altstep branch
 				alt {
-					[] mtcPort.receive(mw_apduNAckRequestSentTooOften(v_apduToSend)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNackRequestSentTooOften(v_apduToSend)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
@@ -1217,7 +1217,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Send again immediately same ADU with different  valid user
 				var InfoExchange v_apduForSending := m_apduNoAuthInitTester(
 					{modifies m_aduRequestListOfUsers:= {
-					  	userId:= EMPTYLIST_USER_ID
+					  	userId:= PX_EMPTYLIST_USER_ID
 					  	}
 					});
 				f_sendAndLogApdu(v_apduForSending);
@@ -1229,7 +1229,11 @@ module EfcInfoExchange_TestCasesTsp {
 				// timeout expiration is handled in the altstep branch
 				
 				alt {
+<<<<<<< HEAD
 					[] mtcPort.receive(mw_apduNAckRequestSentTooOften(v_apduForSending)) -> value v_apduReceived {
+=======
+					[] mtcPort.receive(mw_apduNackRequestSentTooOften(v_apduForSending)) -> value v_apduReceived {
+>>>>>>> branch 'master' of https://github.com/PT0140PT0141/Backoffice.git
 						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
@@ -1709,7 +1713,11 @@ module EfcInfoExchange_TestCasesTsp {
 				// timeout expiration is handled in the altstep branch
 				
 				alt {
+<<<<<<< HEAD
 					[] mtcPort.receive(mw_apduNackRequestSentTooOften(v_secondApduRequest)) -> value v_apduReceived {
+=======
+					[] mtcPort.receive(mw_apduNackRequestSentTooOften(v_apduForSending)) -> value v_apduReceived {
+>>>>>>> branch 'master' of https://github.com/PT0140PT0141/Backoffice.git
 						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TYPE1_TIME2_MIN_TSP);  
 						setverdict(pass);
 						}
@@ -1824,7 +1832,11 @@ module EfcInfoExchange_TestCasesTsp {
                 		// paymentReference valid and not present
                  // PT140 TODO : mw_aduPaymentClaim template and related fields to be defined
 
+<<<<<<< HEAD
 				var InfoExchange v_apduForSending := m_apduNoAuthInitTester(
+=======
+				v_apduForSending := m_apduNoAuthInitTester(
+>>>>>>> branch 'master' of https://github.com/PT0140PT0141/Backoffice.git
 					{modifies mw_aduPaymentClaim:= {
 					  	paymentClaimId := 2,
 					  	startDateTime := now,
@@ -2247,7 +2259,9 @@ module EfcInfoExchange_TestCasesTsp {
 
             testcase TP_TSP_PAYMENTCLAIM_BI_05() runs on MainTestComponent system TestAdapter {
                   /**
-                  * @desc    TP_TSP_PAYMENTCLAIM_BI_05: Verify that the TSP correctly performs the PAYMENTCLAIM transaction when receiving a number of PaymenClaimADUs, each of them containing specific errors  
+                  * @desc    TP_TSP_PAYMENTCLAIM_BI_05: Verify that the TSP correctly performs the 
+                  * @desc    PAYMENTCLAIM transaction when receiving a number of PaymenClaimADUs, 
+                  * @desc    each of them containing specific errors  
                   * @remark  [16986:2016], Clause 6.8 and Table A.1/2 AND Table A.7/5  
                   */
                  // Initialisation
@@ -2487,7 +2501,11 @@ module EfcInfoExchange_TestCasesTsp {
                  t_step.start(PAYMENTCLAIM_TIME1_MAX_TSP);                 
                 // Wait for negative Ack (if positive Ack or not received set test failure)				
 				alt {
+<<<<<<< HEAD
 					[] mtcPort.receive(mw_apduNAckRequestSentTooOften(v_apduForSending)) -> value v_apduReceived {
+=======
+					[] mtcPort.receive(mw_apduNackRequestSentTooOften(v_apduForSending)) -> value v_apduReceived {
+>>>>>>> branch 'master' of https://github.com/PT0140PT0141/Backoffice.git
 						f_logReceivedThenCheckAndStopTime(PAYMENTCLAIM_TIME1_MIN_TSP); 
 						setverdict(pass);						
 						}
@@ -2868,10 +2886,10 @@ module EfcInfoExchange_TestCasesTsp {
                  	// iso17573ADU containing only mandatory field with valid values
                  	// feeModifiers set to null
 				// set tester tolling domain characteristics
-				var InfoExchange v_apduToSend := m_apduNoAuthInitTester({m_aduDsrcEfcContextDataTestValues});     
-				f_sendAndLogApdu(v_apduToSend);                 
+				var InfoExchange v_apduForSending := m_apduNoAuthInitTester({m_aduDsrcEfcContextDataTestValues});     
+				f_sendAndLogApdu(v_apduForSending);                 
                 // Step 1: Do not wait for positive Ack but send immediately another EFCCONTEXTDATA before TIME1
-                f_sendAndLogApdu(v_apduToSend);                 
+                f_sendAndLogApdu(v_apduForSending);                 
 				// Set timer
                  t_step.start(DSRC_EFCCONTEXTDATA_TIME1_MAX_TSP);                 
 
@@ -3051,9 +3069,17 @@ module EfcInfoExchange_TestCasesTsp {
                  // Step 1: Send one valid APDU containing one valid BillingDetailsADU with only mandatory fields and with
                  	// actionCode = revoke
                  	// billingDetailsNum = 1
+<<<<<<< HEAD
 				var InfoExchange v_apduForSending := m_apduNoAuthInitTester(
 					{modifies mw_aduDsrcBillingDetails(1):= {
 					  	actionCode := ActionCode_revoke_
+=======
+                 // PT140 TODO : mw_aduBillingDetails template and related fields to be defined
+				//TODO Fausto update all "pseudo code" as the one below to instead use m_aduDsrcBillingDetails and if necessary some "modifies" statement
+				v_apduForSending := m_apduNoAuthInitTester(
+					{modifies mw_aduBillingDetails:= {
+					  	billingDetailsId := 1, actionCode := ActionCode_revoke_
+>>>>>>> branch 'master' of https://github.com/PT0140PT0141/Backoffice.git
 					  	}
 					});                 
 				f_sendAndLogApdu(v_apduForSending);
@@ -3087,8 +3113,13 @@ module EfcInfoExchange_TestCasesTsp {
                  //  Send one valid APDU containing one BillingDetailsADU numbered 3 with actionCode = SEND and only mandatory fields
                  // PT140 TODO : mw_aduBillingDetails template to be defined
 				var InfoExchange v_apduForSending := m_apduNoAuthInitTester(
+<<<<<<< HEAD
 					{modifies mw_aduDsrcBillingDetails(3):= {
 					  	billingDetailsAmount:={paymentFeeAmount := 50}
+=======
+					{modifies mw_aduBillingDetails:= {
+					  	billingDetailsId := 3, actionCode := ActionCode_send_, billingDetailsAmount.paymentFeeAmount := 50
+>>>>>>> branch 'master' of https://github.com/PT0140PT0141/Backoffice.git
 					  	}
 					});                 
 				f_sendAndLogApdu(v_apduForSending);                 
@@ -3103,7 +3134,7 @@ module EfcInfoExchange_TestCasesTsp {
                  
                  // Step 1: Send one valid APDU containing 10  BillingDetailsADUs with actionCode = SEND numbered from 4 to 13, each one with the following parameters respectively set to one incorrect value:
                  	// billingDetailsId.issuerId, tollContext, userId, billingDetailsAmount, usageDetails.contextName, usageDetails.appliedUserClass, usageDetails.perDeclaredVehicleClasses, usageDetails.appliedTimeClass, usageDetails.entranceTime, usageList.ListofSections.chargeObjectId
-				var InfoExchange v_apduForSending := m_apduNoAuthInitTester({
+				v_apduForSending := m_apduNoAuthInitTester({
 					{
 						modifies m_aduDsrcBillingDetails(4):={
 							billingDetailsId:={
@@ -3223,11 +3254,17 @@ module EfcInfoExchange_TestCasesTsp {
                  //  Send one valid APDU containing one BillingDetailsADU numbered 3 with actionCode = SEND and only mandatory fields
                  // PT140 TODO : mw_aduBillingDetails template to be defined
 				var InfoExchange v_apduForSending := m_apduNoAuthInitTester(
+<<<<<<< HEAD
 					{modifies m_aduDsrcBillingDetails(3):={
 							billingDetailsAmount:={
 								paymentFeeAmount := 50
 							}
 						}
+=======
+					{modifies mw_aduBillingDetails:= {
+					  	billingDetailsId := 3, actionCode := ActionCode_send_, billingDetailsAmount.paymentFeeAmount := 50
+					  	}
+>>>>>>> branch 'master' of https://github.com/PT0140PT0141/Backoffice.git
 					});                 
 				f_sendAndLogApdu(v_apduForSending);                 
                  // Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
@@ -3245,12 +3282,18 @@ module EfcInfoExchange_TestCasesTsp {
                  	// paymentFeeAmount = 45
                  // PT140 TODO : mw_aduBillingDetails template to be defined
 				var InfoExchange v_apduForSending := m_apduNoAuthInitTester(
+<<<<<<< HEAD
 					{modifies m_aduDsrcBillingDetails(14):={
 							actionCode := ActionCode_adjust_,
 							billingDetailsAmount:={
 								paymentFeeAmount := 45
 							}
 						}
+=======
+					{modifies mw_aduBillingDetails:= {
+					  	billingDetailsId := 14, actionCode := ActionCode_adjust_, billingDetailsAmount.paymentFeeAmount := 45
+					  	}
+>>>>>>> branch 'master' of https://github.com/PT0140PT0141/Backoffice.git
 					});                 
 				f_sendAndLogApdu(v_apduForSending);                 
 
@@ -3284,11 +3327,17 @@ module EfcInfoExchange_TestCasesTsp {
                  //  Send one valid APDU containing one BillingDetailsADU numbered 3 with actionCode = SEND and only mandatory fields
                  // PT140 TODO : mw_aduBillingDetails template to be defined
 				var InfoExchange v_apduForSending := m_apduNoAuthInitTester(
+<<<<<<< HEAD
 					{modifies m_aduDsrcBillingDetails(3):={
 							billingDetailsAmount:={
 								paymentFeeAmount := 50
 							}
 						}
+=======
+					{modifies mw_aduBillingDetails:= {
+					  	billingDetailsId := 3, actionCode := ActionCode_send_, billingDetailsAmount.paymentFeeAmount := 50
+					  	}
+>>>>>>> branch 'master' of https://github.com/PT0140PT0141/Backoffice.git
 					});                 
 				f_sendAndLogApdu(v_apduForSending);                 
                  // Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
@@ -3305,9 +3354,15 @@ module EfcInfoExchange_TestCasesTsp {
                  	// actionCode = revoke
                  // PT140 TODO : mw_aduBillingDetails template to be defined
 				var InfoExchange v_apduForSending := m_apduNoAuthInitTester(
+<<<<<<< HEAD
 					{modifies m_aduDsrcBillingDetails(14):={
 							actionCode := ActionCode_revoke_
 						}
+=======
+					{modifies mw_aduBillingDetails:= {
+					  	billingDetailsId := 14, actionCode := ActionCode_revoke_
+					  	}
+>>>>>>> branch 'master' of https://github.com/PT0140PT0141/Backoffice.git
 					});                 
 				f_sendAndLogApdu(v_apduForSending);                 
 
@@ -3341,8 +3396,13 @@ module EfcInfoExchange_TestCasesTsp {
                  //  Send one valid APDU containing one BillingDetailsADU numbered 3 with actionCode = SEND and only mandatory fields
                  // PT140 TODO : mw_aduBillingDetails template to be defined
 				var InfoExchange v_apduForSending := m_apduNoAuthInitTester(
+<<<<<<< HEAD
 					{modifies mw_aduBillingDetails(3):= {
 					  	billingDetailsAmount:={paymentFeeAmount := 50}
+=======
+					{modifies mw_aduBillingDetails:= {
+					  	billingDetailsId := 3, actionCode := ActionCode_send_, billingDetailsAmount.paymentFeeAmount := 50
+>>>>>>> branch 'master' of https://github.com/PT0140PT0141/Backoffice.git
 					  	}
 					});                 
 				f_sendAndLogApdu(v_apduForSending);                 
@@ -3352,9 +3412,15 @@ module EfcInfoExchange_TestCasesTsp {
                 // Step 1:
                 // Send one valid DSRC.BILLINGDETAILS numbered 4  before TIME1
                  // PT140 TODO : mw_aduBillingDetails template to be defined
+<<<<<<< HEAD
 				var InfoExchange v_apduForSending := m_apduNoAuthInitTester(
 					{modifies mw_aduBillingDetails(4):= {
 					  	billingDetailsAmount:={paymentFeeAmount := 45}
+=======
+				v_apduForSending := m_apduNoAuthInitTester(
+					{modifies mw_aduBillingDetails:= {
+					  	billingDetailsId := 4, actionCode := ActionCode_send_, billingDetailsAmount.paymentFeeAmount := 45
+>>>>>>> branch 'master' of https://github.com/PT0140PT0141/Backoffice.git
 					  	}
 					});                 
 				f_sendAndLogApdu(v_apduForSending);                 
@@ -3364,7 +3430,11 @@ module EfcInfoExchange_TestCasesTsp {
 				// Set timer
                  t_step.start(DSRC_BILLINGDETAILS_TIME1_MAX_TSP);
 				alt {
+<<<<<<< HEAD
 					[] mtcPort.receive(mw_apduNAckRequestSentTooOften(v_apduForSending)) -> value v_apduReceived {
+=======
+					[] mtcPort.receive(mw_apduNackRequestSentTooOften(v_apduForSending)) -> value v_apduReceived {
+>>>>>>> branch 'master' of https://github.com/PT0140PT0141/Backoffice.git
 						f_logReceivedThenCheckAndStopTime(DSRC_BILLINGDETAILS_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
@@ -4560,7 +4630,11 @@ module EfcInfoExchange_TestCasesTsp {
 				// Set timer
                  t_step.start(GNSS_BILLINGDETAILS_TC_TIME1_MAX_TC);
 				alt {
+<<<<<<< HEAD
 					[] mtcPort.receive(mw_apduNAckRequestSentTooOften(v_apduForSending)) -> value v_apduReceived {
+=======
+					[] mtcPort.receive(mw_apduNackRequestSentTooOften(v_apduForSending)) -> value v_apduReceived {
+>>>>>>> branch 'master' of https://github.com/PT0140PT0141/Backoffice.git
 						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC);
 						setverdict(pass);
 						}
@@ -4585,7 +4659,7 @@ module EfcInfoExchange_TestCasesTsp {
                  // Initialisation 
 				// The IUT is supposedly being prepared with valid test toll declaration data
 					
-				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A2_2_isGnss and ICS_A52_3_implementedGNSSPAYMENTANNOUNCEMENT;
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A2_2_isGnss and ICS_A52_4_implementedGNSSPAYMENTANNOUNCEMENT;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				
 				// Step 1: Trigger IUT with GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1_A to send one valid PaymentAnnouncementADU with actionCode = send
@@ -4593,7 +4667,7 @@ module EfcInfoExchange_TestCasesTsp {
 				//  Wait for GNSS.PAYMENTANNOUNCEMENT
 				// PT140 TODO: mw_aduGnssPaymentAnnouncement template to be defined
 				var InfoExchange v_apduToBeReceived := mw_apduNoAuthInitIut(
-					{modifies mw_aduGnssPaymentAnnouncement:= {
+					{modifies mw_aduPaymentAnnouncement:= {
 					  	actionCode := ActionCode_send_
 					  	}
 					});
@@ -4620,7 +4694,7 @@ module EfcInfoExchange_TestCasesTsp {
 
 				// The IUT is supposedly being prepared with valid test toll declaration data
 					
-				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A2_2_isGnss and ICS_A52_3_implementedGNSSPAYMENTANNOUNCEMENT;
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A2_2_isGnss and ICS_A52_4_implementedGNSSPAYMENTANNOUNCEMENT;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				
 				// Trigger IUT with GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1_A to send one valid PaymentAnnouncementADU with actionCode = send
@@ -4678,7 +4752,7 @@ module EfcInfoExchange_TestCasesTsp {
                  // Initialisation 
 				// The IUT is supposedly being prepared with valid test toll declaration data
 					
-				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A2_2_isGnss and ICS_A52_3_implementedGNSSPAYMENTANNOUNCEMENT;
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A2_2_isGnss and ICS_A52_4_implementedGNSSPAYMENTANNOUNCEMENT;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				
 				// Trigger IUT with GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1_SEND to send one valid PaymentAnnouncementADU with actionCode = send
