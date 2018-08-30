@@ -23,7 +23,7 @@
  *	DSRC.BillingDetails			! done					! n.a.			! ready for compile
  *	DSRC.ReportAbnormalOBE		! done					! n.a.			! ready for compile
  *	GNSS.TollDeclaration		! done					! done			! done but need to revise List of ChargeReports in template
- *	GNSS.BillingDetails.TSP		! open					! open			! in progress
+ *	GNSS.BillingDetails.TSP		! open					! open			! parts of it temporarily removed because of major reconstruction
  *	GNSS.BillingDetails.TC		! done					! n.a.			! ready for compile
  *	GNSS.PaymentAnnouncement	! done					! done			! ready for compile
  */
@@ -74,7 +74,7 @@ module EfcInfoExchange_TestCasesTc {
 				
 				// Step 1:
                 // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for white list with authenticator
-                var InfoExchange v_apduToBeSent := m_apduAuthInitTester({TD_EXCEPTIONLIST_ADU_WHITE_VALID});
+                var InfoExchange v_apduToBeSent := m_apduAuthInitTester({c_exceptionListAduWhiteValid});
 				f_sendAndLogApdu(v_apduToBeSent);                	
   	
                 // Start timer
@@ -119,7 +119,7 @@ module EfcInfoExchange_TestCasesTc {
 							
                 // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for white list
                 // Including the invalid APCI 
-                var InfoExchange v_apduToBeSent := m_apduNoAuth(m_apciInvalidAidInitTester, {TD_EXCEPTIONLIST_ADU_WHITE_VALID});
+                var InfoExchange v_apduToBeSent := m_apduNoAuth(m_apciInvalidAidInitTester, {c_exceptionListAduWhiteValid});
 				f_sendAndLogApdu(v_apduToBeSent);                	
   	
                 // Start timer
@@ -156,7 +156,7 @@ module EfcInfoExchange_TestCasesTc {
 							
                 // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for white list
                 // Including the invalid APCI 
-                var InfoExchange v_apduToBeSent := m_apduNoAuth(m_apciInvalidAidInitTester, {TD_EXCEPTIONLIST_ADU_WHITE_VALID});
+                var InfoExchange v_apduToBeSent := m_apduNoAuth(m_apciInvalidAidInitTester, {c_exceptionListAduWhiteValid});
 				f_sendAndLogApdu(v_apduToBeSent);                	
   	
                 // Start timer
@@ -193,7 +193,7 @@ module EfcInfoExchange_TestCasesTc {
 							
                 // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for white list
                 // Including the invalid APCI 
-                var InfoExchange v_apduToBeSent := m_apduNoAuth(m_apciInvalidSenderIdInitTester, {TD_EXCEPTIONLIST_ADU_WHITE_VALID});
+                var InfoExchange v_apduToBeSent := m_apduNoAuth(m_apciInvalidSenderIdInitTester, {c_exceptionListAduWhiteValid});
 				f_sendAndLogApdu(v_apduToBeSent);                	
   	
                 // Start timer
@@ -231,7 +231,7 @@ module EfcInfoExchange_TestCasesTc {
 							
                 // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for white list
                 // Including the invalid APCI 
-                var InfoExchange v_apduToBeSent := m_apduNoAuth(m_apciInvalidRecipientIdInitTester, {TD_EXCEPTIONLIST_ADU_WHITE_VALID});
+                var InfoExchange v_apduToBeSent := m_apduNoAuth(m_apciInvalidRecipientIdInitTester, {c_exceptionListAduWhiteValid});
 				f_sendAndLogApdu(v_apduToBeSent);                	
   	
                 // Start timer
@@ -264,7 +264,7 @@ module EfcInfoExchange_TestCasesTc {
 				
 				// Step 0:
 				// Prepare and capture the apdu to be sent in a variable to avoid apduIdentifier to be re-generated
-				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({TD_EXCEPTIONLIST_ADU_WHITE_VALID});
+				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({c_exceptionListAduWhiteValid});
 
 				// Send APDU
 				f_sendAndLogApdu(v_apduToBeSent);              	
@@ -321,7 +321,7 @@ module EfcInfoExchange_TestCasesTc {
 							
                 // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for white list
                 // Including the invalid APCI 
-                var InfoExchange v_apduToBeSent := m_apduNoAuth(m_apciInvalidWithNextApduIdInitTester, {TD_EXCEPTIONLIST_ADU_WHITE_VALID});
+                var InfoExchange v_apduToBeSent := m_apduNoAuth(m_apciInvalidWithNextApduIdInitTester, {c_exceptionListAduWhiteValid});
 				f_sendAndLogApdu(v_apduToBeSent);                	
   	
                 // Start timer
@@ -359,7 +359,7 @@ module EfcInfoExchange_TestCasesTc {
 							
                 // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for white list
                 // Including the invalid APCI 
-                var InfoExchange v_apduToBeSent := m_apduNoAuth(m_apciInvalidWithInResponseToApduIdInitTester, {TD_EXCEPTIONLIST_ADU_WHITE_VALID});
+                var InfoExchange v_apduToBeSent := m_apduNoAuth(m_apciInvalidWithInResponseToApduIdInitTester, {c_exceptionListAduWhiteValid});
 				f_sendAndLogApdu(v_apduToBeSent);                	
   	
                 // Start timer
@@ -477,7 +477,7 @@ module EfcInfoExchange_TestCasesTc {
 							
                 // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for white list
                 // Including the invalid APCI 
-                var InfoExchange v_apduToBeSent := m_apduNoAuth(m_apciInvalidApduDateInitTester, {TD_EXCEPTIONLIST_ADU_WHITE_VALID});
+                var InfoExchange v_apduToBeSent := m_apduNoAuth(m_apciInvalidApduDateInitTester, {c_exceptionListAduWhiteValid});
 				f_sendAndLogApdu(v_apduToBeSent);                	
   	
                 // Start timer
@@ -508,7 +508,7 @@ module EfcInfoExchange_TestCasesTc {
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc                 
 
 				// Set up a correct apdu which not be sent (Black-list) and create an valid authenticator		
-				var InfoExchange v_apduToBeSent := m_apduAuthInitTester({TD_EXCEPTIONLIST_ADU_BLACK_VALID});
+				var InfoExchange v_apduToBeSent := m_apduAuthInitTester({c_exceptionListAduBlackValid1});
 
 				// Get this correctly computed authenticator				
 				var ApduAuthenticator v_authenticator:= v_apduToBeSent.infoExchangeAuthenticator;
@@ -521,7 +521,7 @@ module EfcInfoExchange_TestCasesTc {
 											
 				// Step 1:
                 // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for white list with authenticator
-                v_apduToBeSent := m_apduInvalidAuthInitTester({TD_EXCEPTIONLIST_ADU_WHITE_VALID});
+                v_apduToBeSent := m_apduInvalidAuthInitTester({c_exceptionListAduWhiteValid});
 				f_sendAndLogApdu(v_apduToBeSent);                	
   	
                 // Start timer
@@ -1924,7 +1924,7 @@ module EfcInfoExchange_TestCasesTc {
 							
                 // Step 1 / loop 1 for black list:
                 // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for black list
-                var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({TD_EXCEPTIONLIST_ADU_BLACK_VALID});
+                var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({c_exceptionListAduBlackValid1});
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
   	
                 // Start timer
@@ -1944,7 +1944,7 @@ module EfcInfoExchange_TestCasesTc {
 				
 				// Step 2 / loop 2 for white list:
                 // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for white list
-                v_apduToBeSent := m_apduNoAuthInitTester({TD_EXCEPTIONLIST_ADU_WHITE_VALID});
+                v_apduToBeSent := m_apduNoAuthInitTester({c_exceptionListAduWhiteValid});
 				f_sendAndLogApdu(v_apduToBeSent);                	
   	
                 // Start timer
@@ -1979,7 +1979,7 @@ module EfcInfoExchange_TestCasesTc {
 							
                 // Step 1:
                 // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for discounted user list
-                var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({TD_EXCEPTIONLIST_ADU_DISCOUNTED_VALID});
+                var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({c_exceptionListAduDiscountedValid});
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
   	
                 // Start timer
@@ -2114,7 +2114,10 @@ module EfcInfoExchange_TestCasesTc {
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc                 
 
             	// Step 1: Send Initiating_Apdu containing more than one ExceptionListADU indicating list type BLACK
-               	var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({TD_EXCEPTIONLIST_ADU_BLACK_VALID, TD_EXCEPTIONLIST_ADU_BLACK_VALID});
+               	var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
+               		c_exceptionListAduBlackValid1,c_exceptionListAduBlackValid2
+               	});
+               	
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
 		
                 // Start timer
@@ -2201,13 +2204,21 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduToBeSent, AduReasonCode_exceptionListsTypeRejected_)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(TIME_DEFAULT);
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						t_step.stop;
+
 						setverdict(pass);
 					}					
 
 					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduToBeSent, {{1, AduReasonCode_exceptionListsTypeRejected_}})) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(TIME_DEFAULT);
+						f_logApduReceivedAndTStep();
+
+						//Check minumum time and stop timer
+						t_step.stop;
+
 						setverdict(pass);
 					}										
 				}
@@ -2228,7 +2239,15 @@ module EfcInfoExchange_TestCasesTc {
 
 	            // Step 1: Send Initiating_Apdu containing one ExceptionListADU of list type BLACK
     	        // and userId = contractSerialNumber present
-               	var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({TD_EXCEPTIONLIST_ADU_BLACK_INVALID_4});
+				
+				var ExceptionListADU v_exceptionListADU:=m_aduExceptionList(
+					ExceptionListType_blackList_,
+					c_userIdDiscountedList,
+					ExceptionListStatusType_locallyBlocked_,
+					ExceptionListReasonType_notToBeDisclosed_,
+					ExceptionListActionType_rejectOBE_
+				);
+               	var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({v_exceptionListADU});
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
 		
                 // Start timer
@@ -2271,7 +2290,7 @@ module EfcInfoExchange_TestCasesTc {
             	// Step 1: Send Initiating_Apdu containing one valid ExceptionListADU of list type BLACK
             
                 // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for black list
-                var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({TD_EXCEPTIONLIST_ADU_BLACK_VALID});
+                var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({c_exceptionListAduBlackValid1});
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
   	
                 // Start timer
@@ -2293,7 +2312,7 @@ module EfcInfoExchange_TestCasesTc {
             	// before TIME0 MIN has passed = immediately after the Ack in Transaction 1 
             	
                 // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for black list
-                v_apduToBeSent := m_apduNoAuthInitTester({TD_EXCEPTIONLIST_ADU_BLACK_VALID});
+                v_apduToBeSent := m_apduNoAuthInitTester({c_exceptionListAduBlackValid1});
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
   	
                 // Start timer
@@ -2800,7 +2819,8 @@ module EfcInfoExchange_TestCasesTc {
 					alt {
 						[] mtcPort.receive(v_apduForSending) -> value v_apduReceived {
 							// Log what we received, no minimum time	
-							f_logReceivedThenCheckAndStopTime(0.0);					              		
+							f_logApduReceivedAndTStep();
+
 						}
 					} // End of alt statement
 
@@ -2822,7 +2842,7 @@ module EfcInfoExchange_TestCasesTc {
 					alt {
 						[] mtcPort.receive(v_apduForSending) -> value v_apduReceived {
 							// Log what we received, no minimum time	
-							f_logReceivedThenCheckAndStopTime(0.0);					              		
+							f_logApduReceivedAndTStep();
 						}
 					} // End of alt statement
 
@@ -2832,12 +2852,21 @@ module EfcInfoExchange_TestCasesTc {
 				}; // end else-branch      	                              
   
  				
- 				var ReceivedUserIdList v_receivedPaymentClaimBillingDetailsUserIdList;
+ 				var UserIdList v_receivedPaymentClaimBillingDetailsUserIdList;
  				var ReceivedBillingDetailsIdList v_receivedPaymentClaimBillingDetailsIdList;
- 				
+
+
+
+//Potentially usedul code
+//				type record of integer RoI;
+//				type set of integer SoI;
+//				template RoI mw_roI1 := {1, 2, ?};
+//				template SoI mw_soI1 := subset(all from mw_roI1);
+////				   results in subset(1, 2, ?)
  				// define templates required for later matching with data in PaymentClaim
- 				var template ReceivedUserIdList v_receivedBillingDetailsUserIdList;
- 				var template ReceivedBillingDetailsIdList v_receivedBillingDetailsBillingDetailsIdList;
+ 				var template UserIdList v_receivedBillingDetailsUserIdList, v_receivedPaymentClaimUserIdList;
+ 				var template BillingDetailsIdList v_receivedBillingDetailsIdList;
+ 				var template BillingDetailsIdMatrix v_receivedPaymentClaimBillingDetailsIdMatrix;
 				
 				var integer v_i, v_numberOfReceivedBillingDetailsAdus, v_numberOfReceivedPaymentClaimAdus;
  				
@@ -2846,7 +2875,7 @@ module EfcInfoExchange_TestCasesTc {
  				// fill templates (two records of) with received data
  				for (v_i := 0; v_i < v_numberOfReceivedBillingDetailsAdus; v_i := v_i +1) {
  					v_receivedBillingDetailsUserIdList[v_i] := v_apduReceived.infoExchangeContent.adus.billingDetailsADUs[v_i].userId;
- 					v_receivedBillingDetailsBillingDetailsIdList[v_i] := v_apduReceived.infoExchangeContent.adus.billingDetailsADUs[v_i].billingDetailsId;
+ 					v_receivedBillingDetailsIdList[v_i] :=     v_apduReceived.infoExchangeContent.adus.billingDetailsADUs[v_i].billingDetailsId;
 				}
   				  
                 // Step 1:
@@ -2855,7 +2884,7 @@ module EfcInfoExchange_TestCasesTc {
                 // Start timer for TIMEB_MAX (time between receiving the AckADU of the BillingDeatails transaction and
                 // sending an corresponding PaymentClaim ADU)
                 // PT140 TODO: this may be a long time (days, weeks) which may create a problem in testing  
-                t_step.start(PAYMENTCLAIM_TIMEB_MIN_TC);               
+                t_step.start(PAYMENTCLAIM_TIMEB_MAX_TC);               
 
 				// Send trigger (IuT to perform a Payment Claim transaction
 				// containing exactly one PaymentClaim ADU with action_code = send 
@@ -2864,7 +2893,7 @@ module EfcInfoExchange_TestCasesTc {
                 // Prepare APDU to be received
 				var InfoExchange v_apduToBeReceived := {
 				  	mw_apduNoAuthInitIut({{mw_aduPaymentClaim:= {
-				  		paymentClaimStatus := firstVersion (0),
+				  		paymentClaimStatus := PaymentClaimStatus_firstVersion_,
 				  		actionCode := ActionCode_send_ }}}) 
            		};                 
 
@@ -2874,18 +2903,29 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
 						// Log what we received, no minimum time required	
-						f_logReceivedThenCheckAndStopTime(0.0);
-												
+
+						f_logApduReceivedAndTStep();
+						//TODO Jan please absorb the pain here						
 						// capture receoved userIds and billingDetailsIds
  						v_numberOfReceivedPaymentClaimAdus := lengthof(v_apduReceived.infoExchangeContent.adus);
  						for (v_i := 0; v_i < v_numberOfReceivedPaymentClaimAdus; v_i := v_i +1) {
- 							v_receivedPaymentClaimUserIdList[v_i] := v_apduReceived.infoExchangeContent.adus.paymentClaimADUs[v_i].userId;
- 							v_receivedPaymentClaimBillingDetailsIdList[v_i] := v_apduReceived.infoExchangeContent.adus.paymentClaimADUs[v_i].billingDetailsId;
+							//get userId and list of billingDetailsId from the current PaymentClaim
+							v_receivedPaymentClaimUserIdList[v_i] := v_apduReceived.infoExchangeContent.adus.paymentClaimADUs[v_i].userId;
+ 							v_receivedPaymentClaimBillingDetailsIdMatrix[v_i] := v_apduReceived.infoExchangeContent.adus.paymentClaimADUs[v_i].referenceDetailsList.billingDetailsList;
+
+							//Check if userId and list of billingDetailsId are present in previously received BillingDetails (in a new inner loop)
+							v_receivedPaymentClaimUserIdList[v_i] - where in billing details is it?
+							for (v_j := 0; v_j < v_numberOfReceivedBillingDetailsAdus; v_j := v_j +1) {
+								v_receivedBillingDetailsUserIdList[v_j] := v_apduReceived.infoExchangeContent.adus.billingDetailsADUs[v_i].userId;
+								v_receivedBillingDetailsIdList[v_j] :=     v_apduReceived.infoExchangeContent.adus.billingDetailsADUs[v_i].billingDetailsId;
+							}
+ 
+
 						}
 						
 						// Validate content of received APDU ...
 						// ... check if userId are amongst the userIds received in previose BillingDetails, and
-						var boolean v_matchedUserId, v_matchedBillingDetailsId := false; 
+						var boolean v_matchedUserId:= false, v_matchedBillingDetailsId := false; 
 
 						for (v_i := 0; v_i < v_numberOfReceivedBillingDetailsAdus; v_i := v_i + 1) { // for each BillingDetails ADU
 							if (match (v_apduReceived.infoExchangeContent.adus.paymentClaimADUs.userId, v_receivedBillingDetailsUserIdList[v_i])) {
@@ -3202,7 +3242,7 @@ module EfcInfoExchange_TestCasesTc {
                 // Prepare and send one Initiating_Apdu containing exactly ten TollDeclarationADUs with actionCode = revoke
                 // Note that it is required to send again with same TollDeclarationId,
                 // same TollDeclarations and same Charge Report Id
-				var InfoExchange v_apduToBeSent := m_apduTollDeclarationsTen(ActionCode_revoke_);
+				v_apduToBeSent := m_apduTollDeclarationsTen(ActionCode_revoke_);
 				                
                 // Step 3:
                 // Wait for Default_Ack_Apdu within GNSS.TOLLDECLARARTION.TIME1             
@@ -3248,7 +3288,7 @@ module EfcInfoExchange_TestCasesTc {
                 // Start timer
                 t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
 								
-                // Wait for NAck_Apdu within GNSS.TOLLDECLARARTION.TIME1             
+                // Wait for NAck_Apdu within GNSS.TOLLDECLARATION.TIME1             
                 // if not received or received outside specification or time constraints set test fail 
 				// TODO JAN / PT140: below Ack to be preplaced by a negative ack according to the specifications of is16986
 				// for this case of adjusting TollDeclarationADUs
@@ -3275,55 +3315,55 @@ module EfcInfoExchange_TestCasesTc {
                 // Prepare and send one Initiating_Apdu containing exactly ten TollDeclarationADUs with actionCode = adjust
                 // Note that it is required to send again with same TollDeclarationId,
                 // but "corrected" TollDeclarations and a new Charge Report Id
-				var InfoExchange v_apduToBeSent := m_apduNoSecInitTester({
+				v_apduToBeSent := m_apduNoAuthInitTester({
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 1},
-						TESTER_USAGE_STATEMENT_VALID_11,
+						{TD_IDENTIFIER, 1},
+						TD_USAGE_STATEMENT_VALID_11,
 						11,
 						ActionCode_adjust_),
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 2},
-						TESTER_USAGE_STATEMENT_VALID_12,
+						{TD_IDENTIFIER, 2},
+						TD_USAGE_STATEMENT_VALID_12,
 						12,
 						ActionCode_adjust_),
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 3},
-						TESTER_USAGE_STATEMENT_VALID_13,
+						{TD_IDENTIFIER, 3},
+						TD_USAGE_STATEMENT_VALID_13,
 						13,
 						ActionCode_adjust_),							
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 4},
-						TESTER_USAGE_STATEMENT_VALID_14,
+						{TD_IDENTIFIER, 4},
+						TD_USAGE_STATEMENT_VALID_14,
 						14,
 						ActionCode_adjust_),
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 5},
-						TESTER_USAGE_STATEMENT_VALID_15,
+						{TD_IDENTIFIER, 5},
+						TD_USAGE_STATEMENT_VALID_15,
 						15,
 						ActionCode_adjust_),
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 6},
-						TESTER_USAGE_STATEMENT_VALID_16
+						{TD_IDENTIFIER, 6},
+						TD_USAGE_STATEMENT_VALID_16,
 						16,
 						ActionCode_adjust_),
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 7},
-						TESTER_USAGE_STATEMENT_VALID_17,
+						{TD_IDENTIFIER, 7},
+						TD_USAGE_STATEMENT_VALID_17,
 						17,
 						ActionCode_adjust_),
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 8},
-						TESTER_USAGE_STATEMENT_VALID_18,
+						{TD_IDENTIFIER, 8},
+						TD_USAGE_STATEMENT_VALID_18,
 						18,
 						ActionCode_adjust_),
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 9},
-						TESTER_USAGE_STATEMENT_VALID_19,
+						{TD_IDENTIFIER, 9},
+						TD_USAGE_STATEMENT_VALID_19,
 						19,
 						ActionCode_adjust_),
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 10},
-						TESTER_USAGE_STATEMENT_VALID_20,
+						{TD_IDENTIFIER, 10},
+						TD_USAGE_STATEMENT_VALID_20,
 						20,
 						ActionCode_adjust_)
 				});
@@ -3372,14 +3412,14 @@ module EfcInfoExchange_TestCasesTc {
 				for (var integer v_loop := 0; v_loop < GNSS_TOLLDECLARATIONS_PARAM1_MAX_TC; v_loop := loop + 1) {	
  					v_usageStatementToBeSent := {
 						usageStatementId := v_loop,
-						tollContext := TESTER_TOLL_CONTEXT,
+						tollContext := TD_TOLL_CONTEXT,
 						aggregatedSingleTariffClassSession := TESTER_SINGLE_TARIFF_CLASS_SESSION,
 						listOfChargeObjects:=TESTER_LIST_OF_CHARGE_OBJECTS,
 						listOfRawUsageData := TESTER_LIST_OF_RAW_USAGE_DATA,
 						additionalUsageInformation := omit
 					};
  					v_adusToBeSent[v_loop] := m_aduTollDeclarationToSendOneObe(
-							{TESTER_IDENTIFIER, v_loop},
+							{TD_IDENTIFIER, v_loop},
 							v_usageStatementToBeSent,
 							v_loop,
 							ActionCode_send_);
@@ -3441,7 +3481,7 @@ module EfcInfoExchange_TestCasesTc {
 
 				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 1},
+						{TD_IDENTIFIER, 1},
 						TESTER_USAGE_STATEMENT_VALID_1,
 						1,
 						ActionCode_send_)
@@ -3478,7 +3518,7 @@ module EfcInfoExchange_TestCasesTc {
                 // same TollDeclarations and same Charge Report Id
 				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 2},
+						{TD_IDENTIFIER, 2},
 						TESTER_USAGE_STATEMENT_VALID_2,
 						2,
 						Action_Code_revoke_)
@@ -3534,7 +3574,7 @@ module EfcInfoExchange_TestCasesTc {
 
 				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 1},
+						{TD_IDENTIFIER, 1},
 						TESTER_USAGE_STATEMENT_VALID_1,
 						1,
 						ActionCode_send_)
@@ -3571,7 +3611,7 @@ module EfcInfoExchange_TestCasesTc {
                 // same TollDeclarations and same Charge Report Id
 				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 2},
+						{TD_IDENTIFIER, 2},
 						TESTER_USAGE_STATEMENT_VALID_2,
 						2,
 						ActionCode_adjust_)
@@ -3624,15 +3664,15 @@ module EfcInfoExchange_TestCasesTc {
 
 				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 1},
+						{TD_IDENTIFIER, 1},
 						TESTER_USAGE_STATEMENT_VALID_1,
 						1,
 						ActionCode_send_),
 					m_aduTollDeclarationToSendOneObe(
-						{TESTER_IDENTIFIER, 1},
+						{TD_IDENTIFIER, 1},
 						TESTER_USAGE_STATEMENT_VALID_1,
 						2,
-						ActionCode_send_),
+						ActionCode_send_)
 					});
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
                 
@@ -3647,7 +3687,7 @@ module EfcInfoExchange_TestCasesTc {
 				var NAckParams v_nAckParams := {{0, ApduReasonCode_apduNotOK_}};
 
 				alt {
-					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
 					}
@@ -3677,7 +3717,7 @@ module EfcInfoExchange_TestCasesTc {
                 // TODO define TESTER_AUTHENTICATED_CHARGE_REPORT in module TesterData
 
 				var TollDeclarationADU v_aduTollDeclarationAuthenticatedChargeReport := {
-					tollDeclarationId := {TESTER_IDENTIFIER, 1}, 
+					tollDeclarationId := {TD_IDENTIFIER, 1}, 
 					gnssTollDeclaration := {
 						authenticatedChargeReport := TESTER_AUTHENTICATED_CHARGE_REPORT
 					},
@@ -3699,7 +3739,7 @@ module EfcInfoExchange_TestCasesTc {
 				var NAckParams v_nAckParams := {{0, ApduReasonCode_apduNotOK_}};
 
 				alt {
-					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
 					}
@@ -3734,14 +3774,14 @@ module EfcInfoExchange_TestCasesTc {
 				for (var integer v_loop := 0; v_loop < GNSS_TOLLDECLARATIONS_PARAM2_MAX_TC; v_loop := loop + 1) {	
  					v_usageStatementToBeSent := {
 						usageStatementId := v_loop,
-						tollContext := TESTER_TOLL_CONTEXT,
+						tollContext := TD_TOLL_CONTEXT,
 						aggregatedSingleTariffClassSession := TESTER_SINGLE_TARIFF_CLASS_SESSION,
 						listOfChargeObjects TESTER_LIST_OF_CHARGE_OBJECTS,
 						listOfRawUsageData := TESTER_LIST_OF_RAW_USAGE_DATA,
 						additionalUsageInformation := omit
 					};
  					v_adusToBeSent[v_loop] := m_aduTollDeclarationToSendOneObe( 
-							{TESTER_IDENTIFIER, v_loop}, // TODO: is the assumption correct that one TD contains one ChargeReport?
+							{TD_IDENTIFIER, v_loop}, // TODO: is the assumption correct that one TD contains one ChargeReport?
 							v_usageStatementToBeSent,
 							v_loop,
 							ActionCode_send_);
@@ -3762,7 +3802,7 @@ module EfcInfoExchange_TestCasesTc {
 				var NAckParams v_nAckParams := {{0, ApduReasonCode_apduNotOK_}};
 
 				alt {
-					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
 					}
@@ -3795,7 +3835,7 @@ module EfcInfoExchange_TestCasesTc {
 
 				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
 					m_aduTollDeclarationToSendOneObeOtherActionCodes(
-						{TESTER_IDENTIFIER, 1},
+						{TD_IDENTIFIER, 1},
 						TESTER_USAGE_STATEMENT_VALID_1,
 						1,
 						null)
@@ -3855,7 +3895,7 @@ module EfcInfoExchange_TestCasesTc {
 
 				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
 					m_aduTollDeclarationToSendOneObeOtherActionCodes(
-						{TESTER_IDENTIFIER, 1},
+						{TD_IDENTIFIER, 1},
 						TESTER_USAGE_STATEMENT_VALID_1,
 						1,
 						ActionCode_resend_) // other actionCode = 4
@@ -4334,254 +4374,7 @@ module EfcInfoExchange_TestCasesTc {
 				f_closeDownMtc();              	
 			} // End testcase TP_TC_GNSS_BILLINGDETAILS_TSP_BV_05
 
-			testcase TP_TC_GNSS_BILLINGDETAILS_TSP_BV_06() runs on MainTestComponent system TestAdapter {
-							
-               /**
-                * @desc    TP_TC_GNSS_BILLINGDETAILS_TSP_BV_06: Verify that the TC correctly performs
-                *			a GNSS_BILLINGDETAILS_TSP transaction when the TSP provides multiple BillingDetailsADUs
-                *			with no optional fields
-                * @remark  [16986:2016], Clauses 8.2.2 and 8.2.4 and Table A.1/1 AND Table A.2/2 AND Table A.52/1
-                */
- 
-  				// Initialisation
-                 
-				// Start by setting test success
-				// Perform a full GNSS.TOLLDECLARATION transaction with positive Ack
-				// wait respective time constraints until next transaction 	
-								
-                // Step 1:
-                // Send valid Initiating_Apdu containing a GNSS.BILLINGDETAILS.TSP.PARAM1_MAX valid BillingDetailsADUs with
-                //		- actionCode = send and no optional fields
-                  
-                // Step 2:
-                // Wait for Default_Ack_Apdu within GNSS.BILLINGDETAILS.TSP.TIME1             
-                // use template for Default_Ack_Apdu
-                // if not received or received outside specification or time constraints set test fail
-
-			} // End testcase TP_TC_GNSS_BILLINGDETAILS_TSP_BV_06
-
-			testcase TP_TC_GNSS_BILLINGDETAILS_TSP_BV_07() runs on MainTestComponent system TestAdapter {
-							
-               /**
-                * @desc    TP_TC_GNSS_BILLINGDETAILS_TSP_BV_07: Verify that the TC correctly performs
-                *			a GNSS.BILLINGDETAILS.TSP transaction when the TSP sends a single BillingDetailsADU
-                *			with actionCode = adjust and no optional fields
-                * @remark  [16986:2016], Clauses 8.2.2 and 8.2.4 and Table A.1/1 AND Table A.2/2 AND Table A.52/1
-                */
- 
-  				// Initialisation
-                 
-				// Start by setting test success
-				// Perform a full GNSS.TOLLDECLARATION transaction with negative Ack
-				// wait respective time constraints until next transaction 	
-								
-                // Step 1:
-                // Send valid Initiating_Apdu containing exactly one valid BillingDetailsADUs with
-				//		- all mandatory fields, and
-				//		- actionCode = adjust, and
-				//		- no optional fields, and
-				//		- billingDetailsNum referencing the previously received BillingDetailsADU
-                  
-                // Step 2:
-                // Wait for Default_Ack_Apdu within GNSS.BILLINGDETAILS.TSP.TIME1             
-                // use template for Default_Ack_Apdu
-                // if not received or received outside specification or time constraints set test fail
-
-			} // End testcase TP_TC_GNSS_BILLINGDETAILS_TSP_BV_07
-
-			testcase TP_TC_GNSS_BILLINGDETAILS_TSP_BV_08() runs on MainTestComponent system TestAdapter {
-							
-               /**
-                * @desc    TP_TC_GNSS_BILLINGDETAILS_TSP_BV_08: VVerify that the TC correctly performs
-                *			a GNSS.BILLINGDETAILS.TSP transaction when the TSP sends a single BillingDetailsADU
-                *			with actionCode =revoke and no optional fields
-                * @remark  [16986:2016], Clauses 8.2.2 and 8.2.4 and Table A.1/1 AND Table A.2/2 AND Table A.52/1
-                */
- 
-  				// Initialisation
-                 
-				// Start by setting test success
-				// Perform a full GNSS.BILLINGDETAILS transaction with positive Ack
-				// wait respective time constraints until next transaction starts
-				// Perform a corresponing GNSS.TOLLDECLARATION trasnaction
-				// wait respective time constraints until next transaction starts
-								
-                // Step 1:
-                // Send valid Initiating_Apdu containing exactly one valid BillingDetailsADUs with
-				//		- all mandatory fields, and
-				//		- actionCode = revoke, and
-				//		- no optional fields, and
-				//		- billingDetailsNum referencing the previously received BillingDetailsADU
-                  
-                // Step 2:
-                // Wait for Default_Ack_Apdu within GNSS.BILLINGDETAILS.TSP.TIME1             
-                // use template for Default_Ack_Apdu
-                // if not received or received outside specification or time constraints set test fail
-
-			} // End testcase TP_TC_GNSS_BILLINGDETAILS_TSP_BV_08
-			
-		} // End Valid_Behaviour
-
-		group Invalid_Behaviour {
-		
-			testcase TP_TC_GNSS_BILLINGDETAILS_TSP_BI_01() runs on MainTestComponent system TestAdapter {
-							
-               /**
-                * @desc    TP_TC_GNSS_BILLINGDETAILS_TSP_BI_01: Verify that the TC correctly responds
-                *			when receiving multiple BillingDetailsADUs with no optional fields present
-                *			with each BillingDetailsADU having one field with an incorrect value
-                * @remark  [16986:2016], Clauses 8.2 and Table A.1/1 AND Table A.2/2 AND Table A.52/1
-                */
- 
-  				// Initialisation
-                 
-				// Start by setting test success
-				// Perform a full GNSS.TOLLDECLARATION transaction with positive Ack
-				// wait respective time constraints until next transaction 	
-								
-                // Step 1:
-                // Send valid Initiating_Apdu containing 10 BillingDetailsADUs with
-                //		- all mandatory fields, and
-                //		- no optional fields,
-                //		- where the following fields have an incorrect value
-                //			(a) billingDetailsId.issuerId
-                //			(b) tollContext
-                //			(c)	userId
-                //			(d) billingDetailsAmount
-                //			(e) usageDetails.contextName
-                //			(f) usageDetails.appliedUserClass
-                //			(g) usageDetails.perDeclaredVehicleClasses
-                //			(h)	usageDetails.appliedTimeClass
-                //			(i) usageDetails.entranceTime
-                //			(j) usageList.ListofSections.chargeObjectId
-                 
-                // Step 2:
-                // Wait for NAck_Apdu within GNSS.BILLINGDETAILS.TSP.TIME1
-                // with issueCodes corresponding to the incorrect velues above:
-                //			(a) billingDetailsIssuerIdRejected
-                //			(b) billingDetailsContextIdRejected
-                //			(c) billingDetailsUserIdRejected
-                //			(d) billingDetailsAmountRejected
-                //			(e) billingDetailsContextNameRejected
-                //			(f) billingDetailsAppliedUserClassRejected
-                //			(g) billingDetailsDeclaredVehicleClassRejected
-                //			(h) billingDetailsAppliedTimeClassRejected
-                //			(i) billingDetailsEntranceTimeRejected
-                //			(j) billingDetailsIntermediateSectionRejected
-                             
-                // use template(s) for NAck_Apdu
-                // if not received or received outside specification or time constraints set test fail
-                
-			} // End testcase TP_TC_GNSS_BILLINGDETAILS_TSP_BI_01
-
-			testcase TP_TC_GNSS_BILLINGDETAILS_TSP_BI_02() runs on MainTestComponent system TestAdapter {
-							
-               /**
-                * @desc    TP_TC_GNSS_BILLINGDETAILS_TSP_BI_02: Verify that the TC correctly responds
-                * 			when the TSP provides a single BillingDetailsADU with only mandatory fields,
-                *			then issues a second BillingDetailsADU too early
-                * @remark  [16986:2016], Clauses 8.2 and Table A.1/1 AND Table A.2/2 AND Table A.52/1
-                */
- 
-  				// Initialisation
-                
-				// Start by setting test success
-				// Perform a full GNSS.TOLLDECLARATION transaction with positive Ack
-								
-                // Step 1:
-                // Before TIMEA_MIN as passed, send valid Initiating_Apdu containing exactly one BillingDetailsADUs with
-                //		- all mandatory fields, and
-                //		- no optional fields,
-                 
-                // Step 2:
-                // Wait for NAck_requestSentTooOften(10) within GNSS.BILLINGDETAILS.TSP.TIME1
-                // use template(s) for NAck_requestSentTooOften(10)
-                // if not received or received outside specification or time constraints set test fail
-                
-			} // End testcase TP_TC_GNSS_BILLINGDETAILS_TSP_BI_02
-
-			testcase TP_TC_GNSS_BILLINGDETAILS_TSP_BI_03() runs on MainTestComponent system TestAdapter {
-							
-               /**
-                * @desc    TP_TC_GNSS_BILLINGDETAILS_TSP_BI_03: Verify that the TC correctly responds
-                *			when the TSP sends too many BillingDetailsADUs
-                * @remark  [16986:2016], Clauses 8.2 and Table A.1/1 AND Table A.2/2 AND Table A.52/1
-                */
- 
-  				// Initialisation
-                
-				// Start by setting test success
-				// Perform a full GNSS.TOLLDECLARATION transaction with positive Ack
-				// wait respective time constraints until next transaction 	
-								
-                // Step 1:
-                // Send valid Initiating_Apdu containing
-                // (GNSS.BILLINGDETAILS.TSP. PARAM1_MAX +1) BillingDetailsADUs, with no optional fields
-                 
-                // Step 2:
-                // Wait for NAck containing issueCode = semanticError(3000) within GNSS.BILLINGDETAILS.TSP.TIME1
-                // use template(s) for NAck
-                // if not received or received outside specification or time constraints set test fail
-                
-			} // End testcase TP_TC_GNSS_BILLINGDETAILS_TSP_BI_03
-
-			testcase TP_TC_GNSS_BILLINGDETAILS_TSP_BI_04() runs on MainTestComponent system TestAdapter {
-							
-               /**
-                * @desc    TP_TC_GNSS_BILLINGDETAILS_TSP_BI_04: Verify that the TC correctly reponds
-                *			when the TSP adjusts billing details that do not exist at IUT side
-                * @remark  [16986:2016], Clauses 8.2 and Table A.1/1 AND Table A.2/2 AND Table A.52/1
-                */
- 
-  				// Initialisation
-                
-				// Start by setting test success
-				// Perform a full GNSS.TOLLDECLARATION transaction with positive Ack
-				// wait respective time constraints until next transaction 	
-								
-                // Step 1:
-                // Send valid Initiating_Apdu containing containing exactly one a BillingDetailsADU with
-                //		- all mandatory fields, and
-                //		- actionCode = adjust, and
-                //		- no optional fields, and
-                //		- billingDetailsNum referencing a billing details that do not exist at the IUT side
-                 
-                // Step 2:
-                // Wait for NAck containing issueCode = semanticError(3000) within GNSS.BILLINGDETAILS.TSP.TIME1
-                // use template(s) for NAck
-                // if not received or received outside specification or time constraints set test fail
-                
-			} // End testcase TP_TC_GNSS_BILLINGDETAILS_TSP_BI_04
-
-			testcase TP_TC_GNSS_BILLINGDETAILS_TSP_BI_05() runs on MainTestComponent system TestAdapter {
-							
-               /**
-                * @desc    TP_TC_GNSS_BILLINGDETAILS_TSP_BI_05: Verify that the TC correctly reponds
-                *			when the TSP tries to revoke billing details that do not exist at TC side
-                * @remark  [16986:2016], Clauses 8.2 and Table A.1/1 AND Table A.2/2 AND Table A.52/1
-                */
- 
-  				// Initialisation
-                
-				// Start by setting test success
-				// Perform a full GNSS.TOLLDECLARATION transaction with positive Ack
-				// wait respective time constraints until next transaction 	
-								
-                // Step 1:
-                // Send valid Initiating_Apdu containing containing exactly one a BillingDetailsADU with
-                //		- all mandatory fields, and
-                //		- actionCode = revoke, and
-                //		- no optional fields, and
-                //		- billingDetailsNum referencing a billing details that do not exist at the IUT side
-                 
-                // Step 2:
-                // Wait for NAck containing issueCode = semanticError(3000) within GNSS.BILLINGDETAILS.TSP.TIME1
-                // use template(s) for NAck
-                // if not received or received outside specification or time constraints set test fail
-                
-			} // End testcase TP_TC_GNSS_BILLINGDETAILS_TSP_BI_05
-
-		} // End Invalid_Behaviour
+		} // End valid behaviour
 		
 	} // End GNSS_BILLINGDETAILS_TSP
 

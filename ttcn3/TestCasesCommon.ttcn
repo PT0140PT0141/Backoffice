@@ -1,0 +1,484 @@
+module EfcInfoExchange_TestCasesCommon {
+    /**
+     * @desc    [12855:2015]: 
+     * @see     Annex A (normative)  data type specifications
+     */
+    import from EfcAutonomousCharging language "ASN.1:1997" all;
+    import from EfcDsrcApplication language "ASN.1:1997" all;
+    import from EfcInfoExchange language "ASN.1:1997" all;
+    
+    /**
+     * @desc    TTCN-3 does not support ASN.1 parameterization (ETSI ES 201 873-7 V4.5.1 Clause 10)
+     *          Common_Parameterised_Asn1_Data TTCN-3 module is a workaround
+     */
+    import from LibEfc_Common_Parameterised_Asn1_Data all;
+	import from EfcInfoExchange_ParameterisedAsn1Data all;
+    import from EfcInfoExchange_Interfaces all;
+	import from EfcInfoExchange_InteroperabilityStatement all;
+    import from EfcInfoExchange_Functions all;	
+    import from EfcInfoExchange_Pixits all;
+    import from EfcInfoExchange_Ics all;
+    import from EfcInfoExchange_Templates all;
+	import from EfcInfoExchange_TesterData all;
+    import from EfcInfoExchangeProfile all;
+  
+  
+//TODO Ulrik edit the descriptive comments of the test cases to say IUT and Tester instead of TC and TSP     
+//TODO Ulrik reintroduce FAusto code from TSP test cases
+    
+	 /**
+	  * @desc    These Test Cases are common for the Toll Service Provider and Toll Charger for claiming 
+	  * @desc 	 conformance to [16986:2016] and applying Test Purposes as from TS xxxxx:2018 Annex B
+	  * @remark  nn TCs
+	  */
+
+	group TRUSTOBJECTS {
+		
+		type enumerated TransactionType {type1, type2}
+		type enumerated Role {TC,TSP};
+		group Valid_Behaviour {
+	           
+		 	testcase TP_TSP_TRUSTOBJECTS_BV_01(in TransactionType p_transType, in Role p_role) runs on MainTestComponent system TestAdapter {
+				/**
+				 * @desc    TP_TSP_TRUSTOBJECTS_BV_01: Verify that the TSP correctly provides a TrustObjectADU without TC request
+				 * @remark  [16986:2016], Clause 6.6 and Table A.1/2
+				 * @remark  Same as  TP_TC_TRUSTOBJECTS_BV_01
+				 */
+				// Initialisation
+				//TODO Ulrik the condition ICS_A1_2_isTsp must be broken out since this is general
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_4_implementedTRUSTOBJECTSElectronicTransfer;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+					
+				var boolean isCertificateOrPublicKey:=false;
+				var boolean isDsrcKeyRef := false;
+				var boolean isMacMasterKey := false;
+				var boolean isDsrcMasterKey := false;
+				var boolean isCertificateRevocationList := false;
+				var boolean isDsrcKey:=false;
+					
+				var integer objectsReceived := 0;
+				// Step 1: Trigger IUT with TRUSTOBJECTS_TR_2
+				f_sendAndLogTrigger(TRUSTOBJECTS_TR_2);
+	
+				//  Wait for TRUSTOBJECTS
+				// We expect to receive as many APDUs containing TRUSTOBJECTS ADUs as the number of declared supported trust objects
+				alt {
+					[] mtcPort.receive(mw_apduTrustObjectInit) -> value v_apduReceived {
+						//send Ack whichever object received
+						f_logReceivedWaitAndAcknowledge(v_apduReceived); 							
+						// Look at the type of Trust Object received and set the related variable 				
+						if (match(v_apduReceived.adus, mw_adusTrustObjectCertificate)) 
+						{isCertificateOrPublicKey:=true;}
+						if (match(v_apduReceived.adus, mw_adusTrustObjectPublicKey)) 
+						{isCertificateOrPublicKey:=true;}
+						if (match(v_apduReceived.adus, mw_adusTrustObjectGeneric))
+						{isCertificateRevocationList := true;}
+						if (match(v_apduReceived.adus, mw_adusTrustObjectDsrcKeyRef)) 
+						{isDsrcKeyRef:=true;}
+						if (match(v_apduReceived.adus, mw_adusTrustObjectMacKey)) 
+						{isMacMasterKey:=true;}
+						if (match(v_apduReceived.adus, mw_adusTrustObjectDsrcKey)) 
+						{isDsrcKey:=true;}
+		
+						objectsReceived := objectsReceived + 1; // Count the number of trust objects received
+						if (objectsReceived < sizeof(SENT_TRUST_OBJECTS_SUPPORTED)) {
+							repeat;
+						}
+					}										
+				} // End of alt statement
+				// Exiting the alt means that the expected number of Trust Objects have been received
+	
+				if (ICS_A2_1_isDsrc and isCertificateOrPublicKey and isDsrcKeyRef and isMacMasterKey and isDsrcMasterKey) {
+					setverdict(pass);
+				}			 				
+				if (ICS_A2_2_isGnss and isCertificateOrPublicKey and isDsrcKeyRef){
+					setverdict(pass);
+				}			 				
+				f_closeDownMtc();              
+		   } // End of TP_TSP_TRUSTOBJECTS_BV_01
+	
+		   testcase TP_TSP_TRUSTOBJECTS_BV_02(integer transactionType) runs on MainTestComponent system TestAdapter {
+	             
+			  /**
+			  * @desc    TP_TSP_TRUSTOBJECTS_BV_02: Verify that the TSP correctly responds to 
+			  * @desc	 a TrustObjectADU received from a TC without having issued a request 
+			  * @remark  [16986:2016], Clause 6.6 and Table A.1/2 
+			  * @remark  Same as TP_TC_TRUSTOBJECTS_BV_02
+			  */
+				// Initialisation
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_4_implementedTRUSTOBJECTSElectronicTransfer;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+					
+				 // Step 1: Send one valid APDU containing the a valid TrustObjectADU with the only mandatorily supported type in both profiles, for all possible purposes
+				//TODO Fausto what is the DSRCRF_OBJECT_TESTER_VALUE supposed to be, could it be a constant instead? Why four trust object purposes 
+				var InfoExchange v_apduForSending := m_apduNoAuthInitTester(
+					m_aduTrustObject(
+						{
+							TrustObjectPurposes_dSRCCharging_,
+							TrustObjectPurposes_dSRCAC_,
+							TrustObjectPurposes_oBEInterrogation_,
+							TrustObjectPurposes_oBEInterrogationAC_
+						}, 
+						DSRCRF_OBJECT_TESTER_VALUE
+					)
+				);                 
+				f_sendAndLogApdu(v_apduForSending);                 
+				 // Step 2: Wait for positive Ack within TRUSTOBJECTS.TIME2
+				// Set timer
+				 t_step.start(TRUSTOBJECTS_TIME2_MAX[p_transType][p_role]);                 
+				alt {
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TIME2_MIN[p_transType][p_role]);
+						setverdict(pass);
+						} 
+					} // End of Alt statement 
+				f_closeDownMtc();                  
+	             
+		   } // End of TP_TSP_TRUSTOBJECTS_BV_02
+	
+		   testcase TP_TSP_TRUSTOBJECTS_BV_03() runs on MainTestComponent system TestAdapter {
+	             
+			  /**
+			  * @desc    TP_TSP_TRUSTOBJECTS_BV_03: Verify that the TSP correctly provides a TrustObjectADU following a TC request 
+			  * @remark  [16986:2016], Clause 6.6 and Table A.1/2 
+			  * @remark  Same as TP_TC_TRUSTOBJECTS_BV_03
+			  */
+				// Initialisation
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_4_implementedTRUSTOBJECTSElectronicTransfer;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				// Loop in all available types of trustobject supported by the IUT as specified by the length of SENT_TRUST_OBJECTS_SUPPORTED Pixit record
+				var integer v_trustObjectsToBeSent := sizeof(SENT_TRUST_OBJECTS_SUPPORTED);
+				for (var integer v_trustObjectsReceived :=1; v_trustObjectsReceived<v_trustObjectsToBeSent;v_trustObjectsReceived:=v_trustObjectsReceived+1)
+					{
+						// Prepare a request of a Trust Object by taking allowed type and purpose from the RECEIVED_TRUST_OBJECTS_SUPPORTED Pixit value
+							
+						var integer v_requestedTrustObjectType := SENT_TRUST_OBJECTS_SUPPORTED[v_trustObjectsReceived].trustObjectType;
+						var TrustObjectPurposes v_requestedTrustObjectPurposes := SENT_TRUST_OBJECTS_SUPPORTED[v_trustObjectsReceived].trustObjectPurpose;
+							
+						var InfoExchange v_apduRequestForTrustObject := m_apduNoAuth(
+							m_apciInitTester, Adus:{
+								requestAdus:= {
+									requestedADUType:= 3,
+									requestedTrustObject:={
+										trustObjectSpec:={
+											typeOfTrustObject := v_requestedTrustObjectType,
+											purposesOfTrustObject := v_requestedTrustObjectPurposes
+										}
+									}
+								}
+							}
+						); //TODO Consider moving definition to Templates.ttcn
+							
+						f_sendAndLogApdu(v_apduRequestForTrustObject);
+				
+						// Set timer
+						 t_step.start(TRUSTOBJECTS_TIME1_MAX_TSP[transactionType]);
+						// Step #2: Wait for TrustObjects ADU
+						// Either we receive an APDU containing  TrustObject or the timeout expires
+						alt {
+							[] mtcPort.receive(mw_apduTrustObject) -> value v_apduReceived {
+								f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TIME1_MIN_TSP[transactionType]);  
+	
+								// Step #3: Send DefaultACK with correct identifier
+								f_logReceivedWaitAndAcknowledge(TRUSTOBJECTS_TIME2_MIN_TSP[transactionType]);
+								}
+							} // End of alt statement
+						}; // end of for statement
+				//Set verdict
+				setverdict(pass);
+				f_closeDownMtc(); 
+					 
+		   } // End of TP_TSP_TRUSTOBJECTS_BV_03
+	
+		   testcase TP_TSP_TRUSTOBJECTS_BV_04() runs on MainTestComponent system TestAdapter {
+	             
+			  /**
+			  * @desc    TP_TSP_TRUSTOBJECTS_BV_04: Verify that the TSP correctly requests and responds to a TrustObjectADU
+			  * @remark  [16986:2016], Clause 6.6 and Table A.1/2 
+			  * @remark  Same as TP_TC_TRUSTOBJECTS_BV_04
+			  */
+				// Initialisation
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_4_implementedTRUSTOBJECTSElectronicTransfer;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+					
+				// Step 1: Trigger IUT with TRUSTOBJECTS_TR_1
+				f_sendAndLogTrigger(TRUSTOBJECTS_TR_1);
+				//  Wait for request for TRUSTOBJECTS
+				// Loop in all available types of trustobject requested supported by the IUT by repeating receive
+				var integer v_expectedTrustObjectRequests := sizeof(SENT_TRUST_OBJECTS_SUPPORTED);
+				var integer v_receivedTrustObjects := 0;
+				// Set timer
+				t_step.start(TRUSTOBJECTS_TIME1_MAX_TSP[transactionType]);                 
+				alt {
+					[] mtcPort.receive(mw_apduRequestTrustObject) -> value v_apduReceived {
+						// Log what we received
+						f_logApduReceivedAndTStep();
+						t_step.stop;
+						v_receivedTrustObjects := v_receivedTrustObjects + 1;
+						// Step 1: Send one valid APDU containing one valid TrustObjectADU
+	
+						// Analysis of what requested and what to be sent						
+						if (ispresent(v_apduReceived.infoExchangeContent.adus.requestAdus.trustObjectRequest.requestedTrustObject.trustObjectId)) {
+							f_addLogEntry("Received a request for a specific TrustObjectId, this is not supported according to CEN/TS 16986:2016");
+							setverdict(fail);
+							stop;					
+						}
+						var TrustObjectSpec v_requestedTrustObjectSpec := v_apduReceived.infoExchangeContent.adus.requestAdus.trustObjectRequest.requestedTrustObject.trustObjectSpec;
+						var TrustObjectTypes v_requestedTrustObjectType := v_requestedTrustObjectSpec.typeOfTrustObject;
+						var RecOfTrustObjectPurposes v_requestedTrustObjectPurposesRecords := v_requestedTrustObjectSpec.purposesOfTrustObject;
+						var InfoExchange v_apduToSend;
+																
+						select (v_requestedTrustObjectType) {
+							case (TrustObjectTypes_certificate_){
+								v_apduToSend := m_apduTrustObjectResponse(
+									v_apduReceived, 
+									v_requestedTrustObjectPurposesRecords,
+									TD_CERTIFICATE			
+								);
+							}
+							case (TrustObjectTypes_publicKey_){
+								v_apduToSend := m_apduTrustObjectResponse(
+									v_apduReceived, 
+									v_requestedTrustObjectPurposesRecords,
+									TD_PUBLICKEY
+								);                 												
+							}
+							case (TrustObjectTypes_symmetricKey_){
+								v_apduToSend := m_apduTrustObjectResponse(
+									v_apduReceived, 
+									v_requestedTrustObjectPurposesRecords,
+									//TODO Fausto, what is this supposed to be? TD_DSRCKEY_OBJECT is not defined
+									TD_DSRCKEY_OBJECT
+								);                 												
+							}
+							case else {
+								f_addLogEntry("Received a request trust object type other than certificate, publicKey or symmetricKey, this is not allowed according to CEN/TS 16986:2016");
+								setverdict(fail);
+								stop;					
+							}
+						};						
+	
+						f_sendAndLogApdu(v_apduToSend);                 
+	                
+						// Step 2: Wait for positive Ack within TRUSTOBJECTS.TIME2
+						// Set timer
+						t_step.start(TRUSTOBJECTS_TIME2_MAX_TSP[transactionType]);                 
+						alt {
+							[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToSend)) -> value v_apduReceived {
+								// Log what we received
+								f_logApduReceivedAndTStep();
+								t_step.stop;
+							}
+						} // End of second alt 
+						
+						if (v_receivedTrustObjects == v_expectedTrustObjectRequests) {
+							setverdict(pass);
+							break;  
+						};
+						t_step.start(TRUSTOBJECTS_TIME1_MAX_TSP[transactionType]);  // Restart timer               
+						repeat;
+					}	
+				} // End of first alt 					
+				f_closeDownMtc();                  
+	
+	
+		   } // End of TP_TSP_TRUSTOBJECTS_BV_04
+	           
+		} // End of group Valid_Behaviour
+	         
+		 group Invalid_Behaviour {
+	
+		   testcase TP_TSP_TRUSTOBJECTS_BI_01() runs on MainTestComponent system TestAdapter {
+	             
+			  /**
+			  * @desc    TP_TSP_TRUSTOBJECTS_BI_01: Verify that the TSP correctly responds to a TrustObjectADU received without having issued a request and containing incorrect ADU parameters
+			  * @remark  [16986:2016], Clause 6.6 and Table A.1/2 
+			  * @remark  Same as TP_TC_TRUSTOBJECTS_BI_01
+			  */
+				// Initialisation
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_4_implementedTRUSTOBJECTSElectronicTransfer;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				var InfoExchange v_apduForSending := m_apduNoAuthInitTester(m_aduTrustObjectInvalidStatus);                 
+				f_sendAndLogApdu(v_apduForSending);                 
+				// Step 2: Wait for negative Ack within TRUSTOBJECTS.TIME2
+				// Set timer
+				 t_step.start(TRUSTOBJECTS_TIME2_MAX_TSP[transactionType]);                		
+	
+				alt {
+					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduForSending, AduReasonCode_invalidADU_)) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TIME1_MIN_TSP[transactionType]); 
+						setverdict(pass);
+						}
+					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduForSending, {{1, AduReasonCode_invalidADU_},{2,AduReasonCode_invalidADU_}})) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TIME1_MIN_TSP[transactionType]); 
+						setverdict(pass);
+						}
+					} // End of Alt statement
+				f_closeDownMtc();                   
+	             
+		   } // End of TP_TSP_TRUSTOBJECTS_BI_01
+	
+		   testcase TP_TSP_TRUSTOBJECTS_BI_02() runs on MainTestComponent system TestAdapter {
+	             
+			  /**
+			  * @desc    TP_TSP_TRUSTOBJECTS_BI_02: Verify that the TSP correctly responds to more than one correct Trust Object ADUs in the same APDU without having issued a request
+			  * @remark  [16986:2016], Clause 6.6 and Table A.1/2 
+			  * @remark  Same as TP_TC_TRUSTOBJECTS_BI_02
+			  */
+				// Initialisation
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_4_implementedTRUSTOBJECTSElectronicTransfer;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				// Set two different TrustObject adus by varying the type of trust object 
+				var InfoExchange v_apduForSending := m_apduNoAuthInitTester(
+					{
+					 m_aduTrustObject(
+						{TrustObjectPurposes_dSRCCharging_,TrustObjectPurposes_dSRCAC_,TrustObjectPurposes_oBEInterrogation_,TrustObjectPurposes_oBEInterrogationAC_},
+						//TODO Fausto define DSRCRF_OBJECT_TESTER_VALUE
+						DSRCRF_OBJECT_TESTER_VALUE),
+					 m_aduTrustObject(
+						{TrustObjectPurposes_dSRCCharging_},
+						certificateTESTER_OBJECT) }
+					);                 
+				f_sendAndLogApdu(v_apduForSending);                 
+				// Step 2: Wait for negative Ack within TRUSTOBJECTS.TIME2
+				// Set timer
+				 t_step.start(TRUSTOBJECTS_TIME2_MAX_TSP[transactionType]);                		
+				//Create parameters for the m_apduNAck			
+	
+				alt {
+					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduForSending, AduReasonCode_semanticError_)) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TIME1_MIN_TSP[transactionType]); 
+						setverdict(pass);
+						}
+					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduForSending, {{1, AduReasonCode_semanticError_},{2,AduReasonCode_semanticError_}})) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TIME1_MIN_TSP[transactionType]); 
+						setverdict(pass);
+						}
+					} // End of Alt statement
+				f_closeDownMtc();                   
+	                          
+		   } // End of TP_TSP_TRUSTOBJECTS_BI_02
+	
+		   testcase TP_TSP_TRUSTOBJECTS_BI_03() runs on MainTestComponent system TestAdapter {
+			  /**
+			  * @desc    TP_TSP_TRUSTOBJECTS_BI_03: Verify that the TSP correctly responds to a not supported Trust Object
+			  * @remark  [16986:2016], Clause 6.6 and Table A.1/2 
+			  * @remark  Same as TP_TC_TRUSTOBJECTS_BI_03
+			  */
+				// Initialisation
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_4_implementedTRUSTOBJECTSElectronicTransfer;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				// Prepare an invalid certificate (not supported by the profile)
+				var InfoExchange v_apduForSending := m_apduNoAuthInitTester(TrustObjectADU({TrustObjectPurposes_certIssuing_},invalidTESTERGenericObject));                 
+				f_sendAndLogApdu(v_apduForSending);                 
+				// Step 2: Wait for negative Ack within TRUSTOBJECTS.TIME2
+				// Set timer
+				 t_step.start(TRUSTOBJECTS_TYPE1_TIME2_MAX_TSP);                		
+				//Create parameters for the m_apduNAck			
+	
+				alt {
+					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduForSending, AduReasonCode_semanticError_)) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TYPE1_TIME1_MIN_TSP); 
+						setverdict(pass);
+						}
+					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduForSending, {{1, AduReasonCode_semanticError_},{2,AduReasonCode_semanticError_}})) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TYPE1_TIME1_MIN_TSP); 
+						setverdict(pass);
+						}
+					} // End of Alt statement
+				f_closeDownMtc();                   
+	                          
+		   } // End of TP_TSP_TRUSTOBJECTS_BI_03
+	
+		   testcase TP_TSP_TRUSTOBJECTS_BI_04() runs on MainTestComponent system TestAdapter {             
+			  /**
+			  * @desc    TP_TSP_TRUSTOBJECTS_BI_04: Verify that the TSP correctly responds to a RequestADU sent earlier than allowed
+			  * @remark  [16986:2016], Clause 6.6 and Table A.1/2 
+			  * @remark  Same as TP_TC_TRUSTOBJECTS_BI_04
+			  */
+	             
+				// Initialisation
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_4_implementedTRUSTOBJECTSElectronicTransfer;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				// Step1: send RequestADU by specifying the type of trustobject
+				// Prepare a request of a Trust Object by taking allowed type and purpose from the SENT_TRUST_OBJECTS_SUPPORTED Pixit value
+				var RequestADU requestAdu :={
+					requestedADUType := 3,
+					requestedTrustObject:={
+						trustObjectSpec := {
+							typeOfTrustObject := SENT_TRUST_OBJECTS_SUPPORTED[1].trustObjectType,
+							purposesOfTrustObject := SENT_TRUST_OBJECTS_SUPPORTED[1].trustObjectPurpose}
+						}
+				}
+	
+				var Adus requestAduInWrapper:= {requestAdus:={requestAdu}};
+					
+				var InfoExchange v_firstApduRequest:=m_apduNoAuthInitTester(requestAduInWrapper); 
+				var InfoExchange v_secondApduRequest:=m_apduNoAuthInitTester(requestAduInWrapper); 
+					
+					
+				// Now send the first apdu
+				f_sendAndLogApdu(v_firstApduRequest);
+					
+				//Immediately send same ADU with different APDUid				
+				f_sendAndLogApdu(v_secondApduRequest);
+	                              
+				//Set timer
+				t_step.start(TRUSTOBJECTS_TYPE1_TIME2_MAX_TSP);
+	                
+				// Step #2: Wait for Nack ADU				 					
+				// Either we receive an APDU containing  Nack or the timeout expires
+				// timeout expiration is handled in the altstep branch
+					
+				alt {
+					[] mtcPort.receive(mw_apduNackRequestSentTooOften(v_secondApduRequest)) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TYPE1_TIME2_MIN_TSP);  
+						setverdict(pass);
+						}
+					} // End of Alt statement 
+				f_closeDownMtc();              
+		   } // End of TP_TSP_TRUSTOBJECTS_BI_04
+	
+		   testcase TP_TSP_TRUSTOBJECTS_BI_05() runs on MainTestComponent system TestAdapter {
+	
+			  /**
+			  * @desc    TP_TSP_TRUSTOBJECTS_BI_05: Verify that the TSP correctly responds to a TrustObjectADU sent earlier than allowed
+			  * @remark  [16986:2016], Clause 6.6 and Table A.1/2 
+			  */
+				// Initialisation
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_4_implementedTRUSTOBJECTSElectronicTransfer;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				// Step1: prepare TrustObjectADU by specifying KeyRef as type of trustobject
+				var TrustObjectADU v_trustObjectAdu:=	m_aduTrustObject(
+						{TrustObjectPurposes_dSRCCharging_,TrustObjectPurposes_dSRCAC_,TrustObjectPurposes_oBEInterrogation_,TrustObjectPurposes_oBEInterrogationAC_},
+						//TODO Fausto define DSRCRF_OBJECT_TESTER_VALUE
+						TrustObjectCode:{dsrcKeyRef:=DSRCRF_OBJECT_TESTER_VALUE}
+				);                 
+					
+				var InfoExchange v_firstApduToBeSent := m_apduNoAuthInitTester(v_trustObjectAdu);
+				var InfoExchange v_secondApduToBeSent := m_apduNoAuthInitTester(v_trustObjectAdu);
+	
+				// Send the first apdu
+				f_sendAndLogApdu(v_firstApduToBeSent);
+				// Send second apdu immediately
+				f_sendAndLogApdu(v_secondApduToBeSent);				
+	
+				//Set timer
+				t_step.start(TRUSTOBJECTS_TYPE1_TIME1_MAX_TSP);
+	                
+				// Step #2: Wait for Nack ADU				 					
+				// Either we receive an APDU containing  Nack or the timeout expires
+				// timeout expiration is handled in the altstep branch
+				alt {
+					[] mtcPort.receive(mw_apduNackRequestSentTooOften(v_secondApduToBeSent)) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TYPE1_TIME1_MIN_TSP);  
+						setverdict(pass);
+						}
+					} 
+				f_closeDownMtc();            
+		   } // End of TP_TSP_TRUSTOBJECTS_BI_05
+	           		
+		} // End of group Invalid_Behaviour
+	
+	} // End of group TRUSTOBJECTS
+}

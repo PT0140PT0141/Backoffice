@@ -124,16 +124,16 @@ module EfcInfoExchange_InteroperabilityStatement {
     modulepar float GNSS_TOLLDECLARATIONS_TIMEA_MIN_TSP := 0.0;      
     modulepar float GNSS_TOLLDECLARATIONS_TIMEB_MAX_TC := c_veryLongTime;
     modulepar float GNSS_TOLLDECLARATIONS_TIMEB_MAX_TSP := 0.0; 
-    modulepar float GNSS_TOLLDECLARATIONS_PARAM1_MAX_TC := c_veryHighNumber;
-    modulepar float GNSS_TOLLDECLARATIONS_PARAM1_MAX_TSP := c_veryHighNumber;
-    modulepar float GNSS_TOLLDECLARATIONS_PARAM2_MAX_TC := c_veryHighNumber;
-    modulepar float GNSS_TOLLDECLARATIONS_PARAM2_MAX_TSP := c_veryHighNumber;
-    modulepar float GNSS_TOLLDECLARATIONS_PARAM3_MAX_TC := c_veryHighNumber;
-    modulepar float GNSS_TOLLDECLARATIONS_PARAM3_MAX_TSP := c_veryHighNumber;
-    modulepar float GNSS_TOLLDECLARATIONS_PARAM4_MAX_TC := c_veryHighNumber;
-    modulepar float GNSS_TOLLDECLARATIONS_PARAM4_MAX_TSP := c_veryHighNumber;
-    modulepar float GNSS_TOLLDECLARATIONS_PARAM5_MAX_TC := c_veryHighNumber;
-    modulepar float GNSS_TOLLDECLARATIONS_PARAM5_MAX_TSP := c_veryHighNumber;
+    modulepar integer GNSS_TOLLDECLARATIONS_PARAM1_MAX_TC := c_veryHighNumber;
+    modulepar integer GNSS_TOLLDECLARATIONS_PARAM1_MAX_TSP := c_veryHighNumber;
+    modulepar integer GNSS_TOLLDECLARATIONS_PARAM2_MAX_TC := c_veryHighNumber;
+    modulepar integer GNSS_TOLLDECLARATIONS_PARAM2_MAX_TSP := c_veryHighNumber;
+    modulepar integer GNSS_TOLLDECLARATIONS_PARAM3_MAX_TC := c_veryHighNumber;
+    modulepar integer GNSS_TOLLDECLARATIONS_PARAM3_MAX_TSP := c_veryHighNumber;
+    modulepar integer GNSS_TOLLDECLARATIONS_PARAM4_MAX_TC := c_veryHighNumber;
+    modulepar integer GNSS_TOLLDECLARATIONS_PARAM4_MAX_TSP := c_veryHighNumber;
+    modulepar integer GNSS_TOLLDECLARATIONS_PARAM5_MAX_TC := c_veryHighNumber;
+    modulepar integer GNSS_TOLLDECLARATIONS_PARAM5_MAX_TSP := c_veryHighNumber;
     modulepar float GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC := c_veryLongTime;
     modulepar float GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC := 0.0;
     modulepar float GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TSP := c_veryLongTime;
@@ -142,8 +142,8 @@ module EfcInfoExchange_InteroperabilityStatement {
     modulepar float GNSS_BILLINGDETAILS_TSP_TIMEA_MIN_TSP := 0.0;
     modulepar float GNSS_BILLINGDETAILS_TSP_TIMEB_MAX_TC := c_veryLongTime;
     modulepar float GNSS_BILLINGDETAILS_TSP_TIMEB_MAX_TSP := 0.0;
-    modulepar float GNSS_BILLINGDETAILS_TSP_PARAM1_MAX_TC := c_veryHighNumber;
-    modulepar float GNSS_BILLINGDETAILS_TSP_PARAM1_MAX_TSP := c_veryHighNumber;   
+    modulepar integer GNSS_BILLINGDETAILS_TSP_PARAM1_MAX_TC := c_veryHighNumber;
+    modulepar integer GNSS_BILLINGDETAILS_TSP_PARAM1_MAX_TSP := c_veryHighNumber;   
     modulepar float GNSS_BILLINGDETAILS_TC_TIME0_MAX_TC := c_veryLongTime;
     modulepar float GNSS_BILLINGDETAILS_TC_TIME0_MIN_TC := 0.0;
     modulepar float GNSS_BILLINGDETAILS_TC_TIME0_MAX_TSP := c_veryLongTime;
@@ -152,8 +152,8 @@ module EfcInfoExchange_InteroperabilityStatement {
     modulepar float GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC := 0.0;
     modulepar float GNSS_BILLINGDETAILS_TC_TIME1_MAX_TSP := c_veryLongTime;
     modulepar float GNSS_BILLINGDETAILS_TC_TIME1_MIN_TSP := 0.0;
-    modulepar float GNSS_BILLINGDETAILS_TC_PARAM1_MAX_TC := c_veryHighNumber;
-    modulepar float GNSS_BILLINGDETAILS_TC_PARAM1_MAX_TSP := c_veryHighNumber;
+    modulepar integer GNSS_BILLINGDETAILS_TC_PARAM1_MAX_TC := c_veryHighNumber;
+    modulepar integer GNSS_BILLINGDETAILS_TC_PARAM1_MAX_TSP := c_veryHighNumber;
 	modulepar float GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC := c_veryLongTime;
     modulepar float GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TSP := c_veryLongTime;
     modulepar float GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC := 0.0;
@@ -162,8 +162,20 @@ module EfcInfoExchange_InteroperabilityStatement {
 	modulepar float GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TSP := 0.0;
 	modulepar float GNSS_PAYMENTANNOUNCEMENT_TIMEB_MAX_TC := c_veryLongTime;
     modulepar float GNSS_PAYMENTANNOUNCEMENT_TIMEB_MAX_TSP := c_veryLongTime;
-    modulepar float GNSS_PAYMENTANNOUNCEMENT_PARAM1_MAX_TC := c_veryHighNumber;
-    modulepar float GNSS_PAYMENTANNOUNCEMENT_PARAM1_MAX_TSP := c_veryHighNumber;
-    modulepar float GNSS_PAYMENTANNOUNCEMENT_PARAM2_MAX_TC := c_veryHighNumber;
-    modulepar float GNSS_PAYMENTANNOUNCEMENT_PARAM2_MAX_TSP := c_veryHighNumber;                                                
+    modulepar integer GNSS_PAYMENTANNOUNCEMENT_PARAM1_MAX_TC := c_veryHighNumber;
+    modulepar integer GNSS_PAYMENTANNOUNCEMENT_PARAM1_MAX_TSP := c_veryHighNumber;
+    modulepar integer GNSS_PAYMENTANNOUNCEMENT_PARAM2_MAX_TC := c_veryHighNumber;
+    modulepar integer GNSS_PAYMENTANNOUNCEMENT_PARAM2_MAX_TSP := c_veryHighNumber;
+    
+    
+    //Defined as matrices with the indexes representing TYPE1/TYPE2 and TC/TSP respectively
+    modulepar float TRUSTOBJECTS_TIME1_MAX[2][2] := {{c_veryLongTime,c_veryLongTime},{c_veryLongTime,c_veryLongTime}};
+    modulepar float TRUSTOBJECTS_TIME1_MIN[2][2] := {{0.0,0.0},{0.0,0.0}};
+    modulepar float TRUSTOBJECTS_TIME2_MAX[2][2] := {{c_veryLongTime,c_veryLongTime},{c_veryLongTime,c_veryLongTime}};
+    modulepar float TRUSTOBJECTS_TIME2_MIN[2][2] := {{0.0,0.0},{0.0,0.0}};
+    modulepar float TRUSTOBJECTS_TIMEA_MIN[2][2] := {{0.0,0.0},{0.0,0.0}};
+    modulepar float TRUSTOBJECTS_TIMEB_MIN[2][2] := {{0.0,0.0},{0.0,0.0}};
+    
+    
+    
 }		 

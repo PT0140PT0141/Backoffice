@@ -39,7 +39,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 	import from EfcInfoExchange_ParameterisedAsn1Data all;  
     import from LibEfc_Common_Parameterised_Asn1_Data all;
 	import from EfcInfoExchangeProfile all;
-    
+    //TODO Ulrik templates that are marked as fuzzy that are themselves called b other templates, there the fuzzy-mark must be propagated to the higher level template
     group ApduTemplates {
     	
     	/* Underlaying definitions for APCI and security*/
@@ -59,7 +59,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
     		apduDate :=  ?
     	}
 
-		template (value) ApciFields m_apciInitTester modifies mw_apci :={
+		template (value) @fuzzy ApciFields m_apciInitTester modifies mw_apci :={
     		apduOriginator := TD_APDU_ORIGINATOR_FOR_TESTER,  
     		informationSenderID := TD_INFORMATION_SENDER_ID_FOR_TESTER, 
     		informationrecipientID := INFORMATION_SENDER_ID_FOR_IUT,
@@ -69,8 +69,17 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
     		apduDate:=fx_getUtc()			
 		}
 		
-		template (value) ApciFields m_apciRespTester(in InfoExchange p_apduBeingRespondedTo) modifies m_apciInitTester :={
-			inResponseToApduId:=p_apduBeingRespondedTo.infoExchangeContent.apci.apduIdentifier
+		template (value) @fuzzy ApciFields m_apciRespTester(in InfoExchange p_apduBeingRespondedTo) modifies m_apciInitTester :={
+			apduOriginator := TD_APDU_ORIGINATOR_FOR_TESTER,  
+			informationSenderID := TD_INFORMATION_SENDER_ID_FOR_TESTER, 
+			informationrecipientID := INFORMATION_SENDER_ID_FOR_IUT,
+			apduIdentifier := float2int(rnd()) * 65535,
+			previousApduId := omit,
+			inResponseToApduId:={
+				apduOriginator:=INFORMATION_SENDER_ID_FOR_IUT,   
+				apduIdentifier:=p_apduBeingRespondedTo.infoExchangeContent.apci.apduIdentifier
+			},
+			apduDate:=fx_getUtc()
 		}
     	
 		template ApciFields mw_apciInitIut modifies mw_apci :={
@@ -81,7 +90,10 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		}
 		
 		template ApciFields mw_apciRespIut(in InfoExchange p_apduBeingRespondedTo) modifies mw_apciInitIut :={
-			inResponseToApduId:=p_apduBeingRespondedTo.infoExchangeContent.apci.apduIdentifier		
+			inResponseToApduId:={
+				apduOriginator:=TD_APDU_ORIGINATOR_FOR_TESTER,
+				apduIdentifier:=p_apduBeingRespondedTo.infoExchangeContent.apci.apduIdentifier
+			}		
 		} 
 		
     	  	
@@ -108,7 +120,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		  infoExchangeAuthenticator := ?
 		}
 
-    	template InfoExchange m_apduAuth(in template ApciFields p_apci, in template Adus p_adus):={
+    	template @fuzzy InfoExchange m_apduAuth(in ApciFields p_apci, in Adus p_adus):={
     	  infoExchangeContent:={
     	  	apci:=p_apci,
     	  	adus:=p_adus
@@ -156,13 +168,13 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
     	 * @desc Definition: "An APDU with the APCI-fields set to informationRecipientId = Tester identifier and apduDate = valid date, 
     	 * @desc optional fields on all levels not present" 
     	 */ 
-    	template InfoExchange mw_apduNoAuthInitIut(in Adus p_adus) := m_apduNoAuth(
+    	template InfoExchange mw_apduNoAuthInitIut(in template Adus p_adus) := m_apduNoAuth(
      		mw_apciInitIut, 
      		p_adus
      	);
 
 
-    	template InfoExchange mw_apduAuthInitIut(in Adus p_adus) := mw_apduAuth(
+    	template InfoExchange mw_apduAuthInitIut(in template Adus p_adus) := mw_apduAuth(
      		mw_apciInitIut, 
      		p_adus
      	);
@@ -175,12 +187,12 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		 * @desc inResponseToApduId = the apduId of the APDU carrying the ADU that is being responded to and 
 		 * @desc apduDate = valid date, other optional fields on all levels not present" 
     	 */ 
-		template InfoExchange mw_apduNoAuthRespIut(in InfoExchange p_apduBeingRespondedTo, in Adus p_adus) := m_apduNoAuth(
+		template InfoExchange mw_apduNoAuthRespIut(in InfoExchange p_apduBeingRespondedTo, in template Adus p_adus) := m_apduNoAuth(
 			mw_apciRespIut(p_apduBeingRespondedTo), 
 			p_adus
 		);
 
-		template InfoExchange mw_apduAuthRespIut(in InfoExchange p_apduBeingRespondedTo, in Adus p_adus) := mw_apduAuth(
+		template InfoExchange mw_apduAuthRespIut(in InfoExchange p_apduBeingRespondedTo, in template Adus p_adus) := mw_apduAuth(
 			mw_apciRespIut(p_apduBeingRespondedTo), 
 			p_adus
 		);
@@ -290,7 +302,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		 */ 
 		template InfoExchange m_apduNackIndividualIssuesTester(
 			in InfoExchange p_apduToAck, in NAckParams p_nAckParams
-		):=m_apduNoAuthRespTester(p_apduToAck, {m_aduNAck(p_apduToAck, p_nAckParams)});
+		):=m_apduNoAuthRespTester(p_apduToAck, {ackAdus:={m_aduNAck(p_apduToAck, p_nAckParams)}});
 				
 		/**
 		 * 
@@ -402,17 +414,17 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
         	) modifies mw_aduRequestProvideUserDetails := {
         		userDetailsRequest:={
         			requestedADUType := AduType_provideUserDetailsADU_,	
-            	  	userId := EXISTING_USER_ID,
+            	  	userId := PX_EXISTING_USER_ID,
 					listOfParametersRequested := p_userParameterRequests,
             		userDetailsRequestReason := omit,
             		userInfoValidityPeriod := omit
         		}
         	}
-        	
-        	template (value) Adus m_adusProvideUserDetailsRandomParams:={
-        		m_aduRequestProvideUserDetails(f_userDetailsParameters())
+ 
+        	template (value) @fuzzy Adus m_adusRequestUserDetailsRandomParams:={
+				requestAdus:={m_aduRequestProvideUserDetails(f_userDetailsParameters())}
         	} 
-        	       			
+         	       			
 //        	template ProvideUserDetailsADU mw_userDetailsPrivacy_apduIdentifier := {
 //                originaluserIdRequest := DEFINED_USERID,
 //                userId := *,
@@ -424,7 +436,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 //        	}
         	
         	template ProvideUserDetailsADU mw_aduProvideUserDetails := {
-            	originaluserIdRequest := EXISTING_USER_ID,
+            	originaluserIdRequest := PX_EXISTING_USER_ID,
             	userId := ?, 
             	statusFlag := * ,
             	listOfUserParameters := *
@@ -434,7 +446,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
    				m_apduNoAuth(m_apciRespTester(p_apduRespondedTo), Adus:{provideUserDetailsADUs:=?});
 			
 //			template ProvideUserDetailsADU m_aduProvideUserDetails:= {
-//            	originaluserIdRequest := EXISTING_USER_ID,
+//            	originaluserIdRequest := PX_EXISTING_USER_ID,
 //            	userId := ?, 
 //            	statusFlag := * ,
 //            	listOfUserParameters := *
@@ -450,12 +462,12 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		  		userListRequest :={
 		  			requestedADUType	:= AduType_provideUserIdListADU_,
       				userIdRequestType	:= UserIdRequestType_allUserIdsToGivenCustomer_, // the only allowd type according to IAP restrictions 
-      				userId				:= ? length (1..4), // at least one element shall be present
+      				userId				:= ?, //TODO PT140 at least one element inside userId shall be present, this is not checked by the template
 					userIdRequestTime	:= ?
 				}
 			}
 			  	
-		  	template (value) RequestADU m_aduRequestListOfUsers(in UserId p_userId:=PX_EXISTING_USER_ID) := {
+		  	template (value) @fuzzy RequestADU m_aduRequestListOfUsers(in UserId p_userId:=PX_EXISTING_USER_ID) := {
 	  			userListRequest :={
 	  				requestedADUType	:= AduType_provideUserIdListADU_,
   					userIdRequestType	:= 0,
@@ -554,6 +566,31 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 //			}
 //			
 //
+
+			template (value) @fuzzy ExceptionListADU m_aduExceptionList(
+				in ExceptionListType p_exceptionListType,
+				in UserId p_userId,
+				in ExceptionListStatusType p_exceptionListStatusType,
+				in ExceptionListReasonType p_exceptionListReasonType,
+				in ExceptionListActionType p_exceptionListActionType
+			):= {
+				exceptionListVersion := TD_EXCEPTIONLIST_VERSION,
+				exceptionListType := p_exceptionListType,
+			  	exceptionValidityStart := fx_getUtc(),
+			  	exceptionValidityEnd := omit,
+			  	exceptionListEntries := {{	//Note: this is defined as record of ExceptionListEntry
+			  	  	userId := p_userId,
+			  	  	statusType := p_exceptionListStatusType,
+			  	  	reasonCode := p_exceptionListReasonType,
+			  	  	entryValidityStart := fx_getUtc(),
+			  	  	entryValidityEnd := omit,
+			  	  	vehicleParameters := TD_VEHICLE_PARAMETERS,
+			  	  	actionRequested := p_exceptionListActionType,
+			  	  	efcContextMark := omit,
+			  	  	vatId := TD_VAT_ID
+				}}
+			}
+
 		}
 		
 		group TRUSTOBJECTS {
@@ -577,7 +614,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				}
 			);
 			
-			template TrustObjectADU mw_aduTrustObject(
+			template @fuzzy TrustObjectADU mw_aduTrustObject(
 				template RecOfTrustObjectPurposes p_recOfTrustObjectPurposes,
 				template TrustObjectCode p_trustObjectCode
 			):={
@@ -593,7 +630,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				TrustObjectCode p_trustObjectCode
 			):=mw_aduTrustObject(p_recOfTrustObjectPurposes,p_trustObjectCode);
 			
-			template TrustObjectADU m_aduTrustObjectInvalidStatus:= {
+			template @fuzzy TrustObjectADU m_aduTrustObjectInvalidStatus:= {
 				trustObjectID := float2int(rnd()),
 				purposesOfTrustObject := {TrustObjectPurposes_dSRCCharging_,TrustObjectPurposes_dSRCAC_,TrustObjectPurposes_oBEInterrogation_,TrustObjectPurposes_oBEInterrogationAC_},
 				startValidity := fx_getUtc(),
@@ -652,40 +689,54 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			// Templates for a Dsrc keyRef object
    			template Adus mw_adusTrustObjectDsrcKeyRef:=
    			mw_adusTrustObjectProtoTemp(TrustObjectCode:{dsrcKeyRef:=?});
-
-			// PT140 TODO to be defined Generic Request for Trust Object with one parameter as apduToBeRespondedTo, and another as TrustObjectCode - Ulrik: still needed? not used anywhere... 
-			template InfoExchange m_apduRequestTrustObject := {}
-						
+				
 			// Generic received Request for Trust Object, to receive a requestADU for any Trust Object 			
 			template InfoExchange mw_apduRequestTrustObject := mw_apduNoAuthInitIut(
-				mw_apci, 
-				Adus:{requestAdus:={
+				Adus:{requestAdus:={{
 					requestedADUType := 3,
 					requestedTrustObject := ?
-				}}
+				}}}
 			);
 			
 			
 			// Received Request for a Certificate Trust Object
 			template InfoExchange mw_apduRequestTrustObjectCertificate := mw_apduNoAuthInitIut(
 				Adus:{
-					requestAdus:={
-						requestedADUType := 3,
-						requestedTrustObject:={
-							trustObjectSpec :={
-								typeOfTrustObject := TrustObjectTypes_certificate_,
-								purposesOfTrustObject := *
-							}
+					requestAdus:={mw_aduRequestTrustObjectCertificate}
+				}
+			);					
+			
+			template RequestADU mw_aduRequestTrustObjectCertificate :={
+				trustObjectRequest:={
+					requestedADUType := 3,
+					requestedTrustObject:={
+						trustObjectSpec :={
+							typeOfTrustObject := TrustObjectTypes_certificate_,
+							purposesOfTrustObject := *
 						}
 					}
 				}
-			);
+			};			
+			
+//			// Received Request for a Certificate Trust Object
+//			template InfoExchange mw_apduRequestTrustObjectCertificate := mw_apduNoAuthInitIut(
+//				Adus:{
+//					requestAdus:={{
+//						requestedADUType := 3,
+//						requestedTrustObject:={
+//							trustObjectSpec :={
+//								typeOfTrustObject := TrustObjectTypes_certificate_,
+//								purposesOfTrustObject := *
+//							}
+//						}
+//					}}
+//				}
+//			);
 			
 			// Received Request for a Public Key Trust Object			
 			template InfoExchange mw_apduRequestTrustObjectPublicKey := mw_apduNoAuthInitIut(
-				mw_apci, 
 				Adus:{
-					requestAdus:={{mw_aduRequestTrustObjectPublicKey}}
+					requestAdus:={mw_aduRequestTrustObjectPublicKey}
 				}
 			);
 
@@ -693,7 +744,6 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				trustObjectRequest:={
 					requestedADUType := 3,
 					requestedTrustObject:={
-						trustObjectId:=?,
 						trustObjectSpec:={
 							typeOfTrustObject:= TrustObjectTypes_publicKey_,
 							purposesOfTrustObject := *
@@ -704,22 +754,32 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 
 			// Generic Trust Object is requested though a requestADU carrying only the type of ADU requested			
 			template InfoExchange mw_apduRequestTrustObjectGeneric := mw_apduNoAuthInitIut(
-				Adus:{requestAdus:= {
-					requestedADUType := 3,
-					requestedTrustObject:={trustObjectSpec := omit}
-				}}
+				Adus:{requestAdus:= {mw_aduRequestTrustObjectGeneric}}
 			);
+
+			// Generic Trust Object is requested though a requestADU carrying only the type of ADU requested			
+			template RequestADU mw_aduRequestTrustObjectGeneric := {
+				trustObjectRequest:={
+					requestedADUType := 3,
+					requestedTrustObject:={
+						typeOfTrustObject:=?,
+						trustObjectSpec := omit
+					}
+				}
+			}
 			
 			// Received Request for a Symmetric Key Trust Object
 			template InfoExchange mw_apduRequestTrustObjectSymmetricKey := mw_apduNoAuthInitIut(
 				Adus:{
 					requestAdus:={
 						{
-							requestedADUType := 3,
-							requestedTrustObject:={
-								trustObjectSpec:={
-									typeOfTrustObject:=(TrustObjectTypes_symmetricKey_, TrustObjectTypes_encryptedSymmetricKey_),
-									purposesOfTrustObject := *
+							trustObjectRequest:={
+								requestedADUType := 3,
+								requestedTrustObject:={
+									trustObjectSpec:={
+										typeOfTrustObject:=(TrustObjectTypes_symmetricKey_, TrustObjectTypes_encryptedSymmetricKey_),
+										purposesOfTrustObject := *
+									}
 								}
 							}
 						}
@@ -735,30 +795,29 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				paymentClaimId := ?,
 				startDateTime := ?,
 				endDateTime := ?, // mandatory according to IAP,
-				userId := ? length (1..4), // mandatory according to IAP and at least one element shall be present
+				userId := ? , //TODO PT140 mandatory according to IAP and at least one element shall be present, second req not checked by template
 				paymentClaimAmount := ?,
 				paymentClaimStatus := (PaymentClaimStatus_firstVersion_, PaymentClaimStatus_amendedVersion_), // restrictions according to IAP
 				typeOfFee := ?, // mandatory according to IAP
 				referenceDetailsList := {{
-					billingDetailsList := {{
-						billingDetailsId := {
-    						issuerId := ?,
-    						billingDetailsNum := ?, // range 0 - 2'(63-1)
-    						dateOfService := * //PT140 TODO definition for billingDeatails is missing in IAP but at other locations
-    											//inside IAP the billingDetailsId shall contain NO dateOfService
-    					}
-    				}}
+					billingDetailsList := {mw_billingDetailsId}
     			}}, // mandatory in IAP and the only value allowed in IAP
 				actionCode := (ActionCode_send_, ActionCode_revoke_ ,ActionCode_adjust_ ), // onyl allowed values in IAP
 				paymentReference := *
 			}	
 
+			template BillingDetailsId mw_billingDetailsId:={
+				issuerId := ?,
+				billingDetailsNum := ?,//(0..9223372036854775807), // range 0..2^63-1
+				dateOfService := * //TODO PT140 definition for billingDetails is missing in IAP but at other locations
+									//inside IAP the billingDetailsId shall contain NO dateOfService
+			}
+			
 			//These are some extra type definitions needed for the building and matching of test data (see TP_TC_PAYMENTCLAIM_BV_01)			
 			// capture received userIds and billingDetailsIds in record of as we may have received many ADUs with different
 			// userIds and billingDetailsIds for later comparisoon with data in PaymentClaim
-			type record of UserId ReceivedUserIdList;
 			type record of BillingDetailsId BillingDetailsIdList;
-			type record of BillingDetailsIdList ReceivedBillingDetailsIdList;
+			type record of BillingDetailsIdList BillingDetailsIdMatrix;
 					 					
 		}
 
@@ -824,7 +883,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			type record of UserClassId RecOfUserClassId; 
 			
 			template (value) EfcContextDataADU m_aduEfcContextDataDsrcClosedContext(
-				template TollContextOverview p_tollContextOverview,
+				template Optionally_Signed<TollContextOverview>  p_tollContextOverview,
 				RecOfLocalVehicleClassId p_ROfLocVehClassId,
 				template LocalVehicleClassDefinition p_localVehicleClassDefinition, 
 				template RecOfTimeClassId p_ROfTimeClassId, 
@@ -886,7 +945,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			}
 			
 			
-			template (value) VersionAndValidity m_basicVersionValidFromNow :={
+			template (value) @fuzzy VersionAndValidity m_basicVersionValidFromNow :={
 				version:={
 					basicVersionId:=basicVersionIdTESTER_VALUE
 				},
@@ -1039,10 +1098,10 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			
 		group DSRC_REPORTABNORMALOBE {
 			template ReportAbnormalOBEADU mw_aduDsrcReportAbnormalObe := {
-				userId := ? length(1..4), //at least one element of userId shall be present
+				userId := ?, //TODO PT140 at least one element of userId shall be present, this is not checked by template
 				dateAndTime := ?,
 				efcContextMark := ?,
-				abnormalOBEReasonCode := ? length (1..255) //= at least one reason code shall be present in this record of integer
+				abnormalOBEReasonCode := ? //TODO PT140 at least one reason code shall be present in this record of integer, template does not check this
 			}
 
 			template Adus mw_adusReportAbnormalOBE := Adus:{reportAbnormalOBEADUs:=?};
@@ -1060,37 +1119,39 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 	    				issuerId := ?,
 	    				billingDetailsNum := (0..9223372036854775807), // range 0..2^63-1
 	    				dateOfService := omit
-	    				},
+	    			},
 	    			tollContext := ?,
 	    			userId :={
 	    				pan := *, 
 						contractSerialNumber := *,
 						licencePlateNumber := *, 
 						obeID := *
-						},
+					},
 	    			relatedBillingDetails := omit,
 	    			period := ?,
 	    			billingDetailsAmount := omit, 
-	    			usageDetails := {
-						contextName := ?,
-	      				appliedUserClass := ?,
-	      				perDeclaredVehicleClass := {{
-	        				declaredVehicleClass := ?,
-	        				perUsedTimeClasses := {{
-	          					appliedTimeClass := ?,
-	          					costCenter := ?, // mandatory in IAP
-	          					usageList := ({mw_sectionedRoadGnssUsageList}, {mw_travellingInAreaGnssUsageList},
-	          					{mw_stayingInAreaGnssUsageList}, {mw_cordonCrossingGnssUsageList})
-	          				}}
-	          			}}  			
-					},
+	    			usageDetails := mw_usageBillingDetails,
 	    			refTollDeclaration := ?,
 	    			associatedEventData := omit,
 	    			actionCode := (ActionCode_send_, ActionCode_revoke_ ,ActionCode_adjust_ ),
 	    			paymentReference := *
 	  			}			
-			
-				template (value) UsageList mw_sectionedRoadGnssUsageList := {
+	  			
+				template UsageDetails mw_usageBillingDetails:={
+					contextName := ?,
+					appliedUserClass := ?,
+					perDeclaredVehicleClasses := {{
+						declaredVehicleClass := ?,
+						perUsedTimeClasses := {{
+							appliedTimeClass := ?,
+							costCenter := ?, // mandatory in IAP
+							usageList :={ (mw_sectionedRoadGnssUsageList, mw_travellingInAreaGnssUsageList, //usageList	SEQUENCE OF UsageList 
+							mw_stayingInAreaGnssUsageList, mw_cordonCrossingGnssUsageList)}
+						}}
+					}}  			
+				}
+				
+				template UsageList mw_sectionedRoadGnssUsageList := {
 					usageListEntry :={
 						forSectionedRoads := {		
 							howManyTimes := (0..9223372036854775807), // range 0..2^63-1
@@ -1105,7 +1166,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 					externalCosts := *
 				}
 	
-				template (value) Section mw_sections := {
+				template Section mw_sections := {
 					tollContext := omit, // shall not be used in IAP
 					chargeObjectId := ?,
 					chargeObjectName := omit, // shall not be used in IAP
@@ -1114,7 +1175,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 					modeOfOperation := omit // shall not be used in IAP
 	  			}
 	
-				template (value) UsageList mw_travellingInAreaGnssUsageList := {
+				template UsageList mw_travellingInAreaGnssUsageList := {
 					usageListEntry := {
 						forTravellingInArea := {		
 	        				areaDisplayName := ?,
@@ -1125,12 +1186,12 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 	        				feeQualifier := omit // shall not be used in IAP
 						}
 					},
-					includedDiscounts := {{*}},
+					includedDiscounts := *,
 					associatedEventData := omit, // shall not be used in IAP
 					externalCosts := *
 				}
 	
-				template (value) UsageList mw_stayingInAreaGnssUsageList := {
+				template UsageList mw_stayingInAreaGnssUsageList := {
 					usageListEntry :={
 						forStayingInArea :={		
 							areaDisplayName := ?,
@@ -1141,12 +1202,12 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 	        				feeQualifier := omit // shall not be used in IAP
 						}
 					},
-					includedDiscounts := {{*}},
+					 includedDiscounts := *,
 					associatedEventData := omit, // shall not be used in IAP
 					externalCosts := *
 				}
 	
-				template (value) UsageList mw_cordonCrossingGnssUsageList := {
+				template UsageList mw_cordonCrossingGnssUsageList := {
 					usageListEntry :={
 						forCordonCrossing :={		
 							qualifier := *,
@@ -1156,9 +1217,10 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 	        				exitChargeObjectName := omit, //shall not be used in IAP
 	        				exitTime := ?, // mandatory in IAP
 	        				fee := omit, // shall not be used in IAP
-	        				feeQualifier := omit // shall not be used in IAP				}
+	        				feeQualifier := omit // shall not be used in IAP				
+	        			}
 					},
-					includedDiscounts := {{*}},
+					includedDiscounts := *,
 					associatedEventData := omit, // shall not be used in IAP
 					externalCosts := *
 				}
@@ -1223,7 +1285,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 						declaredVehicleClass:=TD_DSRC_BILLINGDETAILS_DECLAREDVEHCLASS,
 						perUsedTimeClasses:={{
 							appliedTimeClass:=TD_DSRC_BILLINGDETAILS_TIMECLASS,
-							usageList:={{
+							usageList:={{		//Definition: SEQUENCE OF UsageList
 								freeTextDetail:={
 									textLanguage:=TD_DSRC_BILLINGDETAILS_LANG,
 									textDetail:=TD_DSRC_BILLINGDETAILS_TEXT,
@@ -1250,7 +1312,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 					usageDetails := {
 						contextName := TOLL_CONTEXT_NAME_IUT,
 						appliedUserClass := TD_USER_CLASS,
-						perDeclaredVehicleClass := {{
+						perDeclaredVehicleClasses := {{
 							declaredVehicleClass := TD_DECLARED_VEHICLE_CLASS,
 							perUsedTimeClasses := {{
 								appliedTimeClass := TD_APPLIED_TIME_CLASS,
@@ -1259,7 +1321,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 							}}
 						}}
 					},
-					refTollDeclaration := {TD_IDENTIFIER, 1},
+					refTollDeclaration := {{TD_IDENTIFIER, 1}}, //Definition: SEQUENCE OF TollDeclarationId OPTIONAL, TODO Jan "1" is a magic number that should be the declarationId and should be either a modulepar or a constant or a variable
 					actionCode := ActionCode_send_,
 					paymentReference := omit 				  		
 				};

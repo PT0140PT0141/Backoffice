@@ -126,7 +126,7 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
 		
 		type record of UserParameterRequest RecOfUserParameterRequest;
 		
-		function f_userDetailsParameters() runs on MainTestComponent return RecOfUserParameterRequest  {
+		function f_userDetailsParameters() return RecOfUserParameterRequest  {
 		/**		
 		 * @desc we want to ask for a random number of parameters randomly chosen among those supported
 		 * @desc the v_userParameterRequest array will be made of a random number of elements containing randomly picked up

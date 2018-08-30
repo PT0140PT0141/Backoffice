@@ -5,7 +5,7 @@
  *
  *  Source:    EfcInfoExchange.asn
  *  Generator: TTworkbench ASN.1 Parser 2.25.0.201711292344
- *  Date:      8/21/18 5:23 PM
+ *  Date:      8/29/18 4:35 PM
  *
  * ----------------------------------------------------------------------------
  *  The ASN.1 to TTCN-3 is a proprietary mapping based on the ES 201 873-7 ETSI standard.
@@ -38,8 +38,6 @@ module EfcInfoExchange language "ASN.1:1997" {
 
   import from AVIAEINumberingAndDataStructures language "ASN.1:1997" all; 
 
-  import from EfcDsrcGeneric language "ASN.1:1997" all; 
-
   import from AuthenticationFramework language "ASN.1:1997" all; 
 
   import from ExtendedSecurityServices_2006 language "ASN.1:1997" all; 
@@ -47,6 +45,8 @@ module EfcInfoExchange language "ASN.1:1997" {
   import from EfcAutonomousContextData language "ASN.1:1997" all; 
 
   import from EfcCcc language "ASN.1:1997" all; 
+
+  import from EfcDsrcGeneric language "ASN.1:1997" all; 
 
   import from EfcAutonomousCharging language "ASN.1:1997" all; 
 
