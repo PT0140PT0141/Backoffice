@@ -3401,9 +3401,9 @@ module EfcInfoExchange_TestCasesTc {
  					v_usageStatementToBeSent := {
 						usageStatementId := v_loop,
 						tollContext := TD_TOLL_CONTEXT,
-						aggregatedSingleTariffClassSession := TESTER_SINGLE_TARIFF_CLASS_SESSION,
-						listOfChargeObjects:=TESTER_LIST_OF_CHARGE_OBJECTS,
-						listOfRawUsageData := TESTER_LIST_OF_RAW_USAGE_DATA,
+						aggregatedSingleTariffClassSession := TD_SINGLE_TARIFF_CLASS_SESSION,
+						listOfChargeObjects:=TD_LIST_OF_CHARGE_OBJECTS,
+						listOfRawUsageData := TD_LIST_OF_RAW_USAGE_DATA,
 						additionalUsageInformation := omit
 					};
  					v_adusToBeSent[v_loop] := m_aduTollDeclarationToSendOneObe(
@@ -3470,7 +3470,7 @@ module EfcInfoExchange_TestCasesTc {
 				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
 					m_aduTollDeclarationToSendOneObe(
 						{TD_IDENTIFIER, 1},
-						TESTER_USAGE_STATEMENT_VALID_1,
+						TD_USAGE_STATEMENT_VALID_1,
 						1,
 						ActionCode_send_)
 					});
@@ -3507,7 +3507,7 @@ module EfcInfoExchange_TestCasesTc {
 				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
 					m_aduTollDeclarationToSendOneObe(
 						{TD_IDENTIFIER, 2},
-						TESTER_USAGE_STATEMENT_VALID_2,
+						TD_USAGE_STATEMENT_VALID_2,
 						2,
 						Action_Code_revoke_)
 					});
@@ -3563,7 +3563,7 @@ module EfcInfoExchange_TestCasesTc {
 				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
 					m_aduTollDeclarationToSendOneObe(
 						{TD_IDENTIFIER, 1},
-						TESTER_USAGE_STATEMENT_VALID_1,
+						TD_USAGE_STATEMENT_VALID_1,
 						1,
 						ActionCode_send_)
 					});
@@ -3600,7 +3600,7 @@ module EfcInfoExchange_TestCasesTc {
 				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
 					m_aduTollDeclarationToSendOneObe(
 						{TD_IDENTIFIER, 2},
-						TESTER_USAGE_STATEMENT_VALID_2,
+						TD_USAGE_STATEMENT_VALID_2,
 						2,
 						ActionCode_adjust_)
 					});
@@ -3653,12 +3653,12 @@ module EfcInfoExchange_TestCasesTc {
 				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
 					m_aduTollDeclarationToSendOneObe(
 						{TD_IDENTIFIER, 1},
-						TESTER_USAGE_STATEMENT_VALID_1,
+						TD_USAGE_STATEMENT_VALID_1,
 						1,
 						ActionCode_send_),
 					m_aduTollDeclarationToSendOneObe(
 						{TD_IDENTIFIER, 1},
-						TESTER_USAGE_STATEMENT_VALID_1,
+						TD_USAGE_STATEMENT_VALID_1,
 						2,
 						ActionCode_send_)
 					});
@@ -3702,12 +3702,12 @@ module EfcInfoExchange_TestCasesTc {
 				
                 // Prepare and send one Initiating_Apdu containing exactly one TollDeclaratioN
                 // of Choice AuthenticatedChargeReport with actionCode = send
-                // TODO define TESTER_AUTHENTICATED_CHARGE_REPORT in module TesterData
+                // TODO define TD_AUTHENTICATED_CHARGE_REPORT in module TesterData
 
 				var TollDeclarationADU v_aduTollDeclarationAuthenticatedChargeReport := {
 					tollDeclarationId := {TD_IDENTIFIER, 1}, 
 					gnssTollDeclaration := {
-						authenticatedChargeReport := TESTER_AUTHENTICATED_CHARGE_REPORT
+						authenticatedChargeReport := TD_AUTHENTICATED_CHARGE_REPORT
 					},
 				actionCode:= ActionCode_send_
 				};
@@ -3763,9 +3763,9 @@ module EfcInfoExchange_TestCasesTc {
  					v_usageStatementToBeSent := {
 						usageStatementId := v_loop,
 						tollContext := TD_TOLL_CONTEXT,
-						aggregatedSingleTariffClassSession := TESTER_SINGLE_TARIFF_CLASS_SESSION,
-						listOfChargeObjects TESTER_LIST_OF_CHARGE_OBJECTS,
-						listOfRawUsageData := TESTER_LIST_OF_RAW_USAGE_DATA,
+						aggregatedSingleTariffClassSession := TD_SINGLE_TARIFF_CLASS_SESSION,
+						listOfChargeObjects := TD_LIST_OF_CHARGE_OBJECTS,
+						listOfRawUsageData := TD_LIST_OF_RAW_USAGE_DATA,
 						additionalUsageInformation := omit
 					};
  					v_adusToBeSent[v_loop] := m_aduTollDeclarationToSendOneObe( 
@@ -3819,12 +3819,12 @@ module EfcInfoExchange_TestCasesTc {
                 // with actionCode = NULL
 
 				template (value) TollDeclarationADU m_aduTollDeclarationToSendOneObeOtherActionCodes
-					modifies m_aduTollDeclarationToSendOneObe:={actionCode := ?); // to allow any value for actionCode
+					modifies m_aduTollDeclarationToSendOneObe:={actionCode := ?}; // to allow any value for actionCode
 
 				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
 					m_aduTollDeclarationToSendOneObeOtherActionCodes(
 						{TD_IDENTIFIER, 1},
-						TESTER_USAGE_STATEMENT_VALID_1,
+						TD_USAGE_STATEMENT_VALID_1,
 						1,
 						null)
 					});
@@ -3879,12 +3879,12 @@ module EfcInfoExchange_TestCasesTc {
                 // with actionCode = 4
 
 				template (value) TollDeclarationADU m_aduTollDeclarationToSendOneObeOtherActionCodes
-					modifies m_aduTollDeclarationToSendOneObe:={actionCode := ?); // to allow any value for actionCode
+					modifies m_aduTollDeclarationToSendOneObe:={actionCode := ?}; // to allow any value for actionCode
 
 				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
 					m_aduTollDeclarationToSendOneObeOtherActionCodes(
 						{TD_IDENTIFIER, 1},
-						TESTER_USAGE_STATEMENT_VALID_1,
+						TD_USAGE_STATEMENT_VALID_1,
 						1,
 						ActionCode_resend_) // other actionCode = 4
 					});
@@ -3981,7 +3981,7 @@ module EfcInfoExchange_TestCasesTc {
 						{TD_IDENTIFIER, 1},
 						TD_USAGE_STATEMENT_VALID_1,
 						1,
-						ActionCode_send_),
+						ActionCode_send_)
 				});
 				                	               	                	                	                	                	                	              	
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
@@ -4052,7 +4052,7 @@ module EfcInfoExchange_TestCasesTc {
 						{TD_IDENTIFIER, 1},
 						TD_USAGE_STATEMENT_VALID_1,
 						1,
-						ActionCode_send_),
+						ActionCode_send_)
 				});
 				                	               	                	                	                	                	                	              	
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
@@ -4075,7 +4075,7 @@ module EfcInfoExchange_TestCasesTc {
 				//		- chioce for SectionedRoads; and
 				//		- actionCode=send
 		
-				var UsageList v_sectionUsedWithDiscount;
+				var UsageList v_sectionsUsed;
 				v_sectionsUsed := mw_sectionedRoadGnssUsageList := {
 					usageListEntry {
 						forSectionedRoads {		
