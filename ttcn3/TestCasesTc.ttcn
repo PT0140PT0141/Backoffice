@@ -2855,18 +2855,12 @@ module EfcInfoExchange_TestCasesTc {
  				var UserIdList v_receivedPaymentClaimBillingDetailsUserIdList;
  				var ReceivedBillingDetailsIdList v_receivedPaymentClaimBillingDetailsIdList;
 
-
-
-//Potentially usedul code
-//				type record of integer RoI;
-//				type set of integer SoI;
-//				template RoI mw_roI1 := {1, 2, ?};
-//				template SoI mw_soI1 := subset(all from mw_roI1);
-////				   results in subset(1, 2, ?)
  				// define templates required for later matching with data in PaymentClaim
  				var template UserIdList v_receivedBillingDetailsUserIdList, v_receivedPaymentClaimUserIdList;
+ 				// Note: Type definition for this is in module templates
  				var template BillingDetailsIdList v_receivedBillingDetailsIdList;
- 				var template BillingDetailsIdMatrix v_receivedPaymentClaimBillingDetailsIdMatrix;
+ 				// TODO: delete
+ 				// var template BillingDetailsIdMatrix v_receivedPaymentClaimBillingDetailsIdMatrix;
 				
 				var integer v_i, v_numberOfReceivedBillingDetailsAdus, v_numberOfReceivedPaymentClaimAdus;
  				
@@ -2875,7 +2869,7 @@ module EfcInfoExchange_TestCasesTc {
  				// fill templates (two records of) with received data
  				for (v_i := 0; v_i < v_numberOfReceivedBillingDetailsAdus; v_i := v_i +1) {
  					v_receivedBillingDetailsUserIdList[v_i] := v_apduReceived.infoExchangeContent.adus.billingDetailsADUs[v_i].userId;
- 					v_receivedBillingDetailsIdList[v_i] :=     v_apduReceived.infoExchangeContent.adus.billingDetailsADUs[v_i].billingDetailsId;
+ 					v_receivedBillingDetailsIdList[v_i] := v_apduReceived.infoExchangeContent.adus.billingDetailsADUs[v_i].relatedBillingDetails;
 				}
   				  
                 // Step 1:
@@ -2883,7 +2877,6 @@ module EfcInfoExchange_TestCasesTc {
 
                 // Start timer for TIMEB_MAX (time between receiving the AckADU of the BillingDeatails transaction and
                 // sending an corresponding PaymentClaim ADU)
-                // PT140 TODO: this may be a long time (days, weeks) which may create a problem in testing  
                 t_step.start(PAYMENTCLAIM_TIMEB_MAX_TC);               
 
 				// Send trigger (IuT to perform a Payment Claim transaction
@@ -2905,45 +2898,40 @@ module EfcInfoExchange_TestCasesTc {
 						// Log what we received, no minimum time required	
 
 						f_logApduReceivedAndTStep();
-						//TODO Jan please absorb the pain here						
-						// capture receoved userIds and billingDetailsIds
- 						v_numberOfReceivedPaymentClaimAdus := lengthof(v_apduReceived.infoExchangeContent.adus);
- 						for (v_i := 0; v_i < v_numberOfReceivedPaymentClaimAdus; v_i := v_i +1) {
+						// TODO Jan please absorb the pain here
+						// Note: Pain is easily absorbed as the TP is specified with carrying one PaymnetClaimADU only, not more than one 						
+	
+						// capture received userIds and billingDetailsIds
+ 						// v_numberOfReceivedPaymentClaimAdus := lengthof(v_apduReceived.infoExchangeContent.adus);
+ 						
+ 						// below commented code can now be removed
+ 						// for (v_i := 0; v_i < v_numberOfReceivedPaymentClaimAdus; v_i := v_i +1)
 							//get userId and list of billingDetailsId from the current PaymentClaim
-							v_receivedPaymentClaimUserIdList[v_i] := v_apduReceived.infoExchangeContent.adus.paymentClaimADUs[v_i].userId;
- 							v_receivedPaymentClaimBillingDetailsIdMatrix[v_i] := v_apduReceived.infoExchangeContent.adus.paymentClaimADUs[v_i].referenceDetailsList.billingDetailsList;
-
-							//Check if userId and list of billingDetailsId are present in previously received BillingDetails (in a new inner loop)
-							v_receivedPaymentClaimUserIdList[v_i] - where in billing details is it?
-							for (v_j := 0; v_j < v_numberOfReceivedBillingDetailsAdus; v_j := v_j +1) {
-								v_receivedBillingDetailsUserIdList[v_j] := v_apduReceived.infoExchangeContent.adus.billingDetailsADUs[v_i].userId;
-								v_receivedBillingDetailsIdList[v_j] :=     v_apduReceived.infoExchangeContent.adus.billingDetailsADUs[v_i].billingDetailsId;
+						//	v_receivedPaymentClaimUserIdList[v_i] := v_apduReceived.infoExchangeContent.adus.paymentClaimADUs[v_i].userId;
+ 						//	v_receivedPaymentClaimBillingDetailsIdMatrix[v_i] := v_apduReceived.infoExchangeContent.adus.paymentClaimADUs[v_i].referenceDetailsList.billingDetailsList;
+							
+						// check inside the adu for each billing details id in the billing details list
+						// if this billing details ID (and user id used in the adu) is inside the list of pairs received in billing details  
+						var boolean v_matchingUserIdBillingDetailsIdPair;
+						for (var integer v_j; v_j < lengthof(v_apduReceived.infoExchangeContent.adus.paymentClaimADUs.referenceDetailsList.billingDetailsList); v_j := v_j + 1) {
+						// go through list of pairs of userIds and billingDeatilsIds receive in billing details
+							v_matchingUserIdBillingDetailsIdPair := false;
+							for (var integer v_k := 0; v_k < v_numberOfReceivedBillingDetailsAdus; v_k := v_k + 1) {
+								if ((v_apduReceived.infoExchangeContent.adus.paymentClaimADUs.userId == v_receivedBillingDetailsUserIdList[v_k])
+									and
+									(v_apduReceived.infoExchangeContent.adus.paymentClaimADUs.referenceDetailsList.billingDetailsList[v_j] == v_receivedBillingDetailsIdList[v_k])) {
+									v_matchingUserIdBillingDetailsIdPair := true;
+									} 
+								else { //matching pair not found. Test failed
+									v_matchingUserIdBillingDetailsIdPair := false;
+									break;
+								}
 							}
- 
-
-						}
-						
-						// Validate content of received APDU ...
-						// ... check if userId are amongst the userIds received in previose BillingDetails, and
-						var boolean v_matchedUserId:= false, v_matchedBillingDetailsId := false; 
-
-						for (v_i := 0; v_i < v_numberOfReceivedBillingDetailsAdus; v_i := v_i + 1) { // for each BillingDetails ADU
-							if (match (v_apduReceived.infoExchangeContent.adus.paymentClaimADUs.userId, v_receivedBillingDetailsUserIdList[v_i])) {
-								v_matchedUserId := true; // matching userId found
-								break; // end for-loop if matched
-							}
-						}
-
-						// Validate content of received APDU ...
-						// ... check if billingDetailsIds are amongst the billingDetailsIds received in previose BillingDetails 
-						for (v_i := 0; v_i < v_numberOfReceivedBillingDetailsAdus; v_i := v_i + 1) { // for each BillingDetails ADU
-							if (match (v_apduReceived.infoExchangeContent.adus.paymentClaimADUs.billingDetailsId, v_receivedBillingDetailsbillingDetailsIdList[v_i])) {
-								v_matchedBillingDetailsInnerLoop := true; // billingDetails Id found
-								break; // end for-loop if matched
-							}
-						}
-			
-						if (v_matchedUserIdI and v_matchedBillingDetailsId) { 
+							if (v_matchingUserIdBillingDetailsIdPair == false) {
+								break; // no need to loop again in this case
+							} // otherwise continue looping
+						}			
+						if (v_matchingUserIdBillingDetailsIdPair) { 
 							// Step 2: Send Ack within time constraints
 							f_wait(PAYMENTCLAIM_TIME1_MIN_TC);
 							f_sendAndLogApdu(m_apduDefaultAckTester(v_apduReceived));
