@@ -355,6 +355,9 @@ module EfcInfoExchange_TesterData{
 		TD_USAGE_STATEMENT_VALID_16, TD_USAGE_STATEMENT_VALID_17, TD_USAGE_STATEMENT_VALID_18, TD_USAGE_STATEMENT_VALID_19, 
 		TD_USAGE_STATEMENT_VALID_20; 
 
+		modulepar AggregatedSingleTariffClassSession TD_SINGLE_TARIFF_CLASS_SESSION;
+		modulepar DetectedChargeObject TD_LIST_OF_CHARGE_OBJECTS;
+		modulepar ListOfRawUsageData TD_LIST_OF_RAW_USAGE_DATA;
 
 	}
 
