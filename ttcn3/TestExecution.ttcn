@@ -4,7 +4,7 @@
  */
 module EfcInfoExchange_TestExecution { 
 	
-	//TOD PT140 check that all test cases are invoked
+	//TODO PT140 check that all test cases are invoked
 	
     import from EfcInfoExchange_TestCasesTsp all;
 	import from EfcInfoExchange_TestCasesTc all;
