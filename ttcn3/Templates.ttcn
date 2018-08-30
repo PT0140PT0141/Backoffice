@@ -800,19 +800,19 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				paymentClaimStatus := (PaymentClaimStatus_firstVersion_, PaymentClaimStatus_amendedVersion_), // restrictions according to IAP
 				typeOfFee := ?, // mandatory according to IAP
 				referenceDetailsList := {{
-					billingDetailsList := {{
-						billingDetailsId := {
-    						issuerId := ?,
-    						billingDetailsNum := ?, // range 0 - 2'(63-1)
-    						dateOfService := * //PT140 TODO definition for billingDeatails is missing in IAP but at other locations
-    											//inside IAP the billingDetailsId shall contain NO dateOfService
-    					}
-    				}}
+					billingDetailsList := {mw_billingDetailsId}
     			}}, // mandatory in IAP and the only value allowed in IAP
 				actionCode := (ActionCode_send_, ActionCode_revoke_ ,ActionCode_adjust_ ), // onyl allowed values in IAP
 				paymentReference := *
 			}	
 
+			template BillingDetailsId mw_billingDetailsId:={
+				issuerId := ?,
+				billingDetailsNum := ?,//(0..9223372036854775807), // range 0..2^63-1
+				dateOfService := * //TODO PT140 definition for billingDetails is missing in IAP but at other locations
+															//inside IAP the billingDetailsId shall contain NO dateOfService
+			}
+			
 			//These are some extra type definitions needed for the building and matching of test data (see TP_TC_PAYMENTCLAIM_BV_01)			
 			// capture received userIds and billingDetailsIds in record of as we may have received many ADUs with different
 			// userIds and billingDetailsIds for later comparisoon with data in PaymentClaim
@@ -1098,7 +1098,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			
 		group DSRC_REPORTABNORMALOBE {
 			template ReportAbnormalOBEADU mw_aduDsrcReportAbnormalObe := {
-				userId := ? length(1..4), //at least one element of userId shall be present
+				userId := ?, //at least one element of userId shall be present, this is not checked by template
 				dateAndTime := ?,
 				efcContextMark := ?,
 				abnormalOBEReasonCode := ? length (1..255) //= at least one reason code shall be present in this record of integer
