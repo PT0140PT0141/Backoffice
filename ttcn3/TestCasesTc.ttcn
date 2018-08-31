@@ -2946,7 +2946,7 @@ module EfcInfoExchange_TestCasesTc {
 				} // End of alt statement            	                              
 				f_closeDownMtc();            
 			} // End of TP_TC_LISTOFUSERS_BV_01
-					
+	 				
 			testcase TP_TC_PAYMENTCLAIM_BV_02() runs on MainTestComponent system TestAdapter {
 							
                 /**
