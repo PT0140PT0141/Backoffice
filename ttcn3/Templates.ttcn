@@ -462,7 +462,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		  		userListRequest :={
 		  			requestedADUType	:= AduType_provideUserIdListADU_,
       				userIdRequestType	:= UserIdRequestType_allUserIdsToGivenCustomer_, // the only allowd type according to IAP restrictions 
-      				userId				:= ?, // at least one element inside userId shall be present, this is not checked by the template
+      				userId				:= ?, //TODO PT140 at least one element inside userId shall be present, this is not checked by the template
 					userIdRequestTime	:= ?
 				}
 			}
@@ -787,7 +787,24 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				}
 			);
 			
-		}
+			type record of TrustObjectPurposes RoTrustObjectPurposes;  
+			
+			template RequestADU (value) m_aduRequestTrustObject(
+				in TrustObjectTypes p_typeOfTrustObject, 
+				in RoTrustObjectPurposes p_recOfTrustObjectPurposes
+			):={
+				trustObjectRequest:={
+					requestedADUType:= 3,
+					requestedTrustObject:={
+						trustObjectSpec:={
+							typeOfTrustObject := p_typeOfTrustObject,
+							purposesOfTrustObject := p_recOfTrustObjectPurposes
+						}
+					}
+				}
+			}
+			
+		}//End of group TRUSTOBJECTS
 
 		group PAYMENTCLAIM {
 			
@@ -795,7 +812,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				paymentClaimId := ?,
 				startDateTime := ?,
 				endDateTime := ?, // mandatory according to IAP,
-				userId := ? , // mandatory according to IAP and at least one element shall be present, second req not checked by template
+				userId := ? , //TODO PT140 mandatory according to IAP and at least one element shall be present, second req not checked by template
 				paymentClaimAmount := ?,
 				paymentClaimStatus := (PaymentClaimStatus_firstVersion_, PaymentClaimStatus_amendedVersion_), // restrictions according to IAP
 				typeOfFee := ?, // mandatory according to IAP
@@ -810,7 +827,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				issuerId := ?,
 				billingDetailsNum := ?,//(0..9223372036854775807), // range 0..2^63-1
 				dateOfService := * //TODO PT140 definition for billingDetails is missing in IAP but at other locations
-															//inside IAP the billingDetailsId shall contain NO dateOfService
+									//inside IAP the billingDetailsId shall contain NO dateOfService
 			}
 			
 			//These are some extra type definitions needed for the building and matching of test data (see TP_TC_PAYMENTCLAIM_BV_01)			
@@ -1098,10 +1115,10 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			
 		group DSRC_REPORTABNORMALOBE {
 			template ReportAbnormalOBEADU mw_aduDsrcReportAbnormalObe := {
-				userId := ?, //at least one element of userId shall be present, this is not checked by template
+				userId := ?, //TODO PT140 at least one element of userId shall be present, this is not checked by template
 				dateAndTime := ?,
 				efcContextMark := ?,
-				abnormalOBEReasonCode := ? length (1..255) //= at least one reason code shall be present in this record of integer
+				abnormalOBEReasonCode := ? //TODO PT140 at least one reason code shall be present in this record of integer, template does not check this
 			}
 
 			template Adus mw_adusReportAbnormalOBE := Adus:{reportAbnormalOBEADUs:=?};
@@ -1119,37 +1136,39 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 	    				issuerId := ?,
 	    				billingDetailsNum := (0..9223372036854775807), // range 0..2^63-1
 	    				dateOfService := omit
-	    				},
+	    			},
 	    			tollContext := ?,
 	    			userId :={
 	    				pan := *, 
 						contractSerialNumber := *,
 						licencePlateNumber := *, 
 						obeID := *
-						},
+					},
 	    			relatedBillingDetails := omit,
 	    			period := ?,
 	    			billingDetailsAmount := omit, 
-	    			usageDetails := {
-						contextName := ?,
-	      				appliedUserClass := ?,
-	      				perDeclaredVehicleClass := {{
-	        				declaredVehicleClass := ?,
-	        				perUsedTimeClasses := {{
-	          					appliedTimeClass := ?,
-	          					costCenter := ?, // mandatory in IAP
-	          					usageList := ({mw_sectionedRoadGnssUsageList}, {mw_travellingInAreaGnssUsageList},
-	          					{mw_stayingInAreaGnssUsageList}, {mw_cordonCrossingGnssUsageList})
-	          				}}
-	          			}}  			
-					},
+	    			usageDetails := mw_usageBillingDetails,
 	    			refTollDeclaration := ?,
 	    			associatedEventData := omit,
 	    			actionCode := (ActionCode_send_, ActionCode_revoke_ ,ActionCode_adjust_ ),
 	    			paymentReference := *
 	  			}			
-			
-				template (value) UsageList mw_sectionedRoadGnssUsageList := {
+	  			
+				template UsageDetails mw_usageBillingDetails:={
+					contextName := ?,
+					appliedUserClass := ?,
+					perDeclaredVehicleClasses := {{
+						declaredVehicleClass := ?,
+						perUsedTimeClasses := {{
+							appliedTimeClass := ?,
+							costCenter := ?, // mandatory in IAP
+							usageList :={ (mw_sectionedRoadGnssUsageList, mw_travellingInAreaGnssUsageList, //usageList	SEQUENCE OF UsageList 
+							mw_stayingInAreaGnssUsageList, mw_cordonCrossingGnssUsageList)}
+						}}
+					}}  			
+				}
+				
+				template UsageList mw_sectionedRoadGnssUsageList := {
 					usageListEntry :={
 						forSectionedRoads := {		
 							howManyTimes := (0..9223372036854775807), // range 0..2^63-1
@@ -1164,7 +1183,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 					externalCosts := *
 				}
 	
-				template (value) Section mw_sections := {
+				template Section mw_sections := {
 					tollContext := omit, // shall not be used in IAP
 					chargeObjectId := ?,
 					chargeObjectName := omit, // shall not be used in IAP
@@ -1173,7 +1192,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 					modeOfOperation := omit // shall not be used in IAP
 	  			}
 	
-				template (value) UsageList mw_travellingInAreaGnssUsageList := {
+				template UsageList mw_travellingInAreaGnssUsageList := {
 					usageListEntry := {
 						forTravellingInArea := {		
 	        				areaDisplayName := ?,
@@ -1184,12 +1203,12 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 	        				feeQualifier := omit // shall not be used in IAP
 						}
 					},
-					includedDiscounts := {{*}},
+					includedDiscounts := *,
 					associatedEventData := omit, // shall not be used in IAP
 					externalCosts := *
 				}
 	
-				template (value) UsageList mw_stayingInAreaGnssUsageList := {
+				template UsageList mw_stayingInAreaGnssUsageList := {
 					usageListEntry :={
 						forStayingInArea :={		
 							areaDisplayName := ?,
@@ -1200,12 +1219,12 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 	        				feeQualifier := omit // shall not be used in IAP
 						}
 					},
-					includedDiscounts := {{*}},
+					includedDiscounts := *,
 					associatedEventData := omit, // shall not be used in IAP
 					externalCosts := *
 				}
 	
-				template (value) UsageList mw_cordonCrossingGnssUsageList := {
+				template UsageList mw_cordonCrossingGnssUsageList := {
 					usageListEntry :={
 						forCordonCrossing :={		
 							qualifier := *,
@@ -1215,14 +1234,14 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 	        				exitChargeObjectName := omit, //shall not be used in IAP
 	        				exitTime := ?, // mandatory in IAP
 	        				fee := omit, // shall not be used in IAP
-	        				feeQualifier := omit // shall not be used in IAP				}
+	        				feeQualifier := omit // shall not be used in IAP				
+	        			}
 					},
-					includedDiscounts := {{*}},
+					includedDiscounts := *,
 					associatedEventData := omit, // shall not be used in IAP
 					externalCosts := *
 				}
-			}
-			}
+			}//end of group GNSS_BILLINGDETAILS
 													 							
 			group DSRC_BILLINGDETAILS {
 			
@@ -1245,13 +1264,19 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 	    				paymentFeeAmount := ?,
 						paymentFeeUnit := ?,
 						vatRate := ?
-						}, 
+					}, 
 	    			usageDetails := mw_dsrcUsageDetails, // TODO PT140: template mw_dsrcUsageDetails to be created
 	    			refTollDeclaration := {omit},
 	    			associatedEventData := {omit},
 	    			actionCode := (ActionCode_send_, ActionCode_revoke_ ,ActionCode_adjust_ ),
 	    			paymentReference := *
 	  			}
+	  			
+	  			template (value) ExtendedPaymentAmount m_extendedPaymentAmount:={
+					paymentFeeAmount:=TD_PAYMENT_FEE_AMOUNT,
+					paymentFeeUnit := TD_BILLINGDETAILS_PAYUNIT,
+					vatRate:=TD_BILLINGDETAILS_VAT
+				}
 	  			
 	  			template (value) BillingDetailsADU m_aduDsrcBillingDetails(in integer p_billingDetailsNum:=TD_BILLING_DETAILS_NUM):={
 					billingDetailsId := {
@@ -1263,11 +1288,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 	    			userId :=TD_BILLINGDETAILS_USERID,
 	    			relatedBillingDetails :=omit,
 	    			period :=omit,
-	    			billingDetailsAmount:={
-						paymentFeeAmount:=TD_DSRC_PAYMENT_FEE_AMOUNT,
-						paymentFeeUnit := TD_DSRC_BILLINGDETAILS_PAYUNIT,
-						vatRate:=TD_DSRC_BILLINGDETAILS_VAT
-				  	},
+	    			billingDetailsAmount:=m_extendedPaymentAmount,
 				    usageDetails:= m_dsrcUsageDetails,
 				    refTollDeclaration:=omit,
 				    associatedEventData:=omit,
@@ -1282,15 +1303,11 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 						declaredVehicleClass:=TD_DSRC_BILLINGDETAILS_DECLAREDVEHCLASS,
 						perUsedTimeClasses:={{
 							appliedTimeClass:=TD_DSRC_BILLINGDETAILS_TIMECLASS,
-							usageList:={{
+							usageList:={{		//Definition: SEQUENCE OF UsageList
 								freeTextDetail:={
 									textLanguage:=TD_DSRC_BILLINGDETAILS_LANG,
 									textDetail:=TD_DSRC_BILLINGDETAILS_TEXT,
-									fee:={
-										paymentFeeAmount:=TD_DSRC_PAYMENT_FEE_AMOUNT,
-										paymentFeeUnit := TD_DSRC_BILLINGDETAILS_PAYUNIT,
-										vatRate:=TD_DSRC_BILLINGDETAILS_VAT
-									},
+									fee:=m_extendedPaymentAmount,
 									feeQualifier:=FeeQualifier_standardCharge_
 								}
 							}}
@@ -1306,10 +1323,11 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 					tollContext := TOLL_CONTEXT_ID_IUT,
 					userId := TD_USERID_1,
 					period := TD_PERIOD_1,
+					billingDetailsAmount:=m_extendedPaymentAmount,
 					usageDetails := {
 						contextName := TOLL_CONTEXT_NAME_IUT,
 						appliedUserClass := TD_USER_CLASS,
-						perDeclaredVehicleClass := {{
+						perDeclaredVehicleClasses := {{
 							declaredVehicleClass := TD_DECLARED_VEHICLE_CLASS,
 							perUsedTimeClasses := {{
 								appliedTimeClass := TD_APPLIED_TIME_CLASS,
@@ -1318,7 +1336,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 							}}
 						}}
 					},
-					refTollDeclaration := {TD_IDENTIFIER, 1},
+					refTollDeclaration := {{TD_IDENTIFIER, 1}}, //Definition: SEQUENCE OF TollDeclarationId OPTIONAL, TODO Jan "1" is a magic number that should be the declarationId and should be either a modulepar or a constant or a variable
 					actionCode := ActionCode_send_,
 					paymentReference := omit 				  		
 				};
@@ -1604,7 +1622,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			//			manufacturerId			Int2, 			-- see ObeConfiguration in 14906
 			//			equipmentObuId			EquipmentOBUId
 			//		}
-					
+			//					
 			//		LPN::= SEQUENCE {
 			//			countryCode CountryCode,
 			//			alphabetIndicator ENUMERATED {
@@ -1661,57 +1679,59 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			//		-- except with 1990 ï¿½ see below.
 			//	}	
 	
-			template InfoExchange m_apduTollDeclarationsTen(in integer p_actionCode:=ActionCode_send_):=m_apduNoAuthInitTester({
-				m_aduTollDeclarationToSendOneObe(
-					{TD_IDENTIFIER, 1},
-					TD_USAGE_STATEMENT_VALID_1,
-					1,
-					p_actionCode),
-				m_aduTollDeclarationToSendOneObe(
-					{TD_IDENTIFIER, 2},
-					TD_USAGE_STATEMENT_VALID_2,
-					2,
-					p_actionCode),
-				m_aduTollDeclarationToSendOneObe(
-					{TD_IDENTIFIER, 3},
-					TD_USAGE_STATEMENT_VALID_3,
-					3,
-					p_actionCode),							
-				m_aduTollDeclarationToSendOneObe(
-					{TD_IDENTIFIER, 4},
-					TD_USAGE_STATEMENT_VALID_4,
-					4,
-					p_actionCode),
-				m_aduTollDeclarationToSendOneObe(
-					{TD_IDENTIFIER, 5},
-					TD_USAGE_STATEMENT_VALID_5,
-					5,
-					p_actionCode),
-				m_aduTollDeclarationToSendOneObe(
-					{TD_IDENTIFIER, 6},
-					TD_USAGE_STATEMENT_VALID_6,
-					6,
-					p_actionCode),
-				m_aduTollDeclarationToSendOneObe(
-					{TD_IDENTIFIER, 7},
-					TD_USAGE_STATEMENT_VALID_7,
-					7,
-					p_actionCode),
-				m_aduTollDeclarationToSendOneObe(
-					{TD_IDENTIFIER, 8},
-					TD_USAGE_STATEMENT_VALID_8,
-					8,
-					p_actionCode),
-				m_aduTollDeclarationToSendOneObe(
-					{TD_IDENTIFIER, 9},
-					TD_USAGE_STATEMENT_VALID_9,
-					9,
-					p_actionCode),
-				m_aduTollDeclarationToSendOneObe(
-					{TD_IDENTIFIER, 10},
-					TD_USAGE_STATEMENT_VALID_10,
-					10,
-					p_actionCode)
+			template InfoExchange m_apduTollDeclarationsTen(in integer (0..255) p_actionCode:=ActionCode_send_):=m_apduNoAuthInitTester({
+				tollDeclarationADUs:={
+					m_aduTollDeclarationToSendOneObe(
+						{TD_IDENTIFIER, 1},
+						TD_USAGE_STATEMENT_VALID_1,
+						1,
+						p_actionCode),
+					m_aduTollDeclarationToSendOneObe(
+						{TD_IDENTIFIER, 2},
+						TD_USAGE_STATEMENT_VALID_2,
+						2,
+						p_actionCode),
+					m_aduTollDeclarationToSendOneObe(
+						{TD_IDENTIFIER, 3},
+						TD_USAGE_STATEMENT_VALID_3,
+						3,
+						p_actionCode),
+					m_aduTollDeclarationToSendOneObe(
+						{TD_IDENTIFIER, 4},
+						TD_USAGE_STATEMENT_VALID_4,
+						4,
+						p_actionCode),
+					m_aduTollDeclarationToSendOneObe(
+						{TD_IDENTIFIER, 5},
+						TD_USAGE_STATEMENT_VALID_5,
+						5,
+						p_actionCode),
+					m_aduTollDeclarationToSendOneObe(
+						{TD_IDENTIFIER, 6},
+						TD_USAGE_STATEMENT_VALID_6,
+						6,
+						p_actionCode),
+					m_aduTollDeclarationToSendOneObe(
+						{TD_IDENTIFIER, 7},
+						TD_USAGE_STATEMENT_VALID_7,
+						7,
+						p_actionCode),
+					m_aduTollDeclarationToSendOneObe(
+						{TD_IDENTIFIER, 8},
+						TD_USAGE_STATEMENT_VALID_8,
+						8,
+						p_actionCode),
+					m_aduTollDeclarationToSendOneObe(
+						{TD_IDENTIFIER, 9},
+						TD_USAGE_STATEMENT_VALID_9,
+						9,
+						p_actionCode),
+					m_aduTollDeclarationToSendOneObe(
+						{TD_IDENTIFIER, 10},
+						TD_USAGE_STATEMENT_VALID_10,
+						10,
+						p_actionCode)
+				}
 			});
     
 		}
