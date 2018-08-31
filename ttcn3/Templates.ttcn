@@ -790,7 +790,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			
 			type record of TrustObjectPurposes RoTrustObjectPurposes;  
 			
-			template RequestADU (value) m_aduRequestTrustObject(
+			template (value) RequestADU m_aduRequestTrustObject(
 				in TrustObjectTypes p_typeOfTrustObject, 
 				in RoTrustObjectPurposes p_recOfTrustObjectPurposes
 			):={

@@ -255,6 +255,12 @@ module EfcInfoExchange_TesterData{
 	}	
 
 	group USERDETAILS {
+		modulepar LPN TD_LPN:={
+			countryCode:='0000000001'B,
+			alphabetIndicator:=latinAlphabetNo1, 
+			licencePlateNumber:='111111'O
+		}
+		
 		modulepar UserParameterResponseDetails TD_USER_PARAM_RESP_DETAILS := {
 			userPostalAddress := {"TestUserName","TestCompany","TestStreet","999999","TestTown","TestCountry","TestCompanyTaxIdentifier"},
 			contractSerialNumber := 1234567890, //INT4 in ISO14906
@@ -264,7 +270,7 @@ module EfcInfoExchange_TesterData{
 			environmentalCharacteristics := {euro_6, co2class4}, 
 			engineCharacteristics := EngineCharacteristics_battery_,
 			equipmentOBUId:='11AA22BB33CC'O,
-			equipmentStatus := '000000000000001'B,//BitString(16)
+			equipmentStatus := '0000000000000001'B,//BitString(16)
 			paymentMeans :=TD_PAYMENT_MEANS_1, //paymentmaens value for testing
 			paymentMeansBalance := {positive:=10},
 			paymentMeansUnit := TD_BILLINGDETAILS_PAYUNIT,
@@ -275,7 +281,7 @@ module EfcInfoExchange_TesterData{
 			vehicleAuthenticator := '1234567890ABCDEF'O,
 			vehicleClass := 15,
 			vehicleDimensions := {99, 99, 99},
-			vehicleLicencePlateNumber := {'0000000001'B, AlphabetIndicator_latinAlphabetNo1_ , '111111'O},
+			vehicleLicencePlateNumber := TD_LPN,
 			vehicleIdentificationNumber := {"01234567890123456",'000000000'B},
 			vehicleWeightLaden := 255,
 			vehicleWeightLimits := {99, 150, 50}, 
