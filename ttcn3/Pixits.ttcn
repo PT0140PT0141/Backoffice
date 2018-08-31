@@ -13,6 +13,16 @@ module EfcInfoExchange_Pixits {
 
 	//importing ASN.1 data manually translated into TTCN-3
 
+	modulepar UserId PX_USER_NOT_EXISTING_1,PX_USER_NOT_EXISTING_2,PX_USER_NOT_EXISTING_3;
+
+	type record of UserId UserIdList;
+	modulepar UserIdList PX_USERS_NOT_EXISTING :={
+		PX_USER_NOT_EXISTING_1,
+		PX_USER_NOT_EXISTING_2,
+		PX_USER_NOT_EXISTING_3
+	};				
+	
+
 	// Toll Context ID and Toll Context Name of the Toll Context managed by the
 	// IUT in case it is a Toll Charger
 	modulepar Provider TOLL_CONTEXT_ID_IUT; 

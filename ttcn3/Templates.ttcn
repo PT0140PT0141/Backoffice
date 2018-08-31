@@ -626,7 +626,8 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				trustObject := p_trustObjectCode
 			}
 
-			template (value) TrustObjectADU m_aduTrustObject(RecOfTrustObjectPurposes p_recOfTrustObjectPurposes,
+			template (value) TrustObjectADU m_aduTrustObject(
+				RecOfTrustObjectPurposes p_recOfTrustObjectPurposes,
 				TrustObjectCode p_trustObjectCode
 			):=mw_aduTrustObject(p_recOfTrustObjectPurposes,p_trustObjectCode);
 			
@@ -1125,7 +1126,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				userId := PX_EXISTING_USER_ID,
 				dateAndTime := fx_getUtc(),
 				efcContextMark := TD_EFC_CONTEXT_MARK,
-				abnormalOBEReasonCode := AbnormalOBEReasonCode_reasonNotToBeDisclosed_
+				abnormalOBEReasonCode := {AbnormalOBEReasonCode_reasonNotToBeDisclosed_}
 			}
 
 			template Adus mw_adusReportAbnormalOBE := Adus:{reportAbnormalOBEADUs:=?};
@@ -1248,6 +1249,61 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 					associatedEventData := omit, // shall not be used in IAP
 					externalCosts := *
 				}
+				
+//// GO HERE				
+//				template BillingDetailsADU m_aduGnssBillingDetails :={
+//	    			billingDetailsId :={
+//	    				issuerId := ?,
+//	    				billingDetailsNum := (0..9223372036854775807), // range 0..2^63-1
+//	    				dateOfService := omit
+//	    			},
+//	    			tollContext := ?,
+//	    			userId :={
+//	    				pan := *, 
+//						contractSerialNumber := *,
+//						licencePlateNumber := *, 
+//						obeID := *
+//					},
+//	    			relatedBillingDetails := omit,
+//	    			period := ?,
+//	    			billingDetailsAmount := ?, 
+//	    			usageDetails := mw_usageBillingDetails,
+//	    			refTollDeclaration := ?,
+//	    			associatedEventData := omit,
+//	    			actionCode := (ActionCode_send_, ActionCode_revoke_ ,ActionCode_adjust_ ),
+//	    			paymentReference := *
+//	  			}
+	  			
+				template (value) BillingDetailsADU m_aduGnssBillingDetails(
+					in integer p_billingDetailsNum,
+					in UserId p_userId,
+					in Period p_period
+				):= { 
+					billingDetailsId:= {
+						issuerId := TD_IDENTIFIER,
+						billingDetailsNum := p_billingDetailsNum
+						},
+					tollContext := TOLL_CONTEXT_ID_IUT,
+					userId := p_userId,
+					period := p_period,
+					billingDetailsAmount:=m_extendedPaymentAmount,
+					usageDetails := {
+						contextName := TOLL_CONTEXT_NAME_IUT,
+						appliedUserClass := TD_USER_CLASS,
+						perDeclaredVehicleClasses := {{
+							declaredVehicleClass := TD_DECLARED_VEHICLE_CLASS,
+							perUsedTimeClasses := {{
+								appliedTimeClass := TD_APPLIED_TIME_CLASS,
+								costCenter := TD_COST_CENTER,
+								usageList := {m_sectionsUsed} 
+							}}
+						}}
+					},
+					refTollDeclaration := {{TD_IDENTIFIER, 1}}, //Definition: SEQUENCE OF TollDeclarationId OPTIONAL, TODO Jan "1" is a magic number that should be the declarationId and should be either a modulepar or a constant or a variable
+					actionCode := ActionCode_send_,
+					paymentReference := omit 				  		
+				};				
+				
 			}//end of group GNSS_BILLINGDETAILS
 													 							
 			group DSRC_BILLINGDETAILS {
@@ -1334,33 +1390,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 						}}
 					}}
 				};
-				
-//				template (value) BillingDetailsADU m_aduGnssBillingDetails modifies mw_aduGnssBillingDetails:= { // original template with wildcards, but now all given values below
-//					billingDetailsId:= {
-//						issuerId := TD_IDENTIFIER,
-//						billingDetailsNum := 1
-//						},
-//					tollContext := TOLL_CONTEXT_ID_IUT,
-//					userId := TD_USERID_1,
-//					period := TD_PERIOD_1,
-//					billingDetailsAmount:=m_extendedPaymentAmount,
-//					usageDetails := {
-//						contextName := TOLL_CONTEXT_NAME_IUT,
-//						appliedUserClass := TD_USER_CLASS,
-//						perDeclaredVehicleClasses := {{
-//							declaredVehicleClass := TD_DECLARED_VEHICLE_CLASS,
-//							perUsedTimeClasses := {{
-//								appliedTimeClass := TD_APPLIED_TIME_CLASS,
-//								costCenter := TD_COST_CENTER,
-//								usageList := {m_sectionsUsed} 
-//							}}
-//						}}
-//					},
-//					refTollDeclaration := {{TD_IDENTIFIER, 1}}, //Definition: SEQUENCE OF TollDeclarationId OPTIONAL, TODO Jan "1" is a magic number that should be the declarationId and should be either a modulepar or a constant or a variable
-//					actionCode := ActionCode_send_,
-//					paymentReference := omit 				  		
-//				};
-				
+								
 				template (value) UsageList m_sectionsUsed modifies mw_sectionedRoadGnssUsageList := {
 					usageListEntry:= {
 						forSectionedRoads:= {		

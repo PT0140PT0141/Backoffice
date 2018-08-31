@@ -16,6 +16,7 @@ module EfcInfoExchange_TesterData{
 	import from EfcDsrcApplication language "ASN.1:1997" all;
 	import from EfcAutonomousCharging language "ASN.1:1997" all;
 	import from EfcAutonomousContextData language "ASN.1:1997" all;
+	import from AVIAEINumberingAndDataStructures language "ASN.1:1997" all;
 	
 	//importing ASN.1 data manually translated into TTCN-3
 	import from EfcInfoExchange_ParameterisedAsn1Data all;
@@ -26,7 +27,7 @@ module EfcInfoExchange_TesterData{
 	modulepar EfcDsrcApplication.Provider TD_APDU_ORIGINATOR_FOR_TESTER;//TODO Jan the default value is not of type Provider := 'A40053'H; // [SEMANTIC DEFINITION] The originator id of the tester
 		// that is used in the APCI field apdu originator. Same syntax as the provider identifier. 
 	modulepar EfcDsrcApplication.Provider TD_INFORMATION_SENDER_TESTER;//TODO Jan the default value is not of type Provider := 'A40053'H; // [SEMANTIC DEFINITION] The sender id of tester
-		// taht is used in the APCI field sender id. Same syntax as the provider identifier.
+		// that is used in the APCI field sender id. Same syntax as the provider identifier.
 	modulepar EfcDsrcApplication.Provider TD_INVALID_APDU_ORIGINATOR_TESTER;//TODO Jan the default value is not of type Provider := 'A40054'H; // [SEMANTIC DEFINITION] The originator id of the tester used
 		// in an invalid base test case. Shall be different from the correct originator id of the tester 
 	modulepar EfcDsrcApplication.Provider TD_INVALID_INFORMATION_SENDER_TESTER;//TODO Jan the default value is not of type Provider := 'A40054'H; // [SEMANTIC DEFINITION] The sender id of the tester used 
@@ -133,16 +134,9 @@ module EfcInfoExchange_TesterData{
 			obeID := TD_OBE_ID_1
 		}			
 		modulepar VehicleParameters TD_VEHICLE_PARAMETERS;
-		modulepar ASNAUX.UTF8String TD_VAT_ID;  
+		modulepar ASNAUX.UTF8String TD_VAT_ID; 
+		//TODO PT140 should these actually be in the PIXITS? 
 		modulepar UserId TD_USERID_1, TD_USERID_2, TD_USERID_3, TD_USERID_4, TD_USERID_5, TD_USERID_6, TD_USERID_7, TD_USERID_8;
-		modulepar UserId TD_USER_ID_NOT_PRESENT_AT_IUT_1,TD_USER_ID_NOT_PRESENT_AT_IUT_2,TD_USER_ID_NOT_PRESENT_AT_IUT_3;
-
-		type record of UserId UserIdList;
-		modulepar UserIdList TD_USER_ID_NOT_PRESENT_AT_IUT :={
-			TD_USER_ID_NOT_PRESENT_AT_IUT_1,
-			TD_USER_ID_NOT_PRESENT_AT_IUT_2,
-			TD_USER_ID_NOT_PRESENT_AT_IUT_3
-		};				
 		
 
 		
@@ -238,6 +232,7 @@ module EfcInfoExchange_TesterData{
 
 
 	group TRUSTOBJECTS {
+		modulepar TrustObjectCode TD_DSRC_MASTER_KEY:={dsrcMasterKeys:=TD_SYMMETRIC_KEY};
 		modulepar TrustObjectCode TD_CERT_REVOKE_LIST;
 		modulepar octetstring TD_CERTIFICATE;
 	 	modulepar octetstring TD_GENERIC_TRUST_OBJECT;
@@ -269,24 +264,24 @@ module EfcInfoExchange_TesterData{
 			environmentalCharacteristics := {euro_6, co2class4}, 
 			engineCharacteristics := EngineCharacteristics_battery_,
 			equipmentOBUId:='11AA22BB33CC'O,
-			equipmentStatus := '00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'B,//BitString(16)
+			equipmentStatus := '000000000000001'B,//BitString(16)
 			paymentMeans :=TD_PAYMENT_MEANS_1, //paymentmaens value for testing
-			paymentMeansBalance := {"7FFFFF"},
-			paymentMeansUnit := "3F784",
+			paymentMeansBalance := {positive:=10},
+			paymentMeansUnit := TD_BILLINGDETAILS_PAYUNIT,
 			personalAccountNumber := TD_PAN_1,
 			provider := TD_IDENTIFIER,
-			receiptContract := {TD_IDENTIFIER,"1F2E", 9999},
-			validityOfContract := {2030, 12, 31},
-			vehicleAuthenticator := "1234567890ABCDEF",
+			receiptContract := {TD_IDENTIFIER,'1F2E'O, 9999},
+			validityOfContract := {'2030'O, {2040,12,31}},
+			vehicleAuthenticator := '1234567890ABCDEF'O,
 			vehicleClass := 15,
 			vehicleDimensions := {99, 99, 99},
-			vehicleLicencePlateNumber := {"EU", 1, "1C75D9"},
-			vehicleIdentificationNumber := 1234567890,
+			vehicleLicencePlateNumber := {'0000000001'B, AlphabetIndicator_latinAlphabetNo1_ , '111111'O},
+			vehicleIdentificationNumber := {"01234567890123456",'000000000'B},
 			vehicleWeightLaden := 255,
 			vehicleWeightLimits := {99, 150, 50}, 
 			vehicleAxles := {15, {dualTyres,{4,3}}},
 			exhaustEmissionValues := {mg_km, 0, 0, 0, 0},
-			dieselEmissionValues := {mg_km, 0, 0},
+			dieselEmissionValues := {{mg_km, 0}, 0},
 			extendedUserPostalAddress := {"TestRDescr", "TestOrganisationName","TestOrganisationUnit",
 				"TestFunction",	"TestFormOfAddress", "TestQualification", "TestSurname", "TestGivenName", "TestDeliveryServicePoint",
 				"TestThouroughFare", "1234567890", "TestTown",	"TestRegion", "TestCountry", "00999", "9876543210",
@@ -294,6 +289,14 @@ module EfcInfoExchange_TesterData{
 				"12345678901234567890","test@email.biz"}, 
 			preferredUserLanguage := "SE"
 		};	
+
+//		DieselEmissionValues::= SEQUENCE {
+//			particulate SEQUENCE {
+//				unitType UnitType,
+//				value INTEGER (0..32767)
+//			},
+//			absorptionCoeff Int2 
+//		}		
 		
 		modulepar RecOfUserParameterRequest TD_PRIVACYBOUND_USER_PARAM_REQS:={}; 
 	}
