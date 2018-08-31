@@ -310,7 +310,7 @@ module EfcInfoExchange_TestCasesCommon {
 						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TIME1_MIN[p_transType][p_role]); 
 						setverdict(pass);
 						}
-					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduForSending, {{1, AduReasonCode_invalidADU_},{2,AduReasonCode_invalidADU_}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, {{1, AduReasonCode_invalidADU_},{2,AduReasonCode_invalidADU_}})) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TIME1_MIN[p_transType][p_role]); 
 						setverdict(pass);
 						}
@@ -354,7 +354,7 @@ module EfcInfoExchange_TestCasesCommon {
 						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TIME1_MIN[p_transType][p_role]); 
 						setverdict(pass);
 						}
-					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduForSending, {{1, AduReasonCode_semanticError_},{2,AduReasonCode_semanticError_}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, {{1, AduReasonCode_semanticError_},{2,AduReasonCode_semanticError_}})) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TIME1_MIN[p_transType][p_role]); 
 						setverdict(pass);
 						}
@@ -388,7 +388,7 @@ module EfcInfoExchange_TestCasesCommon {
 						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TIME1_MIN[p_transType][p_role]); 
 						setverdict(pass);
 						}
-					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduForSending, {{1, AduReasonCode_semanticError_},{2,AduReasonCode_semanticError_}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, {{1, AduReasonCode_semanticError_},{2,AduReasonCode_semanticError_}})) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TIME1_MIN[p_transType][p_role]); 
 						setverdict(pass);
 						}
@@ -433,12 +433,12 @@ module EfcInfoExchange_TestCasesCommon {
 				//Set timer
 				t_step.start(TRUSTOBJECTS_TIME2_MAX[p_transType][p_role]);
                 
-				// Step #2: Wait for Nack ADU				 					
-				// Either we receive an APDU containing  Nack or the timeout expires
+				// Step #2: Wait for NAck ADU				 					
+				// Either we receive an APDU containing  NAck or the timeout expires
 				// timeout expiration is handled in the altstep branch
 				
 				alt {
-					[] mtcPort.receive(mw_apduNackRequestSentTooOften(v_secondApduRequest)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckRequestSentTooOften(v_secondApduRequest)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TIME2_MIN[p_transType][p_role]);  
 						setverdict(pass);
 						}
@@ -476,11 +476,11 @@ module EfcInfoExchange_TestCasesCommon {
 				//Set timer
 				t_step.start(TRUSTOBJECTS_TIME1_MAX[p_transType][p_role]);
                 
-				// Step #2: Wait for Nack ADU				 					
-				// Either we receive an APDU containing  Nack or the timeout expires
+				// Step #2: Wait for NAck ADU				 					
+				// Either we receive an APDU containing  NAck or the timeout expires
 				// timeout expiration is handled in the altstep branch
 				alt {
-					[] mtcPort.receive(mw_apduNackRequestSentTooOften(v_secondApduToBeSent)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckRequestSentTooOften(v_secondApduToBeSent)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TIME1_MIN[p_transType][p_role]);  
 						setverdict(pass);
 						}

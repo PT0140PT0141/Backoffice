@@ -21,16 +21,15 @@ module EfcInfoExchange_TesterData{
 	import from EfcInfoExchange_ParameterisedAsn1Data all;
 	import from LibEfc_Common_Parameterised_Asn1_Data all;
 	
-	modulepar EfcDsrcApplication.Provider TD_IDENTIFIER := 'A40053'H; // Default is Sweden 99 [SEMANTIC DEFINITION] The provider identifier of the tester
+	modulepar EfcDsrcApplication.Provider TD_IDENTIFIER;//TODO Jan the default value is not of type Provider (is ia CountryCode?) := 'A40053'H; // Default is Sweden 99 [SEMANTIC DEFINITION] The provider identifier of the tester
 		// acccording to ISO 14906 consisting of countryCode and issuerIdentifier
-	modulepar EfcDsrcApplication.Provider TD_APDU_ORIGINATOR_FOR_TESTER := 'A40053'H; // [SEMANTIC DEFINITION] The originator id of the tester
+	modulepar EfcDsrcApplication.Provider TD_APDU_ORIGINATOR_FOR_TESTER;//TODO Jan the default value is not of type Provider := 'A40053'H; // [SEMANTIC DEFINITION] The originator id of the tester
 		// that is used in the APCI field apdu originator. Same syntax as the provider identifier. 
-	modulepar EfcDsrcApplication.Provider TD_INFORMATION_SENDER_FOR_TESTER := 'A40053'H; // [SEMANTIC DEFINITION] The sender id of tester
+	modulepar EfcDsrcApplication.Provider TD_INFORMATION_SENDER_TESTER;//TODO Jan the default value is not of type Provider := 'A40053'H; // [SEMANTIC DEFINITION] The sender id of tester
 		// taht is used in the APCI field sender id. Same syntax as the provider identifier.
-	modulepar EfcDsrcApplication.Provider TD_INVALID_APDU_ORIGINATOR_FOR_TESTER := 'A40054'H; // [SEMANTIC DEFINITION] The originator id of the tester used
+	modulepar EfcDsrcApplication.Provider TD_INVALID_APDU_ORIGINATOR_TESTER;//TODO Jan the default value is not of type Provider := 'A40054'H; // [SEMANTIC DEFINITION] The originator id of the tester used
 		// in an invalid base test case. Shall be different from the correct originator id of the tester 
-	modulepar EfcDsrcApplication.Provider TD_INFORMATION_SENDER_ID_FOR_TESTER;	// TODO remove this duplicate
-	modulepar EfcDsrcApplication.Provider TD_INVALID_INFORMATION_SENDER_ID_FOR_TESTER := 'A40054'H; // [SEMANTIC DEFINITION] The sender id of the tester used 
+	modulepar EfcDsrcApplication.Provider TD_INVALID_INFORMATION_SENDER_TESTER;//TODO Jan the default value is not of type Provider := 'A40054'H; // [SEMANTIC DEFINITION] The sender id of the tester used 
 		// in an invalid base test case. Shall be different from the correct sender id of the tester
 	modulepar EfcDsrcApplication.Provider TD_INVALID_INFORMATION_RECEPIENT_ID_FOR_IUT; // [SEMANTIC DEFINITION] The information recipient id of the IUT
 		// used an invalid base test case. Shall be different from the correct recipient id of the IUT
@@ -39,7 +38,7 @@ module EfcInfoExchange_TesterData{
 	group ContractIssuerData {
 
 		//TODO set sensible default values of the tester data parameters
-		modulepar EfcDsrcApplication.EFC_ContextMark TD_EFC_CONTEXT_MARK := 'A40053000503'H; // [SEMANTIC DEFINITION] The EFCContextMark used by the tester
+		modulepar EfcDsrcApplication.EFC_ContextMark TD_EFC_CONTEXT_MARK := {TD_INFORMATION_SENDER_TESTER, '1111'O ,99};//'A40053000503'H; // [SEMANTIC DEFINITION] The EFCContextMark used by the tester
 			// in contract issuer data. Used according to ISO 14906.
 		modulepar EfcInfoExchange.Int2 TD_EQUIPMENT_CLASS;
 		modulepar EfcInfoExchange.Int4 TD_MANUFACTURER_ID_1 := 97, TD_MANUFACTURER_ID_2 := 98, TD_MANUFACTURER_ID_3 := 99; // [SEMANTIC DEFINITION] Manufacturer ids
@@ -99,8 +98,9 @@ module EfcInfoExchange_TesterData{
 	group DSRC_BILLINGDETAILS {
 		modulepar UserId TD_BILLINGDETAILS_USERID; //[SEMANTIC DEFINITION] The ID of the user that is to be billed in when the tester sends a BillingDetailsADU in the DSRC.BILLINGDETAILS transaction	
 		modulepar Int8Signed TD_PAYMENT_FEE_AMOUNT:=10;//[SEMANTIC DEFINITION] The fee that will appear on the bill
-		modulepar PayUnit TD_BILLINGDETAILS_PAYUNIT:='0978'H; //Currency EUR in main units [SEMANTIC DEFINITION]The currency unit that will appear on the bill according to ISO 4217
-	    modulepar integer (0..10000) TD_BILLINGDETAILS_VAT:=0;//[SEMANTIC DEFINITION]The VAT rate expressed in 0.01% 
+		modulepar PayUnit TD_BILLINGDETAILS_PAYUNIT:='0978'O; //Currency EUR in main units [SEMANTIC DEFINITION]The currency unit that will appear on the bill according to ISO 4217
+	    type integer IntMax10000 (0..10000);
+	    modulepar IntMax10000 TD_BILLINGDETAILS_VAT:=0;//[SEMANTIC DEFINITION]The VAT rate expressed in 0.01% 
 		modulepar integer TD_BILLING_DETAILS_NUM:=1;//[SEMATIC DEFINITION] Identifer that together with the issuerId forms a unique BillingDetailsId 
 		modulepar UTF8String TD_DSRC_BILLINGDETAILS_CONTEXTNAME:="TheContextName";//[SEMANTIC DEFINITION] According to ISO 17575-3
 		modulepar UTF8String TD_DSRC_BILLINGDETAILS_USERCLASS:="TheUserClass";//[SEMANTIC DEFINITION] According to ISO 17575-3
@@ -263,14 +263,14 @@ module EfcInfoExchange_TesterData{
 		modulepar UserParameterResponseDetails TD_USER_PARAM_RESP_DETAILS := {
 			userPostalAddress := {"TestUserName","TestCompany","TestStreet","999999","TestTown","TestCountry","TestCompanyTaxIdentifier"},
 			contractSerialNumber := 1234567890, //INT4 in ISO14906
-			contractValidity := {'ABCD'O, {2030, 12, 31}},
+			contractValidity := {'ABCDABCD'O, {2030, 12, 31}},
 			driverCharacteristics := {10, 255}, //{INT!, INT1} in ISO14906
 			eFC_ContextMark := TD_EFC_CONTEXT_MARK,
-			environmentalCharacteristics := {euro_6(6), co2class4(4)}, 
+			environmentalCharacteristics := {euro_6, co2class4}, 
 			engineCharacteristics := EngineCharacteristics_battery_,
 			equipmentOBUId:='11AA22BB33CC'O,
-			equipmentStatus := '01010101010101'B,//BitString(16)
-			paymentMeans :=1000, //paymentmaens value for testing
+			equipmentStatus := '00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'B,//BitString(16)
+			paymentMeans :=TD_PAYMENT_MEANS_1, //paymentmaens value for testing
 			paymentMeansBalance := {"7FFFFF"},
 			paymentMeansUnit := "3F784",
 			personalAccountNumber := TD_PAN_1,
@@ -285,8 +285,8 @@ module EfcInfoExchange_TesterData{
 			vehicleWeightLaden := 255,
 			vehicleWeightLimits := {99, 150, 50}, 
 			vehicleAxles := {15, {dualTyres,{4,3}}},
-			exhaustEmissionValues := {mg_km(0), 0, 0, 0, 0},
-			dieselEmissionValues := {mg_km(0), 0, 0},
+			exhaustEmissionValues := {mg_km, 0, 0, 0, 0},
+			dieselEmissionValues := {mg_km, 0, 0},
 			extendedUserPostalAddress := {"TestRDescr", "TestOrganisationName","TestOrganisationUnit",
 				"TestFunction",	"TestFormOfAddress", "TestQualification", "TestSurname", "TestGivenName", "TestDeliveryServicePoint",
 				"TestThouroughFare", "1234567890", "TestTown",	"TestRegion", "TestCountry", "00999", "9876543210",
@@ -346,7 +346,6 @@ module EfcInfoExchange_TesterData{
 
 	group TOLLDECLARATION{
 		modulepar EfcDsrcApplication.PaymentMeans TD_PAYMENT_MEANS_1;//:= {PAN1,{2030,12,31}, "1234"};
-		modulepar EfcDsrcApplication.EFC_ContextMark TD_SERVICE_PROVIDER_CONTRACT := {TD_INFORMATION_SENDER_ID_FOR_TESTER, '11'O ,99};
 		modulepar Provider TD_TOLL_CONTEXT;	//value of the InfoExchange.infoExchangeContent.apci.informationSenderID	
 		modulepar UsageStatement TD_USAGE_STATEMENT_VALID_1, TD_USAGE_STATEMENT_VALID_2, TD_USAGE_STATEMENT_VALID_3,
 		TD_USAGE_STATEMENT_VALID_4, TD_USAGE_STATEMENT_VALID_5, TD_USAGE_STATEMENT_VALID_6, TD_USAGE_STATEMENT_VALID_7, 

@@ -61,7 +61,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 
 		template (value) @fuzzy ApciFields m_apciInitTester modifies mw_apci :={
     		apduOriginator := TD_APDU_ORIGINATOR_FOR_TESTER,  
-    		informationSenderID := TD_INFORMATION_SENDER_ID_FOR_TESTER, 
+    		informationSenderID := TD_INFORMATION_SENDER_TESTER, 
     		informationrecipientID := INFORMATION_SENDER_ID_FOR_IUT,
 			apduIdentifier := float2int(rnd()) * 65535,
     		previousApduId := omit,
@@ -71,7 +71,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		
 		template (value) @fuzzy ApciFields m_apciRespTester(in InfoExchange p_apduBeingRespondedTo) modifies m_apciInitTester :={
 			apduOriginator := TD_APDU_ORIGINATOR_FOR_TESTER,  
-			informationSenderID := TD_INFORMATION_SENDER_ID_FOR_TESTER, 
+			informationSenderID := TD_INFORMATION_SENDER_TESTER, 
 			informationrecipientID := INFORMATION_SENDER_ID_FOR_IUT,
 			apduIdentifier := float2int(rnd()) * 65535,
 			previousApduId := omit,
@@ -85,7 +85,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		template ApciFields mw_apciInitIut modifies mw_apci :={
 			apduOriginator := APDU_ORIGINATOR_FOR_IUT,  
 			informationSenderID := INFORMATION_SENDER_ID_FOR_IUT, 
-			informationrecipientID := TD_INFORMATION_SENDER_ID_FOR_TESTER,
+			informationrecipientID := TD_INFORMATION_SENDER_TESTER,
 			inResponseToApduId := omit
 		}
 		
@@ -300,7 +300,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		 * @desc issues containing one element for each Param set containing {issueADUStruct=aduPosition, 
 		 * @desc issueCode = aduReasonCode }}"
 		 */ 
-		template InfoExchange m_apduNackIndividualIssuesTester(
+		template InfoExchange m_apduNAckIndividualIssuesTester(
 			in InfoExchange p_apduToAck, in NAckParams p_nAckParams
 		):=m_apduNoAuthRespTester(p_apduToAck, {ackAdus:={m_aduNAck(p_apduToAck, p_nAckParams)}});
 				
@@ -312,7 +312,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		 * @desc issues containing one element for each Param set containing {issueADUStruct=aduPosition, 
 		 * @desc issueCode = aduReasonCode }}"
 		 */ 
-		template InfoExchange mw_apduNackIndividualIssuesIut(
+		template InfoExchange mw_apduNAckIndividualIssuesIut(
 			in InfoExchange p_apduToAck,
 			in NAckParams p_nAckParams
 		):=mw_apduNoAuthRespIut(p_apduToAck, m_oneAckInAdusStruct(mw_aduNAckWIssues(p_apduToAck, p_nAckParams)));
@@ -323,7 +323,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		 * @desc Definition: NAck_requestSentTooOften "NAck_Protocol_Apdu(requestSentTooOften(10)"
 		*/ 
 		
-		template InfoExchange mw_apduNackRequestSentTooOften(in InfoExchange p_apduToAck) := 
+		template InfoExchange mw_apduNAckRequestSentTooOften(in InfoExchange p_apduToAck) := 
 		mw_apduNAckProtocolIut(p_apduToAck, ApduReasonCode_requestSentTooOften_);
 		
 
@@ -1114,11 +1114,18 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		
 			
 		group DSRC_REPORTABNORMALOBE {
-			template ReportAbnormalOBEADU mw_aduDsrcReportAbnormalObe := {
+			template ReportAbnormalOBEADU mw_aduReportAbnormalObe := {
 				userId := ?, //TODO PT140 at least one element of userId shall be present, this is not checked by template
 				dateAndTime := ?,
 				efcContextMark := ?,
 				abnormalOBEReasonCode := ? //TODO PT140 at least one reason code shall be present in this record of integer, template does not check this
+			}
+			
+			template (value) @fuzzy ReportAbnormalOBEADU m_aduReportAbnormalOBE:= {
+				userId := PX_EXISTING_USER_ID,
+				dateAndTime := fx_getUtc(),
+				efcContextMark := TD_EFC_CONTEXT_MARK,
+				abnormalOBEReasonCode := AbnormalOBEReasonCode_reasonNotToBeDisclosed_
 			}
 
 			template Adus mw_adusReportAbnormalOBE := Adus:{reportAbnormalOBEADUs:=?};
@@ -1146,7 +1153,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 					},
 	    			relatedBillingDetails := omit,
 	    			period := ?,
-	    			billingDetailsAmount := omit, 
+	    			billingDetailsAmount := ?, 
 	    			usageDetails := mw_usageBillingDetails,
 	    			refTollDeclaration := ?,
 	    			associatedEventData := omit,
@@ -1271,7 +1278,20 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 	    			actionCode := (ActionCode_send_, ActionCode_revoke_ ,ActionCode_adjust_ ),
 	    			paymentReference := *
 	  			}
-	  			
+
+				template UsageDetails mw_dsrcUsageDetails:={
+					contextName := ?,
+					appliedUserClass := ?,
+					perDeclaredVehicleClasses := {{
+						declaredVehicleClass := ?,
+						perUsedTimeClasses := {{
+							appliedTimeClass := ?,
+							costCenter := ?, // mandatory in IAP
+							usageList :=?
+						}}
+					}}  			
+				}
+
 	  			template (value) ExtendedPaymentAmount m_extendedPaymentAmount:={
 					paymentFeeAmount:=TD_PAYMENT_FEE_AMOUNT,
 					paymentFeeUnit := TD_BILLINGDETAILS_PAYUNIT,
@@ -1280,7 +1300,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 	  			
 	  			template (value) BillingDetailsADU m_aduDsrcBillingDetails(in integer p_billingDetailsNum:=TD_BILLING_DETAILS_NUM):={
 					billingDetailsId := {
-						issuerId:=TD_INFORMATION_SENDER_FOR_TESTER,
+						issuerId:=TD_INFORMATION_SENDER_TESTER,
 						billingDetailsNum:=p_billingDetailsNum,
 						dateOfService:=omit				
 					}, 
@@ -1315,31 +1335,31 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 					}}
 				};
 				
-				template (value) BillingDetailsADU m_aduGnssBillingDetails modifies mw_aduGnssBillingDetails:= { // original template with wildcards, but now all given values below
-					billingDetailsId:= {
-						issuerId := TD_IDENTIFIER,
-						billingDetailsNum := 1
-						},
-					tollContext := TOLL_CONTEXT_ID_IUT,
-					userId := TD_USERID_1,
-					period := TD_PERIOD_1,
-					billingDetailsAmount:=m_extendedPaymentAmount,
-					usageDetails := {
-						contextName := TOLL_CONTEXT_NAME_IUT,
-						appliedUserClass := TD_USER_CLASS,
-						perDeclaredVehicleClasses := {{
-							declaredVehicleClass := TD_DECLARED_VEHICLE_CLASS,
-							perUsedTimeClasses := {{
-								appliedTimeClass := TD_APPLIED_TIME_CLASS,
-								costCenter := TD_COST_CENTER,
-								usageList := {m_sectionsUsed} 
-							}}
-						}}
-					},
-					refTollDeclaration := {{TD_IDENTIFIER, 1}}, //Definition: SEQUENCE OF TollDeclarationId OPTIONAL, TODO Jan "1" is a magic number that should be the declarationId and should be either a modulepar or a constant or a variable
-					actionCode := ActionCode_send_,
-					paymentReference := omit 				  		
-				};
+//				template (value) BillingDetailsADU m_aduGnssBillingDetails modifies mw_aduGnssBillingDetails:= { // original template with wildcards, but now all given values below
+//					billingDetailsId:= {
+//						issuerId := TD_IDENTIFIER,
+//						billingDetailsNum := 1
+//						},
+//					tollContext := TOLL_CONTEXT_ID_IUT,
+//					userId := TD_USERID_1,
+//					period := TD_PERIOD_1,
+//					billingDetailsAmount:=m_extendedPaymentAmount,
+//					usageDetails := {
+//						contextName := TOLL_CONTEXT_NAME_IUT,
+//						appliedUserClass := TD_USER_CLASS,
+//						perDeclaredVehicleClasses := {{
+//							declaredVehicleClass := TD_DECLARED_VEHICLE_CLASS,
+//							perUsedTimeClasses := {{
+//								appliedTimeClass := TD_APPLIED_TIME_CLASS,
+//								costCenter := TD_COST_CENTER,
+//								usageList := {m_sectionsUsed} 
+//							}}
+//						}}
+//					},
+//					refTollDeclaration := {{TD_IDENTIFIER, 1}}, //Definition: SEQUENCE OF TollDeclarationId OPTIONAL, TODO Jan "1" is a magic number that should be the declarationId and should be either a modulepar or a constant or a variable
+//					actionCode := ActionCode_send_,
+//					paymentReference := omit 				  		
+//				};
 				
 				template (value) UsageList m_sectionsUsed modifies mw_sectionedRoadGnssUsageList := {
 					usageListEntry:= {
@@ -1513,7 +1533,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				TD_OBE_ID_1,
 				TD_LPN_1,
 				TD_PAYMENT_MEANS_1,
-				TD_SERVICE_PROVIDER_CONTRACT,
+				TD_EFC_CONTEXT_MARK,
 				TD_TOLL_CONTEXT,
 				p_usageStatement,
 				p_chargeReportCounter,
@@ -1678,8 +1698,8 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			//		day INTEGER (0..31) -- Value zero shall not be used
 			//		-- except with 1990 ï¿½ see below.
 			//	}	
-	
-			template InfoExchange m_apduTollDeclarationsTen(in integer (0..255) p_actionCode:=ActionCode_send_):=m_apduNoAuthInitTester({
+			type integer Int1 (0..255);	
+			template InfoExchange m_apduTollDeclarationsTen(in Int1 p_actionCode:=ActionCode_send_):=m_apduNoAuthInitTester({
 				tollDeclarationADUs:={
 					m_aduTollDeclarationToSendOneObe(
 						{TD_IDENTIFIER, 1},

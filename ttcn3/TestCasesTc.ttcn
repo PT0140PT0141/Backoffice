@@ -152,7 +152,7 @@ module EfcInfoExchange_TestCasesTc {
 				
 				// Step 1:
 				// Prepare APCI with invalid apduOriginator (= not Tester Originator)
-				template (value) ApciFields m_apciInvalidAidInitTester modifies m_apciInitTester:= {apduOriginator:= TD_INVALID_APDU_ORIGINATOR_FOR_TESTER};
+				template (value) ApciFields m_apciInvalidAidInitTester modifies m_apciInitTester:= {apduOriginator:= TD_INVALID_APDU_ORIGINATOR_TESTER};
 							
                 // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for white list
                 // Including the invalid APCI 
@@ -189,7 +189,7 @@ module EfcInfoExchange_TestCasesTc {
 				
 				// Step 1:
 				// Prepare APCI with invalid or unknown informationSenderID (= not Sender Id of the Tester)
-				template (value) ApciFields m_apciInvalidSenderIdInitTester modifies m_apciInitTester:= {informationSenderID:= TD_INVALID_INFORMATION_SENDER_ID_FOR_TESTER};
+				template (value) ApciFields m_apciInvalidSenderIdInitTester modifies m_apciInitTester:= {informationSenderID:= TD_INVALID_INFORMATION_SENDER_TESTER};
 							
                 // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for white list
                 // Including the invalid APCI 
@@ -745,7 +745,7 @@ module EfcInfoExchange_TestCasesTc {
 						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME2_MIN_TC);
 						setverdict(pass);
 					}					
-					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduToBeSent, v_nAckParamsList)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent, v_nAckParamsList)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME2_MIN_TC);
 						setverdict(pass);
@@ -846,7 +846,7 @@ module EfcInfoExchange_TestCasesTc {
 						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME2_MIN_TC);
 						setverdict(pass);
 					}					
-					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduToBeSent, v_nAckParamsList)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent, v_nAckParamsList)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME2_MIN_TC);
 						setverdict(pass);
@@ -942,7 +942,7 @@ module EfcInfoExchange_TestCasesTc {
 						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME2_MIN_TC);
 						setverdict(pass);
 					}					
-					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduToBeSent, v_nAckParamsList)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent, v_nAckParamsList)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME2_MIN_TC);
 						setverdict(pass);
@@ -1043,7 +1043,7 @@ module EfcInfoExchange_TestCasesTc {
 						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME2_MIN_TC);
 						setverdict(pass);
 					}					
-					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduToBeSent, v_nAckParamsList)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent, v_nAckParamsList)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME2_MIN_TC);
 						setverdict(pass);
@@ -1145,7 +1145,7 @@ module EfcInfoExchange_TestCasesTc {
 						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME2_MIN_TC);
 						setverdict(pass);
 					}					
-					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduToBeSent, v_nAckParamsList)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent, v_nAckParamsList)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME2_MIN_TC);
 						setverdict(pass);
@@ -1283,7 +1283,7 @@ module EfcInfoExchange_TestCasesTc {
 						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME2_MIN_TC);
 						setverdict(pass);
 					}					
-					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduToBeSent, {{1, AduReasonCode_invalidADU_}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent, {{1, AduReasonCode_invalidADU_}})) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME2_MIN_TC);
 						setverdict(pass);
@@ -1358,7 +1358,7 @@ module EfcInfoExchange_TestCasesTc {
 						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME2_MIN_TC);
 						setverdict(pass);
 					}					
-					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduToBeSent,{
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent,{
 						{1, AduReasonCode_semanticError_},
 						{2, AduReasonCode_semanticError_},
 						{3, AduReasonCode_semanticError_}})) -> value v_apduReceived {
@@ -1432,7 +1432,7 @@ module EfcInfoExchange_TestCasesTc {
 						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME2_MIN_TC);
 						setverdict(pass);
 					}					
-					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduToBeSent,{{1, AduReasonCode_invalidADU_}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent,{{1, AduReasonCode_invalidADU_}})) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME2_MIN_TC);
 						setverdict(pass);
@@ -1655,7 +1655,7 @@ module EfcInfoExchange_TestCasesTc {
 				f_wait(DSRC_BILLINGDETAILS_TIME1_MIN_TSP);				
 
 				// send a negative Ack (except of issueCode "acceptedWithWarning")
-				f_sendAndLogApdu(m_apduNackIndividualIssuesTester(v_apduReceived, {1, AduReasonCode_semanticError_}));
+				f_sendAndLogApdu(m_apduNAckIndividualIssuesTester(v_apduReceived, {1, AduReasonCode_semanticError_}));
 
                 // Step 2: Wait for IUT to send adjusted BillingDetailsADU
                 // with actionCode = adjust
@@ -1845,7 +1845,7 @@ module EfcInfoExchange_TestCasesTc {
 						setverdict(pass);
 					}
 
-					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduToBeSent, {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent, {
 						{1, AduReasonCode_semanticError_},
 						{2, AduReasonCode_semanticError_},
 						{3, AduReasonCode_semanticError_}})) -> value v_apduReceived {
@@ -1890,7 +1890,7 @@ module EfcInfoExchange_TestCasesTc {
               	// if other Ack or not received set test failure --> is done in altstep            	
 
 				alt {
-					[] mtcPort.receive(mw_apduNackRequestSentTooOften(v_apduToBeSent)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckRequestSentTooOften(v_apduToBeSent)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(DSRC_CONTRACTISSUERLIST_TIME1_MIN_TC);
 						// set verdict
@@ -2004,7 +2004,7 @@ module EfcInfoExchange_TestCasesTc {
 						//Set verdict
 						setverdict(pass);												
 					}
-					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduToBeSent, {{1, AduReasonCode_semanticError_}})) -> value v_apduReceived {				  
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent, {{1, AduReasonCode_semanticError_}})) -> value v_apduReceived {				  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_DISCOUNT_TIME1_MIN_TC);
 						//Set verdict
@@ -2051,7 +2051,7 @@ module EfcInfoExchange_TestCasesTc {
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
 						setverdict(pass);
 					}
-					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduToBeSent, {{1, AduReasonCode_exceptionListsDateAndTimeRejected_}})) -> value v_apduReceived {				  
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent, {{1, AduReasonCode_exceptionListsDateAndTimeRejected_}})) -> value v_apduReceived {				  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
 						//Set verdict
@@ -2092,7 +2092,7 @@ module EfcInfoExchange_TestCasesTc {
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
 						setverdict(pass);
 					}					
-					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduToBeSent, {{1, AduReasonCode_invalidADU_}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent, {{1, AduReasonCode_invalidADU_}})) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
 						setverdict(pass);
@@ -2168,7 +2168,7 @@ module EfcInfoExchange_TestCasesTc {
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
 						setverdict(pass);
 					}					
-					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduToBeSent, {{1, AduReasonCode_exceptionListsVersionRejected_}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent, {{1, AduReasonCode_exceptionListsVersionRejected_}})) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
 						setverdict(pass);
@@ -2212,7 +2212,7 @@ module EfcInfoExchange_TestCasesTc {
 						setverdict(pass);
 					}					
 
-					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduToBeSent, {{1, AduReasonCode_exceptionListsTypeRejected_}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent, {{1, AduReasonCode_exceptionListsTypeRejected_}})) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logApduReceivedAndTStep();
 
@@ -2264,7 +2264,7 @@ module EfcInfoExchange_TestCasesTc {
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
 						setverdict(pass);
 					}					
-					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduToBeSent, {{1, AduReasonCode_exceptionListsUserIdRejected_}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent, {{1, AduReasonCode_exceptionListsUserIdRejected_}})) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
 						setverdict(pass);
@@ -2323,7 +2323,7 @@ module EfcInfoExchange_TestCasesTc {
               	// if negative Ack or not received set test failure --> is done in altstep            	
 
 				alt {
-					[] mtcPort.receive(mw_apduNackRequestSentTooOften(v_apduToBeSent)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckRequestSentTooOften(v_apduToBeSent)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time		
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
 						setverdict(pass);
@@ -2727,12 +2727,12 @@ module EfcInfoExchange_TestCasesTc {
 //				//Set timer
 //				t_step.start(TRUSTOBJECTS_TYPE1_TIME2_MAX_TC);
 //                
-//				// Step #2: Wait for Nack ADU				 					
-//				// Either we receive an APDU containing  Nack or the timeout expires
+//				// Step #2: Wait for NAck ADU				 					
+//				// Either we receive an APDU containing  NAck or the timeout expires
 //				// timeout expiration is handled in the altstep branch
 //				
 //				alt {
-//					[] mtcPort.receive(mw_apduNackRequestSentTooOften(v_secondApduRequest)) -> value v_apduReceived {
+//					[] mtcPort.receive(mw_apduNAckRequestSentTooOften(v_secondApduRequest)) -> value v_apduReceived {
 //						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TYPE1_TIME2_MIN_TC);  
 //						setverdict(pass);
 //						}
@@ -2771,11 +2771,11 @@ module EfcInfoExchange_TestCasesTc {
 //				//Set timer
 //				t_step.start(TRUSTOBJECTS_TYPE1_TIME1_MAX_TC);
 //                
-//				// Step #2: Wait for Nack ADU				 					
-//				// Either we receive an APDU containing  Nack or the timeout expires
+//				// Step #2: Wait for NAck ADU				 					
+//				// Either we receive an APDU containing  NAck or the timeout expires
 //				// timeout expiration is handled in the altstep branch
 //				alt {
-//					[] mtcPort.receive(mw_apduNackRequestSentTooOften(v_secondApduToBeSent)) -> value v_apduReceived {
+//					[] mtcPort.receive(mw_apduNAckRequestSentTooOften(v_secondApduToBeSent)) -> value v_apduReceived {
 //						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TYPE1_TIME1_MIN_TC);  
 //						setverdict(pass);
 //					}
@@ -3431,12 +3431,12 @@ module EfcInfoExchange_TestCasesTc {
 				var NAckParams v_nAckParams_2 := {{GNSS_TOLLDECLARATIONS_PARAM1_MAX_TC, AduReasonCode_semanticError_}};
 
 				alt {
-					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams_1)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduToBeSent, v_nAckParams_1)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
 					}
 
-					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams_2)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduToBeSent, v_nAckParams_2)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
 					}
@@ -3524,12 +3524,12 @@ module EfcInfoExchange_TestCasesTc {
 				var NAckParams v_nAckParams_2 := {{1, AduReasonCode_semanticError_}};
 
 				alt {
-					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams_1)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduToBeSent, v_nAckParams_1)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
 					}
 
-					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams_2)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduToBeSent, v_nAckParams_2)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
 					}
@@ -3617,12 +3617,12 @@ module EfcInfoExchange_TestCasesTc {
 				var NAckParams v_nAckParams_2 := {{1, AduReasonCode_semanticError_}};
 
 				alt {
-					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams_1)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduToBeSent, v_nAckParams_1)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
 					}
 
-					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams_2)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduToBeSent, v_nAckParams_2)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
 					}
@@ -3675,7 +3675,7 @@ module EfcInfoExchange_TestCasesTc {
 				var NAckParams v_nAckParams := {{0, ApduReasonCode_apduNotOK_}};
 
 				alt {
-					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduToBeSent, v_nAckParams)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
 					}
@@ -3727,7 +3727,7 @@ module EfcInfoExchange_TestCasesTc {
 				var NAckParams v_nAckParams := {{0, ApduReasonCode_apduNotOK_}};
 
 				alt {
-					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduToBeSent, v_nAckParams)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
 					}
@@ -3790,7 +3790,7 @@ module EfcInfoExchange_TestCasesTc {
 				var NAckParams v_nAckParams := {{0, ApduReasonCode_apduNotOK_}};
 
 				alt {
-					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduToBeSent, v_nAckParams)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
 					}
@@ -3845,12 +3845,12 @@ module EfcInfoExchange_TestCasesTc {
 				var NAckParams v_nAckParams_2 := {{1, AduReasonCode_semanticError_}};
 
 				alt {
-					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams_1)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduToBeSent, v_nAckParams_1)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
 					}
 
-					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams_2)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduToBeSent, v_nAckParams_2)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
 					}
@@ -3905,12 +3905,12 @@ module EfcInfoExchange_TestCasesTc {
 				var NAckParams v_nAckParams_2 := {{1, AduReasonCode_actionCodeNotSupported_}};
 
 				alt {
-					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams_1)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduToBeSent, v_nAckParams_1)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
 					}
 
-					[] mtcPort.receive(m_apduNAck(v_apduToBeSent, v_nAckParams_2)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduToBeSent, v_nAckParams_2)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
 					}
@@ -5264,7 +5264,7 @@ module EfcInfoExchange_TestCasesTc {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC);
 					}
-					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduRespondedTo, {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduRespondedTo, {
 						{1, AduReasonCode_semanticError_},
 						{2, AduReasonCode_semanticError_},
 						{3, AduReasonCode_semanticError_}})) -> value v_apduReceived {
@@ -5974,7 +5974,7 @@ module EfcInfoExchange_TestCasesTc {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC);
 					}
-					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduRespondedTo, {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduRespondedTo, {
 						{1, AduReasonCode_actionCodeNotSupported_},
 						{2, AduReasonCode_actionCodeNotSupported_}})) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
@@ -6065,7 +6065,7 @@ module EfcInfoExchange_TestCasesTc {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC);
 					}
-					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduRespondedTo, {{2, AduReasonCode_invalidADU_}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduRespondedTo, {{2, AduReasonCode_invalidADU_}})) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC);
 						// set result
@@ -6151,7 +6151,7 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail
 
 				alt {
-					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduRespondedTo, {{2, AduReasonCode_invalidADU_}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduRespondedTo, {{2, AduReasonCode_invalidADU_}})) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC);
 						// set result
@@ -6346,7 +6346,7 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail (in altstep)
 
 				alt {
-					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduRespondedTo, {{2, AduReasonCode_invalidADU_}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduRespondedTo, {{2, AduReasonCode_invalidADU_}})) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC);
 						// set result
@@ -6434,7 +6434,7 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail
 
 				alt {
-					[] mtcPort.receive(mw_apduNackIndividualIssuesIut(v_apduRespondedTo, {{2, AduReasonCode_invalidADU_}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduRespondedTo, {{2, AduReasonCode_invalidADU_}})) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC);
 						// set result
