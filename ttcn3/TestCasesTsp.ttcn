@@ -4069,7 +4069,7 @@ module EfcInfoExchange_TestCasesTsp {
 						}
 					);                 
 				f_sendAndLogApdu(v_apduForSending);                 
-                 // Step 2: Wait for positive Ack within GNSS_BILLINGDETAILS_TC_TIME1_MAX_TC
+                 // Step 2: Wait for positive Ack within GNSS_BILLINGDETAILS_TC_TIME1_MAX_TSP
 				// Set timer
                  t_step.start(GNSS_BILLINGDETAILS_TC_TIME1_MAX_TSP);                 
 				alt {
@@ -4431,9 +4431,7 @@ module EfcInfoExchange_TestCasesTsp {
                 
                 } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BV_08                                     
  		} // End of group Valid_Behaviour
-        
-        //TODO Fausto change all suffixes of timers into _TSP (instead of _TC)
-         
+                 
          group Invalid_Behaviour {
 
            testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BI_01() runs on MainTestComponent system TestAdapter {
@@ -4452,7 +4450,7 @@ module EfcInfoExchange_TestCasesTsp {
 				//  PT140 TODO: Template for Toll Declaration to be defined
 				alt {
 					[] mtcPort.receive(mw_apduTollDeclaration) -> value v_apduReceived {
-						f_logReceivedWaitAndAcknowledge(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
+						f_logReceivedWaitAndAcknowledge(GNSS_TOLLDECLARATIONS_TIME1_MIN_TSP);
                 		// Step 1: Send one valid APDU containing 13 valid BillingDetailsADUs, each one with the following parameters respectively set to one incorrect value:
                  			// billingDetailsId.issuerId, tollContext, userId, Period, billingDetailsAmount, usageDetails.contextName, usageDetails.appliedUserClass, usageDetails.perDeclaredVehicleClasses, usageDetails.appliedTimeClass, usageDetails.entranceTime, usageList.ListofSections.chargeObjectId, exitChargeObject, exitTime
                  		// PT140 TODO: template to be defined. Using mw_aduBillingDetails provisionally.
@@ -4482,15 +4480,15 @@ module EfcInfoExchange_TestCasesTsp {
 						}
 					} // End of first alt statement
                	
-                 // Step 2: Wait for negative Ack within GNSS_BILLINGDETAILS_TC_TIME1_MAX_TC with issue list present and the following issue codes:
+                 // Step 2: Wait for negative Ack within GNSS_BILLINGDETAILS_TC_TIME1_MAX_TSP with issue list present and the following issue codes:
                  	// billingDetailsIssuerIdRejected, billingDetailsContextIdRejected, billingDetailsUserIdRejected, billingDetailsPeriodRejected, billingDetailsAmountRejected, billingDetailsContextNameRejected, billingDetailsAppliedUserClassRejected, billingDetailsDeclaredVehicleClassRejected, billingDetailsAppliedTimeClassRejected, billingDetailsEntranceTimeRejected, billingDetailsIntermediateSectionRejected, billingDetailsExitChargeObjectRejected, billingDetailsExitTimeRejected
 				// Set timer
-                t_step.start(GNSS_BILLINGDETAILS_TC_TIME1_MAX_TC);                 
+                t_step.start(GNSS_BILLINGDETAILS_TC_TIME1_MAX_TSP);                 
   				
 				alt {
 					[] mtcPort.receive(mw_apduNAckIndividualIssues(v_apduForSending)) -> value v_apduReceived {
 						// Log what we received
-						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TSP);
 						// Check the issue list presence and contents
 						if (
 							ispresent(v_apduReceived.adus.ackAdus[1].issues) and
@@ -4531,7 +4529,7 @@ module EfcInfoExchange_TestCasesTsp {
 				//  PT140 TODO: Template for Toll Declaration to be defined
 				alt {
 					[] mtcPort.receive(mw_apduTollDeclaration) -> value v_apduReceived {
-						f_logReceivedWaitAndAcknowledge(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
+						f_logReceivedWaitAndAcknowledge(GNSS_TOLLDECLARATIONS_TIME1_MIN_TSP);
 					}
 				} // End of first alt statement
 
@@ -4541,7 +4539,7 @@ module EfcInfoExchange_TestCasesTsp {
 
                  // Step 2: Wait for negative Ack within DSRC_BILLINGDETAILS.TIME1 identifying the APDU containing the BillingDetailsADU numbered 14 and with issueCode= semanticError 
 				// Set timer
-                t_step.start(GNSS_BILLINGDETAILS_TC_TIME1_MAX_TC);                 
+                t_step.start(GNSS_BILLINGDETAILS_TC_TIME1_MAX_TSP);                 
 
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduForSending, AduReasonCode_semanticError_)) -> value v_apduReceived {
@@ -4574,7 +4572,7 @@ module EfcInfoExchange_TestCasesTsp {
 				//PT140 TODO: Template for Toll Declaration to be defined
 				alt {
 					[] mtcPort.receive(mw_apduTollDeclaration) -> value v_apduReceived {
-						f_logReceivedWaitAndAcknowledge(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
+						f_logReceivedWaitAndAcknowledge(GNSS_TOLLDECLARATIONS_TIME1_MIN_TSP);
 						}
 					} // End of first alt statement
 
@@ -4586,9 +4584,9 @@ module EfcInfoExchange_TestCasesTsp {
 					});                 
 				f_sendAndLogApdu(v_apduForSending);                 
 
-                 // Step 2: Wait for negative Ack within GNSS_BILLINGDETAILS_TC_TIME1_MAX_TC identifying the APDU containing the BillingDetailsADU numbered 14 and with issueCode= semanticError 
+                 // Step 2: Wait for negative Ack within GNSS_BILLINGDETAILS_TC_TIME1_MAX_TSP identifying the APDU containing the BillingDetailsADU numbered 14 and with issueCode= semanticError 
 				// Set timer
-                t_step.start(GNSS_BILLINGDETAILS_TC_TIME1_MAX_TC);                 
+                t_step.start(GNSS_BILLINGDETAILS_TC_TIME1_MAX_TSP);                 
 
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduForSending, AduReasonCode_semanticError_)) -> value v_apduReceived {
@@ -4624,7 +4622,7 @@ module EfcInfoExchange_TestCasesTsp {
 				//  PT140 TODO: Template for Toll Declaration to be defined
 				alt {
 					[] mtcPort.receive(mw_apduTollDeclaration) -> value v_apduReceived {
-						f_logReceivedWaitAndAcknowledge(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
+						f_logReceivedWaitAndAcknowledge(GNSS_TOLLDECLARATIONS_TIME1_MIN_TSP);
 						}
 					} // End of first alt statement
 
@@ -4649,10 +4647,10 @@ module EfcInfoExchange_TestCasesTsp {
               	// Wait for negative Ack with ADUReasonCode field = requestSentTooOften (if positive Ack or not received set test failure)                	
 
 				// Set timer
-                 t_step.start(GNSS_BILLINGDETAILS_TC_TIME1_MAX_TC);
+                 t_step.start(GNSS_BILLINGDETAILS_TC_TIME1_MAX_TSP);
 				alt {
 					[] mtcPort.receive(mw_apduNAckRequestSentTooOften(v_apduForSending)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TSP);
 						setverdict(pass);
 						}
                 	} // End of alt statement
@@ -4693,7 +4691,7 @@ module EfcInfoExchange_TestCasesTsp {
 				t_step.start(GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TSP);	
 				alt {
 					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
-						f_logReceivedWaitAndAcknowledge(GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC);
+						f_logReceivedWaitAndAcknowledge(GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TSP);
 						setverdict(pass);
 						}						
  					} // End of alt statement 
@@ -4727,7 +4725,7 @@ module EfcInfoExchange_TestCasesTsp {
 				t_step.start(TIMEOUT_FOR_SETUP_OF_TRANSACTION);	
 				alt {
 					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
-						f_logReceivedWaitAndAcknowledge(PAYMENTANNOUNCEMENT_TIME1_TC);
+						f_logReceivedWaitAndAcknowledge(PAYMENTANNOUNCEMENT_TIME1_TSP);
 						// Remember Payment Announcement ID and amount for future usage
 						var integer v_idReceived := v_apduReceived.infoExchangeContent.adus.PaymentAnnouncementADU.paymentAnnouncementID;
 						var ExtendedPaymentAmount v_amountReceived := v_apduReceived.infoExchangeContent.adus.PaymentAnnouncementADU.totalamount
@@ -4788,7 +4786,7 @@ module EfcInfoExchange_TestCasesTsp {
 					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
 						// Log what we received
 					// Send Ack within time constraints
-						f_logReceivedWaitAndAcknowledge(GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC);
+						f_logReceivedWaitAndAcknowledge(GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TSP);
 					// Remember Payment Announcement ID and amount for future usage
 						var integer idReceived := v_apduReceived.infoExchangeContent.adus.PaymentAnnouncementADU.paymentAnnouncementID;						
 						}
@@ -4810,7 +4808,7 @@ module EfcInfoExchange_TestCasesTsp {
 					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
 						// Log what we received
 					// Send Ack within time constraints
-						f_logReceivedWaitAndAcknowledge(GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC);
+						f_logReceivedWaitAndAcknowledge(GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TSP);
 						f_sendAndLogApdu(m_apduDefaultAckTester(v_apduReceived));
 						setverdict(pass);						
 						}
