@@ -1273,20 +1273,31 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 //	    			actionCode := (ActionCode_send_, ActionCode_revoke_ ,ActionCode_adjust_ ),
 //	    			paymentReference := *
 //	  			}
-	  			
+
+				// Note: I have added the toll declaration references to the list of parameters (Jan, 02.09.) 	  			
+				// Note: I have replaced the fixed usageList (sections onbly) by a parameter p_usageList, (Jan, 02.09.)
+				// Note: I have added dateOfService below as this was mising.
+				// Note: I have added the action cde to the parameters list to keep re-usability of this template. (Jan, 02.09.)
 				template (value) BillingDetailsADU m_aduGnssBillingDetails(
 					in integer p_billingDetailsNum,
 					in UserId p_userId,
-					in Period p_period
+					in Period p_period,
+					in record of UsageList p_usageList,
+					in ExtendedPaymentAmount p_billingDetailsAmount,
+					in record of TollDeclarationId p_refTollDeclaration,
+					in ActionCode p_actionCode
 				):= { 
 					billingDetailsId:= {
 						issuerId := TD_IDENTIFIER,
-						billingDetailsNum := p_billingDetailsNum
+						billingDetailsNum := p_billingDetailsNum,
+						dateOfService := omit
 						},
 					tollContext := TOLL_CONTEXT_ID_IUT,
 					userId := p_userId,
+					relatedBillingDetails := omit,
 					period := p_period,
-					billingDetailsAmount:=m_extendedPaymentAmount,
+					// billingDetailsAmount:= m_extendedPaymentAmount, // this is not good and shall be changed into a parameter
+					billingDetailsAmount := p_billingDetailsAmount,
 					usageDetails := {
 						contextName := TOLL_CONTEXT_NAME_IUT,
 						appliedUserClass := TD_USER_CLASS,
@@ -1295,12 +1306,15 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 							perUsedTimeClasses := {{
 								appliedTimeClass := TD_APPLIED_TIME_CLASS,
 								costCenter := TD_COST_CENTER,
-								usageList := {m_sectionsUsed} 
+								// usageList := {m_sectionsUsed}
+								usageList := p_usageList, 
 							}}
 						}}
 					},
-					refTollDeclaration := {{TD_IDENTIFIER, 1}}, //Definition: SEQUENCE OF TollDeclarationId OPTIONAL, TODO Jan "1" is a magic number that should be the declarationId and should be either a modulepar or a constant or a variable
-					actionCode := ActionCode_send_,
+					//refTollDeclaration := {{TD_IDENTIFIER, 1}}, //Definition: SEQUENCE OF TollDeclarationId OPTIONAL, TODO Jan "1" is a magic number that should be the declarationId and should be either a modulepar or a constant or a variable
+					refTollDeclaration := p_refTollDeclaration,
+					// actionCode := ActionCode_send_, // replaced by the line below to keep re-usability
+					actionCode := p_actionCode,
 					paymentReference := omit 				  		
 				};				
 				
