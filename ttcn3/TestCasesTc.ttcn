@@ -2030,11 +2030,28 @@ module EfcInfoExchange_TestCasesTc {
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc                 
 							
             	// Prepare Initiating_Apdu containing
-            	//		- exactly one valid ExceptionListADU indicating list type BLACK; AND
-				//		- exactly one ExceptionListADU indicating list type BLACK and containing exceptionValidityEnd of any value
-	  			
-	  			//TOD Jan check all the TD_ values and see to it that they are defined, also with semantic defs and everything as agreed
-                var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({TD_EXCEPTIONLIST_ADU_BLACK_INVALID_1});
+ 				//		- exactly one ExceptionListADU indicating list type BLACK and containing exceptionValidityEnd of any value
+
+				// prepare this invalid adu below
+				const ExceptionListADU c_exceptionListAduBlackInvalid1 := {
+					exceptionListVersion := TD_EXCEPTIONLIST_VERSION,
+					exceptionListType := ExceptionListType_blackList_,
+			  		exceptionValidityStart := fx_getUtc(),
+			  		exceptionValidityEnd := fx_getUtc() + 100000, // the presence of this value makes the adu invalid
+			  		exceptionListEntries := {{
+			  	  		userId := TD_USERID_1,
+			  	  		statusType := ExceptionListStatusType_locallyBlocked_,
+			  	  		reasonCode := ExceptionListReasonType_notToBeDisclosed_,
+			  	  		entryValidityStart := fx_getUtc(),
+			  	  		entryValidityEnd := omit,
+			  	  		vehicleParameters := TD_VEHICLE_PARAMETERS,
+			  	  		actionRequested := ExceptionListActionType_rejectOBE_,
+			  	  		efcContextMark := omit,
+			  	  		vatId := TD_VAT_ID
+					}}
+				};
+				  			
+                var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({c_exceptionListAduBlackInvalid1});
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
             	
                 // Start timer
@@ -2075,7 +2092,27 @@ module EfcInfoExchange_TestCasesTc {
           
             	// Step 1: Send Initiating_Apdu containing exactly one ExceptionListADU indicating list type BLACK containing
             	//		- efcContextMark of any value
-               var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({TD_EXCEPTIONLIST_ADU_BLACK_INVALID_2});
+            	
+            	// prepare this invalid adu below
+ 				const ExceptionListADU c_exceptionListAduBlackInvalid2 := {
+					exceptionListVersion := TD_EXCEPTIONLIST_VERSION,
+					exceptionListType := ExceptionListType_blackList_,
+			  		exceptionValidityStart := fx_getUtc(),
+			  		exceptionValidityEnd := omit,
+			  		exceptionListEntries := {{
+			  	  		userId := TD_USERID_2,
+			  	  		statusType := ExceptionListStatusType_locallyBlocked_,
+			  	  		reasonCode := ExceptionListReasonType_notToBeDisclosed_,
+			  	  		entryValidityStart := fx_getUtc(),
+			  	  		entryValidityEnd := omit,
+			  	  		vehicleParameters := TD_VEHICLE_PARAMETERS,
+			  	  		actionRequested := ExceptionListActionType_rejectOBE_,
+			  	  		efcContextMark := TD_EFC_CONTEXT_MARK, // the presence of this value makes the adu invalid
+			  	  		vatId := TD_VAT_ID
+					}}
+				};
+            	            	
+               	var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({c_exceptionListAduBlackInvalid2});
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
 
                 // Start timer
@@ -2150,8 +2187,28 @@ module EfcInfoExchange_TestCasesTc {
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc                 
 
            		// Step 1: Send Initiating_Apdu containing one ExceptionListADU indicating list type BLACK
-            	//		- with exceptionListVersion </= 0
-               	var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({TD_EXCEPTIONLIST_ADU_BLACK_INVALID_3});
+            	//		- with exceptionListVersion not larger than 0
+
+            	// prepare this invalid adu below
+ 				const ExceptionListADU c_exceptionListAduBlackInvalid3 := {
+					exceptionListVersion := 0, // this makes the adu invalid 
+					exceptionListType := ExceptionListType_blackList_,
+			  		exceptionValidityStart := fx_getUtc(),
+			  		exceptionValidityEnd := omit,
+			  		exceptionListEntries := {{
+			  	  		userId := TD_USERID_2,
+			  	  		statusType := ExceptionListStatusType_locallyBlocked_,
+			  	  		reasonCode := ExceptionListReasonType_notToBeDisclosed_,
+			  	  		entryValidityStart := fx_getUtc(),
+			  	  		entryValidityEnd := omit,
+			  	  		vehicleParameters := TD_VEHICLE_PARAMETERS,
+			  	  		actionRequested := ExceptionListActionType_rejectOBE_,
+			  	  		efcContextMark := omit,
+			  	  		vatId := TD_VAT_ID
+					}}
+				};
+
+               	var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({c_exceptionListAduBlackInvalid3});
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
 		
                 // Start timer
@@ -2190,7 +2247,27 @@ module EfcInfoExchange_TestCasesTc {
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc                 
 
              	// Step 1: Send Initiating_Apdu containing one ExceptionListADU indicating exceptionListType = 4
-               	var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({TD_EXCEPTIONLIST_ADU_TYPE4_VALID});
+
+            	// prepare this invalid adu below
+ 				const ExceptionListADU c_exceptionListAduListType4 := {
+					exceptionListVersion := TD_EXCEPTIONLIST_VERSION, 
+					exceptionListType := ExceptionListType_otherListType2_, // list type 4 which is nit allowed in IAP
+			  		exceptionValidityStart := fx_getUtc(),
+			  		exceptionValidityEnd := omit,
+			  		exceptionListEntries := {{
+			  	  		userId := TD_USERID_1,
+			  	  		statusType := ExceptionListStatusType_locallyBlocked_,
+			  	  		reasonCode := ExceptionListReasonType_notToBeDisclosed_,
+			  	  		entryValidityStart := fx_getUtc(),
+			  	  		entryValidityEnd := omit,
+			  	  		vehicleParameters := TD_VEHICLE_PARAMETERS,
+			  	  		actionRequested := ExceptionListActionType_rejectOBE_,
+			  	  		efcContextMark := omit,
+			  	  		vatId := TD_VAT_ID
+					}}
+				};
+
+               	var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({c_exceptionListAduListType4});
 				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
 		
                 // Start timer
@@ -2205,20 +2282,16 @@ module EfcInfoExchange_TestCasesTc {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduToBeSent, AduReasonCode_exceptionListsTypeRejected_)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logApduReceivedAndTStep();
-
 						//Check minumum time and stop timer
 						t_step.stop;
-
 						setverdict(pass);
 					}					
 
 					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent, {{1, AduReasonCode_exceptionListsTypeRejected_}})) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logApduReceivedAndTStep();
-
 						//Check minumum time and stop timer
 						t_step.stop;
-
 						setverdict(pass);
 					}										
 				}
@@ -2242,7 +2315,7 @@ module EfcInfoExchange_TestCasesTc {
 				
 				var ExceptionListADU v_exceptionListADU:=m_aduExceptionList(
 					ExceptionListType_blackList_,
-					c_userIdDiscountedList,
+					TD_USERID_DISCOUNTED_1,
 					ExceptionListStatusType_locallyBlocked_,
 					ExceptionListReasonType_notToBeDisclosed_,
 					ExceptionListActionType_rejectOBE_
