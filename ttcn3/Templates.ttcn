@@ -1139,6 +1139,8 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			
 			group GNSS_BILLINGDETAILS{		
 
+				type record of BillingDetailsId ListOfBillingDetailsIds;
+
 				template BillingDetailsADU mw_aduGnssBillingDetails :={
 	    			billingDetailsId :={
 	    				issuerId := ?,
@@ -1429,6 +1431,9 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		}
 				
 		group GNSS_TOLLDECLARATIONS {
+   			
+   			type record of TollDeclarationId ListOfTollDeclarationIds;
+   			
    			template Adus mw_adusTollDeclaration := Adus:{tollDeclarationADUs:=?};
 			
 			template (value) TollDeclarationADU m_aduTollDeclaration(in integer p_declarationId, in EfcAutonomousContextData.Int4 p_chargeReportCounter):={
