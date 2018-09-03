@@ -4059,12 +4059,17 @@ module EfcInfoExchange_TestCasesTsp {
                  	// includedDiscounts in usageList with textDetail field being set according to values specified in Table A.54 of CEN/TS 16986:2016
                  	// PT140 TODO: Correct template to be defined. Using basic BillingDetails template in what follows (to be changed)
 				v_apduForSending := m_apduNoAuthInitTester(
+				// TODO: To be inserted, but UserId cannot be retrieved from the received TollDeclaration. Which one to use?
+				//m_aduGnssBillingDetails(
+				//	in integer p_billingDetailsNum,
+				//	in UserId p_userId,
+				//	in Period p_period
 					{
-						modifies mw_aduBillingDetails:= {
-						  	billingDetailsId := 1, 
+						modifies m_aduGnssBillingDetails(1):= {
 						  	actionCode := ActionCode_send_, 
-						  	includedDiscounts.discounts := 10, 
-						  	includedDiscounts.discountQualifier := DiscountQualifier_userDiscount_ 
+						  	includedDiscounts := 
+						  		{discounts := 10, 
+						  		discountQualifier := DiscountQualifier_userDiscount_ }
 							}
 						}
 					);                 
@@ -4108,9 +4113,19 @@ module EfcInfoExchange_TestCasesTsp {
                 // CHOICE forSectionedRoads
                 // PT140 TODO: Correct template to be defined. Using basic BillingDetails template in what follows (to be changed)
 				v_apduForSending := m_apduNoAuthInitTester(
-					{modifies mw_aduBillingDetails:= {billingDetailsId := 1, actionCode := ActionCode_send_ }}
-				);                 
-				f_sendAndLogApdu(v_apduForSending);                 						
+				// TODO: To be inserted, but UserId cannot be retrieved from the received TollDeclaration. Which one to use?
+                // TODO how to specify CHOICE forSectionedRoads?
+				//m_aduGnssBillingDetails(
+				//	in integer p_billingDetailsNum,
+				//	in UserId p_userId,
+				//	in Period p_period
+					{
+						modifies m_aduGnssBillingDetails(1):= {
+						  	actionCode := ActionCode_send_,
+							}
+						}
+					);
+					f_sendAndLogApdu(v_apduForSending);                 						
 				
 				// Step 2: Wait for positive Ack within GNSS_BILLINGDETAILS_TC_TIME1_MAX_TSP
 				// Set timer
@@ -4148,8 +4163,19 @@ module EfcInfoExchange_TestCasesTsp {
       			// Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
      			// action code = send
      			// CHOICE forTravellingInArea
-              	// PT140 TODO: Correct template to be defined. Using basic BillingDetails template in what follows (to be changed)
-				v_apduForSending := m_apduNoAuthInitTester({modifies mw_aduBillingDetails:= {billingDetailsId := 1, actionCode := ActionCode_send_ }}); 
+				v_apduForSending := m_apduNoAuthInitTester(
+				// TODO: To be inserted, but UserId cannot be retrieved from the received TollDeclaration. Which one to use?
+                // TODO how to specify CHOICE forTravellingInArea?
+				//m_aduGnssBillingDetails(
+				//	in integer p_billingDetailsNum,
+				//	in UserId p_userId,
+				//	in Period p_period
+					{
+						modifies m_aduGnssBillingDetails(1):= {
+						  	actionCode := ActionCode_send_,
+							}
+						}
+					);
 				f_sendAndLogApdu(v_apduForSending);                 					
                 // Step 2: Wait for positive Ack within GNSS_BILLINGDETAILS_TC_TIME1_MAX_TSP
 				// Set timer
@@ -4185,11 +4211,19 @@ module EfcInfoExchange_TestCasesTsp {
                			// Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
                  			// action code = send
                  			// CHOICE forStayingInArea
-                  			// PT140 TODO: Correct template to be defined. Using basic BillingDetails template in what follows (to be changed)
 						v_apduForSending := m_apduNoAuthInitTester(
-							{modifies mw_aduBillingDetails:= {
-					  			billingDetailsId := 1, actionCode := ActionCode_send_ }
-							});                 
+				// TODO: To be inserted, but UserId cannot be retrieved from the received TollDeclaration. Which one to use?
+                // TODO how to specify CHOICE forStayingInArea?
+				//m_aduGnssBillingDetails(
+				//	in integer p_billingDetailsNum,
+				//	in UserId p_userId,
+				//	in Period p_period
+							{modifies m_aduGnssBillingDetails(1):= {
+						  	actionCode := ActionCode_send_,
+							}
+						}
+					);
+							);                 
 						f_sendAndLogApdu(v_apduForSending);                 
 						}
 					} // End of first alt statement
@@ -4228,9 +4262,17 @@ module EfcInfoExchange_TestCasesTsp {
                  			// CHOICE forCordonCrossings
                   		// PT140 TODO: Correct template to be defined. Using basic BillingDetails template in what follows (to be changed)
 						v_apduForSending := m_apduNoAuthInitTester(
-							{modifies mw_aduBillingDetails:= {
-					  			billingDetailsId := 1, actionCode := ActionCode_send_ }
-							});                 
+				// TODO: To be inserted, but UserId cannot be retrieved from the received TollDeclaration. Which one to use?
+                // TODO how to specify CHOICE forCordonCrossings?
+				//m_aduGnssBillingDetails(
+				//	in integer p_billingDetailsNum,
+				//	in UserId p_userId,
+				//	in Period p_period
+							{modifies m_aduGnssBillingDetails(1):= {
+						  	actionCode := ActionCode_send_,
+							}
+						}
+							);                 
 						f_sendAndLogApdu(v_apduForSending);                 
 						}
 					} // End of first alt statement
@@ -4272,11 +4314,17 @@ module EfcInfoExchange_TestCasesTsp {
                 		var BillingDetailsADUs v_adusForSending;
 						// Set all  elements of apdu
 						for (var integer v_ind := 0; v_ind < (GNSS.BILLINGDETAILS_TSP_PARAM1_MAX - 1); v_ind := v_ind + 1){
-							v_adusForSending[v_ind] := modifies m_aduBillingDetails:= {
-					  			billingDetailsId := v_ind,
-					  			actionCode := ActionCode_send_,
-					  			billingDetailsAmount := 10000
-					  		}
+							v_adusForSending[v_ind] := 
+				// TODO: To be inserted, but UserId cannot be retrieved from the received TollDeclaration. Which one to use?
+				//m_aduGnssBillingDetails(
+				//	in integer p_billingDetailsNum,
+				//	in UserId p_userId,
+				//	in Period p_period
+								{modifies m_aduGnssBillingDetails(v_ind):= {
+						  			actionCode := ActionCode_send_
+						  			billingDetailsAmount := 10000
+								}
+							}							
 						};
 						v_apduForSending := m_apduNoAuthInitTester(v_adusForSending);
 						f_sendAndLogApdu(v_apduForSending);                 
@@ -4316,10 +4364,16 @@ module EfcInfoExchange_TestCasesTsp {
                  		// Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
                  			// action code = send
                  			// billingDetailsAmount set to a value (to be modified later)
-                 		// PT140 TODO: Correct template to be defined. Using basic BillingDetails template in what follows (to be changed)
 						v_apduForSending := m_apduNoAuthInitTester(
-							{modifies mw_aduBillingDetails:= {
-					  			billingDetailsId := 1, actionCode := ActionCode_send_, billingDetailsAmount := 10000}
+				// TODO: To be inserted, but UserId cannot be retrieved from the received TollDeclaration. Which one to use?
+				//m_aduGnssBillingDetails(
+				//	in integer p_billingDetailsNum,
+				//	in UserId p_userId,
+				//	in Period p_period
+							{modifies m_aduGnssBillingDetails(1):= {
+						  		actionCode := ActionCode_send_,
+						  		billingDetailsAmount:= 10000
+								}
 							}
 						);                 
 						f_sendAndLogApdu(v_apduForSending);                 
@@ -4349,9 +4403,17 @@ module EfcInfoExchange_TestCasesTsp {
                  // PT140 TODO :  template and related fields to be defined. Provisionally used mw_aduBillingDetails
 
 				v_apduForSending := m_apduNoAuthInitTester(
-					{modifies mw_aduBillingDetails:= {
-					  	billingDetailsId := 1, actionCode := ActionCode_adjust_, billingDetailsAmount := 45}
-					});                 
+				// TODO: To be inserted, but UserId cannot be retrieved from the received TollDeclaration. Which one to use?
+				//m_aduGnssBillingDetails(
+				//	in integer p_billingDetailsNum,
+				//	in UserId p_userId,
+				//	in Period p_period
+							{modifies m_aduGnssBillingDetails(1):= {
+						  		actionCode := ActionCode_adjust_,
+						  		billingDetailsAmount := 45
+								}
+							}
+					);                 
 				f_sendAndLogApdu(v_apduForSending);
 				                 
                  // Step 2: Wait for positive Ack within GNSS_BILLINGDETAILS_TC_TIME1_MAX_TSP
@@ -4391,12 +4453,18 @@ module EfcInfoExchange_TestCasesTsp {
                  // Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
                  	// action code = send
                  	// includedDiscounts in usageList with textDetail field being set according to values specified in Table A.54 of CEN/TS 16986:2016
-                 	// PT140 TODO: Correct template to be defined. Using basic BillingDetails template in what follows (to be changed)
 				v_apduForSending := m_apduNoAuthInitTester(
-					{modifies mw_aduBillingDetails:= 
-						{billingDetailsId := 1, actionCode := ActionCode_send_, billingDetailsAmount := 45 }
-						}
-					);                 
+				// TODO: To be inserted, but UserId cannot be retrieved from the received TollDeclaration. Which one to use?
+				//m_aduGnssBillingDetails(
+				//	in integer p_billingDetailsNum,
+				//	in UserId p_userId,
+				//	in Period p_period
+							{modifies m_aduGnssBillingDetails(1):= {
+						  		actionCode := ActionCode_send_,
+						  		billingDetailsAmount := 45
+								}
+							}
+						);                 
 				f_sendAndLogApdu(v_apduForSending);                 
                  // Wait for positive Ack within GNSS_BILLINGDETAILS_TC_TIME1_MAX_TSP
 				// Set timer
@@ -4414,9 +4482,16 @@ module EfcInfoExchange_TestCasesTsp {
 				//	in Period p_period
 				//) and necessary modifications 
 				v_apduForSending := m_apduNoAuthInitTester(
-					{modifies mw_aduBillingDetails:= 
-						{billingDetailsId := 1, actionCode := ActionCode_revoke_ }
-					});                 
+				// TODO: To be inserted, but UserId cannot be retrieved from the received TollDeclaration. Which one to use?
+				//m_aduGnssBillingDetails(
+				//	in integer p_billingDetailsNum,
+				//	in UserId p_userId,
+				//	in Period p_period
+							{modifies m_aduGnssBillingDetails(1):= {
+						  		actionCode := ActionCode_revoke_
+								}
+							}
+						);                 
 				f_sendAndLogApdu(v_apduForSending);                 
                  // Step 2: Wait for positive Ack within GNSS_BILLINGDETAILS_TC_TIME1_MAX_TSP
 				// Set timer
@@ -4456,25 +4531,61 @@ module EfcInfoExchange_TestCasesTsp {
                  		// PT140 TODO: template to be defined. Using mw_aduBillingDetails provisionally.
 						v_apduForSending :=
 							{m_apduNoAuthInitTester(
-								{modifies mw_aduBillingDetails:= {billingDetailsId := 4, actionCode := ActionCode_send_, billingDetailsId.issuerId := 0}}),
-							m_apduNoAuthInitTester(
-								{modifies mw_aduBillingDetails:= {billingDetailsId := 5, actionCode := ActionCode_send_, tollContext := 0}}),	
-							m_apduNoAuthInitTester(
-								{modifies mw_aduBillingDetails:= {billingDetailsId := 6, actionCode := ActionCode_send_, userId := omit}}),
-							m_apduNoAuthInitTester(
-								{modifies mw_aduBillingDetails:= {billingDetailsId := 7, actionCode := ActionCode_send_, billingDetailsAmount.paymentFeeAmount := -5}}),
-							m_apduNoAuthInitTester(
-								{modifies mw_aduBillingDetails:= {billingDetailsId := 8, actionCode := ActionCode_send_, usageDetails.contextName := 42}}),
-							m_apduNoAuthInitTester(
-								{modifies mw_aduBillingDetails:= {billingDetailsId := 9, actionCode := ActionCode_send_, usageDetails.appliedUserClass := 0}}),
-							m_apduNoAuthInitTester(
-								{modifies mw_aduBillingDetails:= {billingDetailsId := 10, actionCode := ActionCode_send_, usageDetails.perDeclaredVehicleClasses := omit}}),
-							m_apduNoAuthInitTester(
-								{modifies mw_aduBillingDetails:= {billingDetailsId := 11, actionCode := ActionCode_send_, usageDetails.appliedTimeClass := 0}}),
-							m_apduNoAuthInitTester(
-								{modifies mw_aduBillingDetails:= {billingDetailsId := 12, actionCode := ActionCode_send_, usageDetails.entranceTime := 0}}),
-							m_apduNoAuthInitTester(
-								{modifies mw_aduBillingDetails:= {billingDetailsId := 13, actionCode := ActionCode_send_, usageList.ListofSections.chargeObjectId := 0}})
+						// TODO: Inserted, but UserId cannot be retrieved from the received TollDeclaration. Which one to use?
+						//m_aduGnssBillingDetails(
+						//	in integer p_billingDetailsNum,
+						//	in UserId p_userId,
+						//	in Period p_period
+								{modifies m_aduGnssBillingDetails(4):= {
+						  			actionCode := ActionCode_send_,
+						  			billingDetailsId := {issuerId:=0}
+									}
+								},
+								{modifies m_aduGnssBillingDetails(5):= {
+						  			actionCode := ActionCode_send_,
+						  			tollContext := 0
+									}
+								},
+								{modifies m_aduGnssBillingDetails(6):= {
+						  			actionCode := ActionCode_send_,
+						  			userId:=omit}
+									}
+								},
+								{modifies m_aduGnssBillingDetails(7):= {
+						  			actionCode := ActionCode_send_,
+						  			billingDetailsAmount := {paymentFeeAmount:=-5}
+									}
+								},
+								{modifies m_aduGnssBillingDetails(8):= {
+						  			actionCode := ActionCode_send_,
+						  			usageDetails := {contextName:=42}
+									}
+								},
+								{modifies m_aduGnssBillingDetails(9):= {
+						  			actionCode := ActionCode_send_,
+						  			usageDetails := {appliedUserClass:=0}
+									}
+								},
+								{modifies m_aduGnssBillingDetails(10):= {
+						  			actionCode := ActionCode_send_,
+						  			usageDetails := {perDeclaredVehicleClasses:=omit}
+									}
+								},
+								{modifies m_aduGnssBillingDetails(11):= {
+						  			actionCode := ActionCode_send_,
+						  			usageDetails := {appliedTimeClass:=0}
+									}
+								},
+								{modifies m_aduGnssBillingDetails(12):= {
+						  			actionCode := ActionCode_send_,
+						  			usageDetails := {entranceTime:=0}
+									}
+								},
+								{modifies m_aduGnssBillingDetails(13):= {
+						  			actionCode := ActionCode_send_,
+						  			usageDetails := {listOfSections:={chargeObjectId:=0}}
+									}
+								}
 							};                 
 						f_sendAndLogApdu(v_apduForSending);						
 						}
@@ -4512,6 +4623,8 @@ module EfcInfoExchange_TestCasesTsp {
 				f_closeDownMtc();  			
                 
 			} // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BI_01                     
+
+// TODO Fausto arrived here
 
            	testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BI_02() runs on MainTestComponent system TestAdapter {
                   /**
