@@ -202,42 +202,45 @@ module EfcInfoExchange_TesterData{
 			alphabetIndicator:=latinAlphabetNo1, 
 			licencePlateNumber:='111111'O
 		}
-		
-		modulepar UserParameterResponseDetails TD_USER_PARAM_RESP_DETAILS := {
-			userPostalAddress := {"TestUserName","TestCompany","TestStreet","999999","TestTown","TestCountry","TestCompanyTaxIdentifier"},
-			contractSerialNumber := 1234567890, //INT4 in ISO14906
-			contractValidity := {'ABCDABCD'O, {2030, 12, 31}},
-			driverCharacteristics := {10, 255}, //{INT!, INT1} in ISO14906
-			eFC_ContextMark := TD_EFC_CONTEXT_MARK,
-			environmentalCharacteristics := {euro_6, co2class4}, 
-			engineCharacteristics := EngineCharacteristics_battery_,
-			equipmentOBUId:='11AA22BB33CC'O,
-			equipmentStatus := '0000000000000001'B,//BitString(16)
-			paymentMeans :=TD_PAYMENT_MEANS_1, //paymentmaens value for testing
-			paymentMeansBalance := {positive:=10},
-			paymentMeansUnit := TD_BILLINGDETAILS_PAYUNIT,
-			personalAccountNumber := TD_PAN_1,
-			provider := TD_IDENTIFIER,
-			receiptContract := {TD_IDENTIFIER,'1F2E'O, 9999},
-			validityOfContract := {'2030'O, {2040,12,31}},
-			vehicleAuthenticator := '1234567890ABCDEF'O,
-			vehicleClass := 15,
-			vehicleDimensions := {99, 99, 99},
-			vehicleLicencePlateNumber := TD_LPN,
-			vehicleIdentificationNumber := {"01234567890123456",'000000000'B},
-			vehicleWeightLaden := 255,
-			vehicleWeightLimits := {99, 150, 50}, 
-			vehicleAxles := {15, {dualTyres,{4,3}}},
-			exhaustEmissionValues := {mg_km, 0, 0, 0, 0},
-			dieselEmissionValues := {{mg_km, 0}, 0},
-			extendedUserPostalAddress := {"TestRDescr", "TestOrganisationName","TestOrganisationUnit",
+				
+		type record of UserParameterResponseDetails RoUserParameterResponseDetails;
+
+		modulepar RoUserParameterResponseDetails TD_USER_PARAM_RESP_DETAILS := {
+			{userPostalAddress := {"TestUserName","TestCompany","TestStreet","999999","TestTown","TestCountry","TestCompanyTaxIdentifier"}},
+			{contractSerialNumber := 1234567890}, //INT4 in ISO14906
+			{contractValidity := {'ABCDABCD'O, {2030, 12, 31}}},
+			{driverCharacteristics := {10, 255}}, //{INT!, INT1} in ISO14906
+			{eFC_ContextMark := TD_EFC_CONTEXT_MARK},
+			{environmentalCharacteristics := {euro_6, co2class4}}, 
+			{engineCharacteristics := EngineCharacteristics_battery_},
+			{equipmentOBUId:='11AA22BB33CC'O},
+			{equipmentStatus := '0000000000000001'B},//BitString(16)
+			{paymentMeans :=TD_PAYMENT_MEANS_1}, //paymentmaens value for testing
+			{paymentMeansBalance := {positive:=10}},
+			{paymentMeansUnit := TD_BILLINGDETAILS_PAYUNIT},
+			{personalAccountNumber := TD_PAN_1},
+			{provider := TD_IDENTIFIER},
+			{receiptContract := {TD_IDENTIFIER,'1F2E'O, 9999}},
+			{validityOfContract := {'2030'O, {2040,12,31}}},
+			{vehicleAuthenticator := '1234567890ABCDEF'O},
+			{vehicleClass := 15},
+			{vehicleDimensions := {99, 99, 99}},
+			{vehicleLicencePlateNumber := TD_LPN},
+			{vehicleIdentificationNumber := {"01234567890123456",'000000000'B}},
+			{vehicleWeightLaden := 255},
+			{vehicleWeightLimits := {99, 150, 50}}, 
+			{vehicleAxles := {15, {dualTyres,{4,3}}}},
+			{exhaustEmissionValues := {mg_km, 0, 0, 0, 0}},
+			{dieselEmissionValues := {{mg_km, 0}, 0}},
+			{extendedUserPostalAddress := {"TestRDescr", "TestOrganisationName","TestOrganisationUnit",
 				"TestFunction",	"TestFormOfAddress", "TestQualification", "TestSurname", "TestGivenName", "TestDeliveryServicePoint",
 				"TestThouroughFare", "1234567890", "TestTown",	"TestRegion", "TestCountry", "00999", "9876543210",
 				"12345678901234567890", "00777", "9876543210", "12345678901234567890","00888", "9876543210",
-				"12345678901234567890","test@email.biz"}, 
-			preferredUserLanguage := "SE"
+				"12345678901234567890","test@email.biz"}}, 
+			{preferredUserLanguage := "SE"}
 		};	
 
+// Definition inserted for easy reference
 //		DieselEmissionValues::= SEQUENCE {
 //			particulate SEQUENCE {
 //				unitType UnitType,
@@ -333,44 +336,7 @@ module EfcInfoExchange_TesterData{
  			TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_3;
  		modulepar ExtendedPaymentAmount TD_BILLINGDETAILS_AMOUNT_1, TD_BILLINGDETAILS_AMOUNT_2,
  			TD_BILLINGDETAILS_AMOUNT_3;		 
-	}
-	
-
-/*		modulepar record {
-      		ASNAUX.UTF8String contextName,
-      		ASNAUX.UTF8String appliedUserClass,
-      		record of record {
-        		ASNAUX.UTF8String declaredVehicleClass,
-        	record of record {
-          		ASNAUX.UTF8String appliedTimeClass,
-          		ASNAUX.UTF8String costCenter optional,
-          		record of UsageList usageList
-        	} perUsedTimeClasses
-      	} perDeclaredVehicleClasses
-    	} TD_GNSS_USAGE_DETAILS_1;
-*/    	
-		
-/*		var BillingDetailsADU v_aduGnssBillingDetailsTester(
-			in integer p_billingDetailsNum,
-			in record of TollDeclarationId p_tollDeclarationIds) := mw_aduGnssBillingDetails := {
-            	billingDetailsId := {
-                	issuerId := TD_IDENTIFIER,		
-                    billingDetailsNum := p_billingDetailsNum,
-                    dateOfService := omit
-                    },
-                tollContext := TD_IDENTIFIER,
-                userId := TD_USERID_1,
-                relatedBillingDetails := omit,
-                period := TD_PERIOD_1,
-                billingDetailsAmount := omit, 
-                usageDetails := TD_GNSS_USAGE_DETAILS_1,
-                refTollDeclaration := p_tollDeclarationIds,
-                associatedEventData := {omit},
-                actionCode := (ActionCode_send_, ActionCode_revoke_ ,ActionCode_adjust_ ),
-                paymentReference := omit
-  			}			
-*/
-		
+	}	
 	
 } // end module 
 	

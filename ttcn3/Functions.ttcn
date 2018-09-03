@@ -199,39 +199,40 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
     	
     	// Function which returns the corresponding userDetailsParameter with tester data value in response to the
     	// parameter requested in the requestADU
-    	function f_provideUserDetailsParameter(in UserParameterRequest p_userParameterRequest) return UserParameterResponseDetails {
-    		var UserParameterResponseDetails v_userParameterResponseDetails;
-    		select (p_userParameterRequest)	{
-				case (UserParameterRequest_userPostalAddress_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.userPostalAddress;}
-				case (UserParameterRequest_contractSerialNumber_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.contractSerialNumber;}
-				case (UserParameterRequest_contractValidity_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.contractValidity;}
-				case (UserParameterRequest_driverCharacteristics_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.driverCharacteristics;} 
-				case (UserParameterRequest_eFC_ContextMark_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.eFC_ContextMark;} 
-				case (UserParameterRequest_environmentalCharacteristics_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.environmentalCharacteristics;} 
-				case (UserParameterRequest_engineCharacteristics_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.engineCharacteristics;} 
-				case (UserParameterRequest_equipmentOBUId_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.equipmentOBUId;} 
-				case (UserParameterRequest_equipmentStatus_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.equipmentStatus;} 
-				case (UserParameterRequest_paymentMeans_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.paymentMeans;} 
-				case (UserParameterRequest_paymentMeansBalance_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.paymentMeansBalance;} 
-				case (UserParameterRequest_paymentMeansUnit_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.paymentMeansUnit;} 
-				case (UserParameterRequest_personalAccountNumber_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.personalAccountNumber;} 
-				case (UserParameterRequest_provider_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.provider;} 
-				case (UserParameterRequest_receiptContract_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.receiptContract;} 
-				case (UserParameterRequest_validityOfContract_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.validityOfContract;} 
-				case (UserParameterRequest_vehicleAuthenticator_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.vehicleAuthenticator;} 
-				case (UserParameterRequest_vehicleClass_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.vehicleClass;} 
-				case (UserParameterRequest_vehicleDimensions_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.vehicleDimensions;} 
-				case (UserParameterRequest_vehicleLicencePlateNumber_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.vehicleLicencePlateNumber;} 
-				case (UserParameterRequest_vehicleIdentificationNumber_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.vehicleIdentificationNumber;} 
-				case (UserParameterRequest_vehicleWeightLaden_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.vehicleWeightLaden;} 
-				case (UserParameterRequest_vehicleWeightLimits_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.vehicleWeightLimits;} 
-				case (UserParameterRequest_vehicleAxles_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.vehicleAxles;} 
-				case (UserParameterRequest_exhaustEmissionValues_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.exhaustEmissionValues;} 
-				case (UserParameterRequest_dieselEmissionValues_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.dieselEmissionValues;} 
-				case (UserParameterRequest_extendedUserPostalAddress_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.extendedUserPostalAddress;} 
-				case (UserParameterRequest_preferredUserLanguage_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.preferredUserLanguage;} 
-			};
-			return v_userParameterResponseDetails;
-		}
+    	//Replaced by the array TD_USER_PARAM_RESP_DETAILS which takes UserParameterRequest as an index
+//    	function f_provideUserDetailsParameter(in UserParameterRequest p_userParameterRequest) return UserParameterResponseDetails {
+//    		var UserParameterResponseDetails v_userParameterResponseDetails;
+//    		select (p_userParameterRequest)	{
+//				case (UserParameterRequest_userPostalAddress_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.userPostalAddress;}
+//				case (UserParameterRequest_contractSerialNumber_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.contractSerialNumber;}
+//				case (UserParameterRequest_contractValidity_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.contractValidity;}
+//				case (UserParameterRequest_driverCharacteristics_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.driverCharacteristics;} 
+//				case (UserParameterRequest_eFC_ContextMark_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.eFC_ContextMark;} 
+//				case (UserParameterRequest_environmentalCharacteristics_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.environmentalCharacteristics;} 
+//				case (UserParameterRequest_engineCharacteristics_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.engineCharacteristics;} 
+//				case (UserParameterRequest_equipmentOBUId_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.equipmentOBUId;} 
+//				case (UserParameterRequest_equipmentStatus_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.equipmentStatus;} 
+//				case (UserParameterRequest_paymentMeans_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.paymentMeans;} 
+//				case (UserParameterRequest_paymentMeansBalance_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.paymentMeansBalance;} 
+//				case (UserParameterRequest_paymentMeansUnit_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.paymentMeansUnit;} 
+//				case (UserParameterRequest_personalAccountNumber_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.personalAccountNumber;} 
+//				case (UserParameterRequest_provider_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.provider;} 
+//				case (UserParameterRequest_receiptContract_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.receiptContract;} 
+//				case (UserParameterRequest_validityOfContract_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.validityOfContract;} 
+//				case (UserParameterRequest_vehicleAuthenticator_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.vehicleAuthenticator;} 
+//				case (UserParameterRequest_vehicleClass_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.vehicleClass;} 
+//				case (UserParameterRequest_vehicleDimensions_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.vehicleDimensions;} 
+//				case (UserParameterRequest_vehicleLicencePlateNumber_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.vehicleLicencePlateNumber;} 
+//				case (UserParameterRequest_vehicleIdentificationNumber_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.vehicleIdentificationNumber;} 
+//				case (UserParameterRequest_vehicleWeightLaden_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.vehicleWeightLaden;} 
+//				case (UserParameterRequest_vehicleWeightLimits_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.vehicleWeightLimits;} 
+//				case (UserParameterRequest_vehicleAxles_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.vehicleAxles;} 
+//				case (UserParameterRequest_exhaustEmissionValues_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.exhaustEmissionValues;} 
+//				case (UserParameterRequest_dieselEmissionValues_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.dieselEmissionValues;} 
+//				case (UserParameterRequest_extendedUserPostalAddress_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.extendedUserPostalAddress;} 
+//				case (UserParameterRequest_preferredUserLanguage_) {v_userParameterResponseDetails := TD_USER_PARAM_RESP_DETAILS.preferredUserLanguage;} 
+//			};
+//			return v_userParameterResponseDetails;
+//		}
 	}		
 }

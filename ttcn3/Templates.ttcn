@@ -59,7 +59,8 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
     		apduDate :=  ?
     	}
 
-		template (value) @fuzzy ApciFields m_apciInitTester modifies mw_apci :={
+		//TODO java.lang.NullPointerException - attempting removal of fuzzy
+		template (value) ApciFields m_apciInitTester modifies mw_apci :={
     		apduOriginator := TD_APDU_ORIGINATOR_FOR_TESTER,  
     		informationSenderID := TD_INFORMATION_SENDER_TESTER, 
     		informationrecipientID := INFORMATION_SENDER_ID_FOR_IUT,
@@ -69,7 +70,8 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
     		apduDate:=fx_getUtc()			
 		}
 		
-		template (value) @fuzzy ApciFields m_apciRespTester(in InfoExchange p_apduBeingRespondedTo) modifies m_apciInitTester :={
+		//TODO java.lang.NullPointerException - attempting removal of fuzzy
+		template (value) ApciFields m_apciRespTester(in InfoExchange p_apduBeingRespondedTo) modifies m_apciInitTester :={
 			apduOriginator := TD_APDU_ORIGINATOR_FOR_TESTER,  
 			informationSenderID := TD_INFORMATION_SENDER_TESTER, 
 			informationrecipientID := INFORMATION_SENDER_ID_FOR_IUT,
@@ -230,7 +232,6 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		 * @desc containing one AckADU containing {apduAckCode =: specified apduAckCode }, with issues 
 		 * @desc being not present"
 		 */ 
-		 //TODO introduce the exclusion of values 2 and 5
 		template (value) InfoExchange m_apduNAckProtocolTester
 			(in InfoExchange p_apduToAck, in ApduReasonCode p_apduReasonCode) := m_apduNoAuthRespTester(
 			p_apduToAck, 
@@ -352,7 +353,6 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			}
 		};
 	  	
-
 		template AckADU m_aduNAck(in InfoExchange p_apduToAck, in NAckParams p_nAckParams) := {
 			apduIdentifier := p_apduToAck.infoExchangeContent.apci.apduIdentifier,
 			explicitlyAckedAdus := omit,
@@ -883,11 +883,35 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			}
 			
 			template DsrcClosedContext mw_dsrcClosedContext :={
-				closedContext := ?,
+				closedContext := {
+					closedContextType:=(ClosedContextType_standAloneClosedSysytem_,ClosedContextType_interconnectedClosedSysytem_), 
+					closedSystem:={
+						tollContextOverview:={
+							tollContext:=?, //mandatory in the base standard
+							tollContextPartitions:=?, //mandatory in the base standard
+							tollSchemeName:=omit, //shall not be used
+							tollContextBoundingBoxes:=omit, //shall not be used
+							tollContextOverviewVersion:=? //mandatory in the base standard
+						},
+						tariffClassDefinition:=*,
+						localVehicleClassDefinition:={
+							localVehicleClasses:=?,
+							localVehicleClassVersion:=omit
+						},
+						timeClassDefinition:={
+							timeClasses:=?,
+							timeClassDefinitionVersion:=omit
+						},
+						userClassDefinition:={
+							userClasses:=?,
+							userClassDefinitionVersion:=omit
+						},
+						feeDefinition :=*
+					}			
+				},
 				feeModifiers := omit
 			}
 
-			// PT140 TODO: Details for mw_dsrcClosedContext are required in a receiving template
 			template EfcContextDataADU mw_aduDsrcClosedContextEfcContextData := {
 				entityOverview := omit,
 				domainType:={
@@ -1171,8 +1195,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 						perUsedTimeClasses := {{
 							appliedTimeClass := ?,
 							costCenter := ?, // mandatory in IAP
-							usageList :={ (mw_sectionedRoadGnssUsageList, mw_travellingInAreaGnssUsageList, //usageList	SEQUENCE OF UsageList 
-							mw_stayingInAreaGnssUsageList, mw_cordonCrossingGnssUsageList)}
+							usageList :={ (mw_sectionedRoadGnssUsageList, mw_stayingInAreaGnssUsageList, mw_travellingInAreaGnssUsageList, mw_cordonCrossingGnssUsageList)} //usageList	SEQUENCE OF UsageList 
 						}}
 					}}  			
 				}
@@ -1201,9 +1224,24 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 					modeOfOperation := omit // shall not be used in IAP
 	  			}
 	
+				template UsageList mw_sectionedRoadGnssUsageList2 := {
+					usageListEntry :={
+						forSectionedRoads := {		
+							howManyTimes := (1..9223372036854775807), // range 0..2^63-1
+							listOfSections := {mw_sections}, // mandatory in IAP 
+							invoiceAggregationNumber := omit, //shall not be used in IAP
+							fee := omit, // shall mot be used in IAP,
+							feeQualifier := omit // shall not be used in IAP
+						}
+					},
+					includedDiscounts := *,
+					associatedEventData := omit, // shall not be used in IAP
+					externalCosts := *
+				}
+	
 				template UsageList mw_travellingInAreaGnssUsageList := {
 					usageListEntry := {
-						forTravellingInArea := {		
+						forTravellingInArea :={		
 	        				areaDisplayName := ?,
 	        				accumulatedDistance := ?,
 	        				beginOfAccumulation := *,
@@ -1219,21 +1257,21 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 	
 				template ChargeUnit mw_chargeUnitTime:={time:=?};
 				
-//				template UsageList mw_stayingInAreaGnssUsageList := {
-//					usageListEntry :={
-//						forStayingInArea :={		
-//							areaDisplayName := ?,
-//							qualifier := *,
-//							stayedDuration := ?,
-//	        				chargeUnit := mw_chargeUnitTime, //event and distance shall not be used
-//	        				fee := omit, // shall not be used in IAP
-//	        				feeQualifier := omit // shall not be used in IAP
-//						}
-//					},
-//					includedDiscounts := *,
-//					associatedEventData := omit, // shall not be used in IAP
-//					externalCosts := *
-//				}
+				template UsageList mw_stayingInAreaGnssUsageList := {
+					usageListEntry :={
+						forStayingInArea :={		
+							areaDisplayName := ?,
+							qualifier := *,
+							stayedDuration := ?,
+	        				chargeUnit := mw_chargeUnitTime, //event and distance shall not be used
+	        				fee := omit, // shall not be used in IAP
+	        				feeQualifier := omit // shall not be used in IAP
+						}
+					},
+					includedDiscounts := *,
+					associatedEventData := omit, // shall not be used in IAP
+					externalCosts := *
+				}
 
 //				template UsageList dummyTemplate:={
 //					usageListEntry:={
@@ -1516,10 +1554,6 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 //				actionCode:=omit
 //			}
 
-// different approach which may hopefully supprt re-useability and flexibility
-// @Ulrik: please have a look into this one
-// Below this shall be a generic template which can be used as base for sending and receiving TollDeclaration ADUs
-
 			template TollDeclarationADU mw_aduTollDeclaration := {
 				tollDeclarationId := ?, // shall be present 
 				gnssTollDeclaration := {
@@ -1627,7 +1661,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				chargeReportFinalRecipient := omit, // shall not be used in ISO 16986 
 				timeOfReport := omit, // shall not be used
 				reportPeriod := *, // may or may not be present
-				versionId := *, // may or may not be present
+				versionInfo := *, // may or may not be present
 				usageStatementList := {  // shall be present in ISO 16986
 					{usageStatement := ?}
 				}, 
@@ -1847,7 +1881,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 					valueDate := *,
 					interestAmount := *
 				}},
-				attachment :=(*,('00'O..'7FFFFFFF'O)), //2^31-1, restrictions from IAP
+				attachment :=* length (1 .. 2147483647) ifpresent,//Restrictions from IAP: If used, the maximum size of the attachment is 2^31–1 bytes.
 				actionCode := (ActionCode_send_, ActionCode_revoke_ ,ActionCode_adjust_ )
 			}
 			
@@ -1858,19 +1892,21 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				in RoBillingDetailsId p_billingDetailsList,
 				in Int1 p_actionCode		
 			) := {
-				paymentAnnouncemmentID := TD_PAYMENTANNOUNCEMENT_ID_1,
+				paymentAnnouncementID := TD_PAYMENTANNOUNCEMENT_ID_1,
 				dueDate := TD_PAYMENTANNOUNCEMENT_DUE_DATE,
 				totalamount := TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_1,
 				paymentStatus := PaymentStatus_paid_,
 				numberOfItems := 1,	// this ADU contains reference to one BillingDeatail
 				referenceDetailsList := {{
-					billingDetailsList := {{TD_IDENTIFIER, 21}},
+					referenceDetail:={
+						billingDetailsList := {{TD_IDENTIFIER, 21}}
+					},
 					amount := TD_BILLINGDETAILS_AMOUNT_1,
 					paymentMeansType := omit,
 					valueDate := omit,
 					interestAmount := omit
 					}},
-				attachement := omit,
+				attachment := omit,
 				actionCode := ActionCode_send_
 			} 	
 							

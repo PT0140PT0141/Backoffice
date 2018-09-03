@@ -626,7 +626,7 @@ module EfcInfoExchange_TestCasesTc {
 					v_theAdu.statusFlag := UserStatus_standardCommercialUserContract_;
 					for (var integer v_loop2 :=0; v_loop2<sizeof(v_listOfParametersRequested);v_loop2:=v_loop2+1) {
 						v_theAdu.listOfUserParameters[v_loop2].requestedUserParameter:= omit;
-						v_theAdu.listOfUserParameters[v_loop2].userParameterResponse:= f_provideUserDetailsParameter(v_listOfParametersRequested[v_loop2]);					
+						v_theAdu.listOfUserParameters[v_loop2].userParameterResponse:= TD_USER_PARAM_RESP_DETAILS[v_listOfParametersRequested[v_loop2]];					
 						v_theAdu.listOfUserParameters[v_loop2].userParameterStatus:= UserParameterStatus_userParameterAvailable_;					
 						v_theAdu.listOfUserParameters[v_loop2].userInfoValidityPeriod:= omit;
 					}
@@ -706,7 +706,7 @@ module EfcInfoExchange_TestCasesTc {
 					for (var integer v_loop2 :=0; v_loop2<sizeof(v_listOfParametersRequested);v_loop2:=v_loop2+1) {
 						v_theAdu.listOfUserParameters[v_loop2].requestedUserParameter:= omit;
 						// PT140 TODO: ensure the provided perameter does never match the requested one 
-						v_theAdu.listOfUserParameters[v_loop2].userParameterResponse:= f_provideUserDetailsParameter(v_listOfParametersRequested[v_loop2]);					
+						v_theAdu.listOfUserParameters[v_loop2].userParameterResponse:= TD_USER_PARAM_RESP_DETAILS[v_listOfParametersRequested[v_loop2]];					
 						v_theAdu.listOfUserParameters[v_loop2].userParameterStatus:= UserParameterStatus_userParameterAvailable_;					
 						v_theAdu.listOfUserParameters[v_loop2].userInfoValidityPeriod:= omit;
 					}
@@ -807,7 +807,7 @@ module EfcInfoExchange_TestCasesTc {
 					v_theAdu.statusFlag := omit;
 					for (var integer v_loop2 :=0; v_loop2<sizeof(v_listOfParametersRequested);v_loop2:=v_loop2+1) {
 						v_theAdu.listOfUserParameters[v_loop2].requestedUserParameter:= omit;
-						v_theAdu.listOfUserParameters[v_loop2].userParameterResponse:= f_provideUserDetailsParameter(v_listOfParametersRequested[v_loop2]);					
+						v_theAdu.listOfUserParameters[v_loop2].userParameterResponse:= TD_USER_PARAM_RESP_DETAILS[v_listOfParametersRequested[v_loop2]];					
 						v_theAdu.listOfUserParameters[v_loop2].userParameterStatus:= UserParameterStatus_userParameterAvailable_;					
 						v_theAdu.listOfUserParameters[v_loop2].userInfoValidityPeriod:= omit;
 					}
@@ -1004,7 +1004,7 @@ module EfcInfoExchange_TestCasesTc {
 					v_theAdu.statusFlag := UserStatus_noContractualRelation_; //i.e. "0"
 					for (var integer v_loop2 :=0; v_loop2<sizeof(v_listOfParametersRequested);v_loop2:=v_loop2+1) {
 						v_theAdu.listOfUserParameters[v_loop2].requestedUserParameter:= omit;
-						v_theAdu.listOfUserParameters[v_loop2].userParameterResponse:= f_provideUserDetailsParameter(v_listOfParametersRequested[v_loop2]);					
+						v_theAdu.listOfUserParameters[v_loop2].userParameterResponse:= TD_USER_PARAM_RESP_DETAILS[v_listOfParametersRequested[v_loop2]];					
 						v_theAdu.listOfUserParameters[v_loop2].userParameterStatus:= UserParameterStatus_userParameterAvailable_;					
 						v_theAdu.listOfUserParameters[v_loop2].userInfoValidityPeriod:= omit;
 					}
@@ -1106,7 +1106,7 @@ module EfcInfoExchange_TestCasesTc {
 					v_theAdu.statusFlag := UserStatus_tempExceptionListed_; //i.e. "�"
 					for (var integer v_loop2 :=0; v_loop2<sizeof(v_listOfParametersRequested);v_loop2:=v_loop2+1) {
 						v_theAdu.listOfUserParameters[v_loop2].requestedUserParameter:= omit;
-						v_theAdu.listOfUserParameters[v_loop2].userParameterResponse:= f_provideUserDetailsParameter(v_listOfParametersRequested[v_loop2]);					
+						v_theAdu.listOfUserParameters[v_loop2].userParameterResponse:= TD_USER_PARAM_RESP_DETAILS[v_listOfParametersRequested[v_loop2]];					
 						v_theAdu.listOfUserParameters[v_loop2].userParameterStatus:= omit;					
 						v_theAdu.listOfUserParameters[v_loop2].userInfoValidityPeriod:= omit;
 					}
@@ -6019,8 +6019,10 @@ module EfcInfoExchange_TestCasesTc {
 				//		- the values corresponding the previous TollDeclarationADUs; and
 				//		- actionCode=send
 
+				//TODO Jan use m_sectionsUsed
 				var UsageList v_sectionUsedWithDiscount;
-				v_sectionsUsed := mw_sectionedRoadGnssUsageList := {
+				v_sectionsUsed := UsageList:modifies m_sectionsUsed := {
+					
 					usageListEntry {
 						forSectionedRoads {		
 							howManyTimes := 1,
