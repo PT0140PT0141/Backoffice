@@ -111,21 +111,14 @@ module EfcInfoExchange_TesterData{
 		modulepar UTF8String TD_DSRC_BILLINGDETAILS_TEXT:="Nothing to add"; //[SEMANTIC DEFINITION] Any comment needed to be added
 	}
 	
-	group ExceptionListTesterData {
+	group EXCEPTIONLIST {
 	
-		//These values have different "errors"
-		//TODO replace with templates instead, consider defining as constant, or put template right into the testcase
-		modulepar ExceptionListADU TD_EXCEPTIONLIST_ADU_BLACK_INVALID_1;
-		modulepar ExceptionListADU TD_EXCEPTIONLIST_ADU_BLACK_INVALID_2;
-		modulepar ExceptionListADU TD_EXCEPTIONLIST_ADU_BLACK_INVALID_3;
-		modulepar ExceptionListADU TD_EXCEPTIONLIST_ADU_TYPE4_VALID;
-		
 		modulepar ExceptionListVersion TD_EXCEPTIONLIST_VERSION := 1; // defined as integer
-
 		
 		modulepar EfcDsrcApplication.PersonalAccountNumber TD_PAN_1;
 		modulepar EfcDsrcApplication.LPN TD_LPN_1;
 		modulepar EfcAutonomousCharging.ObeId TD_OBE_ID_1;
+		modulepar EfcDsrcApplication.ContractSerialNumber TD_CSN_1 := 1234567890; 
 
 		modulepar UserId TD_USERID_BLACK_1 := {
 			pan := TD_PAN_1,
@@ -133,31 +126,19 @@ module EfcInfoExchange_TesterData{
 			licencePlateNumber := TD_LPN_1,
 			obeID := TD_OBE_ID_1
 		}			
+		
 		modulepar VehicleParameters TD_VEHICLE_PARAMETERS;
 		modulepar ASNAUX.UTF8String TD_VAT_ID; 
-		//TODO PT140 should these actually be in the PIXITS? 
+ 
 		modulepar UserId TD_USERID_1, TD_USERID_2, TD_USERID_3, TD_USERID_4, TD_USERID_5, TD_USERID_6, TD_USERID_7, TD_USERID_8;
+		modulepar UserId TD_USERID_DISCOUNTED_1 := {
+			pan := TD_PAN_1,
+			contractSerialNumber := TD_CSN_1,
+			licencePlateNumber := TD_LPN_1,
+			obeID := TD_OBE_ID_1
+		}			
 		
-
-		
-//		modulepar ExceptionListADU TD_EXCEPTIONLIST_ADU_BLACK_VALID := {
-//			exceptionListVersion := TD_EXCEPTIONLIST_VERSION,
-//			exceptionListType := ExceptionListType_blackList_,
-//		  	exceptionValidityStart := fx_getUtc(),
-//		  	exceptionValidityEnd := omit,
-//		  	exceptionListEntries := {{	//Note: this is defined as record of ExceptionListEntry
-//		  	  	userId := TD_USERID_1,
-//		  	  	statusType := ExceptionListStatusType_locallyBlocked_,
-//		  	  	reasonCode := ExceptionListReasonType_notToBeDisclosed_,
-//		  	  	entryValidityStart := fx_getUtc(),
-//		  	  	entryValidityEnd := omit,
-//		  	  	vehicleParameters := TD_VEHICLE_PARAMETERS,
-//		  	  	actionRequested := ExceptionListActionType_rejectOBE_,
-//		  	  	efcContextMark := omit,
-//		  	  	vatId := TD_VAT_ID
-//			}}
-//		}
-		
+				
 		const ExceptionListADU c_exceptionListAduBlackValid1:=m_aduExceptionList(
 			ExceptionListType_blackList_,
 			TD_USERID_1,
@@ -182,53 +163,14 @@ module EfcInfoExchange_TesterData{
 			ExceptionListActionType_acceptOBE_
 		);
 
-
-//		modulepar ExceptionListADU TD_EXCEPTIONLIST_ADU_WHITE_VALID := {
-//			exceptionListVersion := TD_EXCEPTIONLIST_VERSION,
-//			exceptionListType := ExceptionListType_whiteList_,
-//		  	exceptionValidityStart := fx_getUtc(),
-//		  	exceptionValidityEnd := omit,
-//		  	exceptionListEntries := {{	//Note: this is defined as record of ExceptionListEntry
-//		  	  	userId := TD_USERID_1,
-//		  	  	statusType := ExceptionListStatusType_allApplications_,
-//		  	  	reasonCode := omit, //TODO Fausto/Jan not allowed to omit this field
-//		  	  	entryValidityStart := fx_getUtc(),
-//		  	  	entryValidityEnd := omit,
-//		  	  	vehicleParameters := TD_VEHICLE_PARAMETERS,
-//		  	  	actionRequested := ExceptionListActionType_acceptOBE_,
-//		  	  	efcContextMark := omit,
-//		  	  	vatId := TD_VAT_ID
-//			}}
-//		}
-		const UserId c_userIdDiscountedList:={};
-		//TODO Jan this User is not allowed for discounted lists, it has no ContractSeriaNUmber - replace
 		const ExceptionListADU c_exceptionListAduDiscountedValid:=m_aduExceptionList(
 			ExceptionListType_discountedList_,
-			c_userIdDiscountedList,
+			TD_USERID_DISCOUNTED_1,
 			ExceptionListStatusType_allApplications_,
 			ExceptionListReasonType_notToBeDisclosed_,
 			ExceptionListActionType_acceptOBE_
 		);
-
-
-//		modulepar ExceptionListADU TD_EXCEPTIONLIST_ADU_DISCOUNTED_VALID := {
-//			exceptionListVersion := TD_EXCEPTIONLIST_VERSION,
-//			exceptionListType := ExceptionListType_discountedList_,
-//		  	exceptionValidityStart := fx_getUtc(),
-//		  	exceptionValidityEnd := omit,
-//		  	exceptionListEntries := {{	//Note: this is defined as record of ExceptionListEntry
-//		  	  	userId := TD_USERID_1,
-//		  	  	statusType := ExceptionListStatusType_allApplications_,
-//		  	  	reasonCode := omit, //TODO Fausto/Jan not allowed to omit this field
-//		  	  	entryValidityStart := fx_getUtc(),
-//		  	  	entryValidityEnd := omit,
-//		  	  	vehicleParameters := TD_VEHICLE_PARAMETERS,
-//		  	  	actionRequested := ExceptionListActionType_acceptOBE_,
-//		  	  	efcContextMark := omit,
-//		  	  	vatId := TD_VAT_ID
-//			}}
-//		}		
-	} // end group ExceptionListTesterData		
+	} // end group EXCEPTIONLIST		
 
 
 	group TRUSTOBJECTS {
