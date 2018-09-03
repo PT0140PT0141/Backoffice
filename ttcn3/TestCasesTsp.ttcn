@@ -4121,7 +4121,7 @@ module EfcInfoExchange_TestCasesTsp {
 				//	in Period p_period
 					{
 						modifies m_aduGnssBillingDetails(1):= {
-						  	actionCode := ActionCode_send_,
+						  	actionCode := ActionCode_send_
 							}
 						}
 					);
@@ -4172,7 +4172,7 @@ module EfcInfoExchange_TestCasesTsp {
 				//	in Period p_period
 					{
 						modifies m_aduGnssBillingDetails(1):= {
-						  	actionCode := ActionCode_send_,
+						  	actionCode := ActionCode_send_
 							}
 						}
 					);
@@ -4219,7 +4219,7 @@ module EfcInfoExchange_TestCasesTsp {
 				//	in UserId p_userId,
 				//	in Period p_period
 							{modifies m_aduGnssBillingDetails(1):= {
-						  	actionCode := ActionCode_send_,
+						  	actionCode := ActionCode_send_
 							}
 						}
 					);
@@ -4269,7 +4269,7 @@ module EfcInfoExchange_TestCasesTsp {
 				//	in UserId p_userId,
 				//	in Period p_period
 							{modifies m_aduGnssBillingDetails(1):= {
-						  	actionCode := ActionCode_send_,
+						  	actionCode := ActionCode_send_
 							}
 						}
 							);                 
