@@ -462,7 +462,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		  		userListRequest :={
 		  			requestedADUType	:= AduType_provideUserIdListADU_,
       				userIdRequestType	:= UserIdRequestType_allUserIdsToGivenCustomer_, // the only allowd type according to IAP restrictions 
-      				userId				:= ?, //TODO PT140 at least one element inside userId shall be present, this is not checked by the template
+      				userId				:= ({?, *, *, *}, {*, ?, *, *}, {*, *, ?, *}, {*, *, *, ?}), 
 					userIdRequestTime	:= ?
 				}
 			}
@@ -813,7 +813,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				paymentClaimId := ?,
 				startDateTime := ?,
 				endDateTime := ?, // mandatory according to IAP,
-				userId := ? , //TODO PT140 mandatory according to IAP and at least one element shall be present, second req not checked by template
+				userId := ({?, *, *, *}, {*, ?, *, *}, {*, *, ?, *}, {*, *, *, ?}),
 				paymentClaimAmount := ?,
 				paymentClaimStatus := (PaymentClaimStatus_firstVersion_, PaymentClaimStatus_amendedVersion_), // restrictions according to IAP
 				typeOfFee := ?, // mandatory according to IAP
@@ -835,7 +835,6 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			// capture received userIds and billingDetailsIds in record of as we may have received many ADUs with different
 			// userIds and billingDetailsIds for later comparisoon with data in PaymentClaim
 			type record of BillingDetailsId BillingDetailsIdList;
-			type record of BillingDetailsIdList BillingDetailsIdMatrix;
 					 					
 		}
 
@@ -1116,10 +1115,10 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			
 		group DSRC_REPORTABNORMALOBE {
 			template ReportAbnormalOBEADU mw_aduReportAbnormalObe := {
-				userId := ?, //TODO PT140 at least one element of userId shall be present, this is not checked by template
+				userId := ({?, *, *, *}, {*, ?, *, *}, {*, *, ?, *}, {*, *, *, ?}),
 				dateAndTime := ?,
 				efcContextMark := ?,
-				abnormalOBEReasonCode := ? //TODO PT140 at least one reason code shall be present in this record of integer, template does not check this
+				abnormalOBEReasonCode := ? length(1..999) 
 			}
 			
 			template (value) @fuzzy ReportAbnormalOBEADU m_aduReportAbnormalOBE:= {
@@ -1139,7 +1138,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			
 			group GNSS_BILLINGDETAILS{		
 
-				type record of BillingDetailsId ListOfBillingDetailsIds;
+				type record of BillingDetailsId RoBillingDetailsId;
 
 				template BillingDetailsADU mw_aduGnssBillingDetails :={
 	    			billingDetailsId :={
@@ -1218,25 +1217,48 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 					externalCosts := *
 				}
 	
-				template UsageList mw_stayingInAreaGnssUsageList := {
-					usageListEntry :={
-						forStayingInArea :={		
-							areaDisplayName := ?,
-							qualifier := *,
-							stayedDuration := ?,
-	        				chargeUnit := (ChargeUnit:{time:=?}), //event and distance shall not be used
-	        				fee := omit, // shall not be used in IAP
-	        				feeQualifier := omit // shall not be used in IAP
-						}
-					},
-					includedDiscounts := *,
-					associatedEventData := omit, // shall not be used in IAP
-					externalCosts := *
-				}
+				template ChargeUnit mw_chargeUnitTime:={time:=?};
+				
+//				template UsageList mw_stayingInAreaGnssUsageList := {
+//					usageListEntry :={
+//						forStayingInArea :={		
+//							areaDisplayName := ?,
+//							qualifier := *,
+//							stayedDuration := ?,
+//	        				chargeUnit := mw_chargeUnitTime, //event and distance shall not be used
+//	        				fee := omit, // shall not be used in IAP
+//	        				feeQualifier := omit // shall not be used in IAP
+//						}
+//					},
+//					includedDiscounts := *,
+//					associatedEventData := omit, // shall not be used in IAP
+//					externalCosts := *
+//				}
+
+//				template UsageList dummyTemplate:={
+//					usageListEntry:={
+//						forCordonCrossing:={
+//							union {
+//							  integer howOften,
+//							  ASNAUX.GeneralizedTime entranceTime
+//							} qualifier optional,
+//							EfcAutonomousContextData.CordonEntryLocation entranceChargeObject,
+//							ASNAUX.UTF8String entranceChargeObjectName optional,
+//							EfcAutonomousContextData.CordonExitLocation exitChargeObject optional,
+//							ASNAUX.UTF8String exitChargeObjectName optional,
+//							ASNAUX.GeneralizedTime exitTime optional,
+//							ExtendedPaymentAmount fee optional,
+//							FeeQualifier feeQualifier optional						
+//						}
+//					},
+//					includedDiscounts := *,
+//					associatedEventData := omit, // shall not be used in IAP
+//					externalCosts := *
+//				}
 	
 				template UsageList mw_cordonCrossingGnssUsageList := {
 					usageListEntry :={
-						forCordonCrossing :={		
+						forCordonCrossings :={		
 							qualifier := *,
 	        				entranceChargeObject := ?,
 	        				entranceChargeObjectName := *,
@@ -1276,29 +1298,27 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 //	    			paymentReference := *
 //	  			}
 
-				// Note: I have added the toll declaration references to the list of parameters (Jan, 02.09.) 	  			
-				// Note: I have replaced the fixed usageList (sections onbly) by a parameter p_usageList, (Jan, 02.09.)
-				// Note: I have added dateOfService below as this was mising.
-				// Note: I have added the action cde to the parameters list to keep re-usability of this template. (Jan, 02.09.)
+				type record of UsageList RoUsageList;
+				type record of TollDeclarationId RoTollDeclarationId;
+
 				template (value) BillingDetailsADU m_aduGnssBillingDetails(
 					in integer p_billingDetailsNum,
 					in UserId p_userId,
 					in Period p_period,
-					in record of UsageList p_usageList,
+					in RoUsageList p_roUsageList,
 					in ExtendedPaymentAmount p_billingDetailsAmount,
-					in record of TollDeclarationId p_refTollDeclaration,
+					in RoTollDeclarationId p_refTollDeclaration,
 					in ActionCode p_actionCode
 				):= { 
 					billingDetailsId:= {
 						issuerId := TD_IDENTIFIER,
 						billingDetailsNum := p_billingDetailsNum,
 						dateOfService := omit
-						},
+					},
 					tollContext := TOLL_CONTEXT_ID_IUT,
 					userId := p_userId,
 					relatedBillingDetails := omit,
 					period := p_period,
-					// billingDetailsAmount:= m_extendedPaymentAmount, // this is not good and shall be changed into a parameter
 					billingDetailsAmount := p_billingDetailsAmount,
 					usageDetails := {
 						contextName := TOLL_CONTEXT_NAME_IUT,
@@ -1308,14 +1328,11 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 							perUsedTimeClasses := {{
 								appliedTimeClass := TD_APPLIED_TIME_CLASS,
 								costCenter := TD_COST_CENTER,
-								// usageList := {m_sectionsUsed}
-								usageList := p_usageList, 
+								usageList := p_roUsageList 
 							}}
 						}}
 					},
-					//refTollDeclaration := {{TD_IDENTIFIER, 1}}, //Definition: SEQUENCE OF TollDeclarationId OPTIONAL, TODO Jan "1" is a magic number that should be the declarationId and should be either a modulepar or a constant or a variable
 					refTollDeclaration := p_refTollDeclaration,
-					// actionCode := ActionCode_send_, // replaced by the line below to keep re-usability
 					actionCode := p_actionCode,
 					paymentReference := omit 				  		
 				};				
@@ -1344,9 +1361,9 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 						paymentFeeUnit := ?,
 						vatRate := ?
 					}, 
-	    			usageDetails := mw_dsrcUsageDetails, // TODO PT140: template mw_dsrcUsageDetails to be created
-	    			refTollDeclaration := {omit},
-	    			associatedEventData := {omit},
+	    			usageDetails := mw_dsrcUsageDetails, 
+	    			refTollDeclaration := omit,
+	    			associatedEventData := omit,
 	    			actionCode := (ActionCode_send_, ActionCode_revoke_ ,ActionCode_adjust_ ),
 	    			paymentReference := *
 	  			}
@@ -1395,13 +1412,18 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 						declaredVehicleClass:=TD_DSRC_BILLINGDETAILS_DECLAREDVEHCLASS,
 						perUsedTimeClasses:={{
 							appliedTimeClass:=TD_DSRC_BILLINGDETAILS_TIMECLASS,
-							usageList:={{		//Definition: SEQUENCE OF UsageList
-								freeTextDetail:={
-									textLanguage:=TD_DSRC_BILLINGDETAILS_LANG,
-									textDetail:=TD_DSRC_BILLINGDETAILS_TEXT,
-									fee:=m_extendedPaymentAmount,
-									feeQualifier:=FeeQualifier_standardCharge_
-								}
+							usageList:={{ //Definition: SEQUENCE OF UsageList
+								usageListEntry:={
+									freeTextDetail:={
+										textLanguage:=TD_DSRC_BILLINGDETAILS_LANG,
+										textDetail:=TD_DSRC_BILLINGDETAILS_TEXT,
+										fee:=m_extendedPaymentAmount,
+										feeQualifier:=FeeQualifier_standardCharge_
+									}
+								},
+								includedDiscounts:=omit, //TODO PT140 We need to check WHERE the includedDiscounts, asociatedEventData and externalCosts are to be set. Is it on this level? Or perhaps on the top level of the ADU
+								associatedEventData:=omit,
+								externalCosts:=omit
 							}}
 						}}
 					}}
@@ -1411,11 +1433,16 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 					usageListEntry:= {
 						forSectionedRoads:= {		
 							howManyTimes := 1,
-							listOfSections := {mw_section := {
-								chargeObjectId := TD_CHARGE_OBJECT_ID,
-								tollEventId := TD_TOLL_EVENT_ID, // mandatory in IAP
-								tollEventTime := TD_TOLL_EVENT_TIME // mandatory in IAP
-							}} 
+							listOfSections := {
+								{
+									tollContext := omit, // shall not be used in IAP
+									chargeObjectId := TD_CHARGE_OBJECT_ID,
+									chargeObjectName := omit, // shall not be used in IAP
+									tollEventId := TD_TOLL_EVENT_ID, // mandatory in IAP
+									tollEventTime := TD_TOLL_EVENT_TIME, // mandatory in IAP
+									modeOfOperation := omit // shall not be used in IAP				
+								}
+							}
 						}
 					},
 					includedDiscounts := {{
@@ -1436,58 +1463,58 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
    			
    			template Adus mw_adusTollDeclaration := Adus:{tollDeclarationADUs:=?};
 			
-			template (value) TollDeclarationADU m_aduTollDeclaration(in integer p_declarationId, in EfcAutonomousContextData.Int4 p_chargeReportCounter):={
-				tollDeclarationId:={
-					issuerId:=TD_IDENTIFIER,
-					declarationId:=p_declarationId
-				},
-				gnssTollDeclaration:={
-					{
-						chargeReport:={
-							protocolVersion:=AidIdentifier_iso17575_1_2016_,
-							obeId:={
-								manufacturerId:=1,		//TODO Jan Check correct values of this number, does it need to be in a modulepar?
-								equipmentObuId:='01'O	//TODO Jan Check correct values of this number, does it need to be in a modulepar?
-							},
-							vehicleLPNr:={
-								countryCode:='0000000001'B,//TODO Jan Check correct values of this number, does it need to be in a modulepar?
-								alphabetIndicator:=latinAlphabetNo1,//TODO Jan Check correct values of this number, does it need to be in a modulepar?
-								licencePlateNumber:='001122001122'O //TODO Jan Check correct values of this number, does it need to be in a modulepar?
-							},
-							paymentMeans:={
-								personalAccountNumber:='00000000000000000001'O,//TODO Jan Check correct values of this number, does it need to be in a modulepar?
-								paymentMeansExpiryDate:={
-									year:=2100,
-									month:=1,
-									day:=1
-								},  
-								pamentMeansUsageControl:='0001'O //TODO Jan Check correct values of this number, does it need to be in a modulepar?
-							},
-							tollContext:=TD_IDENTIFIER,//TODO Jan Check correct values of this number,
-							serviceProviderContract:={
-								contractProvider:=TD_IDENTIFIER,//TODO Jan Check correct values of this number
-								typeOfContract:='0001'O, //TODO Jan Check what is a valid value for typeOfContract
-								contextVersion:=1
-							},
-							usageStatementList:={
-								{
-									usageStatement:={
-										usageStatementId:=1,
-										tollContext:= TD_IDENTIFIER//TODO Jan Check correct values of this number, shall be identical to attribute tollContext of Chargereport
-										//TODO Jan need to figure which way to use charge objects to use here below. I think one needs to be chosen
-										//TODO Jan WARNING there are several PARAMS that needs to be taken into account here GNSS.TOLLDECLARATION.PARAM1-2-3-4-5_MAX
-										//	        AggregatedSingleTariffClassSession  aggregatedSingleTariffClassSession optional,
-										//	        set of DetectedChargeObject         listOfChargeObjects optional,
-										//	        ListOfRawUsageData                  listOfRawUsageData optional,
-									}
-								}
-							},
-							chargeReportCounter:=p_chargeReportCounter
-						}
-					}
-				},
-				actionCode:=omit
-			}
+//			template (value) TollDeclarationADU m_aduTollDeclaration(in integer p_declarationId, in EfcAutonomousContextData.Int4 p_chargeReportCounter):={
+//				tollDeclarationId:={
+//					issuerId:=TD_IDENTIFIER,
+//					declarationId:=p_declarationId
+//				},
+//				gnssTollDeclaration:={
+//					{
+//						chargeReport:={
+//							protocolVersion:=AidIdentifier_iso17575_1_2016_,
+//							obeId:={
+//								manufacturerId:=1,		//TODO Jan Check correct values of this number, does it need to be in a modulepar?
+//								equipmentObuId:='01'O	//TODO Jan Check correct values of this number, does it need to be in a modulepar?
+//							},
+//							vehicleLPNr:={
+//								countryCode:='0000000001'B,//TODO Jan Check correct values of this number, does it need to be in a modulepar?
+//								alphabetIndicator:=latinAlphabetNo1,//TODO Jan Check correct values of this number, does it need to be in a modulepar?
+//								licencePlateNumber:='001122001122'O //TODO Jan Check correct values of this number, does it need to be in a modulepar?
+//							},
+//							paymentMeans:={
+//								personalAccountNumber:='00000000000000000001'O,//TODO Jan Check correct values of this number, does it need to be in a modulepar?
+//								paymentMeansExpiryDate:={
+//									year:=2100,
+//									month:=1,
+//									day:=1
+//								},  
+//								pamentMeansUsageControl:='0001'O //TODO Jan Check correct values of this number, does it need to be in a modulepar?
+//							},
+//							tollContext:=TD_IDENTIFIER,//TODO Jan Check correct values of this number,
+//							serviceProviderContract:={
+//								contractProvider:=TD_IDENTIFIER,//TODO Jan Check correct values of this number
+//								typeOfContract:='0001'O, //TODO Jan Check what is a valid value for typeOfContract
+//								contextVersion:=1
+//							},
+//							usageStatementList:={
+//								{
+//									usageStatement:={
+//										usageStatementId:=1,
+//										tollContext:= TD_IDENTIFIER//TODO Jan Check correct values of this number, shall be identical to attribute tollContext of Chargereport
+//										//TODO Jan need to figure which way to use charge objects to use here below. I think one needs to be chosen
+//										//TODO Jan WARNING there are several PARAMS that needs to be taken into account here GNSS.TOLLDECLARATION.PARAM1-2-3-4-5_MAX
+//										//	        AggregatedSingleTariffClassSession  aggregatedSingleTariffClassSession optional,
+//										//	        set of DetectedChargeObject         listOfChargeObjects optional,
+//										//	        ListOfRawUsageData                  listOfRawUsageData optional,
+//									}
+//								}
+//							},
+//							chargeReportCounter:=p_chargeReportCounter
+//						}
+//					}
+//				},
+//				actionCode:=omit
+//			}
 
 // different approach which may hopefully supprt re-useability and flexibility
 // @Ulrik: please have a look into this one
@@ -1507,7 +1534,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 							chargeReportFinalRecipient := omit, // shall not be used in ISO 16986 
 							timeOfReport := omit, // shall not be used
 							reportPeriod := *, // may or may not be present
-							versionId := *, // may or may not be present
+							versionInfo := *, // may or may not be present
 							usageStatementList := { // shall be present in ISO 16986
 								{
 									usageStatement := ?
@@ -1553,7 +1580,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 							serviceProviderContract := p_serviceProviderContract, // mandatory in ISO 12855
 							tollContext:= p_tollContext, // shall be Tester
 							reportPeriod := omit, // Tester decides this shall not be present
-							versionId := omit, // Tester decides this shall not be present
+							versionInfo := omit, // Tester decides this shall not be present
 							usageStatementList := {
 								{
 								usageStatement := p_usageStatement // shall be present in ISO 16986
@@ -1820,9 +1847,33 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 					valueDate := *,
 					interestAmount := *
 				}},
-				attachment := (*, (0..2147483647)), //2^31-1, restrictions from IAP
+				attachment :=(*,('00'O..'7FFFFFFF'O)), //2^31-1, restrictions from IAP
 				actionCode := (ActionCode_send_, ActionCode_revoke_ ,ActionCode_adjust_ )
-			} 					
+			}
+			
+
+			template (value) PaymentAnnouncementADU m_aduPaymentAnnouncement(
+				in integer p_paymentAnnouncemmentID,
+				in ExtendedPaymentAmount p_totalAmount,
+				in RoBillingDetailsId p_billingDetailsList,
+				in Int1 p_actionCode		
+			) := {
+				paymentAnnouncemmentID := TD_PAYMENTANNOUNCEMENT_ID_1,
+				dueDate := TD_PAYMENTANNOUNCEMENT_DUE_DATE,
+				totalamount := TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_1,
+				paymentStatus := PaymentStatus_paid_,
+				numberOfItems := 1,	// this ADU contains reference to one BillingDeatail
+				referenceDetailsList := {{
+					billingDetailsList := {{TD_IDENTIFIER, 21}},
+					amount := TD_BILLINGDETAILS_AMOUNT_1,
+					paymentMeansType := omit,
+					valueDate := omit,
+					interestAmount := omit
+					}},
+				attachement := omit,
+				actionCode := ActionCode_send_
+			} 	
+							
 		}
 	}
 }
