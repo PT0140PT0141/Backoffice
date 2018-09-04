@@ -4072,7 +4072,7 @@ module EfcInfoExchange_TestCasesTc {
 					TD_BILLING_DETAILS_NUM,
 					TD_USERID_1,
 					TD_PERIOD_1,
-					c_usageListSectionedRoadsWithDiscount,
+					{c_usageListSectionedRoadsWithDiscount},
 					TD_DISCOUNT_AMOUNT,
 					c_refTollDeclaration1, // same toll decalartion Id as in Toll Declaration in step 0
 					ActionCode_send_
@@ -4173,7 +4173,7 @@ module EfcInfoExchange_TestCasesTc {
 					TD_BILLING_DETAILS_NUM,
 					TD_USERID_1,
 					TD_PERIOD_1,
-					c_usageListSectionedRoads,
+					{c_usageListSectionedRoads},
 					omit, // No discount field
 					c_refTollDeclaration1, // same toll decalartion Id as in Toll Declaration in step 0
 					ActionCode_send_
@@ -4259,7 +4259,7 @@ module EfcInfoExchange_TestCasesTc {
 					TD_BILLING_DETAILS_NUM,
 					TD_USERID_1,
 					TD_PERIOD_1,
-					c_usageListTravellingInArea,
+					{c_usageListTravellingInArea},
 					omit, // no toll discount
 					c_refTollDeclaration1, // same toll decalartion Id as in Toll Declaration in step 0
 					ActionCode_send_
@@ -4344,7 +4344,7 @@ module EfcInfoExchange_TestCasesTc {
 					TD_BILLING_DETAILS_NUM,
 					TD_USERID_1,
 					TD_PERIOD_1,
-					c_usageListStayingInArea,
+					{c_usageListStayingInArea},
 					omit, // no toll discount
 					c_refTollDeclaration1, // same toll decalartion Id as in Toll Declaration in step 0
 					ActionCode_send_
@@ -4427,7 +4427,7 @@ module EfcInfoExchange_TestCasesTc {
 					TD_BILLING_DETAILS_NUM,
 					TD_USERID_1,
 					TD_PERIOD_1,
-					c_usageListCordonCrossing,
+					{c_usageListCordonCrossing},
 					omit, // no toll discount
 					c_refTollDeclaration1, // same toll decalartion Id as in Toll Declaration in step 0
 					ActionCode_send_
@@ -4526,7 +4526,7 @@ module EfcInfoExchange_TestCasesTc {
 					v_listOfBillingDetailsIds[v_loop],
 					TD_USERID_1,
 					TD_PERIOD_1,
-					c_usageListSectionedRoads,
+					{c_usageListSectionedRoads},
 					omit, // no toll discount
 					v_listOfTollDeclarationIds[v_loop], // same array of toll decalartion Id as in Toll Declaration in step 0
 					ActionCode_send_
@@ -4608,7 +4608,7 @@ module EfcInfoExchange_TestCasesTc {
 					TD_BILLING_DETAILS_NUM,
 					TD_USERID_2, // user ID does not match the user Id in the corresponding toll declaratiuon
 					TD_PERIOD_1,
-					c_usageListSectionedRoads,
+					{c_usageListSectionedRoads},
 					omit, // no toll discount
 					c_refTollDeclaration1,
 					ActionCode_send_
@@ -4652,7 +4652,7 @@ module EfcInfoExchange_TestCasesTc {
 					TD_BILLING_DETAILS_NUM,
 					TD_USERID_1, // now with correct user ID
 					TD_PERIOD_1,
-					c_usageListSectionedRoads,
+					{c_usageListSectionedRoads},
 					omit, // no toll discount
 					c_refTollDeclaration1,
 					ActionCode_adjust_
@@ -4737,7 +4737,7 @@ module EfcInfoExchange_TestCasesTc {
 					TD_BILLING_DETAILS_NUM,
 					TD_USERID_1,
 					TD_PERIOD_1,
-					c_usageListSectionedRoads,
+					{c_usageListSectionedRoads},
 					omit, // no toll discount
 					c_refTollDeclaration1,
 					ActionCode_send_
@@ -4773,7 +4773,7 @@ module EfcInfoExchange_TestCasesTc {
 					TD_BILLING_DETAILS_NUM,
 					TD_USERID_1, // now with correct user ID
 					TD_PERIOD_1,
-					c_usageListSectionedRoads,
+					{c_usageListSectionedRoads},
 					omit, // no toll discount
 					c_refTollDeclaration1,
 					ActionCode_revoke_
@@ -5365,21 +5365,25 @@ module EfcInfoExchange_TestCasesTc {
 				//		- the values corresponding the previous TollDeclarationADUs; and
 				//		- actionCode=send
 
-				var UsageList v_sectionUsedWithDiscount;
-				v_sectionsUsedWithDiscount := (modifies mw_sectionedRoadGnssUsageList := {
+				var UsageList v_sectionsUsed;
+				v_sectionsUsed := {
 					usageListEntry := {
 						forSectionedRoads := {		
 							howManyTimes := 1,
-							listOfSections := {mw_section := {
+							listOfSections := {
 								chargeObjectId := TD_CHARGE_OBJECT_ID,
 								tollEventId := TD_TOLL_EVENT_ID, // mandatory in IAP
 								tollEventTime := TD_TOLL_EVENT_TIME // mandatory in IAP
-							}} 
+							},
+							invoiceAggregationNumber := omit,
+							fee := omit,
+							feeQualifier := omit
 						}
 					},
 					includedDiscounts := omit,
+					associatedEventData := omit,
 					externalCosts := omit
-				});
+				};				
 
 				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
 				  	mw_aduGnssBillingDetails:= { // original template with wildcards, but now all given values below
@@ -5797,55 +5801,25 @@ module EfcInfoExchange_TestCasesTc {
 				// 		- which shall be negatively acknowledge by the IuT
 				//		This is achieved by referencing to billingDetailsIDs not reported to the IuT  
 
-				v_apduToBeSent := m_apduNoAuthInitTester ({
-					{ // original template with wildcards, but now all fields filled below				  	
-						paymentAnnouncemmentID := TD_PAYMENTANNOUNCEMENT_ID_1,
-						dueDate := TD_PAYMENTANNOUNCEMENT_DUE_DATE,
-						totalamount := TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_1,
-						paymentStatus := PaymentStatus_paid_,
-						numberOfItems := 1,	// this ADU contains reference to one BillingDeatail
-						referenceDetailsList := {{
-							billingDetailsList := {{TD_IDENTIFIER, 21}},
-							amount := TD_BILLINGDETAILS_AMOUNT_1,
-							paymentMeansType := omit,
-							valueDate := omit,
-							interestAmount := omit
-							}},
-						attachement := omit,
-						actionCode := ActionCode_send_
-					},
-					mw_aduPaymentAnnouncement := { // original template with wildcards, but now all fields filled below				  	
-						paymentAnnouncemmentID := TD_PAYMENTANNOUNCEMENT_ID_2,
-						dueDate := TD_PAYMENTANNOUNCEMENT_DUE_DATE,
-						totalamount := TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_2,
-						paymentStatus := PaymentStatus_paid_,
-						numberOfItems := 3, // this ADU contains reference to three BillingDeatails
-						referenceDetailsList := {{
-							billingDetailsList := {{TD_IDENTIFIER, 22},{TD_IDENTIFIER, 23},{TD_IDENTIFIER, 24}},
-							amount := TD_BILLINGDETAILS_AMOUNT_2,
-							paymentMeansType := omit,
-							valueDate := omit,
-							interestAmount := omit
-							}},
-						attachement := omit,
-						actionCode := ActionCode_send_
-					},
-					mw_aduPaymentAnnouncement := { // original template with wildcards, but now all fields filled below				  	
-						paymentAnnouncemmentID := TD_PAYMENTANNOUNCEMENT_ID_3,
-						dueDate := TD_PAYMENTANNOUNCEMENT_DUE_DATE,
-						totalamount := TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_3,
-						paymentStatus := PaymentStatus_paid_,
-						numberOfItems := 1, // this ADU contains reference to one BillingDeatail
-						referenceDetailsList := {{
-							billingDetailsList := {{TD_IDENTIFIER, 25}},
-							amount := TD_BILLINGDETAILS_AMOUNT_3,
-							paymentMeansType := omit,
-							valueDate := omit,
-							interestAmount := omit
-							}},
-						attachement := omit,
-						actionCode := ActionCode_send_
-					}					
+				v_apduToBeSent := m_apduNoAuthInitTester({
+					m_aduPaymentAnnouncement(
+						TD_PAYMENTANNOUNCEMENT_ID_1,
+						TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_1,
+						{{TD_IDENTIFIER, 21}},
+						ActionCode_send_
+					),
+					m_aduPaymentAnnouncement(
+						TD_PAYMENTANNOUNCEMENT_ID_2,
+						TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_2,
+						{{TD_IDENTIFIER, 22},{TD_IDENTIFIER, 23},{TD_IDENTIFIER, 24}},
+						ActionCode_send_
+					),
+					m_aduPaymentAnnouncement(
+						TD_PAYMENTANNOUNCEMENT_ID_3,
+						TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_3,
+						{{TD_IDENTIFIER, 25}},
+						ActionCode_send_
+					)
 				});
 				
 				// respect time restriction TIMEB_MAX set by the IuT
@@ -5876,55 +5850,25 @@ module EfcInfoExchange_TestCasesTc {
 				//		- the values referencing the previous three(3) PaymentAnnoucments; and
 				//		- actionCode=adjust
 
-				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester ({
-					mw_aduPaymentAnnouncement := { // original template with wildcards, but now all fields filled below				  	
-						paymentAnnouncemmentID := TD_PAYMENTANNOUNCEMENT_ID_1, // same Id as in the previous transaction
-						dueDate := TD_PAYMENTANNOUNCEMENT_DUE_DATE,
-						totalamount := TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_1,
-						paymentStatus := PaymentStatus_paid_,
-						numberOfItems := 1,	// this ADU contains reference to one BillingDeatail
-						referenceDetailsList := {{
-							billingDetailsList := {{TD_IDENTIFIER, 1}}, // correct BillingDetailsId
-							amount := TD_BILLINGDETAILS_AMOUNT_1,
-							paymentMeansType := omit,
-							valueDate := omit,
-							interestAmount := omit
-							}},
-						attachement := omit,
-						actionCode := ActionCode_adjust_
-					},
-					mw_aduPaymentAnnouncement := { // original template with wildcards, but now all fields filled below				  	
-						paymentAnnouncemmentID := TD_PAYMENTANNOUNCEMENT_ID_2, // this ADU contains reference to one BillingDeatail
-						dueDate := TD_PAYMENTANNOUNCEMENT_DUE_DATE,
-						totalamount := TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_2,
-						paymentStatus := PaymentStatus_paid_,
-						numberOfItems := 3, // this ADU contains reference to three BillingDeatails
-						referenceDetailsList := {{
-							billingDetailsList := {{TD_IDENTIFIER, 2},{TD_IDENTIFIER, 3},{TD_IDENTIFIER, 4}}, // correct BillingDetailsIds
-							amount := TD_BILLINGDETAILS_AMOUNT_2,
-							paymentMeansType := omit,
-							valueDate := omit,
-							interestAmount := omit
-							}},
-						attachement := omit,
-						actionCode := ActionCode_adjust_
-					},
-					mw_aduPaymentAnnouncement := { // original template with wildcards, but now all fields filled below				  	
-						paymentAnnouncemmentID := TD_PAYMENTANNOUNCEMENT_ID_3, // this ADU contains reference to one BillingDeatail
-						dueDate := TD_PAYMENTANNOUNCEMENT_DUE_DATE,
-						totalamount := TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_3,
-						paymentStatus := PaymentStatus_paid_,
-						numberOfItems := 1, // this ADU contains reference to one BillingDeatail
-						referenceDetailsList := {{
-							billingDetailsList := {{TD_IDENTIFIER, 5}}, // correct BillingDetailsId
-							amount := TD_BILLINGDETAILS_AMOUNT_3,
-							paymentMeansType := omit,
-							valueDate := omit,
-							interestAmount := omit
-							}},
-						attachement := omit,
-						actionCode := ActionCode_adjust_
-					}					
+				v_apduToBeSent := m_apduNoAuthInitTester({
+					m_aduPaymentAnnouncement(
+						TD_PAYMENTANNOUNCEMENT_ID_1,
+						TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_1,
+						{{TD_IDENTIFIER, 1}},
+						ActionCode_adjust_
+					),
+					m_aduPaymentAnnouncement(
+						TD_PAYMENTANNOUNCEMENT_ID_2,
+						TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_2,
+						{{TD_IDENTIFIER, 2},{TD_IDENTIFIER, 3},{TD_IDENTIFIER, 4}},
+						ActionCode_adjust_
+					),
+					m_aduPaymentAnnouncement(
+						TD_PAYMENTANNOUNCEMENT_ID_3,
+						TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_3,
+						{{TD_IDENTIFIER, 5}},
+						ActionCode_adjust_
+					)
 				});
 				
 				// respect time restriction TIMEA_MIN set by the IuT
@@ -6019,23 +5963,25 @@ module EfcInfoExchange_TestCasesTc {
 				//		- the values corresponding the previous TollDeclarationADUs; and
 				//		- actionCode=send
 
-				//TODO Jan use m_sectionsUsed
-				var UsageList v_sectionUsedWithDiscount;
-				v_sectionsUsed := UsageList:modifies m_sectionsUsed := {
-					
-					usageListEntry {
-						forSectionedRoads {		
+				var UsageList v_sectionsUsed;
+				v_sectionsUsed := {
+					usageListEntry := {
+						forSectionedRoads := {		
 							howManyTimes := 1,
-							listOfSections := {mw_section := {
+							listOfSections := {
 								chargeObjectId := TD_CHARGE_OBJECT_ID,
 								tollEventId := TD_TOLL_EVENT_ID, // mandatory in IAP
 								tollEventTime := TD_TOLL_EVENT_TIME // mandatory in IAP
-							}} 
+							},
+							invoiceAggregationNumber := omit,
+							fee := omit,
+							feeQualifier := omit
 						}
 					},
 					includedDiscounts := omit,
+					associatedEventData := omit,
 					externalCosts := omit
-				};
+				};				
 
 				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
 				  	mw_aduGnssBillingDetails:= { // original template with wildcards, but now all given values below
@@ -6359,21 +6305,25 @@ module EfcInfoExchange_TestCasesTc {
                 //		- actionCode=send
     
                 // Prepare UsageList
-                var UsageList v_sectionsUsed;
-                v_sectionsUsed := mw_sectionedRoadGnssUsageList := {
-                    usageListEntry {
-                        forSectionedRoads {		
-                            howManyTimes := 1,
-                            listOfSections := {mw_section := {
-                                chargeObjectId := TD_CHARGE_OBJECT_ID,
-                                tollEventId := TD_TOLL_EVENT_ID, // mandatory in IAP
-                                tollEventTime := TD_TOLL_EVENT_TIME // mandatory in IAP
-                            }} 
-                        }
-                    },
-                    includedDiscounts := omit,
-                    externalCosts := omit
-                };
+				var UsageList v_sectionsUsed;
+				v_sectionsUsed := {
+					usageListEntry := {
+						forSectionedRoads := {		
+							howManyTimes := 1,
+							listOfSections := {
+								chargeObjectId := TD_CHARGE_OBJECT_ID,
+								tollEventId := TD_TOLL_EVENT_ID, // mandatory in IAP
+								tollEventTime := TD_TOLL_EVENT_TIME // mandatory in IAP
+							},
+							invoiceAggregationNumber := omit,
+							fee := omit,
+							feeQualifier := omit
+						}
+					},
+					includedDiscounts := omit,
+					associatedEventData := omit,
+					externalCosts := omit
+				};				
     
                 var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
                     mw_aduGnssBillingDetails:= { // original template with wildcards, but now all given values below
@@ -6814,21 +6764,25 @@ module EfcInfoExchange_TestCasesTc {
     
 
 				// Prepare UsageList
-                var UsageList v_sectionsUsed;
-                v_sectionsUsed := mw_sectionedRoadGnssUsageList := {
-                    usageListEntry {
-                        forSectionedRoads {		
-                            howManyTimes := 1,
-                            listOfSections := {mw_section := {
-                                chargeObjectId := TD_CHARGE_OBJECT_ID,
-                                tollEventId := TD_TOLL_EVENT_ID, // mandatory in IAP
-                                tollEventTime := TD_TOLL_EVENT_TIME // mandatory in IAP
-                            }} 
-                        }
-                    },
-                    includedDiscounts := omit,
-                    externalCosts := omit
-                };
+				var UsageList v_sectionsUsed;
+				v_sectionsUsed := {
+					usageListEntry := {
+						forSectionedRoads := {		
+							howManyTimes := 1,
+							listOfSections := {
+								chargeObjectId := TD_CHARGE_OBJECT_ID,
+								tollEventId := TD_TOLL_EVENT_ID, // mandatory in IAP
+								tollEventTime := TD_TOLL_EVENT_TIME // mandatory in IAP
+							},
+							invoiceAggregationNumber := omit,
+							fee := omit,
+							feeQualifier := omit
+						}
+					},
+					includedDiscounts := omit,
+					associatedEventData := omit,
+					externalCosts := omit
+				};				
     
                	// Prepare APDU with 2+GNSS.PAYMENTANNOUNCEMENT.PARAM2_MAX BillingDetails ADUs              	
 
@@ -6887,18 +6841,6 @@ module EfcInfoExchange_TestCasesTc {
  
 				// Prepare ReferenceDetailsList with total of 2+GNSS.PAYMENTANNOUNCEMENT.PARAM2_MAX references
 				// for both ADUs
-    			type record of record { // need to redefind this type as not explicitely defined in ISO12855
-      				union {
-        				record of BillingDetailsId billingDetailsList,
-        				record of TollDeclarationId tollDeclarationList,
-        				record of TollEventId tollEventList
-      				} referenceDetail,
-      				ExtendedPaymentAmount amount,
-      				integer paymentMeansType (0 .. 255) optional,
-      				ASNAUX.GeneralizedTime valueDate optional,
-      				ExtendedPaymentAmount interestAmount optional
-    			} ReferenceDetailsList; 
-               	
                	var ReferenceDetailsList v_referenceDetailsList;
   
                	for (var integer v_i := 1; v_i == 2+GNSS.PAYMENTANNOUNCEMENT.PARAM2_MAX; v_i := v_i + 1) {
@@ -6911,6 +6853,27 @@ module EfcInfoExchange_TestCasesTc {
 					};
 				}
                		              	             					  
+				v_apduToBeSent := m_apduNoAuthInitTester({
+					m_aduPaymentAnnouncement(
+						TD_PAYMENTANNOUNCEMENT_ID_1,
+						TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_1,
+						{{TD_IDENTIFIER, 1}},
+						ActionCode_adjust_
+					),
+					m_aduPaymentAnnouncement(
+						TD_PAYMENTANNOUNCEMENT_ID_2,
+						TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_2,
+						{{TD_IDENTIFIER, 2},{TD_IDENTIFIER, 3},{TD_IDENTIFIER, 4}},
+						ActionCode_adjust_
+					),
+					m_aduPaymentAnnouncement(
+						TD_PAYMENTANNOUNCEMENT_ID_3,
+						TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_3,
+						{{TD_IDENTIFIER, 5}},
+						ActionCode_adjust_
+					)
+				});
+
 				//TODO Jan replace with m_aduPaymentAnnouncement and all other cases of PaymentAnnocement
 				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester ({
 					mw_aduPaymentAnnouncement := { // original template with wildcards, but now all fields filled below				  	
@@ -7098,21 +7061,25 @@ module EfcInfoExchange_TestCasesTc {
                 //		- actionCode=send
     
 				// Prepare UsageList
-                var UsageList v_sectionsUsed;
-                v_sectionsUsed := mw_sectionedRoadGnssUsageList := {
-                    usageListEntry {
-                        forSectionedRoads {		
-                            howManyTimes := 1,
-                            listOfSections := {mw_section := {
-                                chargeObjectId := TD_CHARGE_OBJECT_ID,
-                                tollEventId := TD_TOLL_EVENT_ID, // mandatory in IAP
-                                tollEventTime := TD_TOLL_EVENT_TIME // mandatory in IAP
-                            }} 
-                        }
-                    },
-                    includedDiscounts := omit,
-                    externalCosts := omit
-                };
+				var UsageList v_sectionsUsed;
+				v_sectionsUsed := {
+					usageListEntry := {
+						forSectionedRoads := {		
+							howManyTimes := 1,
+							listOfSections := {
+								chargeObjectId := TD_CHARGE_OBJECT_ID,
+								tollEventId := TD_TOLL_EVENT_ID, // mandatory in IAP
+								tollEventTime := TD_TOLL_EVENT_TIME // mandatory in IAP
+							},
+							invoiceAggregationNumber := omit,
+							fee := omit,
+							feeQualifier := omit
+						}
+					},
+					includedDiscounts := omit,
+					associatedEventData := omit,
+					externalCosts := omit
+				};				
     
                	// Prepare APDU with 1+GNSS.PAYMENTANNOUNCEMENT.PARAM1_MAX BillingDetails ADUs              	
                 var InfoExchange v_apduToBeSent; 
