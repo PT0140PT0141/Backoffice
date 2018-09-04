@@ -1853,6 +1853,18 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 
 		group GNSS_PAYMENTANNOUNCEMENT {
 
+    		type record of record { // need to redefind this type as not explicitely defined in ISO12855
+      			union {
+        			record of BillingDetailsId billingDetailsList,
+        			record of TollDeclarationId tollDeclarationList,
+        			record of TollEventId tollEventList
+      			} referenceDetail,
+      			ExtendedPaymentAmount amount,
+      			integer paymentMeansType (0 .. 255) optional,
+      			ASNAUX.GeneralizedTime valueDate optional,
+      			ExtendedPaymentAmount interestAmount optional
+    		} ReferenceDetailsList; 
+               	
 			template PaymentAnnouncementADU mw_aduPaymentAnnouncement := {
 				paymentAnnouncementID := (0..9223372036854775807), // range restriction from IAP is 0..2^63-1
 				dueDate := ?,
