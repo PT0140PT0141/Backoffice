@@ -402,7 +402,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
     		template RequestADU mw_aduRequestProvideUserDetails := {
         		userDetailsRequest :={	
             	  	requestedADUType                := AduType_provideUserDetailsADU_,
-            	  	userId                          := ?,
+            	  	userId                          := ({?, *, *, *}, {*, ?, *, *}, {*, *, ?, *}, {*, *, *, ?}),
             		listOfParametersRequested       := ?,
             		userDetailsRequestReason        := *,
             		userInfoValidityPeriod          := *
@@ -427,7 +427,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
          	       			
 //        	template ProvideUserDetailsADU mw_userDetailsPrivacy_apduIdentifier := {
 //                originaluserIdRequest := DEFINED_USERID,
-//                userId := *,
+//                userId := ({?, *, *, *}, {*, ?, *, *}, {*, *, ?, *}, {*, *, *, ?}),
 //                statusFlag := * ,
 //                listOfUserParameters.UserParameterResponse := omit,
 //                listOfUserParameters.userParameterResponse := *,
@@ -437,7 +437,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
         	
         	template ProvideUserDetailsADU mw_aduProvideUserDetails := {
             	originaluserIdRequest := PX_EXISTING_USER_ID,
-            	userId := ?, 
+            	userId := ({?, *, *, *}, {*, ?, *, *}, {*, *, ?, *}, {*, *, *, ?}), 
             	statusFlag := * ,
             	listOfUserParameters := *
         	}
@@ -447,7 +447,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			
 //			template ProvideUserDetailsADU m_aduProvideUserDetails:= {
 //            	originaluserIdRequest := PX_EXISTING_USER_ID,
-//            	userId := ?, 
+//            	userId := ({?, *, *, *}, {*, ?, *, *}, {*, *, ?, *}, {*, *, *, ?}), 
 //            	statusFlag := * ,
 //            	listOfUserParameters := *
 //        	}
@@ -518,7 +518,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			
 // Not needed currently
 //		  	template ExceptionListEntry mw_exceptionListEntry := {
-//		  	  	userId := ?,
+//		  	  	userId := ({?, *, *, *}, {*, ?, *, *}, {*, *, ?, *}, {*, *, *, ?}),
 //		  	  	statusType := ?,
 //		  	  	reasonCode := ?,
 //		  	  	entryValidityStart := ?,
@@ -1171,12 +1171,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 	    				dateOfService := omit
 	    			},
 	    			tollContext := ?,
-	    			userId :={
-	    				pan := *, 
-						contractSerialNumber := *,
-						licencePlateNumber := *, 
-						obeID := *
-					},
+	    			userId := ({?, *, *, *}, {*, ?, *, *}, {*, *, ?, *}, {*, *, *, ?}),
 	    			relatedBillingDetails := omit,
 	    			period := ?,
 	    			billingDetailsAmount := ?, 
@@ -1320,12 +1315,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 //	    				dateOfService := omit
 //	    			},
 //	    			tollContext := ?,
-//	    			userId :={
-//	    				pan := *, 
-//						contractSerialNumber := *,
-//						licencePlateNumber := *, 
-//						obeID := *
-//					},
+//	    			userId :=({?, *, *, *}, {*, ?, *, *}, {*, *, ?, *}, {*, *, *, ?}),
 //	    			relatedBillingDetails := omit,
 //	    			period := ?,
 //	    			billingDetailsAmount := ?, 
@@ -1386,12 +1376,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 	    				dateOfService := omit
 	    				},
 	    			tollContext := ?,
-	    			userId :={
-	    				pan := *, 
-						contractSerialNumber := *,
-						licencePlateNumber := *, 
-						obeID := *
-						},
+	    			userId :=({?, *, *, *}, {*, ?, *, *}, {*, *, ?, *}, {*, *, *, ?}),
 	    			relatedBillingDetails := *,
 	    			period := omit,
 	    			billingDetailsAmount := {
