@@ -328,6 +328,7 @@ module EfcInfoExchange_TesterData{
 		modulepar ASNAUX.GeneralizedTime TD_TOLL_EVENT_TIME;
 		modulepar ExtendedPaymentAmount TD_DISCOUNT_AMOUNT;
 		modulepar DiscountQualifier TD_DISCOUNT_QUALIFIER;
+		const ExtendedPaymentAmount c_extPayAmountNothing:={0,TD_BILLINGDETAILS_PAYUNIT,0};
  	}
  	
  	group PAYMENTANNOUNCEMENT {

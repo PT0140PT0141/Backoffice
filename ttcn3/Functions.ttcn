@@ -16,9 +16,11 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
 	import from EfcInfoExchange_Pixits all;
 	import from EfcInfoExchange_TesterData all;
 	import from EfcInfoExchange_Templates all;
-		
+	import from EfcInfoExchange_InteroperabilityStatement all;
+			
 	//importing ASN.1 data automatically translated into TTCN-3	
 	import from EfcInfoExchange language "ASN.1:1997" all;
+	import from EfcAutonomousCharging language "ASN.1:1997" all;
 
 	//importing ASN.1 data manually translated into TTCN-3
 	import from EfcInfoExchange_ParameterisedAsn1Data all;
@@ -236,30 +238,37 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
 //		}
 
 		function f_macroForTP_TSP_GNSS_BILLINGDETAILS_TC_BV_02to05() runs on MainTestComponent {
+			var ChargeReport v_chargeReportFirst;
+			var UsageStatement v_usageStatement;
+			var Period v_period;
+			var ObeId v_obeId;
+			var TollDeclarationId v_tollDeclarationId;
+			var BillingDetailsADU v_aduGnssBillingDetails;
+			
 			alt { 
 				[] mtcPort.receive(mw_apduNoAuthInitIut(mw_adusTollDeclaration)) -> value v_apduReceived {
 					f_logReceivedWaitAndAcknowledge(GNSS_TOLLDECLARATIONS_TIME1_MIN_TSP);
 				}
 			} // End of first alt statement
 	
-			var ChargeReport v_chargeReportFirst:=v_apduReceived.infoExchangeContent.adus.tollDeclarationADUs[0].gnssTollDeclaration.chargeReport;			
-			var UsageStatement v_usageStatement:=v_chargeReportFirst.usageStatementList[0].usageStatement;
-			var ObeId v_obeId:=v_chargeReportFirst.obeId;
-			var Period v_period:=v_chargeReportFirst.period;
+			v_chargeReportFirst:=v_apduReceived.infoExchangeContent.adus.tollDeclarationADUs[0].gnssTollDeclaration[0].chargeReport;			
+			v_usageStatement:=v_chargeReportFirst.usageStatementList[0].usageStatement;
+			v_obeId:=v_chargeReportFirst.obeId;
+			v_period:=v_chargeReportFirst.reportPeriod;
 			
-			var TollDeclarationId v_tollDeclarationId:=v_apduReceived.infoExchangeContent.adus.tollDeclarationADUs[0].tollDeclarationId;
+			v_tollDeclarationId:=v_apduReceived.infoExchangeContent.adus.tollDeclarationADUs[0].tollDeclarationId;
 			
-			var BillingDetailsADU v_aduGnssBillingDetails:=m_aduGnssBillingDetails(
+			v_aduGnssBillingDetails:=m_aduGnssBillingDetails(
 				TD_BILLING_DETAILS_NUM,
-				UserId:{obeId:=v_obeId}, 
+				UserId:{obeID:=v_obeId}, 
 				v_period,
 				{v_usageStatement},
-				0,
-				v_tollDeclarationId, // same toll decalartion Id as in Toll Declaration in step 0
+				c_extPayAmountNothing,
+				{v_tollDeclarationId}, // same toll declaration Id as in Toll Declaration in step 0
 				ActionCode_send_
 			);
 	
-			v_apduForSending := m_apduNoAuthRespTester(v_apduReceived,{v_aduGnssBillingDetails});
+			v_apduForSending := m_apduNoAuthRespTester(v_apduReceived,Adus:{billingDetailsADUs:={v_aduGnssBillingDetails}});
 	
 			f_sendAndLogApdu(v_apduForSending);                 
 	        
