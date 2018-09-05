@@ -50,7 +50,7 @@ module EfcInfoExchange_TestCasesTc {
     import from EfcInfoExchange_Ics all;
     import from EfcInfoExchange_Templates all;
 	import from EfcInfoExchange_TesterData all;
-    import from EfcInfoExchangeProfile all;
+    import from EfcInfoExchange_Profile all;
 		
      /**
       * @desc	These test cases apply to Toll Charger claiming conformance to [16986:2016]
@@ -74,8 +74,8 @@ module EfcInfoExchange_TestCasesTc {
 				
 				// Step 1:
                 // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for white list with authenticator
-                var InfoExchange v_apduToBeSent := m_apduAuthInitTester({c_exceptionListAduWhiteValid});
-				f_sendAndLogApdu(v_apduToBeSent);                	
+                v_apduForSending := m_apduAuthInitTester({c_exceptionListAduWhiteValid});
+				f_sendAndLogApdu(v_apduForSending);                	
   	
                 // Start timer
                 t_step.start(EXCEPTIONLIST_WHITE_TIME1_MAX_TC);               
@@ -84,7 +84,7 @@ module EfcInfoExchange_TestCasesTc {
               	// if negative Ack or not received set test failure --> is done in altstep
 
 				alt {
-					[] mtcPort.receive(mw_apduAuthRespIut(v_apduToBeSent, m_oneAckInAdusStruct(m_aduDefaultAck(v_apduToBeSent)))) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduAuthRespIut(v_apduForSending, m_oneAckInAdusStruct(m_aduDefaultAck(v_apduForSending)))) -> value v_apduReceived {
 						
 						if (fx_evaluateAuthenticator(v_apduReceived)) {
 							f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
@@ -119,8 +119,8 @@ module EfcInfoExchange_TestCasesTc {
 							
                 // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for white list
                 // Including the invalid APCI 
-                var InfoExchange v_apduToBeSent := m_apduNoAuth(m_apciInvalidAidInitTester, {c_exceptionListAduWhiteValid});
-				f_sendAndLogApdu(v_apduToBeSent);                	
+                v_apduForSending := m_apduNoAuth(m_apciInvalidAidInitTester, {c_exceptionListAduWhiteValid});
+				f_sendAndLogApdu(v_apduForSending);                	
   	
                 // Start timer
                 t_step.start(EXCEPTIONLIST_WHITE_TIME1_MAX_TC);               
@@ -130,7 +130,7 @@ module EfcInfoExchange_TestCasesTc {
               	// if not received set test failure --> is done in altstep
 
 				alt {
-					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduToBeSent, ApduReasonCode_protocolVersionError_)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduForSending, ApduReasonCode_protocolVersionError_)) -> value v_apduReceived {
 						// Log what we received, check and stop time
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
 						setverdict(pass);
@@ -156,8 +156,8 @@ module EfcInfoExchange_TestCasesTc {
 							
                 // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for white list
                 // Including the invalid APCI 
-                var InfoExchange v_apduToBeSent := m_apduNoAuth(m_apciInvalidAidInitTester, {c_exceptionListAduWhiteValid});
-				f_sendAndLogApdu(v_apduToBeSent);                	
+                v_apduForSending := m_apduNoAuth(m_apciInvalidAidInitTester, {c_exceptionListAduWhiteValid});
+				f_sendAndLogApdu(v_apduForSending);                	
   	
                 // Start timer
                 t_step.start(EXCEPTIONLIST_WHITE_TIME1_MAX_TC);               
@@ -167,7 +167,7 @@ module EfcInfoExchange_TestCasesTc {
               	// if not received set test failure --> is done in altstep
 
 				alt {
-					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduToBeSent, ApduReasonCode_originatorRejected_)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduForSending, ApduReasonCode_originatorRejected_)) -> value v_apduReceived {
 						// Log what we received, check and stop time
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
 						setverdict(pass);
@@ -193,8 +193,8 @@ module EfcInfoExchange_TestCasesTc {
 							
                 // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for white list
                 // Including the invalid APCI 
-                var InfoExchange v_apduToBeSent := m_apduNoAuth(m_apciInvalidSenderIdInitTester, {c_exceptionListAduWhiteValid});
-				f_sendAndLogApdu(v_apduToBeSent);                	
+                v_apduForSending := m_apduNoAuth(m_apciInvalidSenderIdInitTester, {c_exceptionListAduWhiteValid});
+				f_sendAndLogApdu(v_apduForSending);                	
   	
                 // Start timer
                 t_step.start(EXCEPTIONLIST_WHITE_TIME1_MAX_TC);               
@@ -204,7 +204,7 @@ module EfcInfoExchange_TestCasesTc {
               	// if not received set test failure --> is done in altstep
 
 				alt {
-					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduToBeSent, ApduReasonCode_originatorRejected_)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduForSending, ApduReasonCode_originatorRejected_)) -> value v_apduReceived {
 						// Log what we received, check and stop time
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
 						setverdict(pass);
@@ -231,8 +231,8 @@ module EfcInfoExchange_TestCasesTc {
 							
                 // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for white list
                 // Including the invalid APCI 
-                var InfoExchange v_apduToBeSent := m_apduNoAuth(m_apciInvalidRecipientIdInitTester, {c_exceptionListAduWhiteValid});
-				f_sendAndLogApdu(v_apduToBeSent);                	
+                v_apduForSending := m_apduNoAuth(m_apciInvalidRecipientIdInitTester, {c_exceptionListAduWhiteValid});
+				f_sendAndLogApdu(v_apduForSending);                	
   	
                 // Start timer
                 t_step.start(EXCEPTIONLIST_WHITE_TIME1_MAX_TC);               
@@ -242,7 +242,7 @@ module EfcInfoExchange_TestCasesTc {
               	// if not received set test failure --> is done in altstep
 
 				alt {
-					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduToBeSent, ApduReasonCode_recipientUnknown_)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduForSending, ApduReasonCode_recipientUnknown_)) -> value v_apduReceived {
 						// Log what we received, check and stop time
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
 						setverdict(pass);
@@ -264,10 +264,10 @@ module EfcInfoExchange_TestCasesTc {
 				
 				// Step 0:
 				// Prepare and capture the apdu to be sent in a variable to avoid apduIdentifier to be re-generated
-				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({c_exceptionListAduWhiteValid});
+				v_apduForSending := m_apduNoAuthInitTester({c_exceptionListAduWhiteValid});
 
 				// Send APDU
-				f_sendAndLogApdu(v_apduToBeSent);              	
+				f_sendAndLogApdu(v_apduForSending);              	
 
                 // Start timer
                 t_step.start(EXCEPTIONLIST_WHITE_TIME1_MAX_TC);               
@@ -276,14 +276,14 @@ module EfcInfoExchange_TestCasesTc {
               	// if negative Ack or not received set test failure --> is done in altstep
 
 				alt {
-					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
 					}
 				}											
 											
                 // Send the same APDU again with same apduIdentifier 
-				f_sendAndLogApdu(v_apduToBeSent);              	
+				f_sendAndLogApdu(v_apduForSending);              	
 
                 // Start timer
                 t_step.start(EXCEPTIONLIST_WHITE_TIME1_MAX_TC);               
@@ -294,7 +294,7 @@ module EfcInfoExchange_TestCasesTc {
               	// if not received set test failure --> is done in altstep
 
 				alt {
-					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduToBeSent, ApduReasonCode_apduNotOK_)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduForSending, ApduReasonCode_apduNotOK_)) -> value v_apduReceived {
 						// Log what we received, check and stop time
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
 						setverdict(pass);
@@ -321,8 +321,8 @@ module EfcInfoExchange_TestCasesTc {
 							
                 // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for white list
                 // Including the invalid APCI 
-                var InfoExchange v_apduToBeSent := m_apduNoAuth(m_apciInvalidWithNextApduIdInitTester, {c_exceptionListAduWhiteValid});
-				f_sendAndLogApdu(v_apduToBeSent);                	
+                v_apduForSending := m_apduNoAuth(m_apciInvalidWithNextApduIdInitTester, {c_exceptionListAduWhiteValid});
+				f_sendAndLogApdu(v_apduForSending);                	
   	
                 // Start timer
                 t_step.start(EXCEPTIONLIST_WHITE_TIME1_MAX_TC);               
@@ -332,7 +332,7 @@ module EfcInfoExchange_TestCasesTc {
               	// if not received set test failure --> is done in altstep
 
 				alt {
-					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduToBeSent, ApduReasonCode_apduNotOK_)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduForSending, ApduReasonCode_apduNotOK_)) -> value v_apduReceived {
 						// Log what we received, check and stop time
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
 						setverdict(pass);
@@ -359,8 +359,8 @@ module EfcInfoExchange_TestCasesTc {
 							
                 // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for white list
                 // Including the invalid APCI 
-                var InfoExchange v_apduToBeSent := m_apduNoAuth(m_apciInvalidWithInResponseToApduIdInitTester, {c_exceptionListAduWhiteValid});
-				f_sendAndLogApdu(v_apduToBeSent);                	
+                v_apduForSending := m_apduNoAuth(m_apciInvalidWithInResponseToApduIdInitTester, {c_exceptionListAduWhiteValid});
+				f_sendAndLogApdu(v_apduForSending);                	
   	
                 // Start timer
                 t_step.start(EXCEPTIONLIST_WHITE_TIME1_MAX_TC);               
@@ -370,13 +370,13 @@ module EfcInfoExchange_TestCasesTc {
               	// if not received set test failure --> is done in altstep
 
 				alt {
-					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduToBeSent, ApduReasonCode_apduNotOK_)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduForSending, ApduReasonCode_apduNotOK_)) -> value v_apduReceived {
 						// Log what we received, check and stop time
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
 						setverdict(pass);
 					}
 					
-					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduToBeSent, ApduReasonCode_sequenceError_)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduForSending, ApduReasonCode_sequenceError_)) -> value v_apduReceived {
 						// Log what we received, check and stop time
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
 						setverdict(pass);
@@ -431,11 +431,11 @@ module EfcInfoExchange_TestCasesTc {
 				};
 
                 // Including the invalid APCI with wrong inResponseToApduId
-                var InfoExchange v_apduToBeSent := m_apduNoAuth(m_apciInvalidInResponseToApduIdRespTester, v_adus);           	
+                v_apduForSending := m_apduNoAuth(m_apciInvalidInResponseToApduIdRespTester, v_adus);           	
 
 				// send ProvideUserIdList within TIME1
 				f_wait(LISTOFUSERS_TIME1_MIN_TC);
-				f_sendAndLogApdu(v_apduToBeSent);       				
+				f_sendAndLogApdu(v_apduForSending);       				
 				// Start timer
                 t_step.start(LISTOFUSERS_TIME2_MAX_TC);               	
              	             
@@ -444,13 +444,13 @@ module EfcInfoExchange_TestCasesTc {
               	// within time LISTOFUSERS.TIME2
               	// if not received set test failure --> is done in altstep
 				alt {
-					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduToBeSent, ApduReasonCode_apduNotOK_)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduForSending, ApduReasonCode_apduNotOK_)) -> value v_apduReceived {
 						// Log what we received, check and stop time
 						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME2_MIN_TC);
 						setverdict(pass);
 					}
 					
-					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduToBeSent, ApduReasonCode_sequenceError_)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduForSending, ApduReasonCode_sequenceError_)) -> value v_apduReceived {
 						// Log what we received, check and stop time
 						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME2_MIN_TC);
 						setverdict(pass);
@@ -477,8 +477,8 @@ module EfcInfoExchange_TestCasesTc {
 							
                 // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for white list
                 // Including the invalid APCI 
-                var InfoExchange v_apduToBeSent := m_apduNoAuth(m_apciInvalidApduDateInitTester, {c_exceptionListAduWhiteValid});
-				f_sendAndLogApdu(v_apduToBeSent);                	
+                v_apduForSending := m_apduNoAuth(m_apciInvalidApduDateInitTester, {c_exceptionListAduWhiteValid});
+				f_sendAndLogApdu(v_apduForSending);                	
   	
                 // Start timer
                 t_step.start(EXCEPTIONLIST_WHITE_TIME1_MAX_TC);               
@@ -488,7 +488,7 @@ module EfcInfoExchange_TestCasesTc {
               	// if not received set test failure --> is done in altstep
 
 				alt {
-					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduToBeSent, ApduReasonCode_apduNotOK_)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduForSending, ApduReasonCode_apduNotOK_)) -> value v_apduReceived {
 						// Log what we received, check and stop time
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
 						setverdict(pass);
@@ -508,10 +508,10 @@ module EfcInfoExchange_TestCasesTc {
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc                 
 
 				// Set up a correct apdu which not be sent (Black-list) and create an valid authenticator		
-				var InfoExchange v_apduToBeSent := m_apduAuthInitTester({c_exceptionListAduBlackValid1});
+				v_apduForSending := m_apduAuthInitTester({c_exceptionListAduBlackValid1});
 
 				// Get this correctly computed authenticator				
-				var ApduAuthenticator v_authenticator:= v_apduToBeSent.infoExchangeAuthenticator;
+				var ApduAuthenticator v_authenticator:= v_apduForSending.infoExchangeAuthenticator;
 					
 				// Step 0:
 				// Prepare APCI for an Initiating APDU (White-list) in which the authenticator is replaced by
@@ -521,8 +521,8 @@ module EfcInfoExchange_TestCasesTc {
 											
 				// Step 1:
                 // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for white list with authenticator
-                v_apduToBeSent := m_apduInvalidAuthInitTester({c_exceptionListAduWhiteValid});
-				f_sendAndLogApdu(v_apduToBeSent);                	
+                v_apduForSending := m_apduInvalidAuthInitTester({c_exceptionListAduWhiteValid});
+				f_sendAndLogApdu(v_apduForSending);                	
   	
                 // Start timer
                 t_step.start(EXCEPTIONLIST_WHITE_TIME1_MAX_TC);               
@@ -532,7 +532,7 @@ module EfcInfoExchange_TestCasesTc {
               	// within time EXCEPTIONLIST.TIME1
               	// if not received set test failure --> is done in altstep
 				alt {
-					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduToBeSent, ApduReasonCode_apduNotOK_)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduForSending, ApduReasonCode_apduNotOK_)) -> value v_apduReceived {
 						// Log what we received, check and stop time
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
 						setverdict(pass);
@@ -634,17 +634,17 @@ module EfcInfoExchange_TestCasesTc {
 				}								                   
 				
                 // Prepare Apdu to be sent
-                var InfoExchange v_apduToBeSent := m_apduNoAuthRespTester(v_apduReceived, v_adus);              	
+                v_apduForSending := m_apduNoAuthRespTester(v_apduReceived, v_adus);              	
 
 				// Send Apdu
-				f_sendAndLogApdu(v_apduToBeSent);
+				f_sendAndLogApdu(v_apduForSending);
 
 				//Start timer
 				t_step.start(USERDETAILS_TIME2_MAX_TC);
 				
 				//Step 3 wait for AckADU
 				alt {
-					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME2_MIN_TC);
 						setverdict(pass);
@@ -714,10 +714,10 @@ module EfcInfoExchange_TestCasesTc {
 				}								                   
 
 				// Prepare Apdu to be sent
-                var InfoExchange v_apduToBeSent := m_apduNoAuthRespTester(v_apduReceived, v_adus);              	
+                v_apduForSending := m_apduNoAuthRespTester(v_apduReceived, v_adus);              	
 
 				// Send Apdu
-				f_sendAndLogApdu(v_apduToBeSent);
+				f_sendAndLogApdu(v_apduForSending);
 
 				//Start timer
 				t_step.start(USERDETAILS_TIME2_MAX_TC);
@@ -740,12 +740,12 @@ module EfcInfoExchange_TestCasesTc {
 				}
               	
 				alt {
-					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduToBeSent, AduReasonCode_semanticError_)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduForSending, AduReasonCode_semanticError_)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME2_MIN_TC);
 						setverdict(pass);
 					}					
-					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent, v_nAckParamsList)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, v_nAckParamsList)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME2_MIN_TC);
 						setverdict(pass);
@@ -815,10 +815,10 @@ module EfcInfoExchange_TestCasesTc {
 				}								                   
 
 				// Prepare Apdu to be sent
-                var InfoExchange v_apduToBeSent := m_apduNoAuthRespTester(v_apduReceived, v_adus);              	
+                v_apduForSending := m_apduNoAuthRespTester(v_apduReceived, v_adus);              	
 
 				// Send Apdu
-				f_sendAndLogApdu(v_apduToBeSent);
+				f_sendAndLogApdu(v_apduForSending);
 
 				//Start timer
 				t_step.start(USERDETAILS_TIME2_MAX_TC);
@@ -841,12 +841,12 @@ module EfcInfoExchange_TestCasesTc {
 				}
               	
 				alt {
-					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduToBeSent, AduReasonCode_invalidADU_)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduForSending, AduReasonCode_invalidADU_)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME2_MIN_TC);
 						setverdict(pass);
 					}					
-					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent, v_nAckParamsList)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, v_nAckParamsList)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME2_MIN_TC);
 						setverdict(pass);
@@ -911,10 +911,10 @@ module EfcInfoExchange_TestCasesTc {
 				}								                   
 
 				// Prepare Apdu to be sent
-                var InfoExchange v_apduToBeSent := m_apduNoAuthRespTester(v_apduReceived, v_adus);              	
+                v_apduForSending := m_apduNoAuthRespTester(v_apduReceived, v_adus);              	
 
 				// Send Apdu
-				f_sendAndLogApdu(v_apduToBeSent);
+				f_sendAndLogApdu(v_apduForSending);
 
 				//Start timer
 				t_step.start(USERDETAILS_TIME2_MAX_TC);
@@ -937,12 +937,12 @@ module EfcInfoExchange_TestCasesTc {
 				}
               	
 				alt {
-					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduToBeSent, AduReasonCode_invalidADU_)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduForSending, AduReasonCode_invalidADU_)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME2_MIN_TC);
 						setverdict(pass);
 					}					
-					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent, v_nAckParamsList)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, v_nAckParamsList)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME2_MIN_TC);
 						setverdict(pass);
@@ -1012,10 +1012,10 @@ module EfcInfoExchange_TestCasesTc {
 				}								                   
 
 				// Prepare Apdu to be sent
-                var InfoExchange v_apduToBeSent := m_apduNoAuthRespTester(v_apduReceived, v_adus);              	
+                v_apduForSending := m_apduNoAuthRespTester(v_apduReceived, v_adus);              	
 
 				// Send Apdu
-				f_sendAndLogApdu(v_apduToBeSent);
+				f_sendAndLogApdu(v_apduForSending);
 
 				//Start timer
 				t_step.start(USERDETAILS_TIME2_MAX_TC);
@@ -1038,12 +1038,12 @@ module EfcInfoExchange_TestCasesTc {
 				}
               	
 				alt {
-					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduToBeSent, AduReasonCode_invalidADU_)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduForSending, AduReasonCode_invalidADU_)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME2_MIN_TC);
 						setverdict(pass);
 					}					
-					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent, v_nAckParamsList)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, v_nAckParamsList)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME2_MIN_TC);
 						setverdict(pass);
@@ -1114,10 +1114,10 @@ module EfcInfoExchange_TestCasesTc {
 				}								                   
 
 				// Prepare Apdu to be sent
-                var InfoExchange v_apduToBeSent := m_apduNoAuthRespTester(v_apduReceived, v_adus);              	
+                v_apduForSending := m_apduNoAuthRespTester(v_apduReceived, v_adus);              	
 
 				// Send Apdu
-				f_sendAndLogApdu(v_apduToBeSent);
+				f_sendAndLogApdu(v_apduForSending);
 
 				//Start timer
 				t_step.start(USERDETAILS_TIME2_MAX_TC);
@@ -1140,12 +1140,12 @@ module EfcInfoExchange_TestCasesTc {
 				}
               	
 				alt {
-					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduToBeSent, AduReasonCode_invalidADU_)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduForSending, AduReasonCode_invalidADU_)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME2_MIN_TC);
 						setverdict(pass);
 					}					
-					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent, v_nAckParamsList)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, v_nAckParamsList)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME2_MIN_TC);
 						setverdict(pass);
@@ -1203,11 +1203,11 @@ module EfcInfoExchange_TestCasesTc {
 				};
 																	
                 // Prepare APDU to be sent
-                var InfoExchange v_apduToBeSent := m_apduNoAuthRespTester(v_apduReceived, v_adusProvideUserIdList);              	
+                v_apduForSending := m_apduNoAuthRespTester(v_apduReceived, v_adusProvideUserIdList);              	
 
 				// send ProvideUserIdList within TIME1
 				f_wait(LISTOFUSERS_TIME1_MIN_TC);
-				f_sendAndLogApdu(v_apduToBeSent);       				
+				f_sendAndLogApdu(v_apduForSending);       				
 
 				// Start timer
                 t_step.start(LISTOFUSERS_TIME2_MAX_TC);               	
@@ -1217,7 +1217,7 @@ module EfcInfoExchange_TestCasesTc {
               	// within time LISTOFUSERS.TIME2
               	// if not received set test failure --> is done in altstep
 				alt {
-					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {
 						// Log what we received, check and stop time
 						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME2_MIN_TC);
 						setverdict(pass);
@@ -1264,11 +1264,11 @@ module EfcInfoExchange_TestCasesTc {
 				var ProvideUserIdListADU v_adusProvideUserIdList:= m_aduProvideUserIdList(omit);
 																	
                 // Prepare APDU to be sent
-                var InfoExchange v_apduToBeSent := m_apduNoAuthRespTester(v_apduReceived, v_adusProvideUserIdList);              	
+                v_apduForSending := m_apduNoAuthRespTester(v_apduReceived, v_adusProvideUserIdList);              	
 
 				// send ProvideUserIdList within TIME1
 				f_wait(LISTOFUSERS_TIME1_MIN_TC);
-				f_sendAndLogApdu(v_apduToBeSent);       				
+				f_sendAndLogApdu(v_apduForSending);       				
 
 				// Start timer
                 t_step.start(LISTOFUSERS_TIME2_MAX_TC);               	
@@ -1278,12 +1278,12 @@ module EfcInfoExchange_TestCasesTc {
                 //		- NAck_Apdu with aduReasonCode = invalidAdu(0) for ADU#1
               	// if not received set test failure --> is done in altstep
 				alt {
-					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduToBeSent, AduReasonCode_invalidADU_)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduForSending, AduReasonCode_invalidADU_)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME2_MIN_TC);
 						setverdict(pass);
 					}					
-					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent, {{1, AduReasonCode_invalidADU_}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, {{1, AduReasonCode_invalidADU_}})) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME2_MIN_TC);
 						setverdict(pass);
@@ -1339,11 +1339,11 @@ module EfcInfoExchange_TestCasesTc {
 				};
 																	
                 // Prepare APDU to be sent
-                var InfoExchange v_apduToBeSent := m_apduNoAuthRespTester(v_apduReceived, v_adus);              	
+                v_apduForSending := m_apduNoAuthRespTester(v_apduReceived, v_adus);              	
 
 				// send ProvideUserIdList within TIME1
 				f_wait(LISTOFUSERS_TIME1_MIN_TC);
-				f_sendAndLogApdu(v_apduToBeSent);       				
+				f_sendAndLogApdu(v_apduForSending);       				
 
 				// Start timer
                 t_step.start(LISTOFUSERS_TIME2_MAX_TC);               	
@@ -1353,12 +1353,12 @@ module EfcInfoExchange_TestCasesTc {
                 //		- NAck_Apdu with aduReasonCode = semanticError (3000) for ADU#1, #2 and #3
               	// if not received set test failure --> is done in altstep
 				alt {
-					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduToBeSent, AduReasonCode_semanticError_)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduForSending, AduReasonCode_semanticError_)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME2_MIN_TC);
 						setverdict(pass);
 					}					
-					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent,{
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending,{
 						{1, AduReasonCode_semanticError_},
 						{2, AduReasonCode_semanticError_},
 						{3, AduReasonCode_semanticError_}})) -> value v_apduReceived {
@@ -1413,11 +1413,11 @@ module EfcInfoExchange_TestCasesTc {
 				v_aduProvideUserIdList.userIdList:={{},{},{}};
 																	
                 // Prepare APDU to be sent
-                var InfoExchange v_apduToBeSent:= m_apduNoAuthRespTester(v_apduReceived, v_aduProvideUserIdList);              	
+                v_apduForSending:= m_apduNoAuthRespTester(v_apduReceived, v_aduProvideUserIdList);              	
 
 				// send ProvideUserIdList within TIME1
 				f_wait(LISTOFUSERS_TIME1_MIN_TC);
-				f_sendAndLogApdu(v_apduToBeSent);       				
+				f_sendAndLogApdu(v_apduForSending);       				
 
 				// Start timer
                 t_step.start(LISTOFUSERS_TIME2_MAX_TC);               	
@@ -1427,12 +1427,12 @@ module EfcInfoExchange_TestCasesTc {
                 //		- NAck_Apdu with aduReasonCode = invalidADU(0) for ADU#1
               	// if not received set test failure --> is done in altstep
 				alt {
-					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduToBeSent, AduReasonCode_invalidADU_)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduForSending, AduReasonCode_invalidADU_)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME2_MIN_TC);
 						setverdict(pass);
 					}					
-					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent,{{1, AduReasonCode_invalidADU_}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending,{{1, AduReasonCode_invalidADU_}})) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME2_MIN_TC);
 						setverdict(pass);
@@ -1788,12 +1788,12 @@ module EfcInfoExchange_TestCasesTc {
                                 		              
                 // Step 1:
                 // Prepare and send Initiating_Apdu containing three ContractIssuerListADUs with differing manufacturerID values
-				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
+				v_apduForSending := m_apduNoAuthInitTester({
 					  	TD_CONTRACT_ISSUER_DATA_VALID_1,
 					  	TD_CONTRACT_ISSUER_DATA_VALID_2,
 					  	TD_CONTRACT_ISSUER_DATA_VALID_3
 					  	});                 
-				f_sendAndLogApdu(v_apduToBeSent);                     
+				f_sendAndLogApdu(v_apduForSending);                     
                 
                 // Start timer
                 t_step.start(DSRC_CONTRACTISSUERLIST_TIME1_MAX_TC);               
@@ -1802,7 +1802,7 @@ module EfcInfoExchange_TestCasesTc {
               	// if negative Ack or not received set test failure --> is done in altstep
 
 				alt {
-					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(DSRC_CONTRACTISSUERLIST_TIME1_MIN_TC);
 						//Set verdict
@@ -1830,12 +1830,12 @@ module EfcInfoExchange_TestCasesTc {
                 // Send Initiating_Apdu containing three ContractIssuerListADUs each one with exactly
                 // one incorrect parameter value from the set [uniquePartOfPan, acCrKeyReference, authKeyReference]
 
-				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
+				v_apduForSending := m_apduNoAuthInitTester({
 					  	TD_CONTRACT_ISSUER_DATA_INVALID_1,
 					  	TD_CONTRACT_ISSUER_DATA_INVALID_2,
 					  	TD_CONTRACT_ISSUER_DATA_INVALID_3
 					});                 
-				f_sendAndLogApdu(v_apduToBeSent); 
+				f_sendAndLogApdu(v_apduForSending); 
                 
                 // Start timer
                 t_step.start(DSRC_CONTRACTISSUERLIST_TIME1_MAX_TC);   
@@ -1846,14 +1846,14 @@ module EfcInfoExchange_TestCasesTc {
               	// if negative Ack or not received set test failure --> is done in altstep
 
 				alt {
-					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduToBeSent, AduReasonCode_semanticError_)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduForSending, AduReasonCode_semanticError_)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(DSRC_CONTRACTISSUERLIST_TIME1_MIN_TC);
 						// set verdict
 						setverdict(pass);
 					}
 
-					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent, {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, {
 						{1, AduReasonCode_semanticError_},
 						{2, AduReasonCode_semanticError_},
 						{3, AduReasonCode_semanticError_}})) -> value v_apduReceived {
@@ -1880,15 +1880,15 @@ module EfcInfoExchange_TestCasesTc {
 
                 // Step 0: Send Initiating_Apdu containing one ContractIssuerListADU
                 // Prepare and send one Initiating_Apdu containing exactly one ContractIssuerListADU
-                var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({TD_CONTRACT_ISSUER_DATA_VALID_1});
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+                v_apduForSending := m_apduNoAuthInitTester({TD_CONTRACT_ISSUER_DATA_VALID_1});
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
                                                 
                 // Step 1: Send second Initiating_Apdu containing one ContractIssuerListADU
                 // before DSRC.CONTRACTISSUERLIST.TIMEA_MIN has passed
 				f_wait(DSRC_CONTRACTISSUERLIST_TIMEA_MIN_TC / 2);
 
-				v_apduToBeSent := m_apduNoAuthInitTester({TD_CONTRACT_ISSUER_DATA_VALID_1});                 
-				f_sendAndLogApdu(v_apduToBeSent); 
+				v_apduForSending := m_apduNoAuthInitTester({TD_CONTRACT_ISSUER_DATA_VALID_1});                 
+				f_sendAndLogApdu(v_apduForSending); 
                 
                 // Start timer
                 t_step.start(DSRC_CONTRACTISSUERLIST_TIME1_MAX_TC);   
@@ -1898,7 +1898,7 @@ module EfcInfoExchange_TestCasesTc {
               	// if other Ack or not received set test failure --> is done in altstep            	
 
 				alt {
-					[] mtcPort.receive(mw_apduNAckRequestSentTooOften(v_apduToBeSent)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckRequestSentTooOften(v_apduForSending)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(DSRC_CONTRACTISSUERLIST_TIME1_MIN_TC);
 						// set verdict
@@ -1932,8 +1932,8 @@ module EfcInfoExchange_TestCasesTc {
 							
                 // Step 1 / loop 1 for black list:
                 // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for black list
-                var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({c_exceptionListAduBlackValid1});
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+                v_apduForSending := m_apduNoAuthInitTester({c_exceptionListAduBlackValid1});
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
   	
                 // Start timer
                 t_step.start(EXCEPTIONLIST_BLACK_TIME1_MAX_TC);               
@@ -1942,7 +1942,7 @@ module EfcInfoExchange_TestCasesTc {
               	// if negative Ack or not received set test failure --> is done in altstep
 
 				alt {
-					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
 					}
@@ -1952,8 +1952,8 @@ module EfcInfoExchange_TestCasesTc {
 				
 				// Step 2 / loop 2 for white list:
                 // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for white list
-                v_apduToBeSent := m_apduNoAuthInitTester({c_exceptionListAduWhiteValid});
-				f_sendAndLogApdu(v_apduToBeSent);                	
+                v_apduForSending := m_apduNoAuthInitTester({c_exceptionListAduWhiteValid});
+				f_sendAndLogApdu(v_apduForSending);                	
   	
                 // Start timer
                 t_step.start(EXCEPTIONLIST_WHITE_TIME1_MAX_TC);               
@@ -1962,7 +1962,7 @@ module EfcInfoExchange_TestCasesTc {
               	// if negative Ack or not received set test failure --> is done in altstep
 
 				alt {
-					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
 						//Set verdict
@@ -1987,8 +1987,8 @@ module EfcInfoExchange_TestCasesTc {
 							
                 // Step 1:
                 // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for discounted user list
-                var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({c_exceptionListAduDiscountedValid});
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+                v_apduForSending := m_apduNoAuthInitTester({c_exceptionListAduDiscountedValid});
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
   	
                 // Start timer
                 t_step.start(EXCEPTIONLIST_DISCOUNT_TIME1_MAX_TC);               
@@ -2000,19 +2000,19 @@ module EfcInfoExchange_TestCasesTc {
               	// if negative Ack or not received set test failure --> is done in altstep
 
 				alt {
-					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {					  
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_DISCOUNT_TIME1_MIN_TC);
 						//Set verdict
 						setverdict(pass);												
 					}
-					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduToBeSent, AduReasonCode_semanticError_)) -> value v_apduReceived {				  
+					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduForSending, AduReasonCode_semanticError_)) -> value v_apduReceived {				  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_DISCOUNT_TIME1_MIN_TC);
 						//Set verdict
 						setverdict(pass);												
 					}
-					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent, {{1, AduReasonCode_semanticError_}})) -> value v_apduReceived {				  
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, {{1, AduReasonCode_semanticError_}})) -> value v_apduReceived {				  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_DISCOUNT_TIME1_MIN_TC);
 						//Set verdict
@@ -2059,8 +2059,8 @@ module EfcInfoExchange_TestCasesTc {
 					}}
 				};
 				  			
-                var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({c_exceptionListAduBlackInvalid1});
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+                v_apduForSending := m_apduNoAuthInitTester({c_exceptionListAduBlackInvalid1});
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
             	
                 // Start timer
                 t_step.start(EXCEPTIONLIST_BLACK_TIME1_MAX_TC);               
@@ -2071,12 +2071,12 @@ module EfcInfoExchange_TestCasesTc {
               	// if negative Ack or not received set test failure --> is done in altstep
 
 				alt {
-					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduToBeSent, AduReasonCode_exceptionListsDateAndTimeRejected_)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduForSending, AduReasonCode_exceptionListsDateAndTimeRejected_)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
 						setverdict(pass);
 					}
-					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent, {{1, AduReasonCode_exceptionListsDateAndTimeRejected_}})) -> value v_apduReceived {				  
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, {{1, AduReasonCode_exceptionListsDateAndTimeRejected_}})) -> value v_apduReceived {				  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
 						//Set verdict
@@ -2120,8 +2120,8 @@ module EfcInfoExchange_TestCasesTc {
 					}}
 				};
             	            	
-               	var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({c_exceptionListAduBlackInvalid2});
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+               	v_apduForSending := m_apduNoAuthInitTester({c_exceptionListAduBlackInvalid2});
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
 
                 // Start timer
                 t_step.start(EXCEPTIONLIST_BLACK_TIME1_MAX_TC);     
@@ -2132,12 +2132,12 @@ module EfcInfoExchange_TestCasesTc {
               	// if negative Ack or not received set test failure --> is done in altstep
 
 				alt {
-					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduToBeSent, AduReasonCode_invalidADU_)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduForSending, AduReasonCode_invalidADU_)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
 						setverdict(pass);
 					}					
-					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent, {{1, AduReasonCode_invalidADU_}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, {{1, AduReasonCode_invalidADU_}})) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
 						setverdict(pass);
@@ -2159,11 +2159,11 @@ module EfcInfoExchange_TestCasesTc {
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc                 
 
             	// Step 1: Send Initiating_Apdu containing more than one ExceptionListADU indicating list type BLACK
-               	var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
+               	v_apduForSending := m_apduNoAuthInitTester({
                		c_exceptionListAduBlackValid1,c_exceptionListAduBlackValid2
                	});
                	
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
 		
                 // Start timer
                 t_step.start(EXCEPTIONLIST_BLACK_TIME1_MAX_TC);               
@@ -2173,7 +2173,7 @@ module EfcInfoExchange_TestCasesTc {
               	// if negative Ack or not received set test failure --> is done in altstep
 
 				alt {
-					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduToBeSent, ApduReasonCode_apduNotOK_)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduForSending, ApduReasonCode_apduNotOK_)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
 						setverdict(pass);
@@ -2216,8 +2216,8 @@ module EfcInfoExchange_TestCasesTc {
 					}}
 				};
 
-               	var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({c_exceptionListAduBlackInvalid3});
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+               	v_apduForSending := m_apduNoAuthInitTester({c_exceptionListAduBlackInvalid3});
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
 		
                 // Start timer
                 t_step.start(EXCEPTIONLIST_BLACK_TIME1_MAX_TC);               
@@ -2228,12 +2228,12 @@ module EfcInfoExchange_TestCasesTc {
               	// if negative Ack or not received set test failure --> is done in altstep
 
 				alt {
-					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduToBeSent, AduReasonCode_exceptionListsVersionRejected_)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduForSending, AduReasonCode_exceptionListsVersionRejected_)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
 						setverdict(pass);
 					}					
-					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent, {{1, AduReasonCode_exceptionListsVersionRejected_}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, {{1, AduReasonCode_exceptionListsVersionRejected_}})) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
 						setverdict(pass);
@@ -2275,8 +2275,8 @@ module EfcInfoExchange_TestCasesTc {
 					}}
 				};
 
-               	var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({c_exceptionListAduListType4});
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+               	v_apduForSending := m_apduNoAuthInitTester({c_exceptionListAduListType4});
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
 		
                 // Start timer
                 t_step.start(EXCEPTIONLIST_BLACK_TIME1_MAX_TC);            
@@ -2287,7 +2287,7 @@ module EfcInfoExchange_TestCasesTc {
               	// if negative Ack or not received set test failure --> is done in altstep
 
 				alt {
-					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduToBeSent, AduReasonCode_exceptionListsTypeRejected_)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduForSending, AduReasonCode_exceptionListsTypeRejected_)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logApduReceivedAndTStep();
 						//Check minumum time and stop timer
@@ -2295,7 +2295,7 @@ module EfcInfoExchange_TestCasesTc {
 						setverdict(pass);
 					}					
 
-					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent, {{1, AduReasonCode_exceptionListsTypeRejected_}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, {{1, AduReasonCode_exceptionListsTypeRejected_}})) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logApduReceivedAndTStep();
 						//Check minumum time and stop timer
@@ -2328,8 +2328,8 @@ module EfcInfoExchange_TestCasesTc {
 					ExceptionListReasonType_notToBeDisclosed_,
 					ExceptionListActionType_rejectOBE_
 				);
-               	var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({v_exceptionListADU});
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+               	v_apduForSending := m_apduNoAuthInitTester({v_exceptionListADU});
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
 		
                 // Start timer
                 t_step.start(EXCEPTIONLIST_BLACK_TIME1_MAX_TC);           
@@ -2340,12 +2340,12 @@ module EfcInfoExchange_TestCasesTc {
               	// if negative Ack or not received set test failure --> is done in altstep
 
 				alt {
-					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduToBeSent, AduReasonCode_exceptionListsUserIdRejected_)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduForSending, AduReasonCode_exceptionListsUserIdRejected_)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
 						setverdict(pass);
 					}					
-					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent, {{1, AduReasonCode_exceptionListsUserIdRejected_}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, {{1, AduReasonCode_exceptionListsUserIdRejected_}})) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
 						setverdict(pass);
@@ -2371,8 +2371,8 @@ module EfcInfoExchange_TestCasesTc {
             	// Step 1: Send Initiating_Apdu containing one valid ExceptionListADU of list type BLACK
             
                 // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for black list
-                var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({c_exceptionListAduBlackValid1});
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+                v_apduForSending := m_apduNoAuthInitTester({c_exceptionListAduBlackValid1});
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
   	
                 // Start timer
                 t_step.start(EXCEPTIONLIST_BLACK_TIME1_MAX_TC);               
@@ -2382,7 +2382,7 @@ module EfcInfoExchange_TestCasesTc {
               	// if negative Ack or not received set test failure --> is done in altstep
 
 				alt {
-					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
 					}
@@ -2393,8 +2393,8 @@ module EfcInfoExchange_TestCasesTc {
             	// before TIME0 MIN has passed = immediately after the Ack in Transaction 1 
             	
                 // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for black list
-                v_apduToBeSent := m_apduNoAuthInitTester({c_exceptionListAduBlackValid1});
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+                v_apduForSending := m_apduNoAuthInitTester({c_exceptionListAduBlackValid1});
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
   	
                 // Start timer
                 t_step.start(EXCEPTIONLIST_BLACK_TIME1_MAX_TC);               
@@ -2404,7 +2404,7 @@ module EfcInfoExchange_TestCasesTc {
               	// if negative Ack or not received set test failure --> is done in altstep            	
 
 				alt {
-					[] mtcPort.receive(mw_apduNAckRequestSentTooOften(v_apduToBeSent)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckRequestSentTooOften(v_apduForSending)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time		
 						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
 						setverdict(pass);
@@ -2672,8 +2672,8 @@ module EfcInfoExchange_TestCasesTc {
 //				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A7_4_implementedTRUSTOBJECTSElectronicTransfer;
 //				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 //
-//				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester(m_aduTrustObjectInvalidStatus);                 
-//				f_sendAndLogApdu(v_apduToBeSent);                 
+//				v_apduForSending := m_apduNoAuthInitTester(m_aduTrustObjectInvalidStatus);                 
+//				f_sendAndLogApdu(v_apduForSending);                 
 //                // Step 2: Wait for negative Ack within TRUSTOBJECTS.TIME2
 //				// Set timer
 //                t_step.start(TRUSTOBJECTS_TYPE1_TIME2_MAX_TC);                		
@@ -2707,7 +2707,7 @@ module EfcInfoExchange_TestCasesTc {
 //				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 //
 //				// Set two different TrustObject adus by varying the type of trust object 
-//				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester(
+//				v_apduForSending := m_apduNoAuthInitTester(
 //					{
 //					 m_aduTrustObject(
 //						{TrustObjectPurposes_dSRCCharging_,TrustObjectPurposes_dSRCAC_,TrustObjectPurposes_oBEInterrogation_,TrustObjectPurposes_oBEInterrogationAC_},
@@ -2716,7 +2716,7 @@ module EfcInfoExchange_TestCasesTc {
 //					 	{TrustObjectPurposes_dSRCCharging_},
 //					 	certificateTESTER_OBJECT) }
 //					);                 
-//				f_sendAndLogApdu(v_apduToBeSent);                 
+//				f_sendAndLogApdu(v_apduForSending);                 
 //                // Step 2: Wait for negative Ack within TRUSTOBJECTS.TIME2
 //				// Set timer
 //                 t_step.start(TRUSTOBJECTS_TYPE1_TIME2_MAX_TC);                		
@@ -3213,9 +3213,9 @@ module EfcInfoExchange_TestCasesTc {
                 // Prepare and send one Initiating_Apdu containing exactly ten TollDeclarationADUs with actionCode = send                // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for discounted user list
                 // TODO Jan: Define tester data required inside the module TesterData               
 
-				var InfoExchange v_apduToBeSent := m_apduTollDeclarationsTen;
+				v_apduForSending := m_apduTollDeclarationsTen;
 				                	               	                	                	                	                	                	              	
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
                 
@@ -3224,7 +3224,7 @@ module EfcInfoExchange_TestCasesTc {
                 // use template for Default_Ack_Apdu
                 // if not received or received outside specification or time constraints set test fail
 				alt {
-					[] mtcPort.receive(m_apduDefaultAckTester(v_apduToBeSent)) -> value v_apduReceived {					  
+					[] mtcPort.receive(m_apduDefaultAckTester(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
 						//Set verdict
@@ -3256,9 +3256,9 @@ module EfcInfoExchange_TestCasesTc {
 
                 // Prepare and send one Initiating_Apdu containing exactly ten TollDeclarationADUs with actionCode = send
 
-				var InfoExchange v_apduToBeSent := m_apduTollDeclarationsTen;
+				v_apduForSending := m_apduTollDeclarationsTen;
 				                	               	                	                	                	                	                	              	
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
 				
@@ -3267,7 +3267,7 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail 
 
 				alt {
-					[] mtcPort.receive(m_apduDefaultAckTester(v_apduToBeSent)) -> value v_apduReceived {					  
+					[] mtcPort.receive(m_apduDefaultAckTester(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);												
 					}
@@ -3289,7 +3289,7 @@ module EfcInfoExchange_TestCasesTc {
                 // Prepare and send one Initiating_Apdu containing exactly ten TollDeclarationADUs with actionCode = revoke
                 // Note that it is required to send again with same TollDeclarationId,
                 // same TollDeclarations and same Charge Report Id
-				v_apduToBeSent := m_apduTollDeclarationsTen(ActionCode_revoke_);
+				v_apduForSending := m_apduTollDeclarationsTen(ActionCode_revoke_);
 				                
                 // Step 3:
                 // Wait for Default_Ack_Apdu within GNSS.TOLLDECLARARTION.TIME1             
@@ -3297,7 +3297,7 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail
 
 				alt {
-					[] mtcPort.receive(m_apduDefaultAckTester(v_apduToBeSent)) -> value v_apduReceived {					  
+					[] mtcPort.receive(m_apduDefaultAckTester(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);												
 						//Set verdict
@@ -3329,9 +3329,9 @@ module EfcInfoExchange_TestCasesTc {
 
                // Prepare and send one Initiating_Apdu containing exactly ten TollDeclarationADUs with actionCode = send
 
-				var InfoExchange v_apduToBeSent := m_apduTollDeclarationsTen;
+				v_apduForSending := m_apduTollDeclarationsTen;
 				                	               	                	                	                	                	                	              	
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
 								
@@ -3340,7 +3340,7 @@ module EfcInfoExchange_TestCasesTc {
 				// TODO JAN / PT140: below Ack to be preplaced by a negative ack according to the specifications of is16986
 				// for this case of adjusting TollDeclarationADUs
 				alt {
-					[] mtcPort.receive(m_apduDefaultAckTester(v_apduToBeSent)) -> value v_apduReceived {					  
+					[] mtcPort.receive(m_apduDefaultAckTester(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);												
 					}
@@ -3362,7 +3362,7 @@ module EfcInfoExchange_TestCasesTc {
                 // Prepare and send one Initiating_Apdu containing exactly ten TollDeclarationADUs with actionCode = adjust
                 // Note that it is required to send again with same TollDeclarationId,
                 // but "corrected" TollDeclarations and a new Charge Report Id
-				v_apduToBeSent := m_apduNoAuthInitTester({
+				v_apduForSending := m_apduNoAuthInitTester({
 					m_aduTollDeclarationToSendOneObe(
 						{TD_IDENTIFIER, 1},
 						TD_USAGE_STATEMENT_VALID_11,
@@ -3420,7 +3420,7 @@ module EfcInfoExchange_TestCasesTc {
                 // use template for Default_Ack_Apdu
                 // if not received or received outside specification or time constraints set test fail
 				alt {
-					[] mtcPort.receive(m_apduDefaultAckTester(v_apduToBeSent)) -> value v_apduReceived {					  
+					[] mtcPort.receive(m_apduDefaultAckTester(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);												
 						//Set verdict
@@ -3452,7 +3452,7 @@ module EfcInfoExchange_TestCasesTc {
 
                // Prepare and send an Initiating_Apdu with PARAM1_MAX + 1 TollDeclarationADUs with actionCode = send
 
-				var InfoExchange v_apduToBeSent;
+				 
 				var Adus v_adusToBeSent; //List of ADUs to be sent 
 				var UsageStatement v_usageStatementToBeSent;
 
@@ -3472,9 +3472,9 @@ module EfcInfoExchange_TestCasesTc {
 							ActionCode_send_);
 				}		
  					
-				v_apduToBeSent := m_apduNoAuthInitTester(v_adusToBeSent);
+				v_apduForSending := m_apduNoAuthInitTester(v_adusToBeSent);
 				                	               	                	                	                	                	                	              	
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
                 
@@ -3490,12 +3490,12 @@ module EfcInfoExchange_TestCasesTc {
 				var NAckParams v_nAckParams_2 := {{GNSS_TOLLDECLARATIONS_PARAM1_MAX_TC, AduReasonCode_semanticError_}};
 
 				alt {
-					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduToBeSent, v_nAckParams_1)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduForSending, v_nAckParams_1)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
 					}
 
-					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduToBeSent, v_nAckParams_2)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduForSending, v_nAckParams_2)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
 					}
@@ -3526,7 +3526,7 @@ module EfcInfoExchange_TestCasesTc {
 				
                 // Prepare and send one Initiating_Apdu containing exactly one TollDeclarationADUs with actionCode = send
 
-				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
+				v_apduForSending := m_apduNoAuthInitTester({
 					m_aduTollDeclarationToSendOneObe(
 						{TD_IDENTIFIER, 1},
 						TD_USAGE_STATEMENT_VALID_1,
@@ -3534,7 +3534,7 @@ module EfcInfoExchange_TestCasesTc {
 						ActionCode_send_)
 					});
 
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
 				
@@ -3542,7 +3542,7 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail 
 
 				alt {
-					[] mtcPort.receive(m_apduDefaultAckTester(v_apduToBeSent)) -> value v_apduReceived {					  
+					[] mtcPort.receive(m_apduDefaultAckTester(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);												
 					}
@@ -3563,7 +3563,7 @@ module EfcInfoExchange_TestCasesTc {
 
                 // Prepare and send one Initiating_Apdu containing exactly one TollDeclarationADUs with actionCode = revoke
                 // same TollDeclarations and same Charge Report Id
-				v_apduToBeSent := m_apduNoAuthInitTester({
+				v_apduForSending := m_apduNoAuthInitTester({
 					m_aduTollDeclarationToSendOneObe(
 						{TD_IDENTIFIER, 2},
 						TD_USAGE_STATEMENT_VALID_2,
@@ -3583,12 +3583,12 @@ module EfcInfoExchange_TestCasesTc {
 				var NAckParams v_nAckParams_2 := {{1, AduReasonCode_semanticError_}};
 
 				alt {
-					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduToBeSent, v_nAckParams_1)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduForSending, v_nAckParams_1)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
 					}
 
-					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduToBeSent, v_nAckParams_2)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduForSending, v_nAckParams_2)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
 					}
@@ -3619,7 +3619,7 @@ module EfcInfoExchange_TestCasesTc {
 				
                 // Prepare and send one Initiating_Apdu containing exactly one TollDeclarationADUs with actionCode = send
 
-				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
+				v_apduForSending := m_apduNoAuthInitTester({
 					m_aduTollDeclarationToSendOneObe(
 						{TD_IDENTIFIER, 1},
 						TD_USAGE_STATEMENT_VALID_1,
@@ -3627,7 +3627,7 @@ module EfcInfoExchange_TestCasesTc {
 						ActionCode_send_)
 					});
 
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
 				
@@ -3635,7 +3635,7 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail 
 
 				alt {
-					[] mtcPort.receive(m_apduDefaultAckTester(v_apduToBeSent)) -> value v_apduReceived {					  
+					[] mtcPort.receive(m_apduDefaultAckTester(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);												
 					}
@@ -3656,7 +3656,7 @@ module EfcInfoExchange_TestCasesTc {
 
                 // Prepare and send one Initiating_Apdu containing exactly one TollDeclarationADUs with actionCode = revoke
                 // same TollDeclarations and same Charge Report Id
-				v_apduToBeSent := m_apduNoAuthInitTester({
+				v_apduForSending := m_apduNoAuthInitTester({
 					m_aduTollDeclarationToSendOneObe(
 						{TD_IDENTIFIER, 2},
 						TD_USAGE_STATEMENT_VALID_2,
@@ -3676,12 +3676,12 @@ module EfcInfoExchange_TestCasesTc {
 				var NAckParams v_nAckParams_2 := {{1, AduReasonCode_semanticError_}};
 
 				alt {
-					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduToBeSent, v_nAckParams_1)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduForSending, v_nAckParams_1)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
 					}
 
-					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduToBeSent, v_nAckParams_2)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduForSending, v_nAckParams_2)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
 					}
@@ -3709,7 +3709,7 @@ module EfcInfoExchange_TestCasesTc {
 				
                 // Prepare and send one Initiating_Apdu containing exactly one TollDeclarationADUs with actionCode = send
 
-				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
+				v_apduForSending := m_apduNoAuthInitTester({
 					m_aduTollDeclarationToSendOneObe(
 						{TD_IDENTIFIER, 1},
 						TD_USAGE_STATEMENT_VALID_1,
@@ -3721,7 +3721,7 @@ module EfcInfoExchange_TestCasesTc {
 						2,
 						ActionCode_send_)
 					});
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 
                 // Start timer
                 t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
@@ -3734,7 +3734,7 @@ module EfcInfoExchange_TestCasesTc {
 				var NAckParams v_nAckParams := {{0, ApduReasonCode_apduNotOK_}};
 
 				alt {
-					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduToBeSent, v_nAckParams)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduForSending, v_nAckParams)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
 					}
@@ -3771,9 +3771,9 @@ module EfcInfoExchange_TestCasesTc {
 				actionCode:= ActionCode_send_
 				};
 				
-				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({v_aduTollDeclarationAuthenticatedChargeReport});
+				v_apduForSending := m_apduNoAuthInitTester({v_aduTollDeclarationAuthenticatedChargeReport});
 
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 
                 // Start timer
                 t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
@@ -3786,7 +3786,7 @@ module EfcInfoExchange_TestCasesTc {
 				var NAckParams v_nAckParams := {{0, ApduReasonCode_apduNotOK_}};
 
 				alt {
-					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduToBeSent, v_nAckParams)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduForSending, v_nAckParams)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
 					}
@@ -3813,7 +3813,7 @@ module EfcInfoExchange_TestCasesTc {
 
 				// Prepare and send an Initiating_Apdu with PARAM2_MAX + 1 TollDeclarationADUs with actionCode = send
 
-				var InfoExchange v_apduToBeSent;
+				 
 				var Adus v_adusToBeSent; //List of ADUs to be sent
 				// TODO: revise because of only one ADU required 
 				var UsageStatement v_usageStatementToBeSent;
@@ -3834,9 +3834,9 @@ module EfcInfoExchange_TestCasesTc {
 							ActionCode_send_);
 				};		
  					
-				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester(v_adusToBeSent);
+				v_apduForSending := m_apduNoAuthInitTester(v_adusToBeSent);
 				                	               	                	                	                	                	                	              	
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
                 
@@ -3849,7 +3849,7 @@ module EfcInfoExchange_TestCasesTc {
 				var NAckParams v_nAckParams := {{0, ApduReasonCode_apduNotOK_}};
 
 				alt {
-					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduToBeSent, v_nAckParams)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduForSending, v_nAckParams)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
 					}
@@ -3880,7 +3880,7 @@ module EfcInfoExchange_TestCasesTc {
 				template (value) TollDeclarationADU m_aduTollDeclarationToSendOneObeOtherActionCodes
 					modifies m_aduTollDeclarationToSendOneObe:={actionCode := ?}; // to allow any value for actionCode
 
-				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
+				v_apduForSending := m_apduNoAuthInitTester({
 					m_aduTollDeclarationToSendOneObeOtherActionCodes(
 						{TD_IDENTIFIER, 1},
 						TD_USAGE_STATEMENT_VALID_1,
@@ -3888,7 +3888,7 @@ module EfcInfoExchange_TestCasesTc {
 						null)
 					});
 
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 
                 // Start timer
                 t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
@@ -3904,12 +3904,12 @@ module EfcInfoExchange_TestCasesTc {
 				var NAckParams v_nAckParams_2 := {{1, AduReasonCode_semanticError_}};
 
 				alt {
-					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduToBeSent, v_nAckParams_1)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduForSending, v_nAckParams_1)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
 					}
 
-					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduToBeSent, v_nAckParams_2)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduForSending, v_nAckParams_2)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
 					}
@@ -3940,7 +3940,7 @@ module EfcInfoExchange_TestCasesTc {
 				template (value) TollDeclarationADU m_aduTollDeclarationToSendOneObeOtherActionCodes
 					modifies m_aduTollDeclarationToSendOneObe:={actionCode := ?}; // to allow any value for actionCode
 
-				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
+				v_apduForSending := m_apduNoAuthInitTester({
 					m_aduTollDeclarationToSendOneObeOtherActionCodes(
 						{TD_IDENTIFIER, 1},
 						TD_USAGE_STATEMENT_VALID_1,
@@ -3948,7 +3948,7 @@ module EfcInfoExchange_TestCasesTc {
 						ActionCode_resend_) // other actionCode = 4
 					});
 
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 
                 // Start timer
                 t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
@@ -3964,12 +3964,12 @@ module EfcInfoExchange_TestCasesTc {
 				var NAckParams v_nAckParams_2 := {{1, AduReasonCode_actionCodeNotSupported_}};
 
 				alt {
-					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduToBeSent, v_nAckParams_1)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduForSending, v_nAckParams_1)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
 					}
 
-					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduToBeSent, v_nAckParams_2)) -> value v_apduReceived {
+					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduForSending, v_nAckParams_2)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
 					}
@@ -4037,7 +4037,7 @@ module EfcInfoExchange_TestCasesTc {
 				
 				var TollDeclarationId c_refTollDeclaration1 := {TD_IDENTIFIER, 1};
 				 	
-				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
+				v_apduForSending := m_apduNoAuthInitTester({
 					m_aduTollDeclarationToSendOneObe(
 						c_refTollDeclaration1,
 						TD_USAGE_STATEMENT_VALID_1,
@@ -4045,7 +4045,7 @@ module EfcInfoExchange_TestCasesTc {
 						ActionCode_send_)
 				});
 				                	               	                	                	                	                	                	              	
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
 
@@ -4053,7 +4053,7 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail
 
 				alt {				
-					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {					  
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
 					}
@@ -4078,10 +4078,10 @@ module EfcInfoExchange_TestCasesTc {
 					ActionCode_send_
 					);
 																
-				v_apduToBeSent := m_apduNoAuthInitTester({c_aduGnssBillingDetailsWithDiscounts});	
+				v_apduForSending := m_apduNoAuthInitTester({c_aduGnssBillingDetailsWithDiscounts});	
 
 				// Note: No wait, as there is no minimum time beteween TollDeclaration and corresponding BillingDetails defined				
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
 				
@@ -4089,7 +4089,7 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail
 
 				alt {				
-					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {					  
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
 						// Set test result
@@ -4122,7 +4122,7 @@ module EfcInfoExchange_TestCasesTc {
 				// receive positive Ack
 				var TollDeclarationId c_refTollDeclaration1 := {TD_IDENTIFIER, 1};
 
-				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
+				v_apduForSending := m_apduNoAuthInitTester({
 					m_aduTollDeclarationToSendOneObe(
 						c_refTollDeclaration1,
 						TD_USAGE_STATEMENT_VALID_1,
@@ -4130,7 +4130,7 @@ module EfcInfoExchange_TestCasesTc {
 						ActionCode_send_)
 				});
 				                	               	                	                	                	                	                	              	
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
 
@@ -4138,7 +4138,7 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail
 
 				alt {				
-					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {					  
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
 					}
@@ -4179,10 +4179,10 @@ module EfcInfoExchange_TestCasesTc {
 					ActionCode_send_
 					);
 
-				v_apduToBeSent := m_apduNoAuthInitTester({c_aduGnssBillingDetailsSectionedRoads});	
+				v_apduForSending := m_apduNoAuthInitTester({c_aduGnssBillingDetailsSectionedRoads});	
 
 				// Note: No wait, as there is no minimum time beteween TollDeclaration and corresponding BillingDetails defined				
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
 				
@@ -4190,7 +4190,7 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail
 
 				alt {				
-					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {					  
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
 						// Set test result
@@ -4223,7 +4223,7 @@ module EfcInfoExchange_TestCasesTc {
 				
 				var TollDeclarationId c_refTollDeclaration1 := {TD_IDENTIFIER, 1};
 
-				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
+				v_apduForSending := m_apduNoAuthInitTester({
 					m_aduTollDeclarationToSendOneObe(
 						c_refTollDeclaration1,
 						TD_USAGE_STATEMENT_VALID_1,
@@ -4231,7 +4231,7 @@ module EfcInfoExchange_TestCasesTc {
 						ActionCode_send_)
 				});
 				                	               	                	                	                	                	                	              	
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
 
@@ -4239,7 +4239,7 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail
 
 				alt {				
-					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {					  
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
 					}
@@ -4265,10 +4265,10 @@ module EfcInfoExchange_TestCasesTc {
 					ActionCode_send_
 					);
 
-				v_apduToBeSent := m_apduNoAuthInitTester({c_aduGnssBillingDetailsTravellingInArea});	
+				v_apduForSending := m_apduNoAuthInitTester({c_aduGnssBillingDetailsTravellingInArea});	
 
 				// Note: No wait, as there is no minimum time beteween TollDeclaration and corresponding BillingDetails defined				
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
 				
@@ -4276,7 +4276,7 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail
 
 				alt {				
-					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {					  
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
 						// Set test result
@@ -4309,7 +4309,7 @@ module EfcInfoExchange_TestCasesTc {
 
 				var TollDeclarationId c_refTollDeclaration1 := {TD_IDENTIFIER, 1};
 
-				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
+				v_apduForSending := m_apduNoAuthInitTester({
 					m_aduTollDeclarationToSendOneObe(
 						c_refTollDeclaration1,
 						TD_USAGE_STATEMENT_VALID_1,
@@ -4317,7 +4317,7 @@ module EfcInfoExchange_TestCasesTc {
 						ActionCode_send_)
 				});
 				                	               	                	                	                	                	                	              	
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
 
@@ -4325,7 +4325,7 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail
 
 				alt {				
-					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {					  
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
 					}
@@ -4350,10 +4350,10 @@ module EfcInfoExchange_TestCasesTc {
 					ActionCode_send_
 					);
 
-				v_apduToBeSent := m_apduNoAuthInitTester({c_aduGnssBillingDetailsStayingInArea});	
+				v_apduForSending := m_apduNoAuthInitTester({c_aduGnssBillingDetailsStayingInArea});	
 
 				// Note: No wait, as there is no minimum time beteween TollDeclaration and corresponding BillingDetails defined								
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
 				
@@ -4361,7 +4361,7 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail
 
 				alt {				
-					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {					  
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
 					}
@@ -4392,7 +4392,7 @@ module EfcInfoExchange_TestCasesTc {
 
 				var TollDeclarationId c_refTollDeclaration1 := {TD_IDENTIFIER, 1};
 
-				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
+				v_apduForSending := m_apduNoAuthInitTester({
 					m_aduTollDeclarationToSendOneObe(
 						c_refTollDeclaration1,
 						TD_USAGE_STATEMENT_VALID_1,
@@ -4400,7 +4400,7 @@ module EfcInfoExchange_TestCasesTc {
 						ActionCode_send_)
 				});
 				                	               	                	                	                	                	                	              	
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
 
@@ -4408,7 +4408,7 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail
 
 				alt {				
-					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {					  
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
 					}
@@ -4433,10 +4433,10 @@ module EfcInfoExchange_TestCasesTc {
 					ActionCode_send_
 					);
 
-				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({c_aduGnssBillingDetailsCordonCrossing});	
+				v_apduForSending := m_apduNoAuthInitTester({c_aduGnssBillingDetailsCordonCrossing});	
 
 				// Note: No wait, as there is no minimum time beteween TollDeclaration and corresponding BillingDetails defined								
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
 				
@@ -4444,7 +4444,7 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail
 
 				alt {				
-					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {					  
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
 						// Set test result
@@ -4473,7 +4473,7 @@ module EfcInfoExchange_TestCasesTc {
 				// receive positive Ack
 
 				// create APDU with GNSS.BILLINGDETAILS.TSP.PARAM1_MAX toll declaration adus				   
-				var InfoExchange v_apduToBeSent;
+				 
 				var Adus v_adusToBeSent; //List of ADUs to be sent 
 				var UsageStatement v_usageStatementToBeSent;
 				var ListOfTollDeclarationIds v_listOfTollDeclarationIds;				
@@ -4495,8 +4495,8 @@ module EfcInfoExchange_TestCasesTc {
 							ActionCode_send_);
 				}					   
 
-				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester(v_adusToBeSent);	
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+				v_apduForSending := m_apduNoAuthInitTester(v_adusToBeSent);	
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
 
@@ -4504,7 +4504,7 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail
 
 				alt {				
-					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {					  
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
 					}
@@ -4517,7 +4517,7 @@ module EfcInfoExchange_TestCasesTc {
  				// prepare this adu below
 				const UsageList c_usageListSectionedRoads := {}; // TODO and use template as base
 
-				var InfoExchange v_apduToBeSent;
+				 
 				var Adus v_adusToBeSent; //List of ADUs to be sent 
 				var RoBillingDetailsId v_listOfBillingDetailsIds;
 				
@@ -4532,10 +4532,10 @@ module EfcInfoExchange_TestCasesTc {
 					ActionCode_send_
 					);
 				}
-				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester(v_adusToBeSent);	
+				v_apduForSending := m_apduNoAuthInitTester(v_adusToBeSent);	
 
 				// Note: No wait, as there is no minimum time beteween TollDeclaration and corresponding BillingDetails defined								
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
 				
@@ -4543,7 +4543,7 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail
 
 				alt {				
-					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {					  
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
 						// Set test result
@@ -4572,7 +4572,7 @@ module EfcInfoExchange_TestCasesTc {
 								
 				var TollDeclarationId c_refTollDeclaration1 := {TD_IDENTIFIER, 1};
 
-				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
+				v_apduForSending := m_apduNoAuthInitTester({
 					m_aduTollDeclarationToSendOneObe(
 						c_refTollDeclaration1,
 						TD_USAGE_STATEMENT_VALID_1,
@@ -4580,7 +4580,7 @@ module EfcInfoExchange_TestCasesTc {
 						ActionCode_send_)
 				});
 				                	               	                	                	                	                	                	              	
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
 
@@ -4588,7 +4588,7 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail
 
 				alt {				
-					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {					  
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
 					}
@@ -4614,10 +4614,10 @@ module EfcInfoExchange_TestCasesTc {
 					ActionCode_send_
 					);
 
-				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({c_aduGnssBillingDetailsSectionedRoads});	
+				v_apduForSending := m_apduNoAuthInitTester({c_aduGnssBillingDetailsSectionedRoads});	
 
 				// Note: No wait, as there is no minimum time beteween TollDeclaration and corresponding BillingDetails defined				
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
 				
@@ -4629,11 +4629,11 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail
 
 				alt {
-					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduToBeSent, AduReasonCode_billingDetailsUserIdRejected_)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduForSending, AduReasonCode_billingDetailsUserIdRejected_)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
 					}					
-					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToBeSent, {{1, AduReasonCode_billingDetailsUserIdRejected_}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, {{1, AduReasonCode_billingDetailsUserIdRejected_}})) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
 					}										
@@ -4658,10 +4658,10 @@ module EfcInfoExchange_TestCasesTc {
 					ActionCode_adjust_
 					);
 
-				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({c_aduGnssBillingDetailsSectionedRoads});	
+				v_apduForSending := m_apduNoAuthInitTester({c_aduGnssBillingDetailsSectionedRoads});	
 
 				// Note: No wait, as there is no minimum time beteween TollDeclaration and corresponding BillingDetails defined				
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
 
@@ -4672,7 +4672,7 @@ module EfcInfoExchange_TestCasesTc {
   				// Initialisation
 
 				alt {				
-					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {					  
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
 						// Set test result
@@ -4702,7 +4702,7 @@ module EfcInfoExchange_TestCasesTc {
 								
 				var TollDeclarationId c_refTollDeclaration1 := {TD_IDENTIFIER, 1};
 
-				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
+				v_apduForSending := m_apduNoAuthInitTester({
 					m_aduTollDeclarationToSendOneObe(
 						c_refTollDeclaration1,
 						TD_USAGE_STATEMENT_VALID_1,
@@ -4710,7 +4710,7 @@ module EfcInfoExchange_TestCasesTc {
 						ActionCode_send_)
 				});
 				                	               	                	                	                	                	                	              	
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
 
@@ -4718,7 +4718,7 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail
 
 				alt {				
-					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {					  
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
 					}
@@ -4743,10 +4743,10 @@ module EfcInfoExchange_TestCasesTc {
 					ActionCode_send_
 					);
 
-				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({c_aduGnssBillingDetailsSectionedRoads});	
+				v_apduForSending := m_apduNoAuthInitTester({c_aduGnssBillingDetailsSectionedRoads});	
 
 				// Note: No wait, as there is no minimum time beteween TollDeclaration and corresponding BillingDetails defined				
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
 				
@@ -4755,7 +4755,7 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail
 
 				alt {				
-					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {					  
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
 					}
@@ -4779,10 +4779,10 @@ module EfcInfoExchange_TestCasesTc {
 					ActionCode_revoke_
 					);
 
-				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({c_aduGnssBillingDetailsSectionedRoads});	
+				v_apduForSending := m_apduNoAuthInitTester({c_aduGnssBillingDetailsSectionedRoads});	
 
 				// Note: No wait, as there is no minimum time beteween TollDeclaration and corresponding BillingDetails defined				
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
 
@@ -4793,7 +4793,7 @@ module EfcInfoExchange_TestCasesTc {
   				// Initialisation
 
 				alt {				
-					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {					  
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
 						// Set test result
@@ -4993,7 +4993,7 @@ module EfcInfoExchange_TestCasesTc {
 				// Perform a full GNSS.TOLLDECLARATION transaction with five(5) tollDeclarations
 				// receive positive Ack
 				// wait respective time constraints until next transaction 	
-				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
+				v_apduForSending := m_apduNoAuthInitTester({
 					m_aduTollDeclarationToSendOneObe(
 						{TD_IDENTIFIER, 1},
 						TD_USAGE_STATEMENT_VALID_1,
@@ -5021,7 +5021,7 @@ module EfcInfoExchange_TestCasesTc {
 						ActionCode_send_)
 				});
 				                	               	                	                	                	                	                	              	
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
 
@@ -5029,7 +5029,7 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail
 
 				alt {				
-					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {					  
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
 					}
@@ -5095,7 +5095,7 @@ module EfcInfoExchange_TestCasesTc {
 				// Perform a full GNSS.TOLLDECLARATION transaction with one(1) tollDeclarations
 				// receive positive Ack
 				// wait respective time constraints until next transaction 	
-				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
+				v_apduForSending := m_apduNoAuthInitTester({
 					m_aduTollDeclarationToSendOneObe(
 						{TD_IDENTIFIER, 1},
 						TD_USAGE_STATEMENT_VALID_1,
@@ -5103,7 +5103,7 @@ module EfcInfoExchange_TestCasesTc {
 						ActionCode_send_)
 				});
 				                	               	                	                	                	                	                	              	
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
 
@@ -5111,7 +5111,7 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail
 
 				alt {				
-					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {					  
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
 					}
@@ -5197,7 +5197,7 @@ module EfcInfoExchange_TestCasesTc {
 				// Perform a full GNSS.TOLLDECLARATION transaction with one(1) tollDeclarations
 				// receive positive Ack
 				// wait respective time constraints until next transaction 	
-				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
+				v_apduForSending := m_apduNoAuthInitTester({
 					m_aduTollDeclarationToSendOneObe(
 						{TD_IDENTIFIER, 1},
 						TD_USAGE_STATEMENT_VALID_1,
@@ -5205,7 +5205,7 @@ module EfcInfoExchange_TestCasesTc {
 						ActionCode_send_)
 				});
 				                	               	                	                	                	                	                	              	
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
 
@@ -5213,7 +5213,7 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail
 
 				alt {				
-					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {					  
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
 					}
@@ -5312,7 +5312,7 @@ module EfcInfoExchange_TestCasesTc {
 				
 				// Prepare APDU with five(5) TollDeclaration ADUs 
 				
-				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
+				v_apduForSending := m_apduNoAuthInitTester({
 					m_aduTollDeclarationToSendOneObe(
 						{TD_IDENTIFIER, 1}, //tollDeclarationId
 						TD_USAGE_STATEMENT_VALID_1, // usageStatement
@@ -5345,7 +5345,7 @@ module EfcInfoExchange_TestCasesTc {
 					)
 				});
 				                	               	                	                	                	                	                	              	
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
 
@@ -5354,7 +5354,7 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail
 
 				alt {				
-					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {					  
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
 					}
@@ -5385,7 +5385,7 @@ module EfcInfoExchange_TestCasesTc {
 					externalCosts := omit
 				};				
 
-				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
+				v_apduForSending := m_apduNoAuthInitTester({
 				  	mw_aduGnssBillingDetails:= { // original template with wildcards, but now all given values below
 				  		billingDetailsId := {TD_IDENTIFIER, 1},
 				  		tollContext := TOLL_CONTEXT_ID_IUT,
@@ -5495,7 +5495,7 @@ module EfcInfoExchange_TestCasesTc {
 				
 				// respect time restriction TIMEB_MAX set by the IuT
 				f_wait(GNSS_BILLINGDETAILS_TSP_TIMEB_MAX_TC/2);
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
 				
@@ -5504,7 +5504,7 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail
 
 				alt {				
-					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {					  
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
 					}
@@ -5515,7 +5515,7 @@ module EfcInfoExchange_TestCasesTc {
 				//		- the values referencing the previous five(5) BillingDetailsADUs; and
 				//		- actionCode=send
 
-				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester ({
+				v_apduForSending := m_apduNoAuthInitTester ({
 					mw_aduPaymentAnnouncement := { // original template with wildcards, but now all fields filled below				  	
 						paymentAnnouncemmentID := TD_PAYMENTANNOUNCEMENT_ID_1,
 						dueDate := TD_PAYMENTANNOUNCEMENT_DUE_DATE,
@@ -5568,7 +5568,7 @@ module EfcInfoExchange_TestCasesTc {
 				
 				// respect time restriction TIMEB_MAX set by the IuT
 				f_wait(GNSS_PAYMENTANNOUNCEMENT_TIMEB_MAX_TC/2);
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC);   				
 				
@@ -5576,7 +5576,7 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail
 
 				alt {				
-					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {					  
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC);
 						// set test result
@@ -5605,7 +5605,7 @@ module EfcInfoExchange_TestCasesTc {
 				
 				// Prepare APDU with five(5) TollDeclaration ADUs 
 				
-				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
+				v_apduForSending := m_apduNoAuthInitTester({
 					m_aduTollDeclarationToSendOneObe(
 						{TD_IDENTIFIER, 1}, //tollDeclarationId
 						TD_USAGE_STATEMENT_VALID_1, // usageStatement
@@ -5638,7 +5638,7 @@ module EfcInfoExchange_TestCasesTc {
 					)
 				});
 				                	               	                	                	                	                	                	              	
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
 
@@ -5647,7 +5647,7 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail
 
 				alt {				
-					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {					  
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
 					}
@@ -5669,7 +5669,7 @@ module EfcInfoExchange_TestCasesTc {
 //				)
 //Please note that the parameter p_roUsageList should be filled with {m_sectionsUsed}
 
-				v_apduToBeSent := m_apduNoAuthInitTester({
+				v_apduForSending := m_apduNoAuthInitTester({
 				  	mw_aduGnssBillingDetails:= { // original template with wildcards, but now all given values below
 				  		billingDetailsId := {TD_IDENTIFIER, 1},
 				  		tollContext := TOLL_CONTEXT_ID_IUT,
@@ -5779,7 +5779,7 @@ module EfcInfoExchange_TestCasesTc {
 				
 				// respect time restriction TIMEB_MAX set by the IuT
 				f_wait(GNSS_BILLINGDETAILS_TSP_TIMEB_MAX_TC/2);
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
 				
@@ -5788,7 +5788,7 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail
 
 				alt {				
-					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {					  
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
 					}
@@ -5801,7 +5801,7 @@ module EfcInfoExchange_TestCasesTc {
 				// 		- which shall be negatively acknowledge by the IuT
 				//		This is achieved by referencing to billingDetailsIDs not reported to the IuT  
 
-				v_apduToBeSent := m_apduNoAuthInitTester({
+				v_apduForSending := m_apduNoAuthInitTester({
 					m_aduPaymentAnnouncement(
 						TD_PAYMENTANNOUNCEMENT_ID_1,
 						TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_1,
@@ -5824,7 +5824,7 @@ module EfcInfoExchange_TestCasesTc {
 				
 				// respect time restriction TIMEB_MAX set by the IuT
 				f_wait(GNSS_PAYMENTANNOUNCEMENT_TIMEB_MAX_TC/2);
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC);   				
 				
@@ -5850,7 +5850,7 @@ module EfcInfoExchange_TestCasesTc {
 				//		- the values referencing the previous three(3) PaymentAnnoucments; and
 				//		- actionCode=adjust
 
-				v_apduToBeSent := m_apduNoAuthInitTester({
+				v_apduForSending := m_apduNoAuthInitTester({
 					m_aduPaymentAnnouncement(
 						TD_PAYMENTANNOUNCEMENT_ID_1,
 						TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_1,
@@ -5873,7 +5873,7 @@ module EfcInfoExchange_TestCasesTc {
 				
 				// respect time restriction TIMEA_MIN set by the IuT
 				f_wait(GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC);   				
 				
@@ -5881,7 +5881,7 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail
 
 				alt {				
-					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {					  
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC);
 						// set test result
@@ -5910,7 +5910,7 @@ module EfcInfoExchange_TestCasesTc {
 				
 				// Prepare APDU with five(5) TollDeclaration ADUs 
 				
-				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
+				v_apduForSending := m_apduNoAuthInitTester({
 					m_aduTollDeclarationToSendOneObe(
 						{TD_IDENTIFIER, 1}, //tollDeclarationId
 						TD_USAGE_STATEMENT_VALID_1, // usageStatement
@@ -5943,7 +5943,7 @@ module EfcInfoExchange_TestCasesTc {
 					)
 				});
 				                	               	                	                	                	                	                	              	
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
 
@@ -5952,7 +5952,7 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail
 
 				alt {				
-					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {					  
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
 					}
@@ -5983,7 +5983,7 @@ module EfcInfoExchange_TestCasesTc {
 					externalCosts := omit
 				};				
 
-				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
+				v_apduForSending := m_apduNoAuthInitTester({
 				  	mw_aduGnssBillingDetails:= { // original template with wildcards, but now all given values below
 				  		billingDetailsId := {TD_IDENTIFIER, 1},
 				  		tollContext := TOLL_CONTEXT_ID_IUT,
@@ -6093,7 +6093,7 @@ module EfcInfoExchange_TestCasesTc {
 				
 				// respect time restriction TIMEB_MAX set by the IuT
 				f_wait(GNSS_BILLINGDETAILS_TSP_TIMEB_MAX_TC/2);
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
 				
@@ -6102,7 +6102,7 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail
 
 				alt {				
-					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {					  
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
 					}
@@ -6113,7 +6113,7 @@ module EfcInfoExchange_TestCasesTc {
 				//		- the values referencing the previous five(5) BillingDetailsADUs; and
 				//		- actionCode=send
 
-				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester ({
+				v_apduForSending := m_apduNoAuthInitTester ({
 					mw_aduPaymentAnnouncement := { // original template with wildcards, but now all fields filled below				  	
 						paymentAnnouncemmentID := TD_PAYMENTANNOUNCEMENT_ID_1,
 						dueDate := TD_PAYMENTANNOUNCEMENT_DUE_DATE,
@@ -6166,7 +6166,7 @@ module EfcInfoExchange_TestCasesTc {
 				
 				// respect time restriction TIMEB_MAX set by the IuT
 				f_wait(GNSS_PAYMENTANNOUNCEMENT_TIMEB_MAX_TC/2);
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC);   				
 				
@@ -6174,7 +6174,7 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail
 
 				alt {				
-					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {					  
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC);
 					}
@@ -6185,7 +6185,7 @@ module EfcInfoExchange_TestCasesTc {
 				//		- the values referencing the previous three(3) PaymentAnnoucments; and
 				//		- actionCode=revoke
 
-				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester ({
+				v_apduForSending := m_apduNoAuthInitTester ({
 					mw_aduPaymentAnnouncement := { // original template with wildcards, but now all fields filled below				  	
 						paymentAnnouncemmentID := TD_PAYMENTANNOUNCEMENT_ID_1, // same Id as in the previous transaction
 						dueDate := TD_PAYMENTANNOUNCEMENT_DUE_DATE,
@@ -6238,7 +6238,7 @@ module EfcInfoExchange_TestCasesTc {
 				
 				// respect time restriction TIMEA_MIN set by the IuT
 				f_wait(GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC);   				
 				
@@ -6246,7 +6246,7 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail
 
 				alt {				
-					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {					  
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC);
 						// set test result
@@ -6269,7 +6269,7 @@ module EfcInfoExchange_TestCasesTc {
                     
                 // Prepare APDU with two(2) TollDeclaration ADUs 
                     
-                var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
+                v_apduForSending := m_apduNoAuthInitTester({
                     m_aduTollDeclarationToSendOneObe(
                         {TD_IDENTIFIER, 1}, //tollDeclarationId
                         TD_USAGE_STATEMENT_VALID_1, // usageStatement
@@ -6284,7 +6284,7 @@ module EfcInfoExchange_TestCasesTc {
                     )
                 });
                                                                                                                                                                             
-                f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+                f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
     
@@ -6293,7 +6293,7 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail
     
                 alt {				
-                    [] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {					  
+                    [] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
                         // Log what we received, check minimum time and stop time
                         f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
                     }
@@ -6325,7 +6325,7 @@ module EfcInfoExchange_TestCasesTc {
 					externalCosts := omit
 				};				
     
-                var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester({
+                v_apduForSending := m_apduNoAuthInitTester({
                     mw_aduGnssBillingDetails:= { // original template with wildcards, but now all given values below
                         billingDetailsId := {TD_IDENTIFIER, 1},
                         tollContext := TOLL_CONTEXT_ID_IUT,
@@ -6372,7 +6372,7 @@ module EfcInfoExchange_TestCasesTc {
                     
                 // respect time restriction TIMEB_MAX set by the IuT
                 f_wait(GNSS_BILLINGDETAILS_TSP_TIMEB_MAX_TC/2);
-                f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+                f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
                     
@@ -6381,7 +6381,7 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail
     
                 alt {				
-                    [] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {					  
+                    [] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
                         // Log what we received, check minimum time and stop time
                         f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
                     }
@@ -6395,7 +6395,7 @@ module EfcInfoExchange_TestCasesTc {
 				//		- the values referencing the previous two(2) BillingDetailsADUs; and
 				//		- actionCode=send
 
-				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester ({
+				v_apduForSending := m_apduNoAuthInitTester ({
 					mw_aduPaymentAnnouncement := { // original template with wildcards, but now all fields filled below				  	
 						paymentAnnouncemmentID := TD_PAYMENTANNOUNCEMENT_ID_1,
 						dueDate := TD_PAYMENTANNOUNCEMENT_DUE_DATE,
@@ -6432,7 +6432,7 @@ module EfcInfoExchange_TestCasesTc {
 				
 				// respect time restriction TIMEB_MAX set by the IuT
 				f_wait(GNSS_PAYMENTANNOUNCEMENT_TIMEB_MAX_TC/2);
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC);   				
 				
@@ -6440,7 +6440,7 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail
 
 				alt {				
-					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {					  
+					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
 						f_logReceivedThenCheckAndStopTime(GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC);
 					}
@@ -6475,7 +6475,7 @@ module EfcInfoExchange_TestCasesTc {
 				//		- exactly one PaymentAnnouncementADU with actionCode=resend
 				//		- both referencing to paymentAnnouncementIds previousely sent
  
-				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester ({
+				v_apduForSending := m_apduNoAuthInitTester ({
 					mw_aduPaymentAnnouncement := { // original template with wildcards, but now all fields filled below				  	
 						paymentAnnouncemmentID := TD_PAYMENTANNOUNCEMENT_ID_1,
 						dueDate := TD_PAYMENTANNOUNCEMENT_DUE_DATE,
@@ -6512,7 +6512,7 @@ module EfcInfoExchange_TestCasesTc {
 				
 				// respect time restriction TIMEB_MAX set by the IuT
 				f_wait(GNSS_PAYMENTANNOUNCEMENT_TIMEB_MAX_TC/2);
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC);   				
 				
@@ -6564,7 +6564,7 @@ module EfcInfoExchange_TestCasesTc {
 				//		- exactly one PaymentAnnouncementADU with actionCode=revoke containing
 				//			paymentAnnouncementId = value that has not previously been used
  
-				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester ({
+				v_apduForSending := m_apduNoAuthInitTester ({
 					mw_aduPaymentAnnouncement := { // original template with wildcards, but now all fields filled below				  	
 						paymentAnnouncemmentID := TD_PAYMENTANNOUNCEMENT_ID_1,
 						dueDate := TD_PAYMENTANNOUNCEMENT_DUE_DATE,
@@ -6601,7 +6601,7 @@ module EfcInfoExchange_TestCasesTc {
 				
 				// respect time restriction TIMEB_MAX set by the IuT
 				f_wait(GNSS_PAYMENTANNOUNCEMENT_TIMEB_MAX_TC/2);
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC);   				
 				
@@ -6655,7 +6655,7 @@ module EfcInfoExchange_TestCasesTc {
 				//				- exactly one BillingDetailsId that does not make reference
 				//					to the BillingDetailsADU of the previously performed BILLINGDETAILS transaction
  
-				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester ({
+				v_apduForSending := m_apduNoAuthInitTester ({
 					mw_aduPaymentAnnouncement := { // original template with wildcards, but now all fields filled below				  	
 						paymentAnnouncemmentID := TD_PAYMENTANNOUNCEMENT_ID_1,
 						dueDate := TD_PAYMENTANNOUNCEMENT_DUE_DATE,
@@ -6692,7 +6692,7 @@ module EfcInfoExchange_TestCasesTc {
 				
 				// respect time restriction TIMEB_MAX set by the IuT
 				f_wait(GNSS_PAYMENTANNOUNCEMENT_TIMEB_MAX_TC/2);
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC);   				
 				
@@ -6729,10 +6729,10 @@ module EfcInfoExchange_TestCasesTc {
 				// with 2+GNSS.PAYMENTANNOUNCEMENT.PARAM2_MAX TollDeclaration ADUs with positive Ack
 
                 // Prepare APDU with 2+GNSS.PAYMENTANNOUNCEMENT.PARAM2_MAX TollDeclaration ADUs                
-                var InfoExchange v_apduToBeSent;
+                 
                 
                 for (var integer v_i := 1; v_i == 2+GNSS.PAYMENTANNOUNCEMENT.PARAM2_MAX; v_i := v_i + 1) {
-                	v_apduToBeSent := m_apduNoAuthInitTester({
+                	v_apduForSending := m_apduNoAuthInitTester({
                     	m_aduTollDeclarationToSendOneObe(
                         	{TD_IDENTIFIER, v_i}, //tollDeclarationId
                         	TD_USAGE_STATEMENT_VALID_1, // usageStatement (always the same)
@@ -6742,7 +6742,7 @@ module EfcInfoExchange_TestCasesTc {
                 	});
                 }
                                                                                                                                                                             
-                f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+                f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
     
@@ -6751,7 +6751,7 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail
     
                 alt {				
-                    [] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {					  
+                    [] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
                         // Log what we received, check minimum time and stop time
                         f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
                     }
@@ -6786,10 +6786,10 @@ module EfcInfoExchange_TestCasesTc {
     
                	// Prepare APDU with 2+GNSS.PAYMENTANNOUNCEMENT.PARAM2_MAX BillingDetails ADUs              	
 
-                var InfoExchange v_apduToBeSent; 
+                  
                	
                	for (var integer v_i := 1; v_i == 2+GNSS.PAYMENTANNOUNCEMENT.PARAM2_MAX; v_i := v_i + 1) {
-                	v_apduToBeSent := m_apduNoAuthInitTester({
+                	v_apduForSending := m_apduNoAuthInitTester({
                     	mw_aduGnssBillingDetails:= { // original template with wildcards, but now all given values below
                         	billingDetailsId := {TD_IDENTIFIER, v_i},
                         	tollContext := TOLL_CONTEXT_ID_IUT,
@@ -6816,7 +6816,7 @@ module EfcInfoExchange_TestCasesTc {
                     
                 // respect time restriction TIMEB_MAX set by the IuT
                 f_wait(GNSS_BILLINGDETAILS_TSP_TIMEB_MAX_TC/2);
-                f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+                f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
                     
@@ -6825,7 +6825,7 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail
     
                 alt {				
-                    [] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {					  
+                    [] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
                         // Log what we received, check minimum time and stop time
                         f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
                     }
@@ -6853,7 +6853,7 @@ module EfcInfoExchange_TestCasesTc {
 					};
 				}
                		              	             					  
-				v_apduToBeSent := m_apduNoAuthInitTester({
+				v_apduForSending := m_apduNoAuthInitTester({
 					m_aduPaymentAnnouncement(
 						TD_PAYMENTANNOUNCEMENT_ID_1,
 						TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_1,
@@ -6875,7 +6875,7 @@ module EfcInfoExchange_TestCasesTc {
 				});
 
 				//TODO Jan replace with m_aduPaymentAnnouncement and all other cases of PaymentAnnocement
-				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester ({
+				v_apduForSending := m_apduNoAuthInitTester ({
 					mw_aduPaymentAnnouncement := { // original template with wildcards, but now all fields filled below				  	
 						paymentAnnouncemmentID := TD_PAYMENTANNOUNCEMENT_ID_1,
 						dueDate := TD_PAYMENTANNOUNCEMENT_DUE_DATE,
@@ -6901,7 +6901,7 @@ module EfcInfoExchange_TestCasesTc {
 				
 				// respect time restriction TIMEB_MAX set by the IuT
 				f_wait(GNSS_PAYMENTANNOUNCEMENT_TIMEB_MAX_TC/2);
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC);   				
 				
@@ -6953,7 +6953,7 @@ module EfcInfoExchange_TestCasesTc {
  				}
 
 				//TODO Jan replace with m_aduPaymentAnnouncement
-				var InfoExchange v_apduToBeSent := m_apduNoAuthInitTester ({
+				v_apduForSending := m_apduNoAuthInitTester ({
 					mw_aduPaymentAnnouncement := { // original template with wildcards, but now all fields filled below				  	
 						paymentAnnouncemmentID := TD_PAYMENTANNOUNCEMENT_ID_1,
 						dueDate := TD_PAYMENTANNOUNCEMENT_DUE_DATE,
@@ -6990,7 +6990,7 @@ module EfcInfoExchange_TestCasesTc {
 				
 				// respect time restriction TIMEB_MAX set by the IuT
 				f_wait(GNSS_PAYMENTANNOUNCEMENT_TIMEB_MAX_TC/2);
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC);   				
 				
@@ -7027,10 +7027,10 @@ module EfcInfoExchange_TestCasesTc {
 				// with 1+GNSS.PAYMENTANNOUNCEMENT.PARAM1_MAX TollDeclaration ADUs with positive Ack
 
                 // Prepare APDU with 1+GNSS.PAYMENTANNOUNCEMENT.PARAM1_MAX TollDeclaration ADUs                
-                var InfoExchange v_apduToBeSent;
+                 
                 
                 for (var integer v_i := 1; v_i == 1+GNSS.PAYMENTANNOUNCEMENT.PARAM1_MAX; v_i := v_i + 1) {
-                	v_apduToBeSent := m_apduNoAuthInitTester({
+                	v_apduForSending := m_apduNoAuthInitTester({
                     	m_aduTollDeclarationToSendOneObe(
                         	{TD_IDENTIFIER, v_i}, //tollDeclarationId
                         	TD_USAGE_STATEMENT_VALID_1, // usageStatement (always the same)
@@ -7040,7 +7040,7 @@ module EfcInfoExchange_TestCasesTc {
                 	});
                 }
                                                                                                                                                                             
-                f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+                f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
     
@@ -7049,7 +7049,7 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail
     
                 alt {				
-                    [] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {					  
+                    [] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
                         // Log what we received, check minimum time and stop time
                         f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
                     }
@@ -7082,10 +7082,10 @@ module EfcInfoExchange_TestCasesTc {
 				};				
     
                	// Prepare APDU with 1+GNSS.PAYMENTANNOUNCEMENT.PARAM1_MAX BillingDetails ADUs              	
-                var InfoExchange v_apduToBeSent; 
+                  
                	
                	for (var integer v_i := 1; v_i == 1+GNSS.PAYMENTANNOUNCEMENT.PARAM1_MAX; v_i := v_i + 1) {
-                	v_apduToBeSent := m_apduNoAuthInitTester({
+                	v_apduForSending := m_apduNoAuthInitTester({
                     	mw_aduGnssBillingDetails:= { // original template with wildcards, but now all given values below
                         	billingDetailsId := {TD_IDENTIFIER, v_i},
                         	tollContext := TOLL_CONTEXT_ID_IUT,
@@ -7112,7 +7112,7 @@ module EfcInfoExchange_TestCasesTc {
                     
                 // respect time restriction TIMEB_MAX set by the IuT
                 f_wait(GNSS_BILLINGDETAILS_TSP_TIMEB_MAX_TC/2);
-                f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+                f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
                     
@@ -7121,7 +7121,7 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail
     
                 alt {				
-                    [] mtcPort.receive(mw_apduDefaultAckIut(v_apduToBeSent)) -> value v_apduReceived {					  
+                    [] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
                         // Log what we received, check minimum time and stop time
                         f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
                     }
@@ -7130,10 +7130,10 @@ module EfcInfoExchange_TestCasesTc {
                 // Step 5:
                 // Send Initiating_Apdu containing
                 //		- 1+GNSS.PAYMENTANNOUNCEMENT.PARAM1_MAX valid PaymentAnnouncementADU
-				var InfoExchange v_apduToBeSent;
+				 
                	
                	for (var integer v_i := 1; v_i == 1+GNSS.PAYMENTANNOUNCEMENT.PARAM1_MAX; v_i := v_i + 1) {               		              	             					  
-					v_apduToBeSent := m_apduNoAuthInitTester ({
+					v_apduForSending := m_apduNoAuthInitTester ({
 						//TODO Jan replace with m_aduPaymentAnnouncement
 						mw_aduPaymentAnnouncement := { // original template with wildcards, but now all fields filled below				  	
 							paymentAnnouncemmentID := v_i,
@@ -7156,7 +7156,7 @@ module EfcInfoExchange_TestCasesTc {
 				
 				// respect time restriction TIMEB_MAX set by the IuT
 				f_wait(GNSS_PAYMENTANNOUNCEMENT_TIMEB_MAX_TC/2);
-				f_sendAndLogApdu(v_apduToBeSent);                	 	 	
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC);   				
 				

@@ -1,4 +1,4 @@
-/**
+///**
  * @author  PT0140 
  * @desc    This module provides test cases based on TS 16986 TPs
  * @see     [xxxx-1:2017]: Test suite structure and test purpose
@@ -48,7 +48,7 @@ module EfcInfoExchange_TestCasesTsp {
     import from EfcInfoExchange_Ics all;
     import from EfcInfoExchange_Templates all;
 	import from EfcInfoExchange_TesterData all;
-    import from EfcInfoExchangeProfile all;
+    import from EfcInfoExchange_Profile all;
     
     
     /**
@@ -4064,7 +4064,8 @@ module EfcInfoExchange_TestCasesTsp {
 
            testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BV_03() runs on MainTestComponent system TestAdapter {
                   /**
-                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BV_03: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TC transaction with a single BillingDetailsADU
+                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BV_03: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TC 
+                  * @desc 	 transaction with a single BillingDetailsADU
 				  * @desc    with no optional fields, actionCode = send and having selected forTravellingInArea 
                   * @remark  [16986:2016], Clause 8.2.3 AND 8.2.4 and Table A.1/2 AND Table A.2/2 AND Table A.52/2 AND Table A.56/6
                   */

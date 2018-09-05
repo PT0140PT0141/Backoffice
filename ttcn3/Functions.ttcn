@@ -257,12 +257,12 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
 			v_period:=v_chargeReportFirst.reportPeriod;
 			
 			v_tollDeclarationId:=v_apduReceived.infoExchangeContent.adus.tollDeclarationADUs[0].tollDeclarationId;
-			
+						
 			v_aduGnssBillingDetails:=m_aduGnssBillingDetails(
 				TD_BILLING_DETAILS_NUM,
 				UserId:{obeID:=v_obeId}, 
 				v_period,
-				{v_usageStatement},
+				RoUsageStatement:{v_usageStatement},
 				c_extPayAmountNothing,
 				{v_tollDeclarationId}, // same toll declaration Id as in Toll Declaration in step 0
 				ActionCode_send_

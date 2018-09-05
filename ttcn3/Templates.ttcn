@@ -38,7 +38,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 	//importing ASN.1 data manually translated into TTCN-3
 	import from EfcInfoExchange_ParameterisedAsn1Data all;  
     import from LibEfc_Common_Parameterised_Asn1_Data all;
-	import from EfcInfoExchangeProfile all;
+	import from EfcInfoExchange_Profile all;
     //TODO Ulrik templates that are marked as fuzzy that are themselves called b other templates, there the fuzzy-mark must be propagated to the higher level template
     group ApduTemplates {
     	
@@ -1327,6 +1327,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 //	  			}
 
 				type record of UsageList RoUsageList;
+				type record of UsageStatement RoUsageStatement;
 				type record of TollDeclarationId RoTollDeclarationId;
 
 				template (value) BillingDetailsADU m_aduGnssBillingDetails(

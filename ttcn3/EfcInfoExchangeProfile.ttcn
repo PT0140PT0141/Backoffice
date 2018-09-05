@@ -5,7 +5,7 @@
  * @remark  See Tables 6 and 7
  * @version $id$
  */
-module EfcInfoExchangeProfile language "TTCN-3:2010 Advanced Parameterization" {
+module EfcInfoExchange_Profile language "TTCN-3:2010 Advanced Parameterization" {
 
 
 	//ADUReasonCodes; 
