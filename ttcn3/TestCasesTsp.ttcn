@@ -894,6 +894,11 @@ module EfcInfoExchange_TestCasesTsp {
               * @remark  [16986:2016], Clause 6.4 and Table A.1/2 AND Table A.7/1  
               */
 				// Initialisation
+				if (USERDETAILS_TIMEA_MIN_TSP = 0)	{
+					setverdict(inconc);
+					f_addLogEntry("Cannot perform minimum time test because IUT sets it to 0");
+					stop;			  
+				};			
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				             
@@ -1221,6 +1226,11 @@ module EfcInfoExchange_TestCasesTsp {
 
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_2_implementedLISTOFUSERS;
+				if (LISTOFUSERS_TIMEA_MIN_TSP = 0)	{
+					setverdict(inconc);
+					f_addLogEntry("Cannot perform minimum time test because IUT sets it to 0");
+					stop;			  
+				};			
 				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
                  
@@ -2791,6 +2801,11 @@ module EfcInfoExchange_TestCasesTsp {
                   
                  // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_2_implementedDSRCEFCCONTEXTDATA;
+				if (DSRC_EFCCONTEXTDATA_TIMEA_MIN_TSP = 0)	{
+					setverdict(inconc);
+					f_addLogEntry("Cannot perform minimum time test because IUT sets it to 0");
+					stop;			  
+				};			
 				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
                  // Send EFCCONTEXTDATA with:
@@ -3262,6 +3277,11 @@ module EfcInfoExchange_TestCasesTsp {
                   */
                  // Initialisation 
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_3_implementedDSRCBILLINGDETAILS;
+				if (DSRC_BILLINGDETAILS_TIMEA_MIN_TSP = 0)	{
+					setverdict(inconc);
+					f_addLogEntry("Cannot perform minimum time test because IUT sets it to 0");
+					stop;			  
+				};			
 				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
@@ -3638,9 +3658,14 @@ module EfcInfoExchange_TestCasesTsp {
                   */
                  // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_4_implementedDSRCREPORTABNORMALOBE;
+				if (DSRC_REPORTABNORMALOBE_TIMEA_MIN_TSP = 0)	{
+					setverdict(inconc);
+					f_addLogEntry("Cannot perform minimum time test because IUT sets it to 0");
+					stop;			  
+				};			
 				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
-                // Send one valid DSRC_REPORTBILLINGDETAILS
+                // Send one valid DSRC_REPORTABNORMALOBE
                  // PT140 TODO : mw_aduReportAbnormalOBE template to be defined
 				v_apduForSending := m_apduNoAuthInitTester(
 					{modifies mw_aduReportAbnormalOBE:= {
@@ -4452,9 +4477,12 @@ module EfcInfoExchange_TestCasesTsp {
 					// Send positive Ack within time constraints
 					// Send one valid APDU containing one valid BillingDetailsADU with action code = send and no optional parameters
 					// Wait for positive Ack
-				//TODO PT140 we need to check all testcases of type "sent earlier than allowed" and make sure to NOT run them if it is IMPOSSIBLE to be too fast (TIMEA_MIN or TIME0_MIN is zero)
-				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A52_2_implementedGNSSBILLINGDETAILSTC and ICS_A52_3_implementedGNSSTOLLDECLARATION and (not(GNSS_BILLINGDETAILS_TC_TIME0_MIN_TC==0));
-				 
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A52_2_implementedGNSSBILLINGDETAILSTC and ICS_A52_3_implementedGNSSTOLLDECLARATION;
+				if (GNSS_BILLINGDETAILS_TC_TIME0_MIN_TSP = 0)	{
+					setverdict(inconc);
+					f_addLogEntry("Cannot perform minimum time test because IUT sets it to 0");
+					stop;			  
+				};							 
 				f_intialiseMtc(v_runOrNot);                   
 				// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send valid TollDeclarationADU(s) with actionCode = send
 				// PT 140 TODO Trigger definition missing
