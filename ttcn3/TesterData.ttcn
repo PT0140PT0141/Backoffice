@@ -130,7 +130,8 @@ module EfcInfoExchange_TesterData{
 		modulepar VehicleParameters TD_VEHICLE_PARAMETERS;
 		modulepar ASNAUX.UTF8String TD_VAT_ID; 
  
-		modulepar UserId TD_USERID_1, TD_USERID_2, TD_USERID_3, TD_USERID_4, TD_USERID_5, TD_USERID_6, TD_USERID_7, TD_USERID_8;
+
+		modulepar UserId TD_USERID_1, TD_USERID_2, TD_USERID_3, TD_USERID_4, TD_USERID_5, TD_USERID_6, TD_USERID_7, TD_USERID_8; 
 		modulepar UserId TD_USERID_DISCOUNTED_1 := {
 			pan := TD_PAN_1,
 			contractSerialNumber := TD_CSN_1,

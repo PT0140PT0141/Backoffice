@@ -234,5 +234,44 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
 //			};
 //			return v_userParameterResponseDetails;
 //		}
-	}		
-}
+
+		function f_macroForTP_TSP_GNSS_BILLINGDETAILS_TC_BV_02to05() runs on MainTestComponent {
+			alt { 
+				[] mtcPort.receive(mw_apduNoAuthInitIut(mw_adusTollDeclaration)) -> value v_apduReceived {
+					f_logReceivedWaitAndAcknowledge(GNSS_TOLLDECLARATIONS_TIME1_MIN_TSP);
+				}
+			} // End of first alt statement
+	
+			var ChargeReport v_chargeReportFirst:=v_apduReceived.infoExchangeContent.adus.tollDeclarationADUs[0].gnssTollDeclaration.chargeReport;			
+			var UsageStatement v_usageStatement:=v_chargeReportFirst.usageStatementList[0].usageStatement;
+			var ObeId v_obeId:=v_chargeReportFirst.obeId;
+			var Period v_period:=v_chargeReportFirst.period;
+			
+			var TollDeclarationId v_tollDeclarationId:=v_apduReceived.infoExchangeContent.adus.tollDeclarationADUs[0].tollDeclarationId;
+			
+			var BillingDetailsADU v_aduGnssBillingDetails:=m_aduGnssBillingDetails(
+				TD_BILLING_DETAILS_NUM,
+				UserId:{obeId:=v_obeId}, 
+				v_period,
+				{v_usageStatement},
+				0,
+				v_tollDeclarationId, // same toll decalartion Id as in Toll Declaration in step 0
+				ActionCode_send_
+			);
+	
+			v_apduForSending := m_apduNoAuthRespTester(v_apduReceived,{v_aduGnssBillingDetails});
+	
+			f_sendAndLogApdu(v_apduForSending);                 
+	        
+	        // Step 2: Wait for positive Ack within GNSS_BILLINGDETAILS_TC_TIME1_MAX_TSP
+			// Set timer
+	        t_step.start(GNSS_BILLINGDETAILS_TC_TIME1_MAX_TSP);                 
+			alt {
+				[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {
+					f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TSP);
+					setverdict(pass);
+				}
+			} // End of Alt statement
+		} // End of function
+	} //End of group 		
+} //End of module

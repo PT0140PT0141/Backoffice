@@ -61,5 +61,5 @@ module EfcInfoExchange_Pixits {
 	modulepar RecordOfTrustObjectTypePurposePair RECEIVED_TRUST_OBJECTS_SUPPORTED;	//Should contain all the allowed pairs {TrustObjectType,TrustObjectPurpose} pairs accepted by the IUT for receiving 
 	modulepar RecordOfTrustObjectTypePurposePair SENT_TRUST_OBJECTS_SUPPORTED;		//Should contain all the allowed pairs {TrustObjectType,TrustObjectPurpose} pairs accepted by the IUT for sending
 	 	
-        
+    modulepar integer PX_BILLINGDETAILSNUM_NOT_EXISTING:=14; //Used in TP_TSP_GNSS_BILLINGDETAILS_TC_BI_03(). Should contain reference to a non existing billingdetailsnum    
 }

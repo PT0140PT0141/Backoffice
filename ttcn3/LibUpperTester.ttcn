@@ -33,6 +33,10 @@ module EfcInfoExchange_LibUpperTester {
 		GNSS_TOLLDECLARATION_TR_TSP_1_SENDREVOKEADJUST,
 		GNSS_TOLLDECLARATION_TR_TSP_1_SEND,
 		GNSS_TOLLDECLARATION_TR_TSP_1_ADJUST,
+		GNSS_TOLLDECLARATION_TR_TSP_1_SEND_SECTIONED,		//Used for setting up BILLINGDETAILS-tests
+		GNSS_TOLLDECLARATION_TR_TSP_1_SEND_TRAVELLINGINAREA,//Used for setting up BILLINGDETAILS-tests
+		GNSS_TOLLDECLARATION_TR_TSP_1_SEND_STAYINGINAREA,	//Used for setting up BILLINGDETAILS-tests
+		GNSS_TOLLDECLARATION_TR_TSP_1_SEND_CORDONCROSSING,	//Used for setting up BILLINGDETAILS-tests
 		GNSS_BILLINGDETAILS_TC_TR_TC_1_SEND,
 		GNSS_BILLINGDETAILS_TC_TR_TC_1_ADJUST,
 		GNSS_BILLINGDETAILS_TC_TR_TC_1_REVOKE,
@@ -56,9 +60,9 @@ module EfcInfoExchange_LibUpperTester {
 	}
 	
     altstep a_upperTester() runs on MainTestComponent{
-		[] mtcAccessPort.receive(mw_iso16986TriggerRspNotTriggered) {
-			//PT140 TODO insert mechanism to read the potential "reason" message and put it in the log
-			f_addLogEntry("IUT triggering action failed");
+    	var Iso16986TriggerRsp v_notTriggeredResponse;
+		[] mtcAccessPort.receive(mw_iso16986TriggerRspNotTriggered) -> value v_notTriggeredResponse {
+			f_addLogEntry("IUT triggering action failed." & v_notTriggeredResponse.reason);
         	setverdict(fail);
 	    }
 		[] t_transaction.timeout {

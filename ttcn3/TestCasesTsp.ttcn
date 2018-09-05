@@ -117,7 +117,7 @@ module EfcInfoExchange_TestCasesTsp {
                    
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
 				// Step 1: Send Initiating APDU containing a valid RequestADU with requestedADUType=provideUserDetailsADU
@@ -155,7 +155,7 @@ module EfcInfoExchange_TestCasesTsp {
                    
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 			
 				// Step 1: Send Initiating APDU containing a valid RequestADU with requestedADUType=provideUserDetailsADU
@@ -196,7 +196,7 @@ module EfcInfoExchange_TestCasesTsp {
                    
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
 				// Step 1: Send Initiating APDU containing a valid RequestADU with requestedADUType=provideUserDetailsADU
@@ -237,7 +237,7 @@ module EfcInfoExchange_TestCasesTsp {
                    
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				
 				// Step 1: Send Initiating APDU containing a valid RequestADU with requestedADUType=provideUserDetailsADU
@@ -278,7 +278,7 @@ module EfcInfoExchange_TestCasesTsp {
                    
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
 				// First, get the apdu to be sent in a variable to avoid apduIdentifier to be re-generated, then send the Apdu
@@ -329,7 +329,7 @@ module EfcInfoExchange_TestCasesTsp {
 				 */
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
 				// Step 1: Send Initiating APDU containing a valid RequestADU with APCI parameter field containing nextApduId
@@ -362,7 +362,7 @@ module EfcInfoExchange_TestCasesTsp {
 				 */
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
 				// Step 1: Send Initiating APDU containing a valid RequestADU with APCI parameter field containing inResponseToApduId
@@ -404,7 +404,7 @@ module EfcInfoExchange_TestCasesTsp {
 				 */
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_4_implementedTRUSTOBJECTSElectronicTransfer;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				
 				var boolean isCertificate:=false;
@@ -506,7 +506,7 @@ module EfcInfoExchange_TestCasesTsp {
 				 */
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
 				// Step 1: Send an Initiating_Apdu containing APCI parameter field with apduDate = invalid
@@ -543,7 +543,7 @@ module EfcInfoExchange_TestCasesTsp {
               */
                // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS and ICS_A3_3_useAuthenticator;
-				var InfoExchange v_apduForSending;
+				 
 				var InfoExchange v_apduToAuthenticate;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
@@ -645,7 +645,7 @@ module EfcInfoExchange_TestCasesTsp {
 				 */
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
 				// Check if there are parameters that are privacy bound
@@ -748,7 +748,7 @@ module EfcInfoExchange_TestCasesTsp {
 			  */          
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc             
 
 				// Front End shall initially receive a Request named as Transaction sequence #1
@@ -830,7 +830,7 @@ module EfcInfoExchange_TestCasesTsp {
               */       
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
 				// Check if there are parameters that are privacy bound
@@ -935,7 +935,7 @@ module EfcInfoExchange_TestCasesTsp {
                   */
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_2_implementedLISTOFUSERS;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
                  
 				// we want to ask for all userids of a given user
@@ -993,7 +993,7 @@ module EfcInfoExchange_TestCasesTsp {
                   */
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_2_implementedLISTOFUSERS;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
                  
 				// we want to ask for all userids of a given user who has no other userids
@@ -1048,7 +1048,7 @@ module EfcInfoExchange_TestCasesTsp {
                   */
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_2_implementedLISTOFUSERS;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
                  
 				// we want to ask for all userids of a given user who has no other userids
@@ -1093,7 +1093,7 @@ module EfcInfoExchange_TestCasesTsp {
 
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_2_implementedLISTOFUSERS;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
                  
 				// we want to ask for all userids of a given user who has no other userids
@@ -1136,7 +1136,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Initialisation
 
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_2_implementedLISTOFUSERS;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
                  
 				// we want to ask for all userids of a given user who has no other userids
@@ -1178,7 +1178,7 @@ module EfcInfoExchange_TestCasesTsp {
                   */
 
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_2_implementedLISTOFUSERS;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
                  
 				// IUT shall initially receive a Request as per Transaction sequence #1
@@ -1221,7 +1221,7 @@ module EfcInfoExchange_TestCasesTsp {
 
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_2_implementedLISTOFUSERS;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
                  
 				// we want to ask for all userids of a given user
@@ -1803,7 +1803,7 @@ module EfcInfoExchange_TestCasesTsp {
                   */
  				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_5_implementedPAYMENTCLAIM and ICS_A26_3_implementedDSRCBILLINGDETAILS;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
                  
                 // Step 1: First interaction
@@ -1891,10 +1891,9 @@ module EfcInfoExchange_TestCasesTsp {
                  // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_5_implementedPAYMENTCLAIM and ICS_A26_3_implementedDSRCBILLINGDETAILS;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
-				var InfoExchange v_apduForSending;
+				 
 				                  
                  // Send one preset Billing Details
-                 // PT140 TODO : mw_aduBillingDetails template and related fields to be defined
 
 				v_apduForSending := m_apduNoAuthInitTester({m_aduDsrcBillingDetails});                 
 				f_sendAndLogApdu(v_apduForSending);                 
@@ -2001,7 +2000,7 @@ module EfcInfoExchange_TestCasesTsp {
                   
                  // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_5_implementedPAYMENTCLAIM and ICS_A26_3_implementedDSRCBILLINGDETAILS;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 								
                  // Send one preset Billing Details
@@ -2083,7 +2082,7 @@ module EfcInfoExchange_TestCasesTsp {
                   */
                  // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_5_implementedPAYMENTCLAIM and ICS_A26_3_implementedDSRCBILLINGDETAILS;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 								
                  // Send one preset Billing Details
@@ -2162,7 +2161,7 @@ module EfcInfoExchange_TestCasesTsp {
                   */
                  // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_5_implementedPAYMENTCLAIM;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				
 				if (ICS_A26_3_implementedDSRCBILLINGDETAILS){
@@ -2220,7 +2219,7 @@ module EfcInfoExchange_TestCasesTsp {
                   */
                  // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_5_implementedPAYMENTCLAIM and ICS_A26_3_implementedDSRCBILLINGDETAILS;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 								
                  // Send one preset Billing Details
@@ -2277,7 +2276,7 @@ module EfcInfoExchange_TestCasesTsp {
                   */
                  // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_5_implementedPAYMENTCLAIM and ICS_A26_3_implementedDSRCBILLINGDETAILS;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 								
                  // Send two  Billing Details
@@ -2458,7 +2457,7 @@ module EfcInfoExchange_TestCasesTsp {
                   
                  // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_5_implementedPAYMENTCLAIM and ICS_A26_3_implementedDSRCBILLINGDETAILS;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 								
                  // Send one preset Billing Details
@@ -2582,7 +2581,7 @@ module EfcInfoExchange_TestCasesTsp {
                   */                 
                  // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_2_implementedDSRCEFCCONTEXTDATA;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
                  // Step 1: Send EFCCONTEXTDATA with:
@@ -2615,7 +2614,7 @@ module EfcInfoExchange_TestCasesTsp {
                                    
                 // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_2_implementedDSRCEFCCONTEXTDATA;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
                 // Step 1: Send EFCCONTEXTDATA with:
                	// domainType = dsrcClosedContext 
@@ -2650,7 +2649,7 @@ module EfcInfoExchange_TestCasesTsp {
                   
                  // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_2_implementedDSRCEFCCONTEXTDATA;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 								
 				v_apduForSending := m_apduNoAuthInitTester({m_aduEfcContextDataDsrcClosedContextTariffClassDefinition});
@@ -2685,7 +2684,7 @@ module EfcInfoExchange_TestCasesTsp {
                   
                  // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_2_implementedDSRCEFCCONTEXTDATA;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
                 // Step 1: Send EFCCONTEXTDATA with:
                 // domainType = dsrcClosedContext 
@@ -2716,7 +2715,7 @@ module EfcInfoExchange_TestCasesTsp {
                   
                  // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_2_implementedDSRCEFCCONTEXTDATA;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
                  // Step 1: Send EFCCONTEXTDATA with:
                  	// domainType = dsrcClosedContext 
@@ -2747,7 +2746,7 @@ module EfcInfoExchange_TestCasesTsp {
                   
                  // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_2_implementedDSRCEFCCONTEXTDATA;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
                  // Step 1: Send EFCCONTEXTDATA with:
                  	// domainType = dsrcClosedContext 
@@ -2779,7 +2778,7 @@ module EfcInfoExchange_TestCasesTsp {
                   
                 // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_2_implementedDSRCEFCCONTEXTDATA;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
                 // Step 1: Send EFCCONTEXTDATA with:
                 // domainType = dsrcClosedContext 
@@ -2815,7 +2814,7 @@ module EfcInfoExchange_TestCasesTsp {
                   
                  // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_2_implementedDSRCEFCCONTEXTDATA;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
                  // Step 1: Send EFCCONTEXTDATA with:
                  	// domainType = dsrcContext 
@@ -2853,7 +2852,7 @@ module EfcInfoExchange_TestCasesTsp {
                   
                  // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_2_implementedDSRCEFCCONTEXTDATA;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
                  // Step 1: Send EFCCONTEXTDATA with:
                  	// domainType = dsrcContext 
@@ -2894,7 +2893,7 @@ module EfcInfoExchange_TestCasesTsp {
                   
                  // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_2_implementedDSRCEFCCONTEXTDATA;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
                  // Send EFCCONTEXTDATA with:
                  	// domainType = dsrcContext 
@@ -2965,7 +2964,7 @@ module EfcInfoExchange_TestCasesTsp {
                   */
                  // Initialisation 
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_3_implementedDSRCBILLINGDETAILS;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
                  // Step 1: Send one valid APDU containing 10 valid BillingDetailsADU with actionCode = SEND
@@ -3068,7 +3067,7 @@ module EfcInfoExchange_TestCasesTsp {
                   */
                  // Initialisation 
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_3_implementedDSRCBILLINGDETAILS;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
                  // Send one valid APDU containing one valid BillingDetailsADU numbered 1 with only mandatory field
@@ -3120,7 +3119,7 @@ module EfcInfoExchange_TestCasesTsp {
                   */
                  // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_3_implementedDSRCBILLINGDETAILS;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
                  //  Send one valid APDU containing one BillingDetailsADU numbered 3 with actionCode = SEND and only mandatory fields
@@ -3250,7 +3249,7 @@ module EfcInfoExchange_TestCasesTsp {
                   */
                  // Initialisation 
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_3_implementedDSRCBILLINGDETAILS;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
                  //  Send one valid APDU containing one BillingDetailsADU numbered 3 with actionCode = SEND and only mandatory fields
@@ -3310,7 +3309,7 @@ module EfcInfoExchange_TestCasesTsp {
                   */
                  // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_3_implementedDSRCBILLINGDETAILS;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
                  //  Send one valid APDU containing one BillingDetailsADU numbered 3 with actionCode = SEND and only mandatory fields
@@ -3365,7 +3364,7 @@ module EfcInfoExchange_TestCasesTsp {
                   */
                  // Initialisation 
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_3_implementedDSRCBILLINGDETAILS;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
 				// Send one valid DSRC.BILLINGDETAILS numbered 3
@@ -3413,7 +3412,7 @@ module EfcInfoExchange_TestCasesTsp {
                   */
                  // Initialisation 
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_4_implementedDSRCREPORTABNORMALOBE;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
                 // Send one valid DSRC.REPORTABNORMALOBE
@@ -3444,7 +3443,7 @@ module EfcInfoExchange_TestCasesTsp {
                   */
                  // Initialisation 
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_4_implementedDSRCREPORTABNORMALOBE;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
                 // Send one  DSRC.REPORTABNORMALOBE with userId field missing
@@ -3482,7 +3481,7 @@ module EfcInfoExchange_TestCasesTsp {
                   */
                  // Initialisation 
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_4_implementedDSRCREPORTABNORMALOBE;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
                 // Step 1:
                 // Send one  APDU containg 2 ReportAbnormalOBEADUs, first one with missing and second one with userID set to an invalid value
@@ -3526,7 +3525,7 @@ module EfcInfoExchange_TestCasesTsp {
                   */
                  // Initialisation 
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_4_implementedDSRCREPORTABNORMALOBE;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				// Step 1:
                 // Send one  DSRC.REPORTABNORMALOBE with dateAndTime field missing
@@ -3568,7 +3567,7 @@ module EfcInfoExchange_TestCasesTsp {
                   */
                  // Initialisation 
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_4_implementedDSRCREPORTABNORMALOBE;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
                 // Step 1:
                 // Send one  DSRC.REPORTABNORMALOBE with efcContextMark field missing
@@ -3609,7 +3608,7 @@ module EfcInfoExchange_TestCasesTsp {
                   */
                  // Initialisation 
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_4_implementedDSRCREPORTABNORMALOBE;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
                 // Step 1:
                 	// Send one  APDU containg 2 ReportAbnormalOBEADUs, first one with efcContextMark missing and second one with efcContextMark set to an invalid value
@@ -3653,7 +3652,7 @@ module EfcInfoExchange_TestCasesTsp {
                   */
                  // Initialisation 
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_4_implementedDSRCREPORTABNORMALOBE;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
                 // Step 1:
                 	// Send one  DSRC.REPORTABNORMALOBE with abnormalOBEReason field missing
@@ -3695,7 +3694,7 @@ module EfcInfoExchange_TestCasesTsp {
                   */
                  // Initialisation 
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_4_implementedDSRCREPORTABNORMALOBE;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
                 // Step 1:
                 	// Send one  APDU containg 2 ReportAbnormalOBEADUs, first one with abnormalOBEReason missing and second one with abnormalOBEReason set to an invalid value
@@ -3741,7 +3740,7 @@ module EfcInfoExchange_TestCasesTsp {
                   */
                  // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_4_implementedDSRCREPORTABNORMALOBE;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
                 // Send one valid DSRC_REPORTBILLINGDETAILS
                  // PT140 TODO : mw_aduReportAbnormalOBE template to be defined
@@ -4003,7 +4002,7 @@ module EfcInfoExchange_TestCasesTsp {
                   */
                  // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A52_1_implementedGNSSBILLINGDETAILSTSP and ICS_A52_3_implementedGNSSTOLLDECLARATION;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);                   
 				// Trigger IUT with GNSS_TOLLDECLARATION_TR_TSP_1_SEND to send one valid TollDeclarationADU with actionCode = send
 				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1_SEND);
@@ -4055,48 +4054,11 @@ module EfcInfoExchange_TestCasesTsp {
                   */
                  // Initialisation 
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A52_1_implementedGNSSBILLINGDETAILSTSP and ICS_A52_3_implementedGNSSTOLLDECLARATION;
-				var InfoExchange v_apduForSending;
-				f_intialiseMtc(v_runOrNot);                   
-				// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
-				// PT 140 TODO Trigger definition missing
-				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1);
-				//  PT140 TODO: Template for Toll Declaration to be defined
-				// Receive the correct adu, send positive ack
-				alt {
-					[] mtcPort.receive(mw_apduNoAuthInitIut(mw_aduTollDeclaration)) -> value v_apduReceived {
-						// Log what we received
-						f_logReceivedWaitAndAcknowledge(GNSS_TOLLDECLARATIONS_TIME1_MIN_TSP); 	
-					}				
-				} // End of alt statement 
-                	
-				// Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
-                // action code = send
-                // CHOICE forSectionedRoads
-                // PT140 TODO: Correct template to be defined. Using basic BillingDetails template in what follows (to be changed)
-				v_apduForSending := m_apduNoAuthInitTester(
-				// TODO: To be inserted, but UserId cannot be retrieved from the received TollDeclaration. Which one to use?
-                // TODO how to specify CHOICE forSectionedRoads?
-				//m_aduGnssBillingDetails(
-				//	in integer p_billingDetailsNum,
-				//	in UserId p_userId,
-				//	in Period p_period
-					{
-						modifies m_aduGnssBillingDetails(1):= {
-						  	actionCode := ActionCode_send_
-							}
-						}
-					);
-					f_sendAndLogApdu(v_apduForSending);                 						
-				
-				// Step 2: Wait for positive Ack within GNSS_BILLINGDETAILS_TC_TIME1_MAX_TSP
-				// Set timer
-                t_step.start(GNSS_BILLINGDETAILS_TC_TIME1_MAX_TSP);                 
-				alt {
-					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TSP);
-						setverdict(pass);
-						}
-					} // End of Alt statement
+				 
+				f_intialiseMtc(v_runOrNot);                   				
+				//Trigger IUT with GNSS_TOLLDECLARATION_TR_TSP_1_SEND_SECTIONED to send one valid TollDeclarationADU with actionCode = send and CHOICE forSectionedRoad
+				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1_SEND_SECTIONED);
+				f_macroForTP_TSP_GNSS_BILLINGDETAILS_TC_BV_02to05();
 				f_closeDownMtc();                
            } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BV_02           
 
@@ -4108,45 +4070,11 @@ module EfcInfoExchange_TestCasesTsp {
                   */
                  // Initialisation 
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A52_1_implementedGNSSBILLINGDETAILSTSP and ICS_A52_3_implementedGNSSTOLLDECLARATION;
-				var InfoExchange v_apduForSending;
-				f_intialiseMtc(v_runOrNot);                   
-				// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
-				// PT 140 TODO Trigger definition missing
-				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1);
-
-				// Receive the correct adu, send positive ack
-				alt {
-					[] mtcPort.receive(mw_apduNoAuthInitIut(mw_aduTollDeclaration)) -> value v_apduReceived {
-						// Log what we received
-						f_logReceivedWaitAndAcknowledge(GNSS_TOLLDECLARATIONS_TIME1_MIN_TSP); 	
-					}				
-				} // End of alt statement 
-      			// Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
-     			// action code = send
-     			// CHOICE forTravellingInArea
-				v_apduForSending := m_apduNoAuthInitTester(
-				// TODO: To be inserted, but UserId cannot be retrieved from the received TollDeclaration. Which one to use?
-                // TODO how to specify CHOICE forTravellingInArea?
-				//m_aduGnssBillingDetails(
-				//	in integer p_billingDetailsNum,
-				//	in UserId p_userId,
-				//	in Period p_period
-					{
-						modifies m_aduGnssBillingDetails(1):= {
-						  	actionCode := ActionCode_send_
-							}
-						}
-					);
-				f_sendAndLogApdu(v_apduForSending);                 					
-                // Step 2: Wait for positive Ack within GNSS_BILLINGDETAILS_TC_TIME1_MAX_TSP
-				// Set timer
-                t_step.start(GNSS_BILLINGDETAILS_TC_TIME1_MAX_TSP);                 
-				alt {
-					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TSP);
-						setverdict(pass);
-						}
-					} // End of Alt statement
+				 
+				f_intialiseMtc(v_runOrNot);                   				
+				//Trigger IUT with GNSS_TOLLDECLARATION_TR_TSP_1_SEND_TRAVELLINGINAREA to send one valid TollDeclarationADU with actionCode = send and CHOICE forTravellingInArea
+				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1_SEND_TRAVELLINGINAREA);
+				f_macroForTP_TSP_GNSS_BILLINGDETAILS_TC_BV_02to05();
 				f_closeDownMtc();                
                 
             } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BV_03           
@@ -4160,40 +4088,11 @@ module EfcInfoExchange_TestCasesTsp {
                   */
                  // Initialisation 
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A52_1_implementedGNSSBILLINGDETAILSTSP and ICS_A52_3_implementedGNSSTOLLDECLARATION;
-				var InfoExchange v_apduForSending;
-				f_intialiseMtc(v_runOrNot);                   
-				// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
-				// PT 140 TODO Trigger definition missing
-				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1);
-				//  PT140 TODO: Template for Toll Declaration to be defined
-				alt { //TODO Ulrik continue to correct the receiveing of TOllDeclarations as in preceeding Test cases
-					[] mtcPort.receive(mw_apduTollDeclaration) -> value v_apduReceived {
-						f_logReceivedWaitAndAcknowledge(GNSS_TOLLDECLARATIONS_TIME1_MIN_TSP);
-               			// Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
-                 			// action code = send
-                 			// CHOICE forStayingInArea
-						v_apduForSending := m_apduNoAuthInitTester(
-				// TODO: To be inserted, but UserId cannot be retrieved from the received TollDeclaration. Which one to use?
-                // TODO how to specify CHOICE forStayingInArea?
-				//m_aduGnssBillingDetails(
-				//	in integer p_billingDetailsNum,
-				//	in UserId p_userId,
-				//	in Period p_period
-							{modifies m_aduGnssBillingDetails(1):= {actionCode := ActionCode_send_}}
-						);
-						f_sendAndLogApdu(v_apduForSending);                 
-					}
-				} // End of first alt statement
-                
-                // Step 2: Wait for positive Ack within GNSS_BILLINGDETAILS_TC_TIME1_MAX_TSP
-				// Set timer
-                t_step.start(GNSS_BILLINGDETAILS_TC_TIME1_MAX_TSP);                 
-				alt {
-					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TSP);
-						setverdict(pass);
-					}
-				} // End of Alt statement
+				 
+				f_intialiseMtc(v_runOrNot);                   				
+				//Trigger IUT with GNSS_TOLLDECLARATION_TR_TSP_1_SEND_STAYINGINAREA to send one valid TollDeclarationADU with actionCode = send and CHOICE forStayingInArea
+				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1_SEND_STAYINGINAREA);
+				f_macroForTP_TSP_GNSS_BILLINGDETAILS_TC_BV_02to05();
 				f_closeDownMtc();                
                 
             } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BV_04           
@@ -4206,43 +4105,11 @@ module EfcInfoExchange_TestCasesTsp {
                   */
                  // Initialisation 
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A52_1_implementedGNSSBILLINGDETAILSTSP and ICS_A52_3_implementedGNSSTOLLDECLARATION;
-				var InfoExchange v_apduForSending;
-				f_intialiseMtc(v_runOrNot);                   
-				// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
-				// PT 140 TODO Trigger definition missing
-				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1);
-				//  PT140 TODO: Template for Toll Declaration to be defined
-				alt {
-					[] mtcPort.receive(mw_apduTollDeclaration) -> value v_apduReceived {
-						f_logReceivedWaitAndAcknowledge(GNSS_TOLLDECLARATIONS_TIME1_MIN_TSP);
-               			// Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
-                 		// action code = send
-                 			// CHOICE forCordonCrossings
-                  		// PT140 TODO: Correct template to be defined. Using basic BillingDetails template in what follows (to be changed)
-						v_apduForSending := m_apduNoAuthInitTester(
-				// TODO: To be inserted, but UserId cannot be retrieved from the received TollDeclaration. Which one to use?
-                // TODO how to specify CHOICE forCordonCrossings?
-				//m_aduGnssBillingDetails(
-				//	in integer p_billingDetailsNum,
-				//	in UserId p_userId,
-				//	in Period p_period
-							{modifies m_aduGnssBillingDetails(1):= {
-						  	actionCode := ActionCode_send_
-							}
-						}
-							);                 
-						f_sendAndLogApdu(v_apduForSending);                 
-						}
-					} // End of first alt statement
-                  // Step 2: Wait for positive Ack within GNSS_BILLINGDETAILS_TC_TIME1_MAX_TSP
-				// Set timer
-                 t_step.start(GNSS_BILLINGDETAILS_TC_TIME1_MAX_TSP);                 
-				alt {
-					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TSP);
-						setverdict(pass);
-						}
-					} // End of Alt statement
+				 
+				f_intialiseMtc(v_runOrNot);                   				
+				//Trigger IUT with GNSS_TOLLDECLARATION_TR_TSP_1_SEND_CORDONCROSSING to send one valid TollDeclarationADU with actionCode = send and CHOICE forCordonCrossing
+				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1_SEND_CORDONCROSSING);
+				f_macroForTP_TSP_GNSS_BILLINGDETAILS_TC_BV_02to05();
 				f_closeDownMtc();                
                 
             } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BV_05            
@@ -4256,14 +4123,14 @@ module EfcInfoExchange_TestCasesTsp {
                   */
                  // Initialisation 
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A52_1_implementedGNSSBILLINGDETAILSTSP and ICS_A52_3_implementedGNSSTOLLDECLARATION;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);                   
 				// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
 				// PT 140 TODO Trigger definition missing
 				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1);
 				//  PT140 TODO: Template for Toll Declaration to be defined
 				alt {
-					[] mtcPort.receive(mw_apduTollDeclaration) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNoAuthInitIut(mw_adusTollDeclaration)) -> value v_apduReceived {
 						f_logReceivedWaitAndAcknowledge(GNSS_TOLLDECLARATIONS_TIME1_MIN_TSP);
                  		// Step 1: Send one valid APDU containing a number of valid BillingDetailsADU equal to GNSS.BILLINGDETAILS.TSP.PARAM1_MAX, with
                  			// action code = send 
@@ -4310,14 +4177,14 @@ module EfcInfoExchange_TestCasesTsp {
                   */
                  // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A52_1_implementedGNSSBILLINGDETAILSTSP and ICS_A52_3_implementedGNSSTOLLDECLARATION;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);                   
 				// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
 				// PT 140 TODO Trigger definition missing
 				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1);
 				//  PT140 TODO: Template for Toll Declaration to be defined
 				alt {
-					[] mtcPort.receive(mw_apduTollDeclaration) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNoAuthInitIut(mw_adusTollDeclaration)) -> value v_apduReceived {
 						f_logReceivedWaitAndAcknowledge(GNSS_TOLLDECLARATIONS_TIME1_MIN_TSP);
                  		// Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
                  			// action code = send
@@ -4394,14 +4261,14 @@ module EfcInfoExchange_TestCasesTsp {
                   */
                  // Initialisation 
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A52_2_implementedGNSSBILLINGDETAILSTC and ICS_A52_3_implementedGNSSTOLLDECLARATION;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);                   
 				// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
 				// PT 140 TODO Trigger definition missing
 				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1);
 				//  PT140 TODO: Template for Toll Declaration to be defined
 				alt {
-					[] mtcPort.receive(mw_apduTollDeclaration) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNoAuthInitIut(mw_adusTollDeclaration)) -> value v_apduReceived {
 						f_logReceivedWaitAndAcknowledge(GNSS_TOLLDECLARATIONS_TIME1_MIN_TSP);
 						}
 					} // End of first alt statement
@@ -4468,7 +4335,8 @@ module EfcInfoExchange_TestCasesTsp {
 
            testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BI_01() runs on MainTestComponent system TestAdapter {
                   /**
-                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BI_01: Verify that the TSP correctly responds to a series of BillingDetailsADUs bearing only mandatory fields,
+                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BI_01: Verify that the TSP correctly responds to a series 
+                  * @desc	of BillingDetailsADUs bearing only mandatory fields,
 				  * @desc    each BillingDetailsADU having one mandatory field bearing an incorrect value 
                   * @remark  [16986:2016], Clause 8.2.3 AND 8.2.4 and Table A.1/2 AND Table A.2/2 AND Table A.52/2
                   */
@@ -4476,75 +4344,76 @@ module EfcInfoExchange_TestCasesTsp {
 				// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
 				// PT 140 TODO Trigger definition missing
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A52_2_implementedGNSSBILLINGDETAILSTC and ICS_A52_3_implementedGNSSTOLLDECLARATION;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);                   
 				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1);
 				//  PT140 TODO: Template for Toll Declaration to be defined
 				alt {
-					[] mtcPort.receive(mw_apduTollDeclaration) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNoAuthInitIut(mw_adusTollDeclaration)) -> value v_apduReceived {
 						f_logReceivedWaitAndAcknowledge(GNSS_TOLLDECLARATIONS_TIME1_MIN_TSP);
-                		// Step 1: Send one valid APDU containing 13 valid BillingDetailsADUs, each one with the following parameters respectively set to one incorrect value:
-                 			// billingDetailsId.issuerId, tollContext, userId, Period, billingDetailsAmount, usageDetails.contextName, usageDetails.appliedUserClass, usageDetails.perDeclaredVehicleClasses, usageDetails.appliedTimeClass, usageDetails.entranceTime, usageList.ListofSections.chargeObjectId, exitChargeObject, exitTime
-						v_apduForSending := m_apduNoAuthInitTester(
-						// TODO: Inserted, but UserId cannot be retrieved from the received TollDeclaration. Which one to use?
-						//m_aduGnssBillingDetails(
-						//	in integer p_billingDetailsNum,
-						//	in UserId p_userId,
-						//	in Period p_period
-								{modifies m_aduGnssBillingDetails(4):= {
-						  			actionCode := ActionCode_send_,
-						  			billingDetailsId := {issuerId:=0}
-									}
-								},
-								{modifies m_aduGnssBillingDetails(5):= {
-						  			actionCode := ActionCode_send_,
-						  			tollContext := 0
-									}
-								},
-								{modifies m_aduGnssBillingDetails(6):= {
-						  			actionCode := ActionCode_send_,
-						  			userId:=omit
-									}
-								},
-								{modifies m_aduGnssBillingDetails(7):= {
-						  			actionCode := ActionCode_send_,
-						  			billingDetailsAmount := {paymentFeeAmount:=-5}
-									}
-								},
-								{modifies m_aduGnssBillingDetails(8):= {
-						  			actionCode := ActionCode_send_,
-						  			usageDetails := {contextName:=42}
-									}
-								},
-								{modifies m_aduGnssBillingDetails(9):= {
-						  			actionCode := ActionCode_send_,
-						  			usageDetails := {appliedUserClass:=0}
-									}
-								},
-								{modifies m_aduGnssBillingDetails(10):= {
-						  			actionCode := ActionCode_send_,
-						  			usageDetails := {perDeclaredVehicleClasses:=omit}
-									}
-								},
-								{modifies m_aduGnssBillingDetails(11):= {
-						  			actionCode := ActionCode_send_,
-						  			usageDetails := {appliedTimeClass:=0}
-									}
-								},
-								{modifies m_aduGnssBillingDetails(12):= {
-						  			actionCode := ActionCode_send_,
-						  			usageDetails := {entranceTime:=0}
-									}
-								},
-								{modifies m_aduGnssBillingDetails(13):= {
-						  			actionCode := ActionCode_send_,
-						  			usageDetails := {listOfSections:={chargeObjectId:=0}}
-									}
-								}
-							);                 
-						f_sendAndLogApdu(v_apduForSending);						
 						}
 					} // End of first alt statement
+            		// Step 1: Send one valid APDU containing 13 valid BillingDetailsADUs, each one with the following parameters respectively set to one incorrect value:
+         			// billingDetailsId.issuerId, tollContext, userId, Period, billingDetailsAmount, usageDetails.contextName, usageDetails.appliedUserClass, usageDetails.perDeclaredVehicleClasses, usageDetails.appliedTimeClass, usageDetails.entranceTime, usageList.ListofSections.chargeObjectId, exitChargeObject, exitTime
+
+					v_apduForSending := m_apduNoAuthInitTester(
+					// TODO: Inserted, but UserId cannot be retrieved from the received TollDeclaration. Which one to use?
+					//m_aduGnssBillingDetails(
+					//	in integer p_billingDetailsNum,
+					//	in UserId p_userId,
+					//	in Period p_period
+							{modifies m_aduGnssBillingDetails(4):= {
+					  			actionCode := ActionCode_send_,
+					  			billingDetailsId := {issuerId:=0}
+								}
+							},
+							{modifies m_aduGnssBillingDetails(5):= {
+					  			actionCode := ActionCode_send_,
+					  			tollContext := 0
+								}
+							},
+							{modifies m_aduGnssBillingDetails(6):= {
+					  			actionCode := ActionCode_send_,
+					  			userId:=omit
+								}
+							},
+							{modifies m_aduGnssBillingDetails(7):= {
+					  			actionCode := ActionCode_send_,
+					  			billingDetailsAmount := {paymentFeeAmount:=-5}
+								}
+							},
+							{modifies m_aduGnssBillingDetails(8):= {
+					  			actionCode := ActionCode_send_,
+					  			usageDetails := {contextName:=42}
+								}
+							},
+							{modifies m_aduGnssBillingDetails(9):= {
+					  			actionCode := ActionCode_send_,
+					  			usageDetails := {appliedUserClass:=0}
+								}
+							},
+							{modifies m_aduGnssBillingDetails(10):= {
+					  			actionCode := ActionCode_send_,
+					  			usageDetails := {perDeclaredVehicleClasses:=omit}
+								}
+							},
+							{modifies m_aduGnssBillingDetails(11):= {
+					  			actionCode := ActionCode_send_,
+					  			usageDetails := {appliedTimeClass:=0}
+								}
+							},
+							{modifies m_aduGnssBillingDetails(12):= {
+					  			actionCode := ActionCode_send_,
+					  			usageDetails := {entranceTime:=0}
+								}
+							},
+							{modifies m_aduGnssBillingDetails(13):= {
+					  			actionCode := ActionCode_send_,
+					  			usageDetails := {listOfSections:={chargeObjectId:=0}}
+								}
+							}
+						);                 
+					f_sendAndLogApdu(v_apduForSending);						
                	
                  // Step 2: Wait for negative Ack within GNSS_BILLINGDETAILS_TC_TIME1_MAX_TSP with issue list present and the following issue codes:
                  	// billingDetailsIssuerIdRejected, billingDetailsContextIdRejected, billingDetailsUserIdRejected, billingDetailsPeriodRejected, billingDetailsAmountRejected, billingDetailsContextNameRejected, billingDetailsAppliedUserClassRejected, billingDetailsDeclaredVehicleClassRejected, billingDetailsAppliedTimeClassRejected, billingDetailsEntranceTimeRejected, billingDetailsIntermediateSectionRejected, billingDetailsExitChargeObjectRejected, billingDetailsExitTimeRejected
@@ -4552,7 +4421,7 @@ module EfcInfoExchange_TestCasesTsp {
                 t_step.start(GNSS_BILLINGDETAILS_TC_TIME1_MAX_TSP);                 
   				
 				alt {
-					[] mtcPort.receive(mw_apduNAckIndividualIssues(v_apduForSending), 
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, 
 						{
 							{1,AduReasonCode_billingDetailsIssuerIdRejected_},
 							{2,AduReasonCode_billingDetailsContextIdRejected_},
@@ -4564,13 +4433,13 @@ module EfcInfoExchange_TestCasesTsp {
 							{8,AduReasonCode_billingDetailsAppliedTimeClassRejected_}, 
 							{9,AduReasonCode_billingDetailsEntranceTimeRejected_}, 
 							{10,AduReasonCode_billingDetailsIntermediateSectionRejected_} 					  
-							}
-						) -> value v_apduReceived {
+						}
+					)) -> value v_apduReceived {
 						// Log what we received
 						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TSP);
 						setverdict(pass);
-						}
-					} // End of Alt statement
+					}
+				} // End of Alt statement
 				f_closeDownMtc();  			
                 
 			} // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BI_01                     
@@ -4584,7 +4453,7 @@ module EfcInfoExchange_TestCasesTsp {
                   */
                  // Initialisation 
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A52_2_implementedGNSSBILLINGDETAILSTC and ICS_A52_3_implementedGNSSTOLLDECLARATION;
-				var InfoExchange v_apduForSending;
+				 
 				f_intialiseMtc(v_runOrNot);                   
 
 				// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
@@ -4592,7 +4461,7 @@ module EfcInfoExchange_TestCasesTsp {
 				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1);
 				//  PT140 TODO: Template for Toll Declaration to be defined
 				alt {
-					[] mtcPort.receive(mw_apduTollDeclaration) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNoAuthInitIut(mw_adusTollDeclaration)) -> value v_apduReceived {
 						f_logReceivedWaitAndAcknowledge(GNSS_TOLLDECLARATIONS_TIME1_MIN_TSP);
 					}
 				} // End of first alt statement
@@ -4626,8 +4495,8 @@ module EfcInfoExchange_TestCasesTsp {
                   * @remark  [16986:2016], Clause 8.2.3 AND 8.2.4 and Table A.1/2 AND Table A.2/2 AND Table A.52/2
                   */
                  // Initialisation 
-				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A52_1_implementedGNSSBILLINGDETAILSTC and ICS_A52_3_implementedGNSSTOLLDECLARATION;
-				var InfoExchange v_apduForSending;
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A52_2_implementedGNSSBILLINGDETAILSTC and ICS_A52_3_implementedGNSSTOLLDECLARATION;
+				 
 				f_intialiseMtc(v_runOrNot);                   
 
 				// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
@@ -4635,17 +4504,24 @@ module EfcInfoExchange_TestCasesTsp {
 				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1);
 				//PT140 TODO: Template for Toll Declaration to be defined
 				alt {
-					[] mtcPort.receive(mw_apduTollDeclaration) -> value v_apduReceived {
+					[] mtcPort.receive( mw_apduNoAuthInitIut(mw_adusTollDeclaration)) -> value v_apduReceived {
 						f_logReceivedWaitAndAcknowledge(GNSS_TOLLDECLARATIONS_TIME1_MIN_TSP);
 						}
 					} // End of first alt statement
 
-                 // PT140 TODO : mw_aduBillingDetails template to be defined
-				v_apduForSending := m_apduNoAuthInitTester(
-					{modifies mw_aduBillingDetails:= {
-					  	billingDetailsId := 14, actionCode := ActionCode_revoke_
-					  	}
-					});                 
+				//TODO Fausto fill in the missing fields in the m_aduGnssBillingDetails - also do a search for mw_aduBillingDetails in the context of SENDING and do similar substiutions
+				v_apduForSending :=m_apduNoAuthRespTester(
+					m_aduGnssBillingDetails(
+						PX_BILLINGDETAILSNUM_NOT_EXISTING,
+						UserId_p_userId,
+						Period_p_period,
+						RoUsageList_p_roUsageList,
+						TD_BILLINGDETAILS_AMOUNT_1,
+						RoTollDeclarationId_p_refTollDeclaration,
+						ActionCode_revoke_
+					)
+				);
+				
 				f_sendAndLogApdu(v_apduForSending);                 
 
                  // Step 2: Wait for negative Ack within GNSS_BILLINGDETAILS_TC_TIME1_MAX_TSP identifying the APDU containing the BillingDetailsADU numbered 14 and with issueCode= semanticError 
@@ -4677,35 +4553,50 @@ module EfcInfoExchange_TestCasesTsp {
 					// Send positive Ack within time constraints
 					// Send one valid APDU containing one valid BillingDetailsADU with action code = send and no optional parameters
 					// Wait for positive Ack
-				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A52_1_implementedGNSSBILLINGDETAILSTC and ICS_A52_3_implementedGNSSTOLLDECLARATION;
-				var InfoExchange v_apduForSending;
+				//TODO PT140 we need to check all testcases of type "sent earlier than allowed" and make sure to NOT run them if it is IMPOSSIBLE to be too fast (TIMEA_MIN or TIME0_MIN is zero)
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A52_2_implementedGNSSBILLINGDETAILSTC and ICS_A52_3_implementedGNSSTOLLDECLARATION and (not(GNSS_BILLINGDETAILS_TC_TIME0_MIN_TC==0));
+				 
 				f_intialiseMtc(v_runOrNot);                   
-				// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
+				// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send valid TollDeclarationADU(s) with actionCode = send
 				// PT 140 TODO Trigger definition missing
 				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1);
-				//  PT140 TODO: Template for Toll Declaration to be defined
+
 				alt {
-					[] mtcPort.receive(mw_apduTollDeclaration) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNoAuthInitIut(mw_adusTollDeclaration)) -> value v_apduReceived {
 						f_logReceivedWaitAndAcknowledge(GNSS_TOLLDECLARATIONS_TIME1_MIN_TSP);
 						}
 					} // End of first alt statement
 
-                 // PT140 TODO : mw_aduBillingDetails template to be defined
-				v_apduForSending := m_apduNoAuthInitTester(
-					{modifies mw_aduBillingDetails:= {
-					  	billingDetailsId := 1, actionCode := ActionCode_send_
-					  	}
-					});                 
+				//TODO Fausto fill in the missing fields in the m_aduGnssBillingDetails - also do a search for mw_aduBillingDetails in the context of SENDING and do similar substiutions
+				v_apduForSending :=m_apduNoAuthRespTester(
+					v_apduReceived,
+					m_aduGnssBillingDetails(
+						1,
+						UserId_p_userId,
+						Period_p_period,
+						RoUsageList_p_roUsageList,
+						TD_BILLINGDETAILS_AMOUNT_1,
+						RoTollDeclarationId_p_refTollDeclaration,
+						ActionCode_send_
+					)
+				);
 				f_sendAndLogApdu(v_apduForSending);                 
 
                 // Step 1:
-                // Send one valid DSRC.BILLINGDETAILS numbered 4 without waiting
-                 // PT140 TODO : mw_aduBillingDetails template to be defined
-				v_apduForSending := m_apduNoAuthInitTester(
-					{modifies mw_aduBillingDetails:= {
-					  	billingDetailsId := 4, actionCode := ActionCode_send_
-					  	}
-					});                 
+                // Send one valid GNSS.BILLINGDETAILS adjusting the previous one
+				//TODO Fausto fill in the missing fields in the m_aduGnssBillingDetails - also do a search for mw_aduBillingDetails in the context of SENDING and do similar substiutions
+				v_apduForSending :=m_apduNoAuthRespTester(
+					v_apduReceived,
+					m_aduGnssBillingDetails(
+						1,
+						UserId_p_userId,
+						Period_p_period,
+						RoUsageList_p_roUsageList,
+						TD_BILLINGDETAILS_AMOUNT_1,
+						RoTollDeclarationId_p_refTollDeclaration,
+						ActionCode_adjust_
+					)
+				);
 				f_sendAndLogApdu(v_apduForSending);                 
 
               	// Wait for negative Ack with ADUReasonCode field = requestSentTooOften (if positive Ack or not received set test failure)                	
