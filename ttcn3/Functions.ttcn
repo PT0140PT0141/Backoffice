@@ -237,7 +237,7 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
 //			return v_userParameterResponseDetails;
 //		}
 
-		function f_macroForTP_TSP_GNSS_BILLINGDETAILS_TC_BV_02to05() runs on MainTestComponent {
+		function f_macroForTP_TSP_GNSS_BILLINGDETAILS_TC_BV_02to05(in RoUsageList p_roUsageList) runs on MainTestComponent {
 			var ChargeReport v_chargeReportFirst;
 			var UsageStatement v_usageStatement;
 			var Period v_period;
@@ -250,19 +250,21 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
 					f_logReceivedWaitAndAcknowledge(GNSS_TOLLDECLARATIONS_TIME1_MIN_TSP);
 				}
 			} // End of first alt statement
-	
+			
+			//TODO Ulrik This did not work. Need to check the template in a more manual way
+			//f_checkAdusAgainstTemplate(v_apduReceived, mw_aduTollDeclaration);
+			
 			v_chargeReportFirst:=v_apduReceived.infoExchangeContent.adus.tollDeclarationADUs[0].gnssTollDeclaration[0].chargeReport;			
 			v_usageStatement:=v_chargeReportFirst.usageStatementList[0].usageStatement;
 			v_obeId:=v_chargeReportFirst.obeId;
-			v_period:=v_chargeReportFirst.reportPeriod;
 			
 			v_tollDeclarationId:=v_apduReceived.infoExchangeContent.adus.tollDeclarationADUs[0].tollDeclarationId;
 						
 			v_aduGnssBillingDetails:=m_aduGnssBillingDetails(
 				TD_BILLING_DETAILS_NUM,
 				UserId:{obeID:=v_obeId}, 
-				v_period,
-				RoUsageStatement:{v_usageStatement},
+				TD_PERIOD_1,
+				p_roUsageList,
 				c_extPayAmountNothing,
 				{v_tollDeclarationId}, // same toll declaration Id as in Toll Declaration in step 0
 				ActionCode_send_
@@ -282,6 +284,9 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
 				}
 			} // End of Alt statement
 		} // End of function
+<<<<<<< HEAD
+				
+=======
 		
 		function f_initForPaymentClaim() runs on MainTestComponent {
 			var float v_timeToWait;                  
@@ -316,5 +321,6 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
 				}
 			} 	// End of Alt Statement				
 		} // End of function
+>>>>>>> branch 'master' of https://github.com/PT0140PT0141/Backoffice.git
 	} //End of group 		
 } //End of module

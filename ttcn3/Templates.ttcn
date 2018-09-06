@@ -1327,7 +1327,6 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 //	  			}
 
 				type record of UsageList RoUsageList;
-				type record of UsageStatement RoUsageStatement;
 				type record of TollDeclarationId RoTollDeclarationId;
 
 				template (value) BillingDetailsADU m_aduGnssBillingDetails(
@@ -1544,28 +1543,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				tollDeclarationId := ?, // shall be present 
 				gnssTollDeclaration := {
 					{
-						chargeReport := {
-							protocolVersion:= AidIdentifier_iso17575_1_2016_,
-							obeId := ?, // mandatory in ISO 16986
-							vehicleLPNr := ?, // mandatory in ISO 16986
-							paymentMeans := ?, // mandatory in IS 16896
-							serviceProviderContract := ?, // mandatory in ISO 12855
-							tollContext:= ?, // can be Tester or IUT Id
-							chargeReportFinalRecipient := omit, // shall not be used in ISO 16986 
-							timeOfReport := omit, // shall not be used
-							reportPeriod := *, // may or may not be present
-							versionInfo := *, // may or may not be present
-							usageStatementList := { // shall be present in ISO 16986
-								{
-									usageStatement := ?
-								}
-							}, 
-							sumVatForThisSession := omit, // shall not be used in ISO 16986 
-							accountStatus := omit, // shall not be used in ISO 16986
-							chargeReportCounter := ?, // mandatory in ISO 16986
-							mileage := omit, // shall not be used in ISO 16986
-							listOfCccAttributes := omit // shall not be used in IS 16986
-						}
+						chargeReport := mw_chargeReport
 					}
 				},
 				actionCode:= (ActionCode_send_, ActionCode_revoke_ ,ActionCode_adjust_ )
