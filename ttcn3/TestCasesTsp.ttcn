@@ -19,7 +19,7 @@
  *	DSRC.ContractIssuerList		! done					! done			! Template mw_aduContractIssuerList to be defined
  *	DSRC.EFCContextData			! done					! done			! to be compiled
  *	DSRC.BillingDetails			! done					! done			! Billingdetails templates to be defined.
- *	DSRC.ReportAbnormalOBE		! done					! done			! mw_aduReportAbnormalOBE to be defined.
+ *	DSRC.ReportAbnormalOBE		! done					! done			! to be compiled
  *	GNSS.TollDeclaration		! done					! done			! mw_aduTollDeclaration template to be defined
  *	GNSS.BillingDetails.TSP		! done					! done			! mw_apduGnssBillingDetails_TSP to be defined
  *	GNSS.BillingDetails.TC		! done					! done			! templates to be defined.
@@ -3400,7 +3400,6 @@ module EfcInfoExchange_TestCasesTsp {
                 // Step 1:
                 // Send one  APDU containg 2 ReportAbnormalOBEADUs, first one with missing and second one with userID set to an invalid value
 
-                // PT140 TODO : mw_aduReportAbnormalOBE template to be defined
 				v_apduForSending := {
 					m_apduNoAuthInitTester({modifies m_aduReportAbnormalOBE:= {
 					  		userId := omit
@@ -3439,7 +3438,6 @@ module EfcInfoExchange_TestCasesTsp {
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				// Step 1:
                 // Send one  DSRC.REPORTABNORMALOBE with dateAndTime field missing
-                // PT140 TODO : mw_aduReportAbnormalOBE template to be defined
 				v_apduForSending := {
 					m_apduNoAuthInitTester({modifies m_aduReportAbnormalOBE:= {
 					  	dateAndTime := fx_getUtc() + 1000.0
@@ -3479,7 +3477,6 @@ module EfcInfoExchange_TestCasesTsp {
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
                 // Step 1:
                 // Send one  DSRC.REPORTABNORMALOBE with efcContextMark field missing
-                // PT140 TODO : mw_aduReportAbnormalOBE template to be defined
 				v_apduForSending := {
 					m_apduNoAuthInitTester({modifies m_aduReportAbnormalOBE:= {					  	
 					  	efcContextMark := omit
@@ -3557,7 +3554,6 @@ module EfcInfoExchange_TestCasesTsp {
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
                 // Step 1:
                 	// Send one  DSRC.REPORTABNORMALOBE with abnormalOBEReason field missing
-                // PT140 TODO : mw_aduReportAbnormalOBE template to be defined
 				v_apduForSending := {
 					m_apduNoAuthInitTester({modifies m_aduReportAbnormalOBE:= {					  	
 					  		abnormalOBEReasonCode := omit
@@ -3598,7 +3594,6 @@ module EfcInfoExchange_TestCasesTsp {
                 // Step 1:
                 	// Send one  APDU containg 2 ReportAbnormalOBEADUs, first one with abnormalOBEReason missing and second one with abnormalOBEReason set to an invalid value
 
-                // PT140 TODO : mw_aduReportAbnormalOBE template to be defined
 				v_apduForSending := {
 					m_apduNoAuthInitTester(modifies m_aduReportAbnormalOBE:= {
 					  	abnormalOBEReasonCode := omit
@@ -3687,11 +3682,9 @@ module EfcInfoExchange_TestCasesTsp {
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A52_3_implementedGNSSTOLLDECLARATION;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				// Step 1: Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send three valid TollDeclarationADUs with actionCode = send, revoke, and adjust, respectively
-				// PT140 TODO: mw_aduTollDeclaration template to be defined
-				// PT140 TODO: way to set or change amount in the Charge report to be defined
 				var InfoExchange v_apduToBeReceived := mw_apduNoAuthInitIut(
-					{modifies mw_aduTollDeclaration:= {	amount := *, actionCode := ActionCode_send_	}},
-					{modifies mw_aduTollDeclaration:= {	actionCode := ActionCode_adjust_, amount := *}},
+					{modifies mw_aduTollDeclaration:= {	actionCode := ActionCode_send_	}},
+					{modifies mw_aduTollDeclaration:= {	actionCode := ActionCode_adjust_}},
 					{modifies mw_aduGnssTollDeclaration := { actionCode := ActionCode_revoke_}}
 				);
 				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1_SENDREVOKEADJUST);												
@@ -3701,7 +3694,6 @@ module EfcInfoExchange_TestCasesTsp {
 						// Log what we received
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIMEA_MIN_TSP); 
 					
-						// PT140 TODO: verify that the extraction of the tollDeclarationId from the received apdu is correct
 						var TollDeclarationId v_idReceived1 := v_apduReceived.infoExchangeContent.adus.tollDeclarationADUs[1].tollDeclarationId;
 						var TollDeclarationId v_idReceived2 := v_apduReceived.infoExchangeContent.adus.tollDeclarationADUs[2].tollDeclarationId;
 						var TollDeclarationId v_idReceived3 := v_apduReceived.infoExchangeContent.adus.tollDeclarationADUs[3].tollDeclarationId;				
@@ -3743,21 +3735,21 @@ module EfcInfoExchange_TestCasesTsp {
 				// PT140 TODO: mw_aduTollDeclaration template to be defined
 				// Receive the correct adu, send positive ack
 				alt {
-					[] mtcPort.receive(mw_apduNoAuthInitIut(mw_aduTollDeclaration)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNoAuthInitIut({modifies mw_aduTollDeclaration:= {	actionCode := ActionCode_send_}})) -> value v_apduReceived {
 						// Log what we received
 						f_logReceivedWaitAndAcknowledge(GNSS_TOLLDECLARATIONS_TIME1_MIN_TSP); 	
 					}				
  				} // End of alt statement 
 				
-				// Step 1: Trigger IUT with GNSS.BILLINGDETAILS_TSP_1_A to send  valid BillingDetailsADUs with:
+				// Step 1: Trigger IUT with GNSS_BILLINGDETAILS_TSP_TR_TSP_1_SEND to send  valid BillingDetailsADUs with:
 					// actionCode = send
 					// all permutations of present and not present optional fields that vary in the IUT implementation
-				f_sendAndLogTrigger(GNSS_BILLINGDETAILS_TC_TR_TC_1_SEND);				
+				f_sendAndLogTrigger(GNSS_BILLINGDETAILS_TSP_TR_TSP_1_SEND);				
 				
 				//  Wait for GNSS.BILLINGDETAILS
 				// PT140 TODO: mw_apduGnssBillingDetails_TSP to be defined
 				alt {
-					[] mtcPort.receive(mw_apduGnssBillingDetails_TSP) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNoAuthInitIut(Adus:{billingDetailsADUs:={mw_aduGnssBillingDetails}) )-> value v_apduReceived {
 						// Log what we received							
 						// Send Ack within time constraints
 						f_logReceivedWaitAndAcknowledge(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TSP);
@@ -3772,7 +3764,7 @@ module EfcInfoExchange_TestCasesTsp {
     		testcase TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_02() runs on MainTestComponent system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_06: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TSP transaction with single BillingDetailsADU with actionCode = adjust and no optional fields 
+                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_02: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TSP transaction with single BillingDetailsADU with actionCode = adjust and no optional fields 
                   * @remark  [16986:2016], Clause 8.2.2 AND 8.2.4 and Table A.1/2 AND Table A.2/1 AND Table A.52/1 AND Table A.56/6
                   */
                   
@@ -3781,11 +3773,10 @@ module EfcInfoExchange_TestCasesTsp {
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1_SEND);												
 				//  Wait for GNSS.TOLLDECLARATION
-				// PT140 TODO: mw_aduTollDeclaration template to be defined
 				
 				// Receive the correct adu, send positive ack
 				alt {
-					[] mtcPort.receive(mw_apduNoAuthInitIut(mw_aduTollDeclaration)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNoAuthInitIut({modifies mw_aduTollDeclaration:= {	actionCode := ActionCode_send_}})) -> value v_apduReceived {
 						// Log what we received
 						f_logReceivedWaitAndAcknowledge(GNSS_TOLLDECLARATIONS_TIME1_MIN_TSP); 	
 					}				
@@ -3793,9 +3784,8 @@ module EfcInfoExchange_TestCasesTsp {
 				f_sendAndLogTrigger(GNSS_BILLINGDETAILS_TSP_TR_TSP_1_SEND);				
 				
 				//  Wait for GNSS.BILLINGDETAILS
-				// PT140 TODO: mw_apduGnssBillingDetails_TSP to be defined
 				alt {
-					[] mtcPort.receive(mw_apduGnssBillingDetails_TSP) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNoAuthInitIut(Adus:{billingDetailsADUs:={mw_aduGnssBillingDetails}) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TSP); 
 							
 						// Send NAck within time constraints
@@ -3803,19 +3793,46 @@ module EfcInfoExchange_TestCasesTsp {
 						f_sendAndLogApdu(m_apduNoAuthRespTester(v_apduReceived, AduReasonCode_billingDetailsAmountRejected_));
 						}
  					} // End of alt statement
-
-				// Step 1: Trigger IUT with GNSS.BILLINGDETAILS.TR_TSP_1_B2 to send one APDU containing one valid BillingDetailsADU with:
+				// Retrieve all BillingDetails ADUs with action code=send and store their IDs in v_receivedIds
+				var billingDetailsADUs v_receivedBillingDetails := v_apduReceived.Content.Adus;
+				var integer v_numOfReceivedBillingDetails := sizeof(v_receivedBillingDetails);
+				var record of BillingDetailsId v_receivedIds;
+				var integer v_currentBillingDetailsId :=0;
+				for (var integer v_loop :=0, v_loop < v_numOfReceivedBillingDetails, v_loop := v_loop+1)
+					{
+					  if (v_receivedBillingDetails[v_loop].actionCode == ActionCode_Send_) {
+					    v_receivedIds[v_currentBillingDetailsId] := v_receivedBillingDetails[v_loop].billingDetailsId;
+					    v_currentBillingDetailsId := v_currentBillingDetailsId + 1;
+					  };
+					}; // End of for
+				if (sizeof(v_receivedIds) == 0) {
+				  	setverdict(fail);
+					f_addLogEntry("Requested BillingDetails with Actioncode send, none received");
+					stop;
+					};
+				// Step 1: Trigger IUT with GNSS_BILLINGDETAILS_TSP_TR_TSP_1_ADJUST to send one APDU containing one valid BillingDetailsADU with:
 				//			actionCode = adjust
 				f_sendAndLogTrigger(GNSS_BILLINGDETAILS_TSP_TR_TSP_1_ADJUST);				
 				
 				//  Wait for GNSS.BILLINGDETAILS
-				// PT140 TODO: mw_apduGnssBillingDetails_TSP to be defined
 				alt {
-					[] mtcPort.receive(mw_apduGnssBillingDetails_TSP) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNoAuthInitIut(Adus:{billingDetailsADUs:={mw_aduGnssBillingDetails}) -> value v_apduReceived {
 						f_logReceivedWaitAndAcknowledge(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TSP);
 						setverdict(pass);						
 						}
  					} // End of alt statement
+				v_receivedBillingDetails := v_apduReceived.Content.Adus;
+				v_numOfReceivedBillingDetails := sizeof(v_receivedBillingDetails);
+				var boolean v_oneFound := false;
+				for (var integer v_loop :=0, v_loop < v_numOfReceivedBillingDetails, v_loop := v_loop+1)
+					{
+					  if ((v_receivedBillingDetails[v_loop].actionCode == ActionCode_Adjust_) and (match(v_receivedBillingDetails[v_loop].billingDetailsId, v_receivedIds)) {
+					    v_oneFound := true;
+					    break;
+					  };
+					}; // End of for				
+				if (v_oneFound) {setverdict(pass)}
+				else {setverdict(fail)};
 				f_closeDownMtc();   						           				                                
                
 			} // End of TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_02           
@@ -3834,39 +3851,68 @@ module EfcInfoExchange_TestCasesTsp {
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1_SEND);												
 				//  Wait for GNSS.TOLLDECLARATION
-				// PT140 TODO: mw_aduTollDeclaration template to be defined
 				
 				// Receive the correct adu, send positive ack
 				alt {
-					[] mtcPort.receive(mw_apduNoAuthInitIut(mw_aduTollDeclaration)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNoAuthInitIut({modifies mw_aduTollDeclaration:= {	actionCode := ActionCode_send_}})) -> value v_apduReceived {
 						// Log what we received
 						f_logReceivedWaitAndAcknowledge(GNSS_TOLLDECLARATIONS_TIME1_MIN_TSP); 	
 					}				
- 				} // End of alt statement 
+				} // End of alt statement 
 				f_sendAndLogTrigger(GNSS_BILLINGDETAILS_TSP_TR_TSP_1_SEND);				
 				
 				//  Wait for GNSS.BILLINGDETAILS
-				// PT140 TODO: mw_apduGnssBillingDetails_TSP to be defined
 				alt {
-					[] mtcPort.receive(mw_apduGnssBillingDetails_TSP) -> value v_apduReceived {
-						f_logReceivedWaitAndAcknowledge(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TSP);
+					[] mtcPort.receive(mw_apduNoAuthInitIut(Adus:{billingDetailsADUs:={mw_aduGnssBillingDetails}) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TSP); 
+							
+						// Send NAck within time constraints
+						f_wait(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TSP);
+						f_sendAndLogApdu(m_apduNoAuthRespTester(v_apduReceived, AduReasonCode_billingDetailsAmountRejected_));
 						}
  					} // End of alt statement
-
-				// Step 1: Trigger IUT with GNSS.BILLINGDETAILS.TR_TSP_1_C to send one APDU containing one valid BillingDetailsADU with:
+				// Retrieve all BillingDetails ADUs with action code=send and store their IDs in v_receivedIds
+				var billingDetailsADUs v_receivedBillingDetails := v_apduReceived.Content.Adus;
+				var integer v_numOfReceivedBillingDetails := sizeof(v_receivedBillingDetails);
+				var record of BillingDetailsId v_receivedIds;
+				var integer v_currentBillingDetailsId :=0;
+				for (var integer v_loop :=0, v_loop < v_numOfReceivedBillingDetails, v_loop := v_loop+1)
+					{
+					  if (v_receivedBillingDetails[v_loop].actionCode == ActionCode_Send_) {
+					    v_receivedIds[v_currentBillingDetailsId] := v_receivedBillingDetails[v_loop].billingDetailsId;
+					    v_currentBillingDetailsId := v_currentBillingDetailsId + 1;
+					  };
+					}; // End of for
+				if (sizeof(v_receivedIds) == 0) {
+				  	setverdict(fail);
+					f_addLogEntry("Requested BillingDetails with Actioncode send, none received");
+					stop;
+					};
+				// Step 1: Trigger IUT with GNSS_BILLINGDETAILS_TSP_TR_TSP_1_REVOKE to send one APDU containing one valid BillingDetailsADU with:
 					// actionCode = ActionCode_revoke_
 					// only mandatory fields present with valid values
 					// billingDetailsNum field value = same as previous sent Billing Details
 				f_sendAndLogTrigger(GNSS_BILLINGDETAILS_TSP_TR_TSP_1_REVOKE);				
 				
 				//  Wait for GNSS.BILLINGDETAILS
-				// PT140 TODO: mw_apduGnssBillingDetails_TSP to be defined
 				alt {
-					[] mtcPort.receive(mw_apduGnssBillingDetails_TSP) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNoAuthInitIut(Adus:{billingDetailsADUs:={mw_aduGnssBillingDetails}) -> value v_apduReceived {
 						f_logReceivedWaitAndAcknowledge(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TSP);
 						setverdict(pass);						
 						}
  					} // End of alt statement
+				v_receivedBillingDetails := v_apduReceived.Content.Adus;
+				v_numOfReceivedBillingDetails := sizeof(v_receivedBillingDetails);
+				var boolean v_oneFound := false;
+				for (var integer v_loop :=0, v_loop < v_numOfReceivedBillingDetails, v_loop := v_loop+1)
+					{
+					  if ((v_receivedBillingDetails[v_loop].actionCode == ActionCode_Revoke_) and (match(v_receivedBillingDetails[v_loop].billingDetailsId, v_receivedIds)) {
+					    v_oneFound := true;
+					    break;
+					  };
+					}; // End of for				
+				if (v_oneFound) {setverdict(pass)}
+				else {setverdict(fail)};
 				f_closeDownMtc();   						           				                                
 
 			} // End of TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_03           
