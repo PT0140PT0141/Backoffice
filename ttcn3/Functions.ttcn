@@ -284,6 +284,43 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
 				}
 			} // End of Alt statement
 		} // End of function
+<<<<<<< HEAD
 				
+=======
+		
+		function f_initForPaymentClaim() runs on MainTestComponent {
+			var float v_timeToWait;                  
+            // Step 1: First interaction
+            // Send one preset Billing Details according to the implementation choice
+			if (ICS_A26_3_implementedDSRCBILLINGDETAILS) {
+				v_apduForSending := m_apduNoAuthInitTester({m_aduDsrcBillingDetails});
+				v_timeToWait := DSRC_BILLINGDETAILS_TIME1_MIN_TSP,                
+				f_sendAndLogApdu(v_apduForSending);                 
+                 // Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
+				// Set timer
+                 t_step.start(DSRC_BILLINGDETAILS_TIME1_MAX_TSP);
+				}
+			else if (ICS_A52_2_implementedGNSSBILLINGDETAILSTC and ICS_A52_3_implementedGNSSTOLLDECLARATION) {
+				v_timeToWait := GNSS_BILLINGDETAILS_TC_TIME1_MIN_TSP,                
+				// Trigger IUT with GNSS_TOLLDECLARATION_TR_TSP_1_SEND to send one valid TollDeclarationADU with actionCode = send
+				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1_SEND);
+				// Receive Toll Declaration, send positive Ack
+				f_macroForTP_TSP_GNSS_BILLINGDETAILS_TC_BV_02to05();
+				// Set timer
+               	t_step.start(GNSS_BILLINGDETAILS_TC_TIME1_MAX_TSP);
+				}
+			else {
+			  	setverdict(fail);
+				f_addLogEntry("Cannot perform PAYMENTCLAIM transaction without supporting either DSRCBILLINGDETAILS or GNSSBILLINGDETAILSTC");			  
+			};
+			// Receive the Ack for the sent Billing Details              
+			alt {
+				[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {
+					// Log what we received
+					f_logReceivedThenCheckAndStopTime(v_timeToWait);
+				}
+			} 	// End of Alt Statement				
+		} // End of function
+>>>>>>> branch 'master' of https://github.com/PT0140PT0141/Backoffice.git
 	} //End of group 		
 } //End of module

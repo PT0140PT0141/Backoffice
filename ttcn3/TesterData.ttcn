@@ -109,6 +109,8 @@ module EfcInfoExchange_TesterData{
 		modulepar UTF8String TD_DSRC_BILLINGDETAILS_TIMECLASS:="TheTimeClass";//[SEMANTIC DEFINITION] According to ISO 17575-3
 		modulepar LanguageID TD_DSRC_BILLINGDETAILS_LANG:="it";//Default value set to Italy,[SEMANTIC DEFINITION] According to definitions in ISO 639-1 
 		modulepar UTF8String TD_DSRC_BILLINGDETAILS_TEXT:="Nothing to add"; //[SEMANTIC DEFINITION] Any comment needed to be added
+		modulepar LanguageID TD_GNSS_BILLINGDETAILS_LANG:="it";//Default value set to Italy,[SEMANTIC DEFINITION] According to definitions in ISO 639-1 
+		modulepar UTF8String TD_GNSS_BILLINGDETAILS_TEXT:="Nothing to add"; //[SEMANTIC DEFINITION] Any comment needed to be added
 	}
 	
 	group EXCEPTIONLIST {
