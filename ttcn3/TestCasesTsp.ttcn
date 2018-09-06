@@ -23,7 +23,7 @@
  *	GNSS.TollDeclaration		! done					! done			! to be compiled
  *	GNSS.BillingDetails.TSP		! done					! done			! to be compiled
  *	GNSS.BillingDetails.TC		! done					! done			! to be compiled
- *	GNSS.PaymentAnnouncement	! done					! done			! mw_aduGnssPaymentAnnouncement template to be defined
+ *	GNSS.PaymentAnnouncement	! done					! done			! to be compiled
  */
  
 module EfcInfoExchange_TestCasesTsp {
@@ -3732,7 +3732,6 @@ module EfcInfoExchange_TestCasesTsp {
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1_SEND);												
 				//  Wait for GNSS.TOLLDECLARATION
-				// PT140 TODO: mw_aduTollDeclaration template to be defined
 				// Receive the correct adu, send positive ack
 				alt {
 					[] mtcPort.receive(mw_apduNoAuthInitIut({modifies mw_aduTollDeclaration:= {	actionCode := ActionCode_send_}})) -> value v_apduReceived {
@@ -3747,7 +3746,6 @@ module EfcInfoExchange_TestCasesTsp {
 				f_sendAndLogTrigger(GNSS_BILLINGDETAILS_TSP_TR_TSP_1_SEND);				
 				
 				//  Wait for GNSS.BILLINGDETAILS
-				// PT140 TODO: mw_apduGnssBillingDetails_TSP to be defined
 				alt {
 					[] mtcPort.receive(mw_apduNoAuthInitIut(Adus:{billingDetailsADUs:={mw_aduGnssBillingDetails}) )-> value v_apduReceived {
 						// Log what we received							
@@ -4062,9 +4060,7 @@ module EfcInfoExchange_TestCasesTsp {
 				 
 				f_intialiseMtc(v_runOrNot);                   
 				// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
-				// PT 140 TODO Trigger definition missing
 				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1);
-				//  PT140 TODO: Template for Toll Declaration to be defined
 				alt {
 					[] mtcPort.receive(mw_apduNoAuthInitIut(mw_adusTollDeclaration)) -> value v_apduReceived {
 						f_logReceivedWaitAndAcknowledge(GNSS_TOLLDECLARATIONS_TIME1_MIN_TSP);
@@ -4119,9 +4115,7 @@ module EfcInfoExchange_TestCasesTsp {
 				 
 				f_intialiseMtc(v_runOrNot);                   
 				// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
-				// PT 140 TODO Trigger definition missing
 				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1);
-				//  PT140 TODO: Template for Toll Declaration to be defined
 				alt {
 					[] mtcPort.receive(mw_apduNoAuthInitIut(mw_adusTollDeclaration)) -> value v_apduReceived {
 						f_logReceivedWaitAndAcknowledge(GNSS_TOLLDECLARATIONS_TIME1_MIN_TSP);
@@ -4208,9 +4202,7 @@ module EfcInfoExchange_TestCasesTsp {
 				 
 				f_intialiseMtc(v_runOrNot);                   
 				// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
-				// PT 140 TODO Trigger definition missing
 				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1);
-				//  PT140 TODO: Template for Toll Declaration to be defined
 				alt {
 					[] mtcPort.receive(mw_apduNoAuthInitIut(mw_adusTollDeclaration)) -> value v_apduReceived {
 						f_logReceivedWaitAndAcknowledge(GNSS_TOLLDECLARATIONS_TIME1_MIN_TSP);
@@ -4476,9 +4468,7 @@ module EfcInfoExchange_TestCasesTsp {
 				 
 				f_intialiseMtc(v_runOrNot);                   
 				// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
-				// PT 140 TODO Trigger definition missing
 				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1);
-				//  PT140 TODO: Template for Toll Declaration to be defined
 				alt {
 					[] mtcPort.receive(mw_apduNoAuthInitIut(mw_adusTollDeclaration)) -> value v_apduReceived {
 						f_logReceivedWaitAndAcknowledge(GNSS_TOLLDECLARATIONS_TIME1_MIN_TSP);
@@ -4641,10 +4631,9 @@ module EfcInfoExchange_TestCasesTsp {
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A2_2_isGnss and ICS_A52_4_implementedGNSSPAYMENTANNOUNCEMENT;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				
-				// Step 1: Trigger IUT with GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1_A to send one valid PaymentAnnouncementADU with actionCode = send
+				// Step 1: Trigger IUT with GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1_SEND to send one valid PaymentAnnouncementADU with actionCode = send
 				f_sendAndLogTrigger(GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1_SEND);												
 				//  Wait for GNSS.PAYMENTANNOUNCEMENT
-				// PT140 TODO: mw_aduGnssPaymentAnnouncement template to be defined
 				var InfoExchange v_apduToBeReceived := mw_apduNoAuthInitIut(
 					{modifies mw_aduPaymentAnnouncement:= {
 					  	actionCode := ActionCode_send_
@@ -4679,7 +4668,6 @@ module EfcInfoExchange_TestCasesTsp {
 				// Trigger IUT with GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1_A to send one valid PaymentAnnouncementADU with actionCode = send
 				f_sendAndLogTrigger(GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1_SEND); 												
 				//  Wait for GNSS.PAYMENTANNOUNCEMENT
-				// PT140 TODO: mw_aduGnssPaymentAnnouncement template to be defined
 				var InfoExchange v_apduToBeReceived := mw_apduNoAuthInitIut(
 					{modifies mw_aduGnssPaymentAnnouncement:= {
 					  	actionCode := ActionCode_send_
@@ -4703,15 +4691,12 @@ module EfcInfoExchange_TestCasesTsp {
 				
 				t_step.start(GNSS_PAYMENTANNOUNCEMENT_TIMEB_MAX_TSP);
 				//  Wait for GNSS.PAYMENTANNOUNCEMENT
-				// PT140 TODO: mw_aduGnssPaymentAnnouncement template to be defined
 				v_apduToBeReceived := mw_apduNoAuthInitIut(
 					Adus:{
 						paymentAnnouncementADUs:={{
 							modifies mw_aduPaymentAnnouncement:={
 							  	paymentAnnouncementID := v_idReceived,
-							  	actionCode := ActionCode_adjust_,
-							  	totalamount :=	v_amountReceived
-							}
+							  	actionCode := ActionCode_adjust_							}
 						}}
 					});
 				// Wait for PaymentAnnouncementADU within allowed time constraints
@@ -4741,7 +4726,6 @@ module EfcInfoExchange_TestCasesTsp {
 				// Trigger IUT with GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1_SEND to send one valid PaymentAnnouncementADU with actionCode = send
 				f_sendAndLogTrigger(GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1_SEND);												
 				//  Wait for GNSS.PAYMENTANNOUNCEMENT
-				// PT140 TODO: mw_aduGnssPaymentAnnouncement template to be defined
 				var InfoExchange v_apduToBeReceived := mw_apduNoAuthInitIut({modifies mw_aduGnssPaymentAnnouncement:= {actionCode := ActionCode_send_}});					
 				
 				// Wait for PaymentAnnouncementADU within allowed time constraints
@@ -4751,7 +4735,7 @@ module EfcInfoExchange_TestCasesTsp {
 						// Log what we received
 					// Send Ack within time constraints
 						f_logReceivedWaitAndAcknowledge(GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TSP);
-					// Remember Payment Announcement ID and amount for future usage
+					// Remember Payment Announcement ID for future usage
 						var integer idReceived := v_apduReceived.infoExchangeContent.adus.PaymentAnnouncementADU.paymentAnnouncementID;						
 						}
  					} // End of alt statement
@@ -4759,7 +4743,6 @@ module EfcInfoExchange_TestCasesTsp {
 				// Step 1: Trigger IUT with GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1_REVOKE to send one valid PaymentAnnouncementADU with actionCode = revoke
 				f_sendAndLogTrigger(GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1_REVOKE);												
 				//  Wait for GNSS.PAYMENTANNOUNCEMENT
-				// PT140 TODO: mw_aduGnssPaymentAnnouncement template to be defined
 				v_apduToBeReceived := mw_apduNoAuthInitIut(
 					{modifies mw_aduGnssPaymentAnnouncement:= {
 					  	paymentAnnouncementID := idReceived,
