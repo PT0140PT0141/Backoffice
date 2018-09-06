@@ -8150,7 +8150,7 @@ module EfcInfoExchange_TestCasesTsp {
 						}
  					} // End of alt statement
 				// Retrieve all BillingDetails ADUs with action code=send and store their IDs in v_receivedIds
-				var billingDetailsADUs v_receivedBillingDetails := v_apduReceived.Content.Adus;
+				var billingDetailsADUs v_receivedBillingDetails := v_apduReceived.infoExchangeContent.adus;
 				var integer v_numOfReceivedBillingDetails := sizeof(v_receivedBillingDetails);
 				var record of BillingDetailsId v_receivedIds;
 				var integer v_currentBillingDetailsId :=0;
@@ -8177,7 +8177,7 @@ module EfcInfoExchange_TestCasesTsp {
 						setverdict(pass);						
 						}
  					} // End of alt statement
-				v_receivedBillingDetails := v_apduReceived.Content.Adus;
+				v_receivedBillingDetails := v_apduReceived.infoExchangeContent.adus;
 				v_numOfReceivedBillingDetails := sizeof(v_receivedBillingDetails);
 				var boolean v_oneFound := false;
 				for (var integer v_loop :=0, v_loop < v_numOfReceivedBillingDetails, v_loop := v_loop+1)
@@ -8228,7 +8228,7 @@ module EfcInfoExchange_TestCasesTsp {
 						}
  					} // End of alt statement
 				// Retrieve all BillingDetails ADUs with action code=send and store their IDs in v_receivedIds
-				var billingDetailsADUs v_receivedBillingDetails := v_apduReceived.Content.Adus;
+				var billingDetailsADUs v_receivedBillingDetails := v_apduReceived.infoExchangeContent.adus;
 				var integer v_numOfReceivedBillingDetails := sizeof(v_receivedBillingDetails);
 				var record of BillingDetailsId v_receivedIds;
 				var integer v_currentBillingDetailsId :=0;
@@ -8257,7 +8257,7 @@ module EfcInfoExchange_TestCasesTsp {
 						setverdict(pass);						
 						}
  					} // End of alt statement
-				v_receivedBillingDetails := v_apduReceived.Content.Adus;
+				v_receivedBillingDetails := v_apduReceived.infoExchangeContent.adus;
 				v_numOfReceivedBillingDetails := sizeof(v_receivedBillingDetails);
 				var boolean v_oneFound := false;
 				for (var integer v_loop :=0, v_loop < v_numOfReceivedBillingDetails, v_loop := v_loop+1)
