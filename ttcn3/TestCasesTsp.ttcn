@@ -2451,8 +2451,7 @@ module EfcInfoExchange_TestCasesTsp {
 				f_sendAndLogTrigger(DSRC_CONTRACTISSUERLIST_TR_TSP_1_DIFFMANUFID);
 
 				//  Wait for apdu containing CONTRACTISSUERLIST for three different manufacturers
-                 // PT140 TODO : mw_aduContractIssuerList template to be defined
-				var template InfoExchange v_apduToBeReceived := m_apduNoAuthInitTester(
+				var template InfoExchange v_apduToBeReceived := mw_apduNoAuthInitIut(
 					{modifies mw_aduContractIssuerList:= {manufacturerIdId := MANUFACTURERID1}},
 					{modifies mw_aduContractIssuerList:= {manufacturerIdId := MANUFACTURERID2}},
 					{modifies mw_aduContractIssuerList:= {manufacturerIdId := MANUFACTURERID3}}
