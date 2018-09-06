@@ -3333,7 +3333,6 @@ module EfcInfoExchange_TestCasesTsp {
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
                 // Send one valid DSRC.REPORTABNORMALOBE
-                 // PT140 TODO : mw_aduReportAbnormalOBE template to be defined
 				v_apduForSending := m_apduNoAuthInitTester({m_aduReportAbnormalOBE});                 
 				f_sendAndLogApdu(v_apduForSending);                 
                  // Step 2: Wait for positive Ack within DSRC_REPORTABNORMALOBE_TIME1
@@ -3365,10 +3364,8 @@ module EfcInfoExchange_TestCasesTsp {
 
                 // Send one  DSRC.REPORTABNORMALOBE with userId field missing
 				v_apduForSending := m_apduNoAuthInitTester(
-					{modifies mw_aduReportAbnormalObe:= {
-					  	userId := omit,
-					  	dateAndTime := fx_getUtc(),
-					  	abnormalOBEReasonCode := AbnormalOBEReasonCode_reasonNotToBeDisclosed_
+					{modifies m_aduReportAbnormalObe:= {
+					  	userId := omit
 					  	}
 					});                 
 				f_sendAndLogApdu(v_apduForSending);                 
@@ -3405,16 +3402,12 @@ module EfcInfoExchange_TestCasesTsp {
 
                 // PT140 TODO : mw_aduReportAbnormalOBE template to be defined
 				v_apduForSending := {
-					m_apduNoAuthInitTester({modifies mw_aduReportAbnormalOBE:= {
-					  		userId := omit,
-					  		dateAndTime := fx_getUtc(),
-					  		abnormalOBEReasonCode := AbnormalOBEReasonCode_reasonNotToBeDisclosed_
+					m_apduNoAuthInitTester({modifies m_aduReportAbnormalOBE:= {
+					  		userId := omit
 					  		}
 						}),
 					m_apduNoAuthInitTester({modifies mw_aduReportAbnormalOBE:= {
-					  		userId := PX_WRONG_USER_ID,
-					  		dateAndTime := fx_getUtc(),
-					  		abnormalOBEReasonCode := AbnormalOBEReasonCode_reasonNotToBeDisclosed_
+					  		userId := PX_WRONG_USER_ID
 					  		}
 						})	
            			};                 
@@ -3448,10 +3441,8 @@ module EfcInfoExchange_TestCasesTsp {
                 // Send one  DSRC.REPORTABNORMALOBE with dateAndTime field missing
                 // PT140 TODO : mw_aduReportAbnormalOBE template to be defined
 				v_apduForSending := {
-					m_apduNoAuthInitTester({modifies mw_aduReportAbnormalOBE:= {
-					  	userId := PX_EXISTING_USER_ID,
-					  	dateAndTime := fx_getUtc() + 1000,
-					  	abnormalOBEReasonCode := AbnormalOBEReasonCode_reasonNotToBeDisclosed_
+					m_apduNoAuthInitTester({modifies m_aduReportAbnormalOBE:= {
+					  	dateAndTime := fx_getUtc() + 1000.0
 					  	}
 					})	
            		};                 
@@ -3490,11 +3481,8 @@ module EfcInfoExchange_TestCasesTsp {
                 // Send one  DSRC.REPORTABNORMALOBE with efcContextMark field missing
                 // PT140 TODO : mw_aduReportAbnormalOBE template to be defined
 				v_apduForSending := {
-					m_apduNoAuthInitTester({modifies mw_aduReportAbnormalOBE:= {					  	
-					  	userId := PX_EXISTING_USER_ID,
-					  	efcContextMark := omit,
-					  	dateAndTime := fx_getUtc(),
-					  	abnormalOBEReasonCode := AbnormalOBEReasonCode_reasonNotToBeDisclosed_
+					m_apduNoAuthInitTester({modifies m_aduReportAbnormalOBE:= {					  	
+					  	efcContextMark := omit
 					  	}
 					})	
            		};                 
@@ -3530,13 +3518,9 @@ module EfcInfoExchange_TestCasesTsp {
                 // Step 1:
                 	// Send one  APDU containg 2 ReportAbnormalOBEADUs, first one with efcContextMark missing and second one with efcContextMark set to an invalid value
 
-                // PT140 TODO : mw_aduReportAbnormalOBE template to be defined
 				v_apduForSending := {
-					m_apduNoAuthInitTester({modifies mw_aduReportAbnormalOBE:= {
-					  	userId := PX_EXISTING_USER_ID,
-					  	efcContextMark := 0,
-					  	dateAndTime := fx_getUtc(),
-					  	abnormalOBEReasonCode := AbnormalOBEReasonCode_reasonNotToBeDisclosed_
+					m_apduNoAuthInitTester({modifies m_aduReportAbnormalOBE:= {
+					  	efcContextMark := 0
 					  	}
 					})	
            		};                 
@@ -3575,9 +3559,7 @@ module EfcInfoExchange_TestCasesTsp {
                 	// Send one  DSRC.REPORTABNORMALOBE with abnormalOBEReason field missing
                 // PT140 TODO : mw_aduReportAbnormalOBE template to be defined
 				v_apduForSending := {
-					m_apduNoAuthInitTester({modifies mw_aduReportAbnormalOBE:= {					  	
-					  		userId := PX_EXISTING_USER_ID,
-					  		dateAndTime := fx_getUtc(),
+					m_apduNoAuthInitTester({modifies m_aduReportAbnormalOBE:= {					  	
 					  		abnormalOBEReasonCode := omit
 					  		}
 						})	
@@ -3618,14 +3600,10 @@ module EfcInfoExchange_TestCasesTsp {
 
                 // PT140 TODO : mw_aduReportAbnormalOBE template to be defined
 				v_apduForSending := {
-					m_apduNoAuthInitTester(modifies mw_aduReportAbnormalOBE:= {
-					  	userId := PX_EXISTING_USER_ID,
-					  	dateAndTime := fx_getUtc(),
+					m_apduNoAuthInitTester(modifies m_aduReportAbnormalOBE:= {
 					  	abnormalOBEReasonCode := omit
 						}),
-					m_apduNoAuthInitTester(modifies mw_aduReportAbnormalOBE:= {
-					  	userId := PX_EXISTING_USER_ID,
-					  	dateAndTime := fx_getUtc(),
+					m_apduNoAuthInitTester(modifies m_aduReportAbnormalOBE:= {
 					  	abnormalOBEReasonCode := 700
 						})	
            			};                 
@@ -3665,24 +3643,14 @@ module EfcInfoExchange_TestCasesTsp {
 				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
                 // Send one valid DSRC_REPORTABNORMALOBE
-                 // PT140 TODO : mw_aduReportAbnormalOBE template to be defined
-				v_apduForSending := m_apduNoAuthInitTester(
-					{modifies mw_aduReportAbnormalOBE:= {
-					  	userId := PX_EXISTING_USER_ID,
-					  	dateAndTime := fx_getUtc(),
-					  	abnormalOBEReasonCode := AbnormalOBEReasonCode_reasonNotToBeDisclosed_
-					  	}
-					}); 
+				v_apduForSending := m_apduNoAuthInitTester({mw_aduReportAbnormalOBE}); 
  
  				f_sendAndLogApdu(v_apduForSending);                 
 
 				// Do not wait for positive Ack
-                // Send one one  APDU containg one valid ReportAbnormalOBEADU before TIMEA_MIN
-                 // PT140 TODO : mw_aduReportAbnormalOBE template to be defined
+                // Send one one  APDU containg one different valid ReportAbnormalOBEADU before TIMEA_MIN
 				v_apduForSending := m_apduNoAuthInitTester(
-					{modifies mw_aduReportAbnormalOBE:= {
-					  	userId := PX_EXISTING_USER_ID,
-					  	dateAndTime := fx_getUtc(),
+					{modifies m_aduReportAbnormalOBE:= {
 					  	abnormalOBEReasonCode := AbnormalOBEReasonCode_obeIsNotWorkingProperly_
 					  	}
 					});                 
