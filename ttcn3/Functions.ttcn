@@ -284,9 +284,6 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
 				}
 			} // End of Alt statement
 		} // End of function
-<<<<<<< HEAD
-				
-=======
 		
 		function f_initForPaymentClaim() runs on MainTestComponent {
 			var float v_timeToWait;                  
@@ -321,6 +318,6 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
 				}
 			} 	// End of Alt Statement				
 		} // End of function
->>>>>>> branch 'master' of https://github.com/PT0140PT0141/Backoffice.git
+
 	} //End of group 		
 } //End of module
