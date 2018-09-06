@@ -89,13 +89,13 @@
  *	ListOfUsers					! done					! done			! to be compiled
  *	ExceptionList				! done					! done			! to be compiled
  *	TrustObjects				! done    				! done			! to be compiled
- *	PaymentClaim				! done					! done			! BillingDetails and PaymentClaim templates to be defined
- *	DSRC.ContractIssuerList		! done					! done			! Template mw_aduContractIssuerList to be defined
+ *	PaymentClaim				! done					! done			! to be compiled
+ *	DSRC.ContractIssuerList		! done					! done			! to be compiled
  *	DSRC.EFCContextData			! done					! done			! to be compiled
- *	DSRC.BillingDetails			! done					! done			! Billingdetails templates to be defined.
+ *	DSRC.BillingDetails			! done					! done			! to be compiled
  *	DSRC.ReportAbnormalOBE		! done					! done			! to be compiled
- *	GNSS.TollDeclaration		! done					! done			! mw_aduTollDeclaration template to be defined
- *	GNSS.BillingDetails.TSP		! done					! done			! mw_apduGnssBillingDetails_TSP to be defined
+ *	GNSS.TollDeclaration		! done					! done			! to be compiled
+ *	GNSS.BillingDetails.TSP		! done					! done			! to be compiled
  *	GNSS.BillingDetails.TC		! done					! done			! templates to be defined.
  *	GNSS.PaymentAnnouncement	! done					! done			! mw_aduGnssPaymentAnnouncement template to be defined
  */
