@@ -845,7 +845,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 					paymentClaimAmount := TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_1,
 					paymentClaimStatus := PaymentClaimStatus_firstVersion_,
 					typeOfFee := TypeOfFee_toll_,
-					referenceDetailsList := {{billingDetailsList:={TD_APDU_ORIGINATOR_FOR_TESTER, 1}}},
+					referenceDetailsList := {{billingDetailsList:={{TD_APDU_ORIGINATOR_FOR_TESTER, 1}}}},
 					actionCode := ActionCode_send_
 				}}
 			});        

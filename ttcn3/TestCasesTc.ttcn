@@ -3928,8 +3928,8 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail
 
                 // Prepare parameters to be expected in the NAck-APDU
-				var RoNackParams v_nAckParams_1 := m_roNackParamsSingle0, AduReasonCode_semanticError_);
-				var RoNackParams v_nAckParams_2 := m_roNackParamsSingle1, AduReasonCode_semanticError_);
+				var RoNackParams v_nAckParams_1 := m_roNackParamsSingle(0, AduReasonCode_semanticError_);
+				var RoNackParams v_nAckParams_2 := m_roNackParamsSingle(1, AduReasonCode_semanticError_);
 
 				alt {
 					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduForSending, v_nAckParams_1)) -> value v_apduReceived {
