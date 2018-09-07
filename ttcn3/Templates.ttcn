@@ -442,6 +442,17 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
             	listOfUserParameters := *
         	}
         	
+			template UserParameterResponse mw_userParameterResponse:={
+				requestedUserParameter:=omit, 
+				userParameterResponse:=?, 
+				userParameterStatus:=?,
+				userInfoValidityPeriod:=omit
+			}   
+
+			template UserParameterResponse mw_userParameterResponseAvailable modifies mw_userParameterResponse:={
+				userParameterStatus:=UserParameterStatus_userParameterAvailable_
+			}   
+        	
    			template Adus mw_adusProvideUserDetails:={provideUserDetailsADUs:=?};
 			
 //			template ProvideUserDetailsADU m_aduProvideUserDetails:= {
