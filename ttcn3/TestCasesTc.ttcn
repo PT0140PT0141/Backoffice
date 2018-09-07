@@ -2932,7 +2932,6 @@ module EfcInfoExchange_TestCasesTc {
 					f_sendAndLogApdu(m_apduDefaultAckTester(v_apduReceived));
 				}; // end else-branch      	                              
   
- 				
  				// define templates required for later matching with data in PaymentClaim
  				var template UserIdList v_receivedBillingDetailsUserIdList, v_receivedPaymentClaimUserIdList;
  				// Note: Type definition for this is in module templates
@@ -3068,25 +3067,38 @@ module EfcInfoExchange_TestCasesTc {
 					f_sendAndLogApdu(m_apduDefaultAckTester(v_apduReceived));
 				} // end else-branch      	                              
 
+ 				// define templates required for later matching with data in PaymentClaim
+ 				var template UserIdList v_receivedBillingDetailsUserIdList, v_receivedPaymentClaimUserIdList;
+ 				// Note: Type definition for this is in module templates
+ 				var template BillingDetailsIdList v_receivedBillingDetailsIdList;
+				
+				var integer v_numberOfReceivedBillingDetailsAdus, v_numberOfReceivedPaymentClaimAdus;
+ 				
+ 				v_numberOfReceivedBillingDetailsAdus := lengthof(v_apduReceived.infoExchangeContent.adus);
+ 				
+ 				// fill templates (two records of) with received data
+ 				for (var integer v_i := 0; v_i < v_numberOfReceivedBillingDetailsAdus; v_i := v_i +1) {
+ 					v_receivedBillingDetailsUserIdList[v_i] := v_apduReceived.infoExchangeContent.adus.billingDetailsADUs[v_i].userId;
+ 					v_receivedBillingDetailsIdList[v_i] := v_apduReceived.infoExchangeContent.adus.billingDetailsADUs[v_i].relatedBillingDetails;
+				}
+  				  
                 // Step 1:
+                // Perform a full and valid Payment Claim transaction
+
                 // Start timer for TIMEB_MAX (time between receiving the AckADU of the BillingDeatails transaction and
                 // sending an corresponding PaymentClaim ADU)
-                // PT140 TODO: this may be a long time (days, weeks) which may create a problem in testing  
-                t_step.start(PAYMENTCLAIM_TIMEB_MAX_TC);                
- 
-                // Let the IuT perform a PaymentClaim transaction with exactly one PaymentClain ADU with actionCode = SEND
-				// Send trigger
+                t_step.start(PAYMENTCLAIM_TIMEB_MAX_TC);               
+
+				// Send trigger (IuT to perform a Payment Claim transaction
+				// containing exactly one PaymentClaim ADU with action_code = send 
 				f_sendAndLogTrigger(PAYMENTCLAIM_TR_TC_1_SEND);
 
                 // Prepare APDU to be received
-				v_apduToBeReceived := {
+				var InfoExchange v_apduToBeReceived := {
 				  	mw_apduNoAuthInitIut({{mw_aduPaymentClaim:= {
 				  		paymentClaimStatus := PaymentClaimStatus_firstVersion_,
 				  		actionCode := ActionCode_send_ }}}) 
            		};                 
-
-				// Note: validation for correct use of userIds and BillingDetails in PaymentClaim ADUs is done
-				// in testcase TP_TC_PAYMENTCLAIM_BV_01 already and not repeated in this testcase 
 
                 // Wait for above specified APDU within time constraints
                 // if not received or received outside specification or time constraints set test fail (done in the altstep)
@@ -3094,17 +3106,45 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
 						// Log what we received, no minimum time required	
-						f_logReceivedThenCheckAndStopTime(0.0);
-					}
-				}
+
+						f_logApduReceivedAndTStep();
+							
+						// check inside the adu for each billing details id in the billing details list
+						// if this billing details ID (and user id used in the adu) is inside the list of pairs received in billing details  
+						var boolean v_matchingUserIdBillingDetailsIdPair;
+						for (var integer v_j; v_j < lengthof(v_apduReceived.infoExchangeContent.adus.paymentClaimADUs.referenceDetailsList.billingDetailsList); v_j := v_j + 1) {
+						// go through list of pairs of userIds and billingDeatilsIds receive in billing details
+							f_logApduReceivedAndTStep();
+							v_matchingUserIdBillingDetailsIdPair := false;
+							for (var integer v_k := 0; v_k < v_numberOfReceivedBillingDetailsAdus; v_k := v_k + 1) {
+								if ((v_apduReceived.infoExchangeContent.adus.paymentClaimADUs.userId == v_receivedBillingDetailsUserIdList[v_k])
+								and
+								(v_apduReceived.infoExchangeContent.adus.paymentClaimADUs.referenceDetailsList.billingDetailsList[v_j] == v_receivedBillingDetailsIdList[v_k])) {
+									v_matchingUserIdBillingDetailsIdPair := true;
+								} else { //matching pair not found. Test failed
+									v_matchingUserIdBillingDetailsIdPair := false;
+									f_addLogEntry("Fail. UserId and/or billingDetailsId in PaymentClaim do not match with those in BillingDetails");
+									setverdict(fail);
+									stop;
+								}
+							}
+						}			
+						if (v_matchingUserIdBillingDetailsIdPair) { 
+							f_addLogEntry("Billing details in payment claim received correspond t the billing details in the previous billing details trasnaction");
+							// Step 2: Send Ack within time constraints
+							f_wait(PAYMENTCLAIM_TIME1_MIN_TC);
+						} 
+					} // end this alt-branch
+				} // End of alt statement            	                              
 
 				// Step 2: Send NAck (except of issueCode "acceptedWithWarning")
-				// within time constraints to initiate adjust
+				// within time constraints to initiate the following adjust
 				f_wait(PAYMENTCLAIM_TIME1_MIN_TC);
 				f_sendAndLogApdu(m_apduNAckIndividualIssuesTester(v_apduReceived, {1, AduReasonCode_semanticError_}));
 
                 // Step 3:
                 // Let the IuT perform a PaymentClaim transaction with exactly one PaymentClaim ADU with actionCode = ADJUST
+                // Note: It may be the case the IuT send exactly the same pay payment claims as before as they might not contain errors
 
                 // Prepare APDU to be received
                 // PaymentId shall be the same as in the previous PaymentClaim ADU
@@ -3118,14 +3158,12 @@ module EfcInfoExchange_TestCasesTc {
  				// Send trigger
 				f_sendAndLogTrigger(PAYMENTCLAIM_TR_TC_1_ADJUST);
 
-				// start time to check compliance to TIMEEA_MIN
-				// PT140 TODO there is no maximum time defined but a timer shall be started
-				// to check below minimum PAYMENTCLAIM_TIMEA_MIN_TC 
+				// start time to check compliance to TIMEA_MIN
+				// Note: there is no maximum time defined but a timer is started check below minimum PAYMENTCLAIM_TIMEA_MIN_TC 
                 t_step.start(c_veryLongTime);                
  
                 // Wait for above specified APDU within time constraints
                 // if not received or received outside specification or time constraints set test fail (done in the altstep)
-
 				alt {
 					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
 						// Log what we received, no minimum time required	
@@ -3154,13 +3192,11 @@ module EfcInfoExchange_TestCasesTc {
 				f_sendAndLogTrigger(PAYMENTCLAIM_TR_TC_1_REVOKE);
 
 				// start time to check compliance to TIMEEA_MIN
-				// PT140 TODO there is no maximum time defined but a timer shall be started
-				// to check below minimum PAYMENTCLAIM_TIMEA_MIN_TC 
+				// Note: there is no maximum time defined but a timer shall be started to check below minimum PAYMENTCLAIM_TIMEA_MIN_TC 
                 t_step.start(c_veryLongTime);                
 
                 // Wait for above specified APDU within time constraints
                 // if not received or received outside specification or time constraints set test fail (done in the altstep)
-
 				alt {
 					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
 						// Log what we received, no minimum time required	
