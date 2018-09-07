@@ -290,7 +290,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			in AduReasonCode p_aduReasonCode	
 		):=mw_apduAuthRespIut(
 			p_apduToAck, 
-			m_oneAckInAdusStruct(mw_aduNAckWIssues(p_apduToAck, m_nAckParamsSingle(0,p_aduReasonCode)))
+			m_oneAckInAdusStruct(mw_aduNAckWIssues(p_apduToAck, m_roNackParamsSingle(0,p_aduReasonCode)))
 		);
 
 		/**
@@ -302,7 +302,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		 * @desc issueCode = aduReasonCode }}"
 		 */ 
 		template InfoExchange m_apduNAckIndividualIssuesTester(
-			in InfoExchange p_apduToAck, in NAckParams p_nAckParams
+			in InfoExchange p_apduToAck, in RoNackParams p_nAckParams
 		):=m_apduNoAuthRespTester(p_apduToAck, {ackAdus:={m_aduNAck(p_apduToAck, p_nAckParams)}});
 				
 		/**
@@ -315,7 +315,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		 */ 
 		template InfoExchange mw_apduNAckIndividualIssuesIut(
 			in InfoExchange p_apduToAck,
-			in NAckParams p_nAckParams
+			in RoNackParams p_nAckParams
 		):=mw_apduNoAuthRespIut(p_apduToAck, m_oneAckInAdusStruct(mw_aduNAckWIssues(p_apduToAck, p_nAckParams)));
 
 		/**
@@ -326,34 +326,47 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		
 		template InfoExchange mw_apduNAckRequestSentTooOften(in InfoExchange p_apduToAck) := 
 		mw_apduNAckProtocolIut(p_apduToAck, ApduReasonCode_requestSentTooOften_);
-		
 
-		type record of record {
+		type record NackParams {
 			NumberOfADUStruct issueADUStruct,
 			ASNAUX.UTF8String issueLocation length (0 .. 512) optional,
 			ASNAUX.UTF8String issueContent length (0 .. 1024) optional,
 			AduReasonCode issueCode,
 			ASNAUX.UTF8String issueText length (0 .. 1024) optional
-	  	}  NAckParams;
+	  	};
+	  	
+	  	type record of NackParams RoNackParams;
 	  	
 		/**
 		 * 
 		 * @desc Construct with one issueCode value, to be used when creating customised m_apduNAck)
 		 */ 		
-	 	template (value) NAckParams m_nAckParamsSingle(
+		template (value) NackParams m_nackParams(
 			in NumberOfADUStruct p_issueADUStruct, 
 			in AduReasonCode p_issueCode
 		):={
-			{
-				issueADUStruct:=p_issueADUStruct,
-				issueLocation := omit,
-				issueContent := omit,
-				issueCode := p_issueCode,
-				issueText:= omit
-			}
+			issueADUStruct:=p_issueADUStruct,
+			issueLocation := omit,
+			issueContent := omit,
+			issueCode := p_issueCode,
+			issueText:= omit
 		};
+
+		template (value) RoNackParams m_roNackParamsSingle(
+			in NumberOfADUStruct p_issueADUStruct, 
+			in AduReasonCode p_issueCode
+		):={m_nackParams(p_issueADUStruct,p_issueCode)};
+		
+	 	template (value) RoNackParams m_roNackParamsDouble(
+			in NumberOfADUStruct p_issueADUStruct1, 
+			in AduReasonCode p_issueCode1,
+			in NumberOfADUStruct p_issueADUStruct2, 
+			in AduReasonCode p_issueCode2
+		):={m_nackParams(p_issueADUStruct1,p_issueCode1),m_nackParams(p_issueADUStruct2,p_issueCode2)};
 	  	
-		template AckADU m_aduNAck(in InfoExchange p_apduToAck, in NAckParams p_nAckParams) := {
+	  	
+	  	
+		template AckADU m_aduNAck(in InfoExchange p_apduToAck, in RoNackParams p_nAckParams) := {
 			apduIdentifier := p_apduToAck.infoExchangeContent.apci.apduIdentifier,
 			explicitlyAckedAdus := omit,
 			apduAckCode := ApduReasonCode_apduNotOK_ ,
@@ -369,7 +382,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			issues := omit
 		}
     	
-		template AckADU mw_aduNAckWIssues(in InfoExchange p_apduToAck, in NAckParams p_nackParams) := {
+		template AckADU mw_aduNAckWIssues(in InfoExchange p_apduToAck, in RoNackParams p_nackParams) := {
 			apduIdentifier := p_apduToAck.infoExchangeContent.apci.apduIdentifier,
 			explicitlyAckedAdus := omit,
 			apduAckCode := ApduReasonCode_apduOK_,
@@ -452,9 +465,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			template UserParameterResponse mw_userParameterResponseAvailable modifies mw_userParameterResponse:={
 				userParameterStatus:=UserParameterStatus_userParameterAvailable_
 			}   
-        	
-   			template Adus mw_adusProvideUserDetails:={provideUserDetailsADUs:=?};
-			
+        				
 //			template ProvideUserDetailsADU m_aduProvideUserDetails:= {
 //            	originaluserIdRequest := PX_EXISTING_USER_ID,
 //            	userId := ({?, *, *, *}, {*, ?, *, *}, {*, *, ?, *}, {*, *, *, ?}), 
@@ -467,7 +478,8 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			template InfoExchange mw_apduNoAuthProvideUserDetails(in InfoExchange p_respondingTo) := 
 			mw_apduNoAuthRespIut(p_respondingTo,{provideUserDetailsADUs:={mw_aduProvideUserDetails}});
 			
-			template InfoExchange mw_apduAuthProvideUserDetails := mw_apduAuth(mw_apci, Adus:{provideUserDetailsADUs:=?});
+			template InfoExchange mw_apduAuthProvideUserDetails(in InfoExchange p_respondingTo) := 
+			mw_apduAuthRespIut(p_respondingTo,{provideUserDetailsADUs:={mw_aduProvideUserDetails}});			
 		}
 
 		group LISTOFUSERS {
@@ -502,11 +514,11 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				userIdList :={TD_USERID_1,TD_USERID_2,TD_USERID_3}
 			};
         	
+        	template InfoExchange mw_apduProvideUserIdList(in InfoExchange p_apduRespondedTo):=mw_apduNoAuthRespIut(
+   				p_apduRespondedTo, 
+   				{provideUserIdListADUs:={mw_aduProvideUserIdList}}
+   			);
         	
-
-   			template Adus mw_adusProvideUserIdList:={provideUserIdListADUs:=?};
-			
-		
 		}
 
 		group EXCEPTIONLIST {
@@ -527,7 +539,9 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			}		  	
 
 			template ExceptionListADU mw_aduExceptionListDiscounted modifies mw_aduExceptionList := {
-				exceptionListType := ExceptionListType_discountedList_
+				exceptionListType := ExceptionListType_discountedList_,
+				exceptionListEntries := ?
+		  	
 			}		  	
 			
 // Not needed currently
@@ -822,6 +836,19 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		}//End of group TRUSTOBJECTS
 
 		group PAYMENTCLAIM {
+			
+			template InfoExchange m_apduPaymentClaim:=m_apduNoAuthInitTester(
+				{paymentClaimADUs:={{
+					paymentClaimId := 1,
+					startDateTime := fx_getUtc(),
+					userId := PX_EXISTING_USER_ID,
+					paymentClaimAmount := TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_1,
+					paymentClaimStatus := PaymentClaimStatus_firstVersion_,
+					typeOfFee := TypeOfFee_toll_,
+					referenceDetailsList := {{billingDetailsList:={TD_APDU_ORIGINATOR_FOR_TESTER, 1}}},
+					actionCode := ActionCode_send_
+				}}
+			});        
 			
 			template PaymentClaimADU mw_aduPaymentClaim := {
 				paymentClaimId := ?,

@@ -728,7 +728,7 @@ module EfcInfoExchange_TestCasesTc {
               	// if not received set test failure --> is done in altstep
               	
               	// prepare nackParams for second alternative
-				var NAckParams v_nAckParamsList; //Nte, this is a record of record
+				var RoNackParams v_nAckParamsList; //Nte, this is a record of record
 				for (var integer v_loop1 :=0; v_loop1<v_noReqAdusReceived;v_loop1:=v_loop1+1) {
 					v_nAckParamsList[v_loop1] := {
 						issueADUStruct := v_loop1+1,
@@ -829,7 +829,7 @@ module EfcInfoExchange_TestCasesTc {
               	// if not received set test failure --> is done in altstep
               	
               	// prepare nackParams for second alternative
-				var NAckParams v_nAckParamsList; //Nte, this is a record of record
+				var RoNackParams v_nAckParamsList; //Nte, this is a record of record
 				for (var integer v_loop1 :=0; v_loop1<v_noReqAdusReceived;v_loop1:=v_loop1+1) {
 					v_nAckParamsList[v_loop1] := {
 						issueADUStruct := v_loop1+1,
@@ -925,7 +925,7 @@ module EfcInfoExchange_TestCasesTc {
               	// if not received set test failure --> is done in altstep
               	
               	// prepare nackParams for second alternative
-				var NAckParams v_nAckParamsList; //Nte, this is a record of record
+				var RoNackParams v_nAckParamsList; //Nte, this is a record of record
 				for (var integer v_loop1 :=0; v_loop1<v_noReqAdusReceived;v_loop1:=v_loop1+1) {
 					v_nAckParamsList[v_loop1] := {
 						issueADUStruct := v_loop1+1,
@@ -1026,7 +1026,7 @@ module EfcInfoExchange_TestCasesTc {
               	// if not received set test failure --> is done in altstep
               	
               	// prepare nackParams for second alternative
-				var NAckParams v_nAckParamsList; //Nte, this is a record of record
+				var RoNackParams v_nAckParamsList; //Nte, this is a record of record
 				for (var integer v_loop1 :=0; v_loop1<v_noReqAdusReceived;v_loop1:=v_loop1+1) {
 					v_nAckParamsList[v_loop1] := {
 						issueADUStruct := v_loop1+1,
@@ -1128,7 +1128,7 @@ module EfcInfoExchange_TestCasesTc {
               	// if not received set test failure --> is done in altstep
               	
               	// prepare nackParams for second alternative
-				var NAckParams v_nAckParamsList; //Nte, this is a record of record
+				var RoNackParams v_nAckParamsList; //Nte, this is a record of record
 				for (var integer v_loop1 :=0; v_loop1<v_noReqAdusReceived;v_loop1:=v_loop1+1) {
 					v_nAckParamsList[v_loop1] := {
 						issueADUStruct := v_loop1+1,
@@ -3522,8 +3522,8 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail
                 
                 // Prepare parameters to be expected in the NAck-APDU
-				var NAckParams v_nAckParams_1 := {{0, AduReasonCode_semanticError_}};
-				var NAckParams v_nAckParams_2 := {{GNSS_TOLLDECLARATIONS_PARAM1_MAX_TC, AduReasonCode_semanticError_}};
+				var RoNackParams v_nAckParams_1 := m_roNackParamsSingle(0, AduReasonCode_semanticError_);
+				var RoNackParams v_nAckParams_2 := m_roNackParamsSingle(GNSS_TOLLDECLARATIONS_PARAM1_MAX_TC, AduReasonCode_semanticError_);
 
 				alt {
 					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduForSending, v_nAckParams_1)) -> value v_apduReceived {
@@ -3615,8 +3615,8 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail
 
                 // Prepare parameters to be expected in the NAck-APDU
-				var NAckParams v_nAckParams_1 := {{0, AduReasonCode_semanticError_}};
-				var NAckParams v_nAckParams_2 := {{1, AduReasonCode_semanticError_}};
+				var RoNackParams v_nAckParams_1 := m_roNackParamsSingle(0, AduReasonCode_semanticError_);
+				var RoNackParams v_nAckParams_2 := m_roNackParamsSingle(1, AduReasonCode_semanticError_);
 
 				alt {
 					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduForSending, v_nAckParams_1)) -> value v_apduReceived {
@@ -3708,8 +3708,8 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail
 
                 // Prepare parameters to be expected in the NAck-APDU
-				var NAckParams v_nAckParams_1 := {{0, AduReasonCode_semanticError_}};
-				var NAckParams v_nAckParams_2 := {{1, AduReasonCode_semanticError_}};
+				var RoNackParams v_nAckParams_1 := m_roNackParamsSingle(0, AduReasonCode_semanticError_);
+				var RoNackParams v_nAckParams_2 := m_roNackParamsSingle(1, AduReasonCode_semanticError_);
 
 				alt {
 					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduForSending, v_nAckParams_1)) -> value v_apduReceived {
@@ -3767,10 +3767,8 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail 
 
                 // Prepare parameters to be expected in the NAck-APDU
-				var NAckParams v_nAckParams := {{0, ApduReasonCode_apduNotOK_}};
-
 				alt {
-					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduForSending, v_nAckParams)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduForSending, ApduReasonCode_apduNotOK_)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
 					}
@@ -3818,11 +3816,8 @@ module EfcInfoExchange_TestCasesTc {
                 // within GNSS.TOLLDECLARARTION.TIME1             
                 // if not received or received outside specification or time constraints set test fail
 
-                // Prepare parameters to be expected in the NAck-APDU
-				var NAckParams v_nAckParams := {{0, ApduReasonCode_apduNotOK_}};
-
-				alt {
-					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduForSending, v_nAckParams)) -> value v_apduReceived {
+ 				alt {
+					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduForSending, ApduReasonCode_apduNotOK_)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
 					}
@@ -3881,11 +3876,8 @@ module EfcInfoExchange_TestCasesTc {
                 // within GNSS.TOLLDECLARARTION.TIME1             
                 // if not received or received outside specification or time constraints set test fail
                 
-                // Prepare parameters to be expected in the NAck-APDU
-				var NAckParams v_nAckParams := {{0, ApduReasonCode_apduNotOK_}};
-
 				alt {
-					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduForSending, v_nAckParams)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduForSending, ApduReasonCode_apduNotOK_)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
 					}
@@ -3936,8 +3928,8 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail
 
                 // Prepare parameters to be expected in the NAck-APDU
-				var NAckParams v_nAckParams_1 := {{0, AduReasonCode_semanticError_}};
-				var NAckParams v_nAckParams_2 := {{1, AduReasonCode_semanticError_}};
+				var RoNackParams v_nAckParams_1 := m_roNackParamsSingle0, AduReasonCode_semanticError_);
+				var RoNackParams v_nAckParams_2 := m_roNackParamsSingle1, AduReasonCode_semanticError_);
 
 				alt {
 					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduForSending, v_nAckParams_1)) -> value v_apduReceived {
@@ -3996,8 +3988,8 @@ module EfcInfoExchange_TestCasesTc {
                 // if not received or received outside specification or time constraints set test fail
 
                 // Prepare parameters to be expected in the NAck-APDU
-				var NAckParams v_nAckParams_1 := {{0, AduReasonCode_actionCodeNotSupported_}};
-				var NAckParams v_nAckParams_2 := {{1, AduReasonCode_actionCodeNotSupported_}};
+				var RoNackParams v_nAckParams_1 := m_roNackParamsSingle(0, AduReasonCode_actionCodeNotSupported_);
+				var RoNackParams v_nAckParams_2 := m_roNackParamsSingle(1, AduReasonCode_actionCodeNotSupported_);
 
 				alt {
 					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduForSending, v_nAckParams_1)) -> value v_apduReceived {
