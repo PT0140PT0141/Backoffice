@@ -61,10 +61,11 @@ module EfcInfoExchange_LibUpperTester {
 	
     altstep a_upperTester() runs on MainTestComponent{
     	var Iso16986TriggerRsp v_notTriggeredResponse;
-		[] mtcAccessPort.receive(mw_iso16986TriggerRspNotTriggered) -> value v_notTriggeredResponse {
-			f_addLogEntry("IUT triggering action failed." & v_notTriggeredResponse.reason);
-        	setverdict(fail);
-	    }
+    	   	
+//		[] mtcAccessPort.receive(mw_iso16986TriggerRspNotTriggered) -> value v_notTriggeredResponse {
+//			f_addLogEntry("IUT triggering action failed." & v_notTriggeredResponse.reason);
+//        	setverdict(fail);
+//	    }
 		[] t_transaction.timeout {
 			f_addLogEntry("IUT does not respond to initiating trigger");
             setverdict(inconc);

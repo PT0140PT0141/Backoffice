@@ -17,6 +17,7 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
 	import from EfcInfoExchange_TesterData all;
 	import from EfcInfoExchange_Templates all;
 	import from EfcInfoExchange_InteroperabilityStatement all;
+	import from EfcInfoExchange_Ics all;
 			
 	//importing ASN.1 data automatically translated into TTCN-3	
 	import from EfcInfoExchange language "ASN.1:1997" all;
@@ -28,7 +29,7 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
 
     group External {
 		external function fx_computeAuthenticator(in InfoExchangeContent p_InfoExchange) return ApduAuthenticator;
-		external function fx_evaluateAuthenticator(in ApduAuthenticator p_apduAuthenticator) return boolean;
+		external function fx_checkAuthenticator(in InfoExchangeContent p_InfoExchange) return boolean;
     	external function fx_getUtc(in integer secondOffset:= 0) return GeneralizedTime; //Should return current time offset by the number of seconds (positive or negative) specified by the parameter secondOffset
     } 
 
@@ -290,19 +291,21 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
             // Step 1: First interaction
             // Send one preset Billing Details according to the implementation choice
 			if (ICS_A26_3_implementedDSRCBILLINGDETAILS) {
-				v_apduForSending := m_apduNoAuthInitTester({m_aduDsrcBillingDetails});
-				v_timeToWait := DSRC_BILLINGDETAILS_TIME1_MIN_TSP,                
+				v_apduForSending := m_apduNoAuthInitTester(Adus:{billingDetailsADUs:={m_aduDsrcBillingDetails}});
+				v_timeToWait := DSRC_BILLINGDETAILS_TIME1_MIN_TSP;                
 				f_sendAndLogApdu(v_apduForSending);                 
                  // Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
 				// Set timer
                  t_step.start(DSRC_BILLINGDETAILS_TIME1_MAX_TSP);
 				}
 			else if (ICS_A52_2_implementedGNSSBILLINGDETAILSTC and ICS_A52_3_implementedGNSSTOLLDECLARATION) {
-				v_timeToWait := GNSS_BILLINGDETAILS_TC_TIME1_MIN_TSP,                
+				v_timeToWait := GNSS_BILLINGDETAILS_TC_TIME1_MIN_TSP;                
 				// Trigger IUT with GNSS_TOLLDECLARATION_TR_TSP_1_SEND to send one valid TollDeclarationADU with actionCode = send
 				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1_SEND);
 				// Receive Toll Declaration, send positive Ack
-				f_macroForTP_TSP_GNSS_BILLINGDETAILS_TC_BV_02to05();
+				
+				//Setting the Record of UsageList to type sectionsUsed, other possibilities are possible. TollDeclarations does not impose any restrictions on the type of UsageList
+				f_macroForTP_TSP_GNSS_BILLINGDETAILS_TC_BV_02to05({m_sectionsUsed});
 				// Set timer
                	t_step.start(GNSS_BILLINGDETAILS_TC_TIME1_MAX_TSP);
 				}
@@ -318,6 +321,6 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
 				}
 			} 	// End of Alt Statement				
 		} // End of function
-
+		
 	} //End of group 		
 } //End of module

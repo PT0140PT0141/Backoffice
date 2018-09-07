@@ -86,7 +86,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduAuthRespIut(v_apduForSending, m_oneAckInAdusStruct(m_aduDefaultAck(v_apduForSending)))) -> value v_apduReceived {
 						
-						if (fx_evaluateAuthenticator(v_apduReceived)) {
+						if (fx_checkAuthenticator(v_apduReceived)) {
 							f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
 							setverdict(pass);
 						}

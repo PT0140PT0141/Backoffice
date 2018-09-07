@@ -91,7 +91,7 @@ module EfcInfoExchange_TestCasesTsp {
 					[]	mtcPort.receive(mw_apduAuthProvideUserDetails) -> value v_apduReceived{    		                    		
 						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); // No check on minimum wait time to respond
 						
-						if (fx_evaluateAuthenticator(v_apduReceived)) {
+						if (fx_checkAuthenticator(v_apduReceived)) {
 							setverdict(pass);
 							// Step3: Send DefaultAck with correct identifier and set verdict
 							f_logReceivedWaitAndAcknowledge(USERDETAILS_TIME2_MIN_TSP); // Wait minimum time to answer
@@ -244,7 +244,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// containing informationrecipientID  different from  value declared in the PIXIT
 				// Retrieve and alter informationrecipientID value
 				var Provider apduWrongRecipient := INFORMATION_SENDER_ID_FOR_IUT;
-				apduWrongRecipient.providerIdentifier.providerIdentifier := apduWrongRecipient.providerIdentifier.providerIdentifier + 1;
+				apduWrongRecipient.providerIdentifier := apduWrongRecipient.providerIdentifier + 1;
 				template (value) ApciFields m_apciInvalidIuT modifies m_apciInitTester:= {informationrecipientID := apduWrongRecipient};
 				// Then send it together with the request ADU
 				v_apduForSending := m_apduNoAuth(
@@ -282,7 +282,7 @@ module EfcInfoExchange_TestCasesTsp {
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
 				// First, get the apdu to be sent in a variable to avoid apduIdentifier to be re-generated, then send the Apdu
-				v_apduForSending := m_apduNoAuth(m_adusRequestUserDetailsRandomParams);
+				v_apduForSending := m_apduNoAuthInitTester(m_adusRequestUserDetailsRandomParams);
 				// send RequestADU
 				f_sendAndLogApdu(v_apduForSending);
                                
@@ -293,7 +293,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Either we receive an APDU containing Provide User Details ADU(s) or the timeout expires
 				// timeout expiration is handled in the altstep branch
 				alt {
-					[] mtcPort.receive(mw_apduProvideUserDetails) -> value v_apduReceived{
+					[] mtcPort.receive(mw_apduNoAuthRespIut(v_apduForSending, mw_adusProvideUserDetails)) -> value v_apduReceived{
 						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); 
 						
 						// Step3: Send DefaultAck with correct identifier
@@ -330,14 +330,23 @@ module EfcInfoExchange_TestCasesTsp {
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS;
 				 
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+		    	var ApciFields v_apciInvalid := { 
+		    		aidIdentifier := 1, // 12855 Protocol Version number 
+		    		apduOriginator := TD_APDU_ORIGINATOR_FOR_TESTER, // Source of the content of the APDU 
+		    		informationSenderID := TD_INFORMATION_SENDER_TESTER, // Sender of this content 
+		    		informationrecipientID := INFORMATION_SENDER_ID_FOR_IUT,  
+		    		apduIdentifier := float2int(rnd()) * 65535,
+		    		previousApduId := omit,
+		    		nextApduId := {TD_APDU_ORIGINATOR_FOR_TESTER,1},
+		    		inResponseToApduId := omit, 
+		    		apduDate :=  fx_getUtc()
+		    	};
 
-				// Step 1: Send Initiating APDU containing a valid RequestADU with APCI parameter field containing nextApduId
-				template (value) ApciFields m_apciNextApduId modifies m_apciInitTester:= {nextApduId := 1};				
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
 				// Then send it together with the request ADU
 				v_apduForSending := m_apduNoAuth(
-					m_apciNextApduId,
+					v_apciInvalid,
 					m_adusRequestUserDetailsRandomParams
 				);
   				f_sendAndLogApdu(v_apduForSending);
@@ -362,14 +371,26 @@ module EfcInfoExchange_TestCasesTsp {
 				 */
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS;
+
+		    	var ApciFields v_apciInvalid := { 
+		    		aidIdentifier := 1, // 12855 Protocol Version number 
+		    		apduOriginator := TD_APDU_ORIGINATOR_FOR_TESTER, // Source of the content of the APDU 
+		    		informationSenderID := TD_INFORMATION_SENDER_TESTER, // Sender of this content 
+		    		informationrecipientID := INFORMATION_SENDER_ID_FOR_IUT,  
+		    		apduIdentifier := float2int(rnd()) * 65535,
+		    		previousApduId := omit,
+		    		nextApduId := omit,
+		    		inResponseToApduId := {TD_APDU_ORIGINATOR_FOR_TESTER,1}, 
+		    		apduDate :=  fx_getUtc()
+		    	};
 				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
 				// Step 1: Send Initiating APDU containing a valid RequestADU with APCI parameter field containing inResponseToApduId
-				template (value) ApciFields m_apciInvalidInResponse modifies m_apciInitTester:= {inResponseToApduId := 1};
+
 				// Then send it together with the request ADU
 				v_apduForSending := m_apduNoAuth(
-					m_apciInvalidInResponse,
+					v_apciInvalid,
 					m_adusRequestUserDetailsRandomParams
 				);
   				f_sendAndLogApdu(v_apduForSending);
@@ -403,15 +424,15 @@ module EfcInfoExchange_TestCasesTsp {
 				 * @remark  [16986:2016], Clause 6.2.1 and Table A.1/2 
 				 */
 				// Initialisation
-				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_4_implementedTRUSTOBJECTSElectronicTransfer;
-				 
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
-				
+				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_4_implementedTRUSTOBJECTSElectronicTransfer;				
 				var boolean isCertificate:=false;
 				var boolean isPublicKey:=false;
 				var boolean isMacMasterOrDsrcKey := false;
 				var boolean isCertificateRevocationList := false;
 				var boolean v_encryptedKey;
+
+				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc				
+				
 				// Send the IUT a  trigger to send one initial APDU with requestedADUType=trustObjectRequestADU and 
 				// complete its transaction
 				f_sendAndLogTrigger(TRUSTOBJECTS_TR_1);				
@@ -442,9 +463,12 @@ module EfcInfoExchange_TestCasesTsp {
 				
 
 				// Get the requested purposes to send back
-				var RecOfTrustObjectPurposes v_receivedPurposes := v_apduReceived.adus.requestAdus.trustObjectRequest.requestedTrustObject.trustObjectSpec.purposesOfTrustObject;
+				var RecOfTrustObjectPurposes v_receivedPurposes := 
+				v_apduReceived.infoExchangeContent.adus.requestAdus[0].trustObjectRequest.requestedTrustObject.trustObjectSpec.purposesOfTrustObject;
+				
 				// Get the received Trust Object type to decide whether to send an encrypted or not encrypted DSRC key
-				var integer v_receivedType := v_apduReceived.adus.requestAdus.trustObjectRequest.requestedTrustObject.trustObjectSpec.trustObjectSpec.typeOfTrustObject;
+				var integer v_receivedType := 
+				v_apduReceived.infoExchangeContent.adus.requestAdus[0].trustObjectRequest.requestedTrustObject.trustObjectSpec.trustObjectSpec.typeOfTrustObject;
 
 				if (v_receivedType == TrustObjectTypes_symmetricKey_) {v_encryptedKey := false;}
 				if (v_receivedType == TrustObjectTypes_encryptedSymmetricKey_) {v_encryptedKey := true;}
@@ -452,17 +476,29 @@ module EfcInfoExchange_TestCasesTsp {
 				// Step 1: Send Initiating APDU containing a valid TrustObjectADU with inResponseToApduId not equal to the value of the previously sent APDU
 				// Answer with the correct requested Trust Object, but using the incorrect inResponseToApduId in the apci
 				var TrustObjectADU v_aduTrustObject;
-					if (isCertificate) {v_aduTrustObject:= m_aduTrustObject(v_receivedPurposes,TD_CERTIFICATE)};									
-					if (isPublicKey)   {v_aduTrustObject:= m_aduTrustObject(v_receivedPurposes,TD_PUBLICKEY)};								
-					if (isCertificateRevocationList) {v_aduTrustObject:= m_aduTrustObject(v_receivedPurposes, TD_CERT_REVOKE_LIST)};
-					//According to the current version of the 12855 or 16986, there is no way to request a MAC or DSRC key is to be sent. Using symmetric key provisionally 
-					if (isMacMasterOrDsrcKey) {
-						if (v_encryptedKey) {v_aduTrustObject:= m_aduTrustObject(v_receivedPurposes,TD_SYMMETRIC_KEY_ENCRYPTED)}
-					} else { 
-						v_aduTrustObject:= m_aduTrustObject(v_receivedPurposes,TD_SYMMETRIC_KEY);
-					}
+
+				if (isCertificate) {
+					v_aduTrustObject:= m_aduTrustObject(
+						v_receivedPurposes,
+						{certificate:={
+							certificateType:=CertificateType_certTcHTTPS_,
+							certificate:=TD_CERTIFICATE
+						}}
+					)
+				};
+				
+				//TODO Ulrik please update in accordance with model above									
+				if (isPublicKey)   {v_aduTrustObject:= m_aduTrustObject(v_receivedPurposes,TD_PUBLICKEY)};								
+				if (isCertificateRevocationList) {v_aduTrustObject:= m_aduTrustObject(v_receivedPurposes, TD_CERT_REVOKE_LIST)};
+				//According to the current version of the 12855 or 16986, there is no way to request a MAC or DSRC key is to be sent. Using symmetric key provisionally 
+				if (isMacMasterOrDsrcKey) {
+					if (v_encryptedKey) {v_aduTrustObject:= m_aduTrustObject(v_receivedPurposes,TD_SYMMETRIC_KEY_ENCRYPTED)}
+				} else { 
+					v_aduTrustObject:= m_aduTrustObject(v_receivedPurposes,TD_SYMMETRIC_KEY);
+				}
 					 							
 				//Prepare a faulty inResponseTo-field. The originator is set to the Tester value which CANNOT be correct.
+				//TODO Ulrik is it, or is it not allowed to put back a field that has previously been excluded?
 				template (value) ApciFields m_apciInvalidInRespTo modifies m_apciInitTester:= {
 					inResponseToApduId := {
 						TD_IDENTIFIER,
@@ -472,7 +508,7 @@ module EfcInfoExchange_TestCasesTsp {
 				
 				v_apduForSending := m_apduNoAuth(
 					m_apciInvalidInRespTo,
-					{v_aduTrustObject}
+					{trustObjectAdus:={v_aduTrustObject}}
 				);
 				f_sendAndLogApdu(v_apduForSending);
 				
@@ -544,28 +580,24 @@ module EfcInfoExchange_TestCasesTsp {
                // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS and ICS_A3_3_useAuthenticator;
 				 
-				var InfoExchange v_apduToAuthenticate;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
 				// Step 1: Send an Initiating_Apdu containing invalid authenticator
 				// and valid RequestADU with requestedADUType=provideUserDetailsADU
 
 				// Set up a correct apdu without authenticator to start with		
-				v_apduToAuthenticate := m_apduNoAuth(
-					m_apciInitTester,
-					m_adusRequestUserDetailsRandomParams
-				);
+				v_apduForSending:= m_apduAuthInitTester(m_adusRequestUserDetailsRandomParams);
 
 				// Get a correctly computed authenticator, then corrupt it				
-				var ApduAuthenticator authenticator:= fx_computeAuthenticator(v_apduToAuthenticate);
+				var ApduAuthenticator authenticator:= v_apduForSending.infoExchangeAuthenticator;
 				// First, get the value to be corrupted from the complex authenticator field
 				var octetstring hashedMessageContent := authenticator.authenticatorEfc.tbsAuthenticatorEfc.apduContentDigest.hashedMessageContent;
 				// Then add 1
-				var octetstring corruptedhashedMessageContent := corruptedhashedMessageContent+'01'O;
+				var octetstring corruptedhashedMessageContent := int2oct(oct2int(hashedMessageContent)+1);
 				// Finally, substitute the corrupted part into the correct authenticator
 				authenticator.authenticatorEfc.tbsAuthenticatorEfc.apduContentDigest.hashedMessageContent := corruptedhashedMessageContent;
 				// Then send it together with the request ADU
-				v_apduForSending := (v_apduToAuthenticate, authenticator);
+				v_apduForSending.infoExchangeAuthenticator:= authenticator;
   				
   				f_sendAndLogApdu(v_apduForSending);
                         
@@ -611,7 +643,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Either we receive an APDU containing Provide User Details ADU(s) or the timeout expires
 				// timeout expiration is handled in the altstep branch
 				alt {
-					[] mtcPort.receive(mw_apduProvideUserDetails) -> value v_apduReceived{
+					[] mtcPort.receive(mw_apduNoAuthProvideUserDetails(v_apduForSending)) -> value v_apduReceived{
 						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); // No minimum time to be checked
 						
 						// Check the ADU record and find the one we are expecting.
@@ -670,7 +702,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// The received Provide Use Details ADU shall have status flag = 2, and an empty list of user details
 
 				alt {
-					[] mtcPort.receive(mw_apduProvideUserDetails(v_apduForSending)) -> value v_apduReceived{
+					[] mtcPort.receive(mw_apduNoAuthProvideUserDetails(v_apduForSending)) -> value v_apduReceived{
 						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP);
  						                        
 						// Only one ProvideUserDetailsADU to be received
@@ -786,7 +818,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// The received Provide Use Details ADU shall have status flag = 1, and no  list of user details
 
 				alt {
-					[] mtcPort.receive(mw_apduProvideUserDetails(v_apduForSending)) -> value v_apduReceived{
+					[] mtcPort.receive(mw_apduNoAuthProvideUserDetails(v_apduForSending)) -> value v_apduReceived{
 						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); 
 						setverdict(pass);
 						if (sizeof(v_apduReceived.adus.provideUserDetailsADUs) > 1 )
@@ -852,23 +884,19 @@ module EfcInfoExchange_TestCasesTsp {
 				// Either we receive an APDU containing empty User Details or the timeout expires
 				// timeout expiration handling is in the altstep branch	
                 alt {
-					[] mtcPort.receive(mw_apduProvideUserDetails(v_apduForSending)) -> value v_apduReceived{
+					[] mtcPort.receive(mw_apduNoAuthRespIut(mw_apduNoAuthProvideUserDetails(v_apduForSending)) -> value v_apduReceived{
 						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); 
 						setverdict(pass);
-						if (sizeof(v_apduReceived.adus.provideUserDetailsADUs) > 1) {
-						  setverdict (fail);
-						  f_addLogEntry("Only one ADU expected. " & sizeof(v_apduReceived.adus.provideUserDetailsADUs) & " ADUs received instead.");
-						  stop;
-						}				
+				
 						if (not match(
 							v_apduReceived.adus.provideUserDetailsADUs[0],						
 							ProvideUserDetailsADU: modifies mw_aduProvideUserDetails := {
 								userId := {},
-								statusFlag:=2,
+								statusFlag:=UserStatus_standardCommercialUserContract_,
 								listOfUserParameters:={ //Condition: Mandatory if statusFlag is 1 to 5. Shall not be used if status flag is 0,6 or 7.
 									{
 										requestUserParameter:=omit,
-										userParameterStatus := 3,
+										userParameterStatus := UserParameterStatus_missingContractualAgreement_,
 										userInfoValidityPeriod:=omit,
 										userParameterResponse :=*
 									}
@@ -876,7 +904,7 @@ module EfcInfoExchange_TestCasesTsp {
 							}
 						)) {
 						  setverdict(fail);
-						  f_addLogEntry("Incorrect ADU received: " & v_apduReceived);
+						  f_addLogEntry("Incorrect ADU received");
 						  stop;
 						}
                     }
@@ -894,7 +922,7 @@ module EfcInfoExchange_TestCasesTsp {
               * @remark  [16986:2016], Clause 6.4 and Table A.1/2 AND Table A.7/1  
               */
 				// Initialisation
-				if (USERDETAILS_TIMEA_MIN_TSP = 0)	{
+				if (USERDETAILS_TIMEA_MIN_TSP == 0.0)	{
 					setverdict(inconc);
 					f_addLogEntry("Cannot perform minimum time test because IUT sets it to 0");
 					stop;			  
@@ -903,11 +931,11 @@ module EfcInfoExchange_TestCasesTsp {
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				             
 				// Step1: send RequestADU
-				f_sendAndLogApdu(m_apduNoAuthInitTester(m_aduRequestProvideUserDetails(f_userDetailsParameters())));
+				f_sendAndLogApdu(m_apduNoAuthInitTester({requestAdus:={m_aduRequestProvideUserDetails(f_userDetailsParameters()}})));
        			// Send again immediately new ADU with different ADPU-id (randomly assigned by the template)
-				var InfoExchange v_apduToSend := 
-				m_apduNoAuthInitTester(m_aduRequestProvideUserDetails(f_userDetailsParameters()));
-				f_sendAndLogApdu(v_apduToSend);
+				v_apduForSending := 
+				m_apduNoAuthInitTester({requestAdus:={m_aduRequestProvideUserDetails(f_userDetailsParameters()}}));
+				f_sendAndLogApdu(v_apduForSending);
                                
 				//Set timer
 				t_step.start(USERDETAILS_TIME1_MAX_TSP);
@@ -916,7 +944,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Either we receive an APDU containing  NAck or the timeout expires
 				// timeout expiration is handled in the altstep branch
 				alt {
-					[] mtcPort.receive(mw_apduNAckRequestSentTooOften(v_apduToSend)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckRequestSentTooOften(v_apduForSending)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
@@ -947,7 +975,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// IUT shall initially receive a Request as per Transaction sequence #1
 
 				// Prepare and send the record of ADUs with 1 ADU
-				v_apduForSending := m_apduNoAuthInitTester({m_aduRequestListOfUsers});
+				v_apduForSending := m_apduNoAuthInitTester({requestAdus:={m_aduRequestListOfUsers}});
 				f_sendAndLogApdu(v_apduForSending);
 
 				// Set timer
@@ -1192,7 +1220,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Save the apdu to be sent to check later in the received NAck					
 				v_apduForSending := m_apduNoAuthInitTester(
 					{modifies m_aduRequestListOfUsers:= {
-					  	userIdRequestTime := fx_getUtc() + 1000 // Set time to the future
+					  	userIdRequestTime := fx_getUtc(1000) // Set time to the future
 						}
 					});
 				f_sendAndLogApdu(v_apduForSending);
@@ -1226,7 +1254,7 @@ module EfcInfoExchange_TestCasesTsp {
 
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_2_implementedLISTOFUSERS;
-				if (LISTOFUSERS_TIMEA_MIN_TSP = 0)	{
+				if (LISTOFUSERS_TIMEA_MIN_TSP == 0.0)	{
 					setverdict(inconc);
 					f_addLogEntry("Cannot perform minimum time test because IUT sets it to 0");
 					stop;			  
@@ -1882,7 +1910,8 @@ module EfcInfoExchange_TestCasesTsp {
             testcase TP_TSP_PAYMENTCLAIM_BV_02() runs on MainTestComponent system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_PAYMENTCLAIM_BV_02: Verify that a TSP performs the PAYMENTCLAIM transaction correctly when using the actionCode=revoke or adjust 
+                  * @desc    TP_TSP_PAYMENTCLAIM_BV_02: Verify that a TSP performs the PAYMENTCLAIM transaction 
+                  * @desc 	 correctly when using the actionCode=revoke or adjust 
                   * @remark  [16986:2016], Clause 6.8 and Table A.1/2 AND Table A.7/5 
                   */
                   
@@ -1975,7 +2004,8 @@ module EfcInfoExchange_TestCasesTsp {
             testcase TP_TSP_PAYMENTCLAIM_BI_01() runs on MainTestComponent system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_PAYMENTCLAIM_BI_01: Verify that a TSP performs the PAYMENTCLAIM transaction correctly when getting incorrect paymentClaimId 
+                  * @desc    TP_TSP_PAYMENTCLAIM_BI_01: Verify that a TSP performs the PAYMENTCLAIM 
+                  * @desc	 transaction correctly when getting incorrect paymentClaimId 
                   * @remark  [16986:2016], Clause 6.8 and Table A.1/2 AND Table A.7/5  
                   */
                   
@@ -2047,7 +2077,8 @@ module EfcInfoExchange_TestCasesTsp {
             testcase TP_TSP_PAYMENTCLAIM_BI_02() runs on MainTestComponent system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_PAYMENTCLAIM_BI_02: Verify that a TSP performs the PAYMENTCLAIM transaction correctly when getting incorrect paymentClaimStatus 
+                  * @desc    TP_TSP_PAYMENTCLAIM_BI_02: Verify that a TSP performs the PAYMENTCLAIM transaction 
+                  * @desc 	 correctly when getting incorrect paymentClaimStatus 
                   * @remark  [16986:2016], Clause 6.8 and Table A.1/2 AND Table A.7/5  
                   */
                  // Initialisation
@@ -2163,7 +2194,8 @@ module EfcInfoExchange_TestCasesTsp {
 
             testcase TP_TSP_PAYMENTCLAIM_BI_04() runs on MainTestComponent system TestAdapter {
                   /**
-                  * @desc    TP_TSP_PAYMENTCLAIM_BI_04: Verify that a TSP performs the PAYMENTCLAIM transaction correctly when getting incorrect actionCode 
+                  * @desc    TP_TSP_PAYMENTCLAIM_BI_04: Verify that a TSP performs the PAYMENTCLAIM transaction 
+                  * @desc 	 correctly when getting incorrect actionCode 
                   * @remark  [16986:2016], Clause 6.8 and Table A.1/2 AND Table A.7/5  
                   */
                  // Initialisation
@@ -2368,9 +2400,10 @@ module EfcInfoExchange_TestCasesTsp {
                 } // End of TP_TSP_PAYMENTCLAIM_BI_05   
 
             testcase TP_TSP_PAYMENTCLAIM_BI_06() runs on MainTestComponent system TestAdapter {
-             
+            	 
                   /**
-                  * @desc    TP_TSP_PAYMENTCLAIM_BI_06: Verify that a TSP responds correctly to a PaymentClaimADU sent earlier than allowed  
+                  * @desc    TP_TSP_PAYMENTCLAIM_BI_06: Verify that a TSP responds correctly to a 
+                  * @desc 	 PaymentClaimADU sent earlier than allowed  
                   * @remark  [16986:2016], Clause 6.8 and Table A.1/2 AND Table A.7/5  
                   */
                   
@@ -2378,7 +2411,7 @@ module EfcInfoExchange_TestCasesTsp {
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_5_implementedPAYMENTCLAIM;
 				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
-				if (PAYMENTCLAIM_TIMEA_MIN_TSP = 0)	{
+				if (PAYMENTCLAIM_TIMEA_MIN_TSP == 0.0)	{
 					setverdict(inconc);
 					f_addLogEntry("Cannot perform minimum time test because IUT sets it to 0");
 					stop;			  
@@ -2388,8 +2421,8 @@ module EfcInfoExchange_TestCasesTsp {
 
 				// Send one PAYMENTCLAIM related to the sent BILLINGDETAILS within allowed time constraints
 
-				v_apduForSending := m_apduNoAuthInitTester(
-					{modifies mw_aduPaymentClaim:= {
+				v_apduForSending := m_apduNoAuthInitTester({
+					modifies mw_aduPaymentClaim:= {
 					  	userId := PX_EXISTING_USER_ID,
 					  	paymentClaimId := 1,
 					  	startDateTime := fx_getUtc(),
@@ -2428,11 +2461,11 @@ module EfcInfoExchange_TestCasesTsp {
 					[] mtcPort.receive(mw_apduNAckRequestSentTooOften(v_apduForSending)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(PAYMENTCLAIM_TIME1_MIN_TSP); 
 						setverdict(pass);						
-						}
-					} // End of Alt statement               
+					}
+				} // End of Alt statement               
 				f_closeDownMtc();  			
                 
-                } // End of TP_TSP_PAYMENTCLAIM_BI_06  
+			} // End of TP_TSP_PAYMENTCLAIM_BI_06  
         } // End of group Invalid_Behaviour
 
     } // End of group PAYMENTCLAIM
@@ -2801,7 +2834,7 @@ module EfcInfoExchange_TestCasesTsp {
                   
                  // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_2_implementedDSRCEFCCONTEXTDATA;
-				if (DSRC_EFCCONTEXTDATA_TIMEA_MIN_TSP = 0)	{
+				if (DSRC_EFCCONTEXTDATA_TIMEA_MIN_TSP == 0.0)	{
 					setverdict(inconc);
 					f_addLogEntry("Cannot perform minimum time test because IUT sets it to 0");
 					stop;			  
@@ -3130,7 +3163,7 @@ module EfcInfoExchange_TestCasesTsp {
                  	// billingDetailsIssuerIdRejected, billingDetailsContextIdRejected, billingDetailsUserIdRejected, billingDetailsAmountRejected, billingDetailsContextNameRejected, billingDetailsAppliedUserClassRejected, billingDetailsDeclaredVehicleClassRejected, billingDetailsAppliedTimeClassRejected, billingDetailsEntranceTimeRejected, billingDetailsIntermediateSectionRejected
 				
 				alt {
-					[] mtcPort.receive(mw_apduNAckIndividualIssuesIuT(v_apduForSending, {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, {
 					  		{1,AduReasonCode_billingDetailsIssuerIdRejected_},
 							{2,AduReasonCode_billingDetailsContextIdRejected_},
 							{3,AduReasonCode_billingDetailsUserIdRejected_}, 
@@ -3277,7 +3310,7 @@ module EfcInfoExchange_TestCasesTsp {
                   */
                  // Initialisation 
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_3_implementedDSRCBILLINGDETAILS;
-				if (DSRC_BILLINGDETAILS_TIMEA_MIN_TSP = 0)	{
+				if (DSRC_BILLINGDETAILS_TIMEA_MIN_TSP == 0.0)	{
 					setverdict(inconc);
 					f_addLogEntry("Cannot perform minimum time test because IUT sets it to 0");
 					stop;			  
@@ -3334,7 +3367,7 @@ module EfcInfoExchange_TestCasesTsp {
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 
                 // Send one valid DSRC.REPORTABNORMALOBE
-				v_apduForSending := m_apduNoAuthInitTester({m_aduReportAbnormalOBE});                 
+				v_apduForSending := m_apduNoAuthInitTester({m_aduReportAbnormalObe});                 
 				f_sendAndLogApdu(v_apduForSending);                 
                  // Step 2: Wait for positive Ack within DSRC_REPORTABNORMALOBE_TIME1
 				// Set timer
@@ -3402,11 +3435,11 @@ module EfcInfoExchange_TestCasesTsp {
                 // Send one  APDU containg 2 ReportAbnormalOBEADUs, first one with missing and second one with userID set to an invalid value
 
 				v_apduForSending := {
-					m_apduNoAuthInitTester({modifies m_aduReportAbnormalOBE:= {
+					m_apduNoAuthInitTester({modifies m_aduReportAbnormalObe:= {
 					  		userId := omit
 					  		}
 						}),
-					m_apduNoAuthInitTester({modifies mw_aduReportAbnormalOBE:= {
+					m_apduNoAuthInitTester({modifies m_aduReportAbnormalObe:= {
 					  		userId := PX_WRONG_USER_ID
 					  		}
 						})	
@@ -3440,8 +3473,8 @@ module EfcInfoExchange_TestCasesTsp {
 				// Step 1:
                 // Send one  DSRC.REPORTABNORMALOBE with dateAndTime field missing
 				v_apduForSending := {
-					m_apduNoAuthInitTester({modifies m_aduReportAbnormalOBE:= {
-					  	dateAndTime := fx_getUtc() + 1000.0
+					m_apduNoAuthInitTester({modifies m_aduReportAbnormalObe:= {
+					  	dateAndTime := fx_getUtc(1000)
 					  	}
 					})	
            		};                 
@@ -3479,7 +3512,7 @@ module EfcInfoExchange_TestCasesTsp {
                 // Step 1:
                 // Send one  DSRC.REPORTABNORMALOBE with efcContextMark field missing
 				v_apduForSending := {
-					m_apduNoAuthInitTester({modifies m_aduReportAbnormalOBE:= {					  	
+					m_apduNoAuthInitTester({modifies m_aduReportAbnormalObe:= {					  	
 					  	efcContextMark := omit
 					  	}
 					})	
@@ -3517,7 +3550,7 @@ module EfcInfoExchange_TestCasesTsp {
                 	// Send one  APDU containg 2 ReportAbnormalOBEADUs, first one with efcContextMark missing and second one with efcContextMark set to an invalid value
 
 				v_apduForSending := {
-					m_apduNoAuthInitTester({modifies m_aduReportAbnormalOBE:= {
+					m_apduNoAuthInitTester({modifies m_aduReportAbnormalObe:= {
 					  	efcContextMark := 0
 					  	}
 					})	
@@ -3556,7 +3589,7 @@ module EfcInfoExchange_TestCasesTsp {
                 // Step 1:
                 	// Send one  DSRC.REPORTABNORMALOBE with abnormalOBEReason field missing
 				v_apduForSending := {
-					m_apduNoAuthInitTester({modifies m_aduReportAbnormalOBE:= {					  	
+					m_apduNoAuthInitTester({modifies m_aduReportAbnormalObe:= {					  	
 					  		abnormalOBEReasonCode := omit
 					  		}
 						})	
@@ -3570,11 +3603,11 @@ module EfcInfoExchange_TestCasesTsp {
               			                	
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduForSending, AduReasonCode_invalidADU_)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(REPORTABNORMALOBE_TIME1_MIN_TSP); 
+						f_logReceivedThenCheckAndStopTime(DSRC_REPORTABNORMALOBE_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, {{1, AduReasonCode_invalidADU_}})) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(REPORTABNORMALOBE_TIME1_MIN_TSP); 
+						f_logReceivedThenCheckAndStopTime(DSRC_REPORTABNORMALOBE_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					} // End of Alt statement
@@ -3596,10 +3629,10 @@ module EfcInfoExchange_TestCasesTsp {
                 	// Send one  APDU containg 2 ReportAbnormalOBEADUs, first one with abnormalOBEReason missing and second one with abnormalOBEReason set to an invalid value
 
 				v_apduForSending := {
-					m_apduNoAuthInitTester(modifies m_aduReportAbnormalOBE:= {
+					m_apduNoAuthInitTester(modifies m_aduReportAbnormalObe:= {
 					  	abnormalOBEReasonCode := omit
 						}),
-					m_apduNoAuthInitTester(modifies m_aduReportAbnormalOBE:= {
+					m_apduNoAuthInitTester(modifies m_aduReportAbnormalObe:= {
 					  	abnormalOBEReasonCode := 700
 						})	
            			};                 
@@ -3615,7 +3648,7 @@ module EfcInfoExchange_TestCasesTsp {
               			                	
 				alt {
 					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, {{1, AduReasonCode_invalidADU_},{2, AduReasonCode_abnormalObeReasonCodeRejected_}})) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(REPORTABNORMALOBE_TIME1_MIN_TSP); 
+						f_logReceivedThenCheckAndStopTime(DSRC_REPORTABNORMALOBE_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					} // End of Alt statement
@@ -3631,7 +3664,7 @@ module EfcInfoExchange_TestCasesTsp {
                   */
                  // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_4_implementedDSRCREPORTABNORMALOBE;
-				if (DSRC_REPORTABNORMALOBE_TIMEA_MIN_TSP = 0)	{
+				if (DSRC_REPORTABNORMALOBE_TIMEA_MIN_TSP == 0.0)	{
 					setverdict(inconc);
 					f_addLogEntry("Cannot perform minimum time test because IUT sets it to 0");
 					stop;			  
@@ -3639,14 +3672,14 @@ module EfcInfoExchange_TestCasesTsp {
 				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
                 // Send one valid DSRC_REPORTABNORMALOBE
-				v_apduForSending := m_apduNoAuthInitTester({mw_aduReportAbnormalOBE}); 
+				v_apduForSending := m_apduNoAuthInitTester({m_aduReportAbnormalObe}); 
  
  				f_sendAndLogApdu(v_apduForSending);                 
 
 				// Do not wait for positive Ack
                 // Send one one  APDU containg one different valid ReportAbnormalOBEADU before TIMEA_MIN
 				v_apduForSending := m_apduNoAuthInitTester(
-					{modifies m_aduReportAbnormalOBE:= {
+					{modifies m_aduReportAbnormalObe:= {
 					  	abnormalOBEReasonCode := AbnormalOBEReasonCode_obeIsNotWorkingProperly_
 					  	}
 					});                 
@@ -3747,7 +3780,7 @@ module EfcInfoExchange_TestCasesTsp {
 				
 				//  Wait for GNSS.BILLINGDETAILS
 				alt {
-					[] mtcPort.receive(mw_apduNoAuthInitIut(Adus:{billingDetailsADUs:={mw_aduGnssBillingDetails}) )-> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNoAuthInitIut(Adus:{billingDetailsADUs:={mw_aduGnssBillingDetails}}))-> value v_apduReceived {
 						// Log what we received							
 						// Send Ack within time constraints
 						f_logReceivedWaitAndAcknowledge(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TSP);
@@ -3783,22 +3816,22 @@ module EfcInfoExchange_TestCasesTsp {
 				
 				//  Wait for GNSS.BILLINGDETAILS
 				alt {
-					[] mtcPort.receive(mw_apduNoAuthInitIut(Adus:{billingDetailsADUs:={mw_aduGnssBillingDetails}) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNoAuthInitIut(Adus:{billingDetailsADUs:={mw_aduGnssBillingDetails}})) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TSP); 
 							
 						// Send NAck within time constraints
 						f_wait(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TSP);
 						f_sendAndLogApdu(m_apduNoAuthRespTester(v_apduReceived, AduReasonCode_billingDetailsAmountRejected_));
-						}
- 					} // End of alt statement
+					}
+ 				} // End of alt statement
 				// Retrieve all BillingDetails ADUs with action code=send and store their IDs in v_receivedIds
-				var billingDetailsADUs v_receivedBillingDetails := v_apduReceived.infoExchangeContent.adus;
+				var Adus v_receivedBillingDetails := v_apduReceived.infoExchangeContent.adus;
 				var integer v_numOfReceivedBillingDetails := sizeof(v_receivedBillingDetails);
-				var record of BillingDetailsId v_receivedIds;
+				var RoBillingDetailsId v_receivedIds;
 				var integer v_currentBillingDetailsId :=0;
-				for (var integer v_loop :=0, v_loop < v_numOfReceivedBillingDetails, v_loop := v_loop+1)
+				for (var integer v_loop :=0 ; v_loop < v_numOfReceivedBillingDetails; v_loop := v_loop+1)
 					{
-					  if (v_receivedBillingDetails[v_loop].actionCode == ActionCode_Send_) {
+					  if (v_receivedBillingDetails[v_loop].actionCode == ActionCode_send_) {
 					    v_receivedIds[v_currentBillingDetailsId] := v_receivedBillingDetails[v_loop].billingDetailsId;
 					    v_currentBillingDetailsId := v_currentBillingDetailsId + 1;
 					  };
@@ -3814,17 +3847,20 @@ module EfcInfoExchange_TestCasesTsp {
 				
 				//  Wait for GNSS.BILLINGDETAILS
 				alt {
-					[] mtcPort.receive(mw_apduNoAuthInitIut(Adus:{billingDetailsADUs:={mw_aduGnssBillingDetails}) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNoAuthInitIut(Adus:{billingDetailsADUs:={mw_aduGnssBillingDetails}})) -> value v_apduReceived {
 						f_logReceivedWaitAndAcknowledge(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TSP);
 						setverdict(pass);						
-						}
- 					} // End of alt statement
+					}
+ 				} // End of alt statement
 				v_receivedBillingDetails := v_apduReceived.infoExchangeContent.adus;
 				v_numOfReceivedBillingDetails := sizeof(v_receivedBillingDetails);
 				var boolean v_oneFound := false;
-				for (var integer v_loop :=0, v_loop < v_numOfReceivedBillingDetails, v_loop := v_loop+1)
+				for (var integer v_loop :=0; v_loop < v_numOfReceivedBillingDetails; v_loop := v_loop+1)
 					{
-					  if ((v_receivedBillingDetails[v_loop].actionCode == ActionCode_Adjust_) and (match(v_receivedBillingDetails[v_loop].billingDetailsId, v_receivedIds)) {
+					  if (
+					  	(v_receivedBillingDetails[v_loop].actionCode == ActionCode_adjust_) and 
+					  	match(v_receivedBillingDetails[v_loop].billingDetailsId, v_receivedIds)
+					  ) {
 					    v_oneFound := true;
 					    break;
 					  };
@@ -3861,7 +3897,7 @@ module EfcInfoExchange_TestCasesTsp {
 				
 				//  Wait for GNSS.BILLINGDETAILS
 				alt {
-					[] mtcPort.receive(mw_apduNoAuthInitIut(Adus:{billingDetailsADUs:={mw_aduGnssBillingDetails}) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNoAuthInitIut(Adus:{billingDetailsADUs:={mw_aduGnssBillingDetails}})) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TSP); 
 							
 						// Send NAck within time constraints
@@ -3872,9 +3908,9 @@ module EfcInfoExchange_TestCasesTsp {
 				// Retrieve all BillingDetails ADUs with action code=send and store their IDs in v_receivedIds
 				var billingDetailsADUs v_receivedBillingDetails := v_apduReceived.infoExchangeContent.adus;
 				var integer v_numOfReceivedBillingDetails := sizeof(v_receivedBillingDetails);
-				var record of BillingDetailsId v_receivedIds;
+				var RoBillingDetailsId v_receivedIds;
 				var integer v_currentBillingDetailsId :=0;
-				for (var integer v_loop :=0, v_loop < v_numOfReceivedBillingDetails, v_loop := v_loop+1)
+				for (var integer v_loop :=0; v_loop < v_numOfReceivedBillingDetails; v_loop := v_loop+1)
 					{
 					  if (v_receivedBillingDetails[v_loop].actionCode == ActionCode_Send_) {
 					    v_receivedIds[v_currentBillingDetailsId] := v_receivedBillingDetails[v_loop].billingDetailsId;
@@ -3894,7 +3930,7 @@ module EfcInfoExchange_TestCasesTsp {
 				
 				//  Wait for GNSS.BILLINGDETAILS
 				alt {
-					[] mtcPort.receive(mw_apduNoAuthInitIut(Adus:{billingDetailsADUs:={mw_aduGnssBillingDetails}) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNoAuthInitIut(Adus:{billingDetailsADUs:={mw_aduGnssBillingDetails}})) -> value v_apduReceived {
 						f_logReceivedWaitAndAcknowledge(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TSP);
 						setverdict(pass);						
 						}
@@ -3902,9 +3938,9 @@ module EfcInfoExchange_TestCasesTsp {
 				v_receivedBillingDetails := v_apduReceived.infoExchangeContent.adus;
 				v_numOfReceivedBillingDetails := sizeof(v_receivedBillingDetails);
 				var boolean v_oneFound := false;
-				for (var integer v_loop :=0, v_loop < v_numOfReceivedBillingDetails, v_loop := v_loop+1)
+				for (var integer v_loop :=0; v_loop < v_numOfReceivedBillingDetails; v_loop := v_loop+1)
 					{
-					  if ((v_receivedBillingDetails[v_loop].actionCode == ActionCode_Revoke_) and (match(v_receivedBillingDetails[v_loop].billingDetailsId, v_receivedIds)) {
+					  if ((v_receivedBillingDetails[v_loop].actionCode == ActionCode_revoke_) and match(v_receivedBillingDetails[v_loop].billingDetailsId, v_receivedIds)) {
 					    v_oneFound := true;
 					    break;
 					  };
@@ -3958,14 +3994,22 @@ module EfcInfoExchange_TestCasesTsp {
 						1, // BillingDetailsnum
 						{obeId := v_receivedObeId }, // UserId
 						TD_PERIOD_1,
-						{usageListEntry:{freeTextDetail := {textLanguage:= TD_GNSS_BILLINGDETAILS_LANG ,textDetail := TD_GNSS_BILLINGDETAILS_TEXT}},
-							includedDiscounts := 
-						  		{discounts := 10, 
-						  		discountQualifier := DiscountQualifier_userDiscount_ }},
+						{{
+								usageListEntry:={
+									freeTextDetail := {
+										textLanguage:= TD_GNSS_BILLINGDETAILS_LANG,
+										textDetail := TD_GNSS_BILLINGDETAILS_TEXT
+									},
+									includedDiscounts :={
+										discounts := 10, 
+							  			discountQualifier := DiscountQualifier_userDiscount_ 
+									}
+								}
+						}},
 						TD_DISCOUNT_AMOUNT, // Amount in Billing Details
 						v_receivedTollDeclarationId, // Reference to received Toll Declaration
 						ActionCode_send_
-						)});                 
+				)});                 
 				f_sendAndLogApdu(v_apduForSending);                 
                  // Step 2: Wait for positive Ack within GNSS_BILLINGDETAILS_TC_TIME1_MAX_TSP
 				// Set timer
@@ -4086,8 +4130,8 @@ module EfcInfoExchange_TestCasesTsp {
 						1, // Minimum amount in Billing Details
 						v_receivedTollDeclarationId, // Reference to received Toll Declaration
 						ActionCode_send_						
-						);							
-				}; End for
+					);							
+				}; //End for
 				v_apduForSending := m_apduNoAuthInitTester(v_adusForSending);
 				f_sendAndLogApdu(v_apduForSending);
 				
@@ -4303,8 +4347,9 @@ module EfcInfoExchange_TestCasesTsp {
 								4, // BillingDetailsnum
 								{obeId := v_receivedObeId }, // UserId
 								TD_PERIOD_1,
-								{usageListEntry:{freeTextDetail := {textLanguage:= TD_GNSS_BILLINGDETAILS_LANG ,textDetail := TD_GNSS_BILLINGDETAILS_TEXT}},
-									null},
+								{{
+										usageListEntry:={freeTextDetail := {textLanguage:= TD_GNSS_BILLINGDETAILS_LANG ,textDetail := TD_GNSS_BILLINGDETAILS_TEXT}}
+								}},	
 								MAX_ACCEPTED_BILLINGDETAILS_AMOUNT - 1, // Amount in Billing Details less than the allowed maximum
 								v_receivedTollDeclarationId, // Reference to received Toll Declaration
 								ActionCode_send_
@@ -4554,7 +4599,7 @@ module EfcInfoExchange_TestCasesTsp {
 					// Send one valid APDU containing one valid BillingDetailsADU with action code = send and no optional parameters
 					// Wait for positive Ack
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A52_2_implementedGNSSBILLINGDETAILSTC and ICS_A52_3_implementedGNSSTOLLDECLARATION;
-				if (GNSS_BILLINGDETAILS_TC_TIME0_MIN_TSP = 0)	{
+				if (GNSS_BILLINGDETAILS_TC_TIME0_MIN_TSP == 0.0)	{
 					setverdict(inconc);
 					f_addLogEntry("Cannot perform minimum time test because IUT sets it to 0");
 					stop;			  
