@@ -1013,7 +1013,7 @@ module EfcInfoExchange_TestCasesTsp {
 							setverdict(fail);
 							stop;
 						};                        
-                        if (not (v_apduReceived.infoExchangeContent.adus.provideUserIdListADUs[0].userId == PX_EXISTING_USER_ID)) {
+                        if (not (v_apduReceived.infoExchangeContent.adus.provideUserIdListADUs[0].userIdList == PX_EXISTING_USER_ID)) {
                           	f_addLogEntry("Wrong User ID received");
                           	setverdict(fail);
                           	stop;
@@ -1146,10 +1146,7 @@ module EfcInfoExchange_TestCasesTsp {
 				v_aduRequestInvalid:=m_aduRequestListOfUsers;
 				v_aduRequestInvalid.userListRequest.userId := {}; // Set time to the future, ie invalid
 				
-				v_apduForSending := m_apduNoAuthInitTester({requestAdus:={v_aduRequestInvalid}};					
-					
-					
-					
+				v_apduForSending := m_apduNoAuthInitTester({requestAdus:={v_aduRequestInvalid}});	
 					
 				f_sendAndLogApdu(v_apduForSending);
 
@@ -1192,11 +1189,8 @@ module EfcInfoExchange_TestCasesTsp {
 				v_aduRequestInvalid:=m_aduRequestListOfUsers;
 				v_aduRequestInvalid.userListRequest.userIdRequestTime:=omit; // Set time to the future, ie invalid
 				
-				v_apduForSending := m_apduNoAuthInitTester({requestAdus:={v_aduRequestInvalid}};
-				
-					
-					
-					
+				v_apduForSending := m_apduNoAuthInitTester({requestAdus:={v_aduRequestInvalid}});
+									
 				f_sendAndLogApdu(v_apduForSending);
 
 				// Set timer
@@ -1236,7 +1230,7 @@ module EfcInfoExchange_TestCasesTsp {
 				v_aduRequestInvalid:=m_aduRequestListOfUsers;
 				v_aduRequestInvalid.userListRequest.userIdRequestTime:=fx_getUtc(3600); // Set time to the future, ie invalid
 				
-				v_apduForSending := m_apduNoAuthInitTester({requestAdus:={v_aduRequestInvalid}};
+				v_apduForSending := m_apduNoAuthInitTester({requestAdus:={v_aduRequestInvalid}});
 				f_sendAndLogApdu(v_apduForSending);
 
 				// Set timer
@@ -1867,12 +1861,12 @@ module EfcInfoExchange_TestCasesTsp {
                 		
               		// Wait for Ack (if negative Ack or not received set test failure)
 				// Set timer
-                 t_step.start(PAYMENTCLAIM_TIME1_MAX_TSP);                 
+                t_step.start(PAYMENTCLAIM_TIME1_MAX_TSP);                 
 				alt {
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(PAYMENTCLAIM_TIME1_MIN_TSP);
-						}
-					} // End of Alt statement
+					}
+				} // End of Alt statement
 				
                 // Step 1: Second interaction
                 	// Note: no Billing Details sent to be referred by the following Payment Claim
