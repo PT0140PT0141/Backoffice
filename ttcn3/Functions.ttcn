@@ -322,5 +322,133 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
 			} 	// End of Alt Statement				
 		} // End of function
 		
+				// Function defionition used in many GNSS_PAYMENTANNOUNCEMENT below
+			
+		function f_sendTwoTollDeclarationAdusAndTwoBillingDetailsAdus() runs on MainTestComponent {
+
+            // Step 1:
+            // Perform a full GNSS.TOLLDECLARATION transaction with two(2) tollDeclarations
+                
+            // Prepare APDU with two(2) TollDeclaration ADUs 
+                
+            v_apduForSending := m_apduNoAuthInitTester({tollDeclarationADUs:={
+                m_aduTollDeclarationToSendOneObe(
+                    {TD_IDENTIFIER, 1}, //tollDeclarationId
+                    TD_USAGE_STATEMENT_VALID_1, // usageStatement
+                    1, // chargeReportCounter
+                    ActionCode_send_ // actionCode
+                ),
+                m_aduTollDeclarationToSendOneObe(
+                    {TD_IDENTIFIER, 2}, //tollDeclarationId
+                    TD_USAGE_STATEMENT_VALID_2, // usageStatement
+                    2, // chargeReportCounter
+                    ActionCode_send_ // actionCode
+                )
+            }});
+                                                                                                                                                                        
+            f_sendAndLogApdu(v_apduForSending);                	 	 	
+            // Start timer
+            t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
+
+            // Step 2:
+            // Wait for Default_Ack_Apdu within GNSS.TOLLDECLARARTION.TIME1             
+            // if not received or received outside specification or time constraints set test fail
+
+            alt {				
+                [] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
+                    // Log what we received, check minimum time and stop time
+                    f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
+                }
+            }	
+
+            // Step 3:
+            // Send valid Initiating_Apdu containing two(2) BillingDetailsADU, with
+            //		- the values corresponding the previous TollDeclarationADUs; and
+            //		- actionCode=send
+    
+			v_apduForSending := m_apduNoAuthInitTester({billingDetailsADUs:={
+			  	m_aduGnssBillingDetails (
+			  		1,
+			  		TD_USERID_1,
+			  		TD_PERIOD_1,
+			  		{m_sectionsUsed},
+			  		TD_BILLINGDETAILS_AMOUNT_1,
+			  		{{TD_IDENTIFIER, 1}},
+			  		ActionCode_send_
+			  	),
+			  	m_aduGnssBillingDetails (
+			  		2,
+			  		TD_USERID_2,
+			  		TD_PERIOD_1,
+			  		{m_sectionsUsed},
+			  		TD_BILLINGDETAILS_AMOUNT_2,
+			  		{{TD_IDENTIFIER, 2}},
+			  		ActionCode_send_
+			  	)
+            }});	
+                
+            // respect time restriction TIMEB_MAX set by the IuT
+			//TODO Jan I updated this timing requirement - please check it
+            //f_wait(GNSS_BILLINGDETAILS_TSP_TIMEB_MAX_TC/2);
+			f_wait(GNSS_BILLINGDETAILS_TSP_TIMEA_MIN_TC);
+            f_sendAndLogApdu(v_apduForSending);                	 	 	
+            // Start timer
+            t_step.start(GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
+                
+            // Step 4:
+            // Wait for Default_Ack_Apdu within GNSS.BILLINGDETAILS_TSP.TIME1             
+            // if not received or received outside specification or time constraints set test fail
+
+            alt {				
+                [] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
+                    // Log what we received, check minimum time and stop time
+                    f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
+                }
+            }	
+        } // end function definition
+		 
+		function f_sendTwoPaymentAnnouncementAdus() runs on MainTestComponent {
+		
+			// Step 1:
+            // Send valid Initiating_Apdu containing two(2) PaymentAnnouncementADUs, with
+			//		- the values referencing the previous two(2) BillingDetailsADUs; and
+			//		- actionCode=send
+
+			v_apduForSending := m_apduNoAuthInitTester({paymentAnnouncementADUs:={
+				m_aduPaymentAnnouncement(
+					TD_PAYMENTANNOUNCEMENT_ID_1,
+					TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_1,
+					{{TD_IDENTIFIER, 1}},
+					ActionCode_send_
+				),
+				m_aduPaymentAnnouncement(
+					TD_PAYMENTANNOUNCEMENT_ID_2,
+					TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_2,
+					{{TD_IDENTIFIER, 2}},
+					ActionCode_send_
+				)
+			}});
+			
+			// respect time restriction TIMEB_MAX set by the IuT
+			//TODO Jan I updated this time requirement, please check
+			//f_wait(GNSS_PAYMENTANNOUNCEMENT_TIMEB_MAX_TC/2);
+			f_wait(GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
+			f_sendAndLogApdu(v_apduForSending);                	 	 	
+            // Start timer
+            t_step.start(GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC);   				
+			
+            // Step 2: Wait for Default_Ack_Apdu within GNSS.PAYMENTANNOUNCEMENT.TIME1             
+            // if not received or received outside specification or time constraints set test fail
+
+			alt {				
+				[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
+					// Log what we received, check minimum time and stop time
+					f_logReceivedThenCheckAndStopTime(GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC);
+				}
+			}	
+		} // end function definition		 
+		
+		
+		
 	} //End of group 		
 } //End of module

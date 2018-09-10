@@ -98,7 +98,19 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			}		
 		} 
 		
-    	  	
+		// APCI for an Initiating APDU in which inResponseToApdu field is present
+		template (value) ApciFields m_apciInvalidWithInResponseToApduIdInitTester := {
+			aidIdentifier := 1, // 12855 Protocol Version number 
+			apduOriginator := TD_APDU_ORIGINATOR_FOR_TESTER, 
+			informationSenderID := TD_INFORMATION_SENDER_TESTER, // Sender of this content 
+			informationrecipientID := INFORMATION_SENDER_ID_FOR_IUT,  
+			apduIdentifier := float2int(rnd()) * 65535,
+			previousApduId := omit,
+			nextApduId := omit,
+			inResponseToApduId := {INFORMATION_SENDER_ID_FOR_IUT, 1}, // noe present in this BI test case 
+			apduDate := fx_getUtc()
+		}
+		  	  	
         /**
          * @desc    Generic template for InfoExchange structure, without authentication     
          */
@@ -492,6 +504,9 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 					userIdRequestTime	:= ?
 				}
 			}
+			
+			template InfoExchange mw_apduRequestListOfUsersOneAdu := mw_apduNoAuthInitIut({requestAdus:={mw_aduRequestListOfUsers}});
+			
 			  	
 		  	template (value) @fuzzy RequestADU m_aduRequestListOfUsers(in UserId p_userId:=PX_EXISTING_USER_ID) := {
 	  			userListRequest :={
@@ -1193,7 +1208,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				abnormalOBEReasonCode := {AbnormalOBEReasonCode_reasonNotToBeDisclosed_}
 			}
 
-			template Adus mw_adusReportAbnormalOBE := Adus:{reportAbnormalOBEADUs:=?};
+			template Adus mw_adusReportAbnormalObe := Adus:{reportAbnormalOBEADUs:=?};
 
 		}
 				
