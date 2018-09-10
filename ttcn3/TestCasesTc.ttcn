@@ -397,7 +397,7 @@ module EfcInfoExchange_TestCasesTc {
 	 		* to an invalid inResponseToApduId in APCI field of the APDU received
 	 		* @remark  [16986:2016], Clause 6.2.1 and Table A.1/1 and Table A.7/2
 	 		*/
-	 
+				var ApciFields v_apciInvalidInResponseToApduIdRespTester;
 	  			// Initialisation
  				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A7_2_implementedLISTOFUSERS;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc                 
@@ -423,7 +423,7 @@ module EfcInfoExchange_TestCasesTc {
 				//TODO Jan check that the fix below does what it should
 //				template (value) ApciFields m_apciInvalidInResponseToApduIdRespTester
 //					modifies m_apciRespTester := {inResponseToApduId := {APDU_ORIGINATOR_FOR_IUT, v_apduId+1}};
-				var ApciFields v_apciInvalidInResponseToApduIdRespTester:=m_apciRespTester
+				v_apciInvalidInResponseToApduIdRespTester:=m_apciRespTester(v_apduReceived);
 				v_apciInvalidInResponseToApduIdRespTester.inResponseToApduId.apduIdentifier:=v_apduId+1;
 
 				// Step 2
@@ -440,7 +440,8 @@ module EfcInfoExchange_TestCasesTc {
 				};
 
                 // Including the invalid APCI with wrong inResponseToApduId
-                v_apduForSending := m_apduNoAuth(m_apciInvalidInResponseToApduIdRespTester, v_adus);           	
+                v_apduForSending := m_apduNoAuthInitTester(v_adus);
+                v_apduForSending.infoExchangeContent.apci:=v_apciInvalidInResponseToApduIdRespTester;        	
 
 				// send ProvideUserIdList within TIME1
 				f_wait(LISTOFUSERS_TIME1_MIN_TC);
