@@ -1100,7 +1100,7 @@ module EfcInfoExchange_TestCasesTsp {
 						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
-					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, {{1, AduReasonCode_invalidADU_},{2,AduReasonCode_invalidADU_}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, m_roNackParamsDouble(1, AduReasonCode_invalidADU_,2,AduReasonCode_invalidADU_))) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
@@ -1143,7 +1143,7 @@ module EfcInfoExchange_TestCasesTsp {
 						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
-					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, {{1, AduReasonCode_invalidADU_},{2,AduReasonCode_invalidADU_}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, m_roNackParamsDouble(1, AduReasonCode_invalidADU_,2,AduReasonCode_invalidADU_))) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
@@ -1186,7 +1186,7 @@ module EfcInfoExchange_TestCasesTsp {
 						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
-					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, {{1, AduReasonCode_invalidADU_},{2,AduReasonCode_invalidADU_}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, m_roNackParamsDouble(1, AduReasonCode_invalidADU_,2,AduReasonCode_invalidADU_))) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
@@ -1644,7 +1644,7 @@ module EfcInfoExchange_TestCasesTsp {
 //						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TYPE1_TIME1_MIN_TSP); 
 //						setverdict(pass);
 //						}
-//					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, {{1, AduReasonCode_invalidADU_},{2,AduReasonCode_invalidADU_}})) -> value v_apduReceived {
+//					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, m_roNackParamsDouble(1, AduReasonCode_invalidADU_,2,AduReasonCode_invalidADU_))) -> value v_apduReceived {
 //						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TYPE1_TIME1_MIN_TSP); 
 //						setverdict(pass);
 //						}
@@ -1685,7 +1685,7 @@ module EfcInfoExchange_TestCasesTsp {
 //						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TYPE1_TIME1_MIN_TSP); 
 //						setverdict(pass);
 //						}
-//					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, {{1, AduReasonCode_semanticError_},{2,AduReasonCode_semanticError_}})) -> value v_apduReceived {
+//					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, m_roNackParamsDouble(1, AduReasonCode_semanticError_,2,AduReasonCode_semanticError_))) -> value v_apduReceived {
 //						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TYPE1_TIME1_MIN_TSP); 
 //						setverdict(pass);
 //						}
@@ -2002,7 +2002,7 @@ module EfcInfoExchange_TestCasesTsp {
 						f_logReceivedThenCheckAndStopTime(PAYMENTCLAIM_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
-					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, {{1, AduReasonCode_paymentClaimIdRejected_}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, m_roNackParamsSingle(1, AduReasonCode_paymentClaimIdRejected_))) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(PAYMENTCLAIM_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
@@ -2075,7 +2075,7 @@ module EfcInfoExchange_TestCasesTsp {
 						f_logReceivedThenCheckAndStopTime(PAYMENTCLAIM_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
-					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, {{1, AduReasonCode_paymentClaimStatusRejected_}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, m_roNackParamsSingle(1, AduReasonCode_paymentClaimStatusRejected_))) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(PAYMENTCLAIM_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
@@ -2120,7 +2120,7 @@ module EfcInfoExchange_TestCasesTsp {
 						f_logReceivedThenCheckAndStopTime(PAYMENTCLAIM_TIME1_MIN_TSP); 
 						setverdict(pass);
 					}
-					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, {{1, AduReasonCode_invalidADU_}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, m_roNackParamsSingle(1, AduReasonCode_invalidADU_))) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(PAYMENTCLAIM_TIME1_MIN_TSP); 
 						setverdict(pass);
 					}
@@ -2166,7 +2166,7 @@ module EfcInfoExchange_TestCasesTsp {
 						f_logReceivedThenCheckAndStopTime(PAYMENTCLAIM_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
-					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, {{1, AduReasonCode_paymentClaimStatusRejected_}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, m_roNackParamsSingle(1, AduReasonCode_paymentClaimStatusRejected_))) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(PAYMENTCLAIM_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
@@ -2214,7 +2214,7 @@ module EfcInfoExchange_TestCasesTsp {
 						f_logReceivedThenCheckAndStopTime(PAYMENTCLAIM_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
-					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, {{1, AduReasonCode_paymentClaimEndDateTimeRejected_}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, m_roNackParamsSingle(1, AduReasonCode_paymentClaimEndDateTimeRejected_))) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(PAYMENTCLAIM_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
@@ -2242,7 +2242,7 @@ module EfcInfoExchange_TestCasesTsp {
 						f_logReceivedThenCheckAndStopTime(PAYMENTCLAIM_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
-					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, {{1, AduReasonCode_paymentClaimUserIdRejected_}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, m_roNackParamsSingle(1, AduReasonCode_paymentClaimUserIdRejected_))) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(PAYMENTCLAIM_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
@@ -2298,7 +2298,7 @@ module EfcInfoExchange_TestCasesTsp {
 						f_logReceivedThenCheckAndStopTime(PAYMENTCLAIM_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
-					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, {{1, AduReasonCode_paymentClaimStatusRejected_}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, m_roNackParamsSingle(1, AduReasonCode_paymentClaimStatusRejected_))) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(PAYMENTCLAIM_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
@@ -2711,7 +2711,7 @@ module EfcInfoExchange_TestCasesTsp {
 						f_logReceivedThenCheckAndStopTime(DSRC_EFCCONTEXTDATA_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
-					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, {{1, AduReasonCode_semanticError_},{2,AduReasonCode_semanticError_}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, m_roNackParamsDouble(1, AduReasonCode_semanticError_,2,AduReasonCode_semanticError_))) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(DSRC_EFCCONTEXTDATA_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
@@ -2751,7 +2751,7 @@ module EfcInfoExchange_TestCasesTsp {
 						}
 					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(
 						v_apduForSending, 
-						{{1, AduReasonCode_semanticError_},{2,AduReasonCode_semanticError_}}
+						m_roNackParamsDouble(1, AduReasonCode_semanticError_,2,AduReasonCode_semanticError_)
 					)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(DSRC_EFCCONTEXTDATA_TIME1_MIN_TSP); 
 						setverdict(pass);
@@ -2795,7 +2795,7 @@ module EfcInfoExchange_TestCasesTsp {
 						f_logReceivedThenCheckAndStopTime(DSRC_EFCCONTEXTDATA_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
-					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, {{1, AduReasonCode_semanticError_}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, m_roNackParamsSingle(1, AduReasonCode_semanticError_))) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(DSRC_EFCCONTEXTDATA_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
@@ -2907,7 +2907,7 @@ module EfcInfoExchange_TestCasesTsp {
 						f_logReceivedThenCheckAndStopTime(DSRC_BILLINGDETAILS_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
-					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToSend, {{1, AduReasonCode_billingDetailsAmountRejected_}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduToSend, m_roNackParamsSingle(1, AduReasonCode_billingDetailsAmountRejected_))) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(DSRC_BILLINGDETAILS_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
@@ -3175,7 +3175,7 @@ module EfcInfoExchange_TestCasesTsp {
 						f_logReceivedThenCheckAndStopTime(DSRC_BILLINGDETAILS_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
-					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, {{1, AduReasonCode_semanticError_}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, m_roNackParamsSingle(1, AduReasonCode_semanticError_))) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(DSRC_BILLINGDETAILS_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
@@ -3231,7 +3231,7 @@ module EfcInfoExchange_TestCasesTsp {
 						f_logReceivedThenCheckAndStopTime(DSRC_BILLINGDETAILS_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
-					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, {{1, AduReasonCode_semanticError_}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, m_roNackParamsSingle(1, AduReasonCode_semanticError_))) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(DSRC_BILLINGDETAILS_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
@@ -3350,7 +3350,7 @@ module EfcInfoExchange_TestCasesTsp {
 						f_logReceivedThenCheckAndStopTime(DSRC_REPORTABNORMALOBE_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
-					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, {{1, AduReasonCode_semanticError_}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, m_roNackParamsSingle(1, AduReasonCode_semanticError_))) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(DSRC_REPORTABNORMALOBE_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
@@ -3389,7 +3389,7 @@ module EfcInfoExchange_TestCasesTsp {
               			// 1, invalidADU (0)
               			// 2, abnormalObeUserIdRejected
 				alt {
-					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, {{1, AduReasonCode_invalidADU_},{2, AduReasonCode_abnormalObeUserIdRejected_}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, m_roNackParamsDouble(1, AduReasonCode_invalidADU_,2, AduReasonCode_abnormalObeUserIdRejected_))) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(DSRC_REPORTABNORMALOBE_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
@@ -3426,7 +3426,7 @@ module EfcInfoExchange_TestCasesTsp {
 						f_logReceivedThenCheckAndStopTime(DSRC_REPORTABNORMALOBE_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
-					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, {{1, AduReasonCode_abnormalObeDateAndTimeRejected_}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, m_roNackParamsSingle(1, AduReasonCode_abnormalObeDateAndTimeRejected_))) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(DSRC_REPORTABNORMALOBE_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
@@ -3464,7 +3464,7 @@ module EfcInfoExchange_TestCasesTsp {
 						f_logReceivedThenCheckAndStopTime(DSRC_REPORTABNORMALOBE_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
-					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, {{1, AduReasonCode_invalidADU_}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, m_roNackParamsSingle(1, AduReasonCode_invalidADU_))) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(DSRC_REPORTABNORMALOBE_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
@@ -3504,7 +3504,7 @@ module EfcInfoExchange_TestCasesTsp {
 						f_logReceivedThenCheckAndStopTime(DSRC_REPORTABNORMALOBE_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
-					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, {{1, AduReasonCode_semanticError_}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, m_roNackParamsSingle(1, AduReasonCode_semanticError_))) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(DSRC_REPORTABNORMALOBE_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
@@ -3543,7 +3543,7 @@ module EfcInfoExchange_TestCasesTsp {
 						f_logReceivedThenCheckAndStopTime(DSRC_REPORTABNORMALOBE_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
-					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, {{1, AduReasonCode_invalidADU_}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, m_roNackParamsSingle(1, AduReasonCode_invalidADU_))) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(DSRC_REPORTABNORMALOBE_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
@@ -3584,7 +3584,7 @@ module EfcInfoExchange_TestCasesTsp {
               			// 2, abnormalObeReasonCodeRejected
               			                	
 				alt {
-					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, {{1, AduReasonCode_invalidADU_},{2, AduReasonCode_abnormalObeReasonCodeRejected_}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, m_roNackParamsDouble(1, AduReasonCode_invalidADU_,2, AduReasonCode_abnormalObeReasonCodeRejected_))) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(DSRC_REPORTABNORMALOBE_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
@@ -4132,7 +4132,7 @@ module EfcInfoExchange_TestCasesTsp {
 						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TC_TIME1_MAX_TSP); 
 						setverdict(pass);
 						}
-					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, {{1, AduReasonCode_billingDetailsAmountRejected_}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, m_roNackParamsSingle(1, AduReasonCode_billingDetailsAmountRejected_))) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TC_TIME1_MAX_TSP); 
 						setverdict(pass);
 						}
@@ -4515,7 +4515,7 @@ module EfcInfoExchange_TestCasesTsp {
 						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
-					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, {{1, AduReasonCode_semanticError_}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, m_roNackParamsSingle(1, AduReasonCode_semanticError_))) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
