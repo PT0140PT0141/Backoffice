@@ -293,7 +293,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Either we receive an APDU containing Provide User Details ADU(s) or the timeout expires
 				// timeout expiration is handled in the altstep branch
 				alt {
-					[] mtcPort.receive(mw_apduNoAuthRespIut(v_apduForSending, mw_adusProvideUserDetails)) -> value v_apduReceived{
+					[] mtcPort.receive(mw_apduNoAuthProvideUserDetails(v_apduForSending)) -> value v_apduReceived{
 						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); 
 						
 						// Step3: Send DefaultAck with correct identifier
@@ -3656,7 +3656,7 @@ module EfcInfoExchange_TestCasesTsp {
 				var InfoExchange v_apduToBeReceived := mw_apduNoAuthInitIut(
 					{modifies mw_aduTollDeclaration:= {	actionCode := ActionCode_send_	}},
 					{modifies mw_aduTollDeclaration:= {	actionCode := ActionCode_adjust_}},
-					{modifies mw_aduGnssTollDeclaration := { actionCode := ActionCode_revoke_}}
+					{modifies mw_aduTollDeclaration := { actionCode := ActionCode_revoke_}}
 				);
 				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1_SENDREVOKEADJUST);												
 				// Receive the correct adu, send positive ack
@@ -3843,14 +3843,14 @@ module EfcInfoExchange_TestCasesTsp {
 						}
  					} // End of alt statement
 				// Retrieve all BillingDetails ADUs with action code=send and store their IDs in v_receivedIds
-				var billingDetailsADUs v_receivedBillingDetails := v_apduReceived.infoExchangeContent.adus;
-				var integer v_numOfReceivedBillingDetails := sizeof(v_receivedBillingDetails);
+				var Adus v_receivedBillingDetails := v_apduReceived.infoExchangeContent.adus;
+				var integer v_numOfReceivedBillingDetails := sizeof(v_receivedBillingDetails.billingDetailsADUs);
 				var RoBillingDetailsId v_receivedIds;
 				var integer v_currentBillingDetailsId :=0;
 				for (var integer v_loop :=0; v_loop < v_numOfReceivedBillingDetails; v_loop := v_loop+1)
 					{
-					  if (v_receivedBillingDetails[v_loop].actionCode == ActionCode_Send_) {
-					    v_receivedIds[v_currentBillingDetailsId] := v_receivedBillingDetails[v_loop].billingDetailsId;
+					  if (v_receivedBillingDetails.billingDetailsADUs[v_loop].actionCode == ActionCode_send_) {
+					    v_receivedIds[v_currentBillingDetailsId] := v_receivedBillingDetails.billingDetailsADUs[v_loop].billingDetailsId;
 					    v_currentBillingDetailsId := v_currentBillingDetailsId + 1;
 					  };
 					}; // End of for
@@ -3877,7 +3877,7 @@ module EfcInfoExchange_TestCasesTsp {
 				var boolean v_oneFound := false;
 				for (var integer v_loop :=0; v_loop < v_numOfReceivedBillingDetails; v_loop := v_loop+1)
 					{
-					  if ((v_receivedBillingDetails[v_loop].actionCode == ActionCode_revoke_) and match(v_receivedBillingDetails[v_loop].billingDetailsId, v_receivedIds)) {
+					  if ((v_receivedBillingDetails.billingDetailsADUs[v_loop].actionCode == ActionCode_revoke_) and match(v_receivedBillingDetails.billingDetailsADUs[v_loop].billingDetailsId, v_receivedIds)) {
 					    v_oneFound := true;
 					    break;
 					  };
@@ -3921,7 +3921,7 @@ module EfcInfoExchange_TestCasesTsp {
 						}				
 					} // End of alt statement
 				// Extract the TollDeclaration ADU and its relevant fields to be used later
-				var tollDeclarationADU v_receivedTollDeclaration := v_apduReceived.infoExchangeContent.adus;
+				var TollDeclarationADU v_receivedTollDeclaration := v_apduReceived.infoExchangeContent.adus;
 				var TollDeclarationId v_receivedTollDeclarationId := v_receivedTollDeclaration.tollDeclarationId;
 				var ObeId v_receivedObeId := v_receivedTollDeclaration.gnssTollDeclaration.chargeReport.obeId; // To be used as UserId in BillingDetails
                  // Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
@@ -4048,17 +4048,17 @@ module EfcInfoExchange_TestCasesTsp {
 						}
 					} // End of first alt statement
 				// Extract the TollDeclaration ADU and its relevant fields to be used later
-				var tollDeclarationADU v_receivedTollDeclaration := v_apduReceived.infoExchangeContent.adus;
+				var TollDeclarationADU v_receivedTollDeclaration := v_apduReceived.infoExchangeContent.adus;
 				var TollDeclarationId v_receivedTollDeclarationId := v_receivedTollDeclaration.tollDeclarationId;
 				var ObeId v_receivedObeId := v_receivedTollDeclaration.gnssTollDeclaration.chargeReport.obeId; // To be used as UserId in BillingDetails
                 // Step 1: Send one valid APDU containing a number of valid BillingDetailsADU equal to GNSS.BILLINGDETAILS.TSP.PARAM1_MAX, with
                  	// action code = send 
                  	// no optional fields
                 // Define record to contain adus
-                var BillingDetailsADUs v_adusForSending;
+                var Adus v_adus;
 				// Set all  ADUs of apdu
-				for (var integer v_ind := 0; v_ind < (GNSS.BILLINGDETAILS_TSP_PARAM1_MAX - 1); v_ind := v_ind + 1){
-					v_adusForSending[v_ind] := m_aduGnssBillingDetails(
+				for (var integer v_ind := 0; v_ind < (GNSS_BILLINGDETAILS_TSP_PARAM1_MAX_TSP - 1); v_ind := v_ind + 1){
+					v_adus.billingDetailsADUs[v_ind] := m_aduGnssBillingDetails(
 						v_ind,
 						{obeId := v_receivedObeId }, // UserId
 						TD_PERIOD_1,
@@ -4103,7 +4103,7 @@ module EfcInfoExchange_TestCasesTsp {
 						}
 					} // End of first alt statement
 				// Extract the TollDeclaration ADU and its relevant fields to be used later
-				var tollDeclarationADU v_receivedTollDeclaration := v_apduReceived.infoExchangeContent.adus;
+				var TollDeclarationADU v_receivedTollDeclaration := v_apduReceived.infoExchangeContent.adus;
 				var TollDeclarationId v_receivedTollDeclarationId := v_receivedTollDeclaration.tollDeclarationId;
 				var ObeId v_receivedObeId := v_receivedTollDeclaration.gnssTollDeclaration.chargeReport.obeId; // To be used as UserId in BillingDetails
 
@@ -4190,7 +4190,7 @@ module EfcInfoExchange_TestCasesTsp {
 						}
 					} // End of first alt statement
 				// Extract the TollDeclaration ADU and its relevant fields to be used later
-				var tollDeclarationADU v_receivedTollDeclaration := v_apduReceived.infoExchangeContent.adus;
+				var TollDeclarationADU v_receivedTollDeclaration := v_apduReceived.infoExchangeContent.adus;
 				var TollDeclarationId v_receivedTollDeclarationId := v_receivedTollDeclaration.tollDeclarationId;
 				var ObeId v_receivedObeId := v_receivedTollDeclaration.gnssTollDeclaration.chargeReport.obeId; // To be used as UserId in BillingDetails
 
@@ -4275,7 +4275,7 @@ module EfcInfoExchange_TestCasesTsp {
             	// Step 1: Send one valid APDU containing 13 valid BillingDetailsADUs, each one with the following parameters respectively set to one incorrect value:
          		// billingDetailsId.issuerId, tollContext, userId, Period, billingDetailsAmount, usageDetails.contextName, usageDetails.appliedUserClass, usageDetails.perDeclaredVehicleClasses, usageDetails.appliedTimeClass, usageDetails.entranceTime, usageList.ListofSections.chargeObjectId, exitChargeObject, exitTime
 				// Extract the TollDeclaration ADU and its relevant fields to be used later
-				var tollDeclarationADU v_receivedTollDeclaration := v_apduReceived.infoExchangeContent.adus;
+				var TollDeclarationADU v_receivedTollDeclaration := v_apduReceived.infoExchangeContent.adus;
 				var TollDeclarationId v_receivedTollDeclarationId := v_receivedTollDeclaration.tollDeclarationId;
 				var ObeId v_receivedObeId := v_receivedTollDeclaration.gnssTollDeclaration.chargeReport.obeId; // To be used as UserId in BillingDetails
 				
@@ -4457,7 +4457,7 @@ module EfcInfoExchange_TestCasesTsp {
 						}
 					} // End of first alt statement
 				// Extract the TollDeclaration ADU and its relevant fields to be used later
-				var tollDeclarationADU v_receivedTollDeclaration := v_apduReceived.infoExchangeContent.adus;
+				var TollDeclarationADU v_receivedTollDeclaration := v_apduReceived.infoExchangeContent.adus;
 				var TollDeclarationId v_receivedTollDeclarationId := v_receivedTollDeclaration.tollDeclarationId;
 				var ObeId v_receivedObeId := v_receivedTollDeclaration.gnssTollDeclaration.chargeReport.obeId; // To be used as UserId in BillingDetails
 
@@ -4552,7 +4552,7 @@ module EfcInfoExchange_TestCasesTsp {
 						}				
 					} // End of alt statement
 				// Extract the TollDeclaration ADU and its relevant fields to be used later
-				var tollDeclarationADU v_receivedTollDeclaration := v_apduReceived.infoExchangeContent.adus;
+				var TollDeclarationADU v_receivedTollDeclaration := v_apduReceived.infoExchangeContent.adus;
 				var TollDeclarationId v_receivedTollDeclarationId := v_receivedTollDeclaration.tollDeclarationId;
 				var ObeId v_receivedObeId := v_receivedTollDeclaration.gnssTollDeclaration.chargeReport.obeId; // To be used as UserId in BillingDetails
                  // Step 1: Send one valid APDU containing one valid BillingDetailsADU with action code = send
