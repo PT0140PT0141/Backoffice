@@ -76,7 +76,7 @@ module EfcInfoExchange_TestCasesTsp {
                // and in addition an infoExchangeAuthenticator = value calculated according to clause 7.3 of EN ISO 12855
 
 				// Prepare the APDU 
-				v_apduForSending := m_apduAuthInitTester({requestAdus:={m_adusRequestUserDetailsRandomParams}});
+				v_apduForSending := m_apduAuthInitTester(m_adusRequestUserDetailsRandomParams);
                 
 				// send RequestADU
 				f_sendAndLogApdu(v_apduForSending);                                          
@@ -88,7 +88,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Either we receive an authenticated APDU containing Provide User Details ADU(s) or the timeout expires
 				// timeout expiration is handled in the altstep branch
 				alt {
-					[]	mtcPort.receive(mw_apduAuthProvideUserDetails) -> value v_apduReceived{    		                    		
+					[]	mtcPort.receive(mw_apduAuthProvideUserDetails(v_apduForSending)) -> value v_apduReceived{    		                    		
 						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME1_MIN_TSP); // No check on minimum wait time to respond
 						
 						if (fx_checkAuthenticator(v_apduReceived)) {
@@ -485,17 +485,32 @@ module EfcInfoExchange_TestCasesTsp {
 							certificate:=TD_CERTIFICATE
 						}}
 					)
-				};
-				
-				//TODO Ulrik please update in accordance with model above									
-				if (isPublicKey)   {v_aduTrustObject:= m_aduTrustObject(v_receivedPurposes,TD_PUBLICKEY)};								
-				if (isCertificateRevocationList) {v_aduTrustObject:= m_aduTrustObject(v_receivedPurposes, TD_CERT_REVOKE_LIST)};
-				//According to the current version of the 12855 or 16986, there is no way to request a MAC or DSRC key is to be sent. Using symmetric key provisionally 
-				if (isMacMasterOrDsrcKey) {
-					if (v_encryptedKey) {v_aduTrustObject:= m_aduTrustObject(v_receivedPurposes,TD_SYMMETRIC_KEY_ENCRYPTED)}
-				} else { 
-					v_aduTrustObject:= m_aduTrustObject(v_receivedPurposes,TD_SYMMETRIC_KEY);
-				}
+				} else if (isPublicKey) {
+					v_aduTrustObject:= m_aduTrustObject(
+						v_receivedPurposes,
+						{publicKey:=TD_PUBLICKEY}
+					)
+				} else if (isCertificateRevocationList) {
+				 	v_aduTrustObject:= m_aduTrustObject(
+				 		v_receivedPurposes, 
+				 		{otherTrustObject:={
+							typeOfTrustObject:=TrustObjectTypes_crl_,
+							genericTrustObject:=TD_CERT_REVOKE_LIST
+				 		}}
+				 	)
+				 } if (isMacMasterOrDsrcKey) { 				
+					 //According to the current version of the 12855 or 16986, there is no way to request a MAC or DSRC key is to be sent. Using symmetric key provisionally 
+		
+					if (v_encryptedKey) {
+						v_aduTrustObject:= m_aduTrustObject(v_receivedPurposes,{dsrcMasterKeys:=TD_SYMMETRIC_KEY_ENCRYPTED});
+					} else { 
+						v_aduTrustObject:= m_aduTrustObject(v_receivedPurposes,{dsrcMasterKeys:=TD_SYMMETRIC_KEY});
+					}
+				} else {
+					setverdict(fail);
+					f_addLogEntry("None of the expected Trust Objects requested");  
+					stop;
+				}	
 					 							
 				//Prepare a faulty inResponseTo-field. The originator is set to the Tester value which CANNOT be correct.
 				//TODO Ulrik is it, or is it not allowed to put back a field that has previously been excluded?
@@ -896,7 +911,7 @@ module EfcInfoExchange_TestCasesTsp {
 								statusFlag:=UserStatus_standardCommercialUserContract_,
 								listOfUserParameters:={ //Condition: Mandatory if statusFlag is 1 to 5. Shall not be used if status flag is 0,6 or 7.
 									{
-										requestUserParameter:=omit,
+										requestedUserParameter:=omit,
 										userParameterStatus := UserParameterStatus_missingContractualAgreement_,
 										userInfoValidityPeriod:=omit,
 										userParameterResponse :=*
@@ -1086,7 +1101,7 @@ module EfcInfoExchange_TestCasesTsp {
 				
 				// Save the apdu to be sent to check later in the received NAck
 				v_apduForSending := m_apduNoAuthInitTester({requestAdus:={m_aduRequestListOfUsers}});
-				v_apduForSending.infoExchangeContent.adus.requestAdus[0].userListRequest.userIdRequestType := 1000; //Only allowed value according to CEN/TS 16986 is 0
+				v_apduForSending.infoExchangeContent.adus.requestAdus[0].userListRequest.userIdRequestType := 100; //Only allowed value according to CEN/TS 16986 is 0
 				f_sendAndLogApdu(v_apduForSending);
 
 				// Set timer
@@ -1115,6 +1130,9 @@ module EfcInfoExchange_TestCasesTsp {
                   * @remark  [16986:2016], Clause 6.5 and Table A.1/2 AND Table A.7/2  
                   */
 
+				//Declaration
+				var RequestADU v_aduRequestInvalid;
+
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_2_implementedLISTOFUSERS;
 				 
@@ -1125,11 +1143,14 @@ module EfcInfoExchange_TestCasesTsp {
 
 				// Prepare and send the record of ADUs with 1 ADU
 				// Save the apdu to be sent to check later in the received NAck
-				v_apduForSending := m_apduNoAuthInitTester(
-					{modifies m_aduRequestListOfUsers:= {
-					  	userId := {}
-						}
-					});
+				v_aduRequestInvalid:=m_aduRequestListOfUsers;
+				v_aduRequestInvalid.userListRequest.userId := {}; // Set time to the future, ie invalid
+				
+				v_apduForSending := m_apduNoAuthInitTester({requestAdus:={v_aduRequestInvalid}};					
+					
+					
+					
+					
 				f_sendAndLogApdu(v_apduForSending);
 
 				// Set timer
@@ -1158,7 +1179,7 @@ module EfcInfoExchange_TestCasesTsp {
                   * @remark  [16986:2016], Clause 6.5 and Table A.1/2 AND Table A.7/2  
                   */
 				// Initialisation
-
+				var RequestADU v_aduRequestInvalid;
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_2_implementedLISTOFUSERS;
 				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
@@ -1168,11 +1189,14 @@ module EfcInfoExchange_TestCasesTsp {
 
 				// Prepare and send the record of ADUs with 1 ADU
 				// Save the apdu to be sent to check later in the received NAck			
-				v_apduForSending := m_apduNoAuthInitTester(
-					{modifies m_aduRequestListOfUsers:= {
-					  	userIdRequestTime := omit
-						}
-					});
+				v_aduRequestInvalid:=m_aduRequestListOfUsers;
+				v_aduRequestInvalid.userListRequest.userIdRequestTime:=omit; // Set time to the future, ie invalid
+				
+				v_apduForSending := m_apduNoAuthInitTester({requestAdus:={v_aduRequestInvalid}};
+				
+					
+					
+					
 				f_sendAndLogApdu(v_apduForSending);
 
 				// Set timer
@@ -1200,7 +1224,7 @@ module EfcInfoExchange_TestCasesTsp {
                   * @desc    TP_TSP_LISTOFUSERS_BI_04: Verify that the TSP correctly receives an invalid request ADU with invalid userIdRequestTime 
                   * @remark  [16986:2016], Clause 6.5 and Table A.1/2 AND Table A.7/2  
                   */
-
+				var RequestADU v_aduRequestInvalid;
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_2_implementedLISTOFUSERS;
 				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
@@ -1209,11 +1233,10 @@ module EfcInfoExchange_TestCasesTsp {
 
 				// Prepare and send the record of ADUs with 1 ADU
 				// Save the apdu to be sent to check later in the received NAck					
-				v_apduForSending := m_apduNoAuthInitTester(
-					{modifies m_aduRequestListOfUsers:= {
-					  	userIdRequestTime := fx_getUtc(3600) // Set time to the future
-						}
-					});
+				v_aduRequestInvalid:=m_aduRequestListOfUsers;
+				v_aduRequestInvalid.userListRequest.userIdRequestTime:=fx_getUtc(3600); // Set time to the future, ie invalid
+				
+				v_apduForSending := m_apduNoAuthInitTester({requestAdus:={v_aduRequestInvalid}};
 				f_sendAndLogApdu(v_apduForSending);
 
 				// Set timer
@@ -1330,6 +1353,7 @@ module EfcInfoExchange_TestCasesTsp {
               * @remark  [16986:2016], Clause 6.6 and Table A.1/2 AND Table A.7/3 
               */
 				// Initialisation
+				var ExceptionListADU v_theAdu;
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_3_implementedEXCEPTIONLIST;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
 				
@@ -1343,9 +1367,9 @@ module EfcInfoExchange_TestCasesTsp {
 						// Log what we received
 						f_logApduReceivedAndTStep();					
 						// Exception List shall have a vatId	
-						var ExceptionListADU v_theAdu:=v_apduReceived.infoExchangeContent.adus.ExceptionListADU[0];		
+						v_theAdu:=v_apduReceived.infoExchangeContent.adus.exceptionListADUs[0];		
                			for (var integer v_loop:=0;v_loop<lengthof(v_theAdu.exceptionListEntries);v_loop:=v_loop+1){
-               				if (not(ispresent(theAdu.exceptionListEntries[v_loop].vatId))){
+               				if (not(ispresent(v_theAdu.exceptionListEntries[v_loop].vatId))){
 								f_addLogEntry("No vatId present");
 	               				setverdict(fail);
 	               				stop;

@@ -178,7 +178,7 @@ module EfcInfoExchange_TesterData{
 
 	group TRUSTOBJECTS {
 		modulepar TrustObjectCode TD_DSRC_MASTER_KEY:={dsrcMasterKeys:=TD_SYMMETRIC_KEY};
-		modulepar TrustObjectCode TD_CERT_REVOKE_LIST;
+		modulepar octetstring TD_CERT_REVOKE_LIST;
 		modulepar octetstring TD_CERTIFICATE;
 	 	modulepar octetstring TD_GENERIC_TRUST_OBJECT;
 	 	modulepar PublicKeyObject TD_PUBLICKEY;
