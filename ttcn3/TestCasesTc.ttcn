@@ -4108,7 +4108,7 @@ module EfcInfoExchange_TestCasesTc {
 				}	
 				f_closeDownMtc();              	
 			} // End testcase TP_TC_GNSS_BILLINGDETAILS_TSP_BV_05
-
+ 
 			testcase TP_TC_GNSS_BILLINGDETAILS_TSP_BV_06() runs on MainTestComponent system TestAdapter {
 							
                /**
