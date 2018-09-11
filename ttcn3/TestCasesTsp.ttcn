@@ -1866,11 +1866,12 @@ module EfcInfoExchange_TestCasesTsp {
                 // Send PAYMENTCLAIM with ActionCode=SEND and changing:
                 // UserId within declared valid values
                 // valid values of TypeOfFee
-                // paymentReference valid and not present
+                // valid value for paymentReference
+                // paymentClaimAmount without VAT
 				v_apduForSending := m_apduNoAuthInitTester(
 					{modifies mw_aduPaymentClaim:= {
 					  	paymentClaimId := 2,
-					  	paymentClaimAmount := TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_2,
+					  	paymentClaimAmount := TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_WITHOUTVAT,
 					  	typeOfFee := TypeOfFee_penalty_,
 					  	paymentReference := "Lane jumping"
 					  	}
