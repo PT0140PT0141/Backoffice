@@ -4069,14 +4069,23 @@ module EfcInfoExchange_TestCasesTsp {
 						v_ind,
 						{obeId := v_receivedObeId }, // UserId
 						TD_PERIOD_1,
-						{usageListEntry:{freeTextDetail := {textLanguage:= TD_GNSS_BILLINGDETAILS_LANG ,textDetail := TD_GNSS_BILLINGDETAILS_TEXT}},
-							null},
-						1, // Minimum amount in Billing Details
-						v_receivedTollDeclarationId, // Reference to received Toll Declaration
-						ActionCode_send_						
+						{{
+							usageListEntry:={
+								freeTextDetail := {
+									textLanguage:= TD_GNSS_BILLINGDETAILS_LANG ,
+									textDetail := TD_GNSS_BILLINGDETAILS_TEXT
+								}
+							},
+							includedDiscounts:= omit,
+							associatedEventData:=omit,
+							externalCosts:=omit
+						}},
+						TD_BILLINGDETAILS_AMOUNT_1, // Minimum amount in Billing Details
+						{v_receivedTollDeclarationId}, // Reference to received Toll Declaration
+						ActionCode_send_				
 					);							
 				}; //End for
-				v_apduForSending := m_apduNoAuthInitTester(v_adusForSending);
+				v_apduForSending := m_apduNoAuthInitTester(v_adus);
 				f_sendAndLogApdu(v_apduForSending);
 				
                  // Step 2: Wait for positive Ack within GNSS_BILLINGDETAILS_TC_TIME1_MAX_TSP
