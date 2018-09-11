@@ -439,7 +439,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
         	) modifies mw_aduRequestProvideUserDetails := {
         		userDetailsRequest:={
         			requestedADUType := AduType_provideUserDetailsADU_,	
-            	  	userId := PX_EXISTING_USER_ID,
+            	  	userId := PX_USER_ID,
 					listOfParametersRequested := p_userParameterRequests,
             		userDetailsRequestReason := omit,
             		userInfoValidityPeriod := omit
@@ -461,7 +461,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 //        	}
         	
         	template ProvideUserDetailsADU mw_aduProvideUserDetails := {
-            	originaluserIdRequest := PX_EXISTING_USER_ID,
+            	originaluserIdRequest := PX_USER_ID,
             	userId := ({?, *, *, *}, {*, ?, *, *}, {*, *, ?, *}, {*, *, *, ?}), 
             	statusFlag := * ,
             	listOfUserParameters := *
@@ -479,7 +479,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			}   
         				
 //			template ProvideUserDetailsADU m_aduProvideUserDetails:= {
-//            	originaluserIdRequest := PX_EXISTING_USER_ID,
+//            	originaluserIdRequest := PX_USER_ID,
 //            	userId := ({?, *, *, *}, {*, ?, *, *}, {*, *, ?, *}, {*, *, *, ?}), 
 //            	statusFlag := * ,
 //            	listOfUserParameters := *
@@ -508,7 +508,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			template InfoExchange mw_apduRequestListOfUsersOneAdu := mw_apduNoAuthInitIut({requestAdus:={mw_aduRequestListOfUsers}});
 			
 			  	
-		  	template (value) @fuzzy RequestADU m_aduRequestListOfUsers(in UserId p_userId:=PX_EXISTING_USER_ID) := {
+		  	template (value) @fuzzy RequestADU m_aduRequestListOfUsers(in UserId p_userId:=PX_USER_ID) := {
 	  			userListRequest :={
 	  				requestedADUType	:= AduType_provideUserIdListADU_,
   					userIdRequestType	:= 0,
@@ -519,13 +519,13 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 
 			template ProvideUserIdListADU mw_aduProvideUserIdList := {
 				originalUserIdRequestType := UserIdRequestType_allUserIdsToGivenCustomer_,
-				originalUserId := PX_EXISTING_USER_ID,
+				originalUserId := PX_USER_ID,
 				userIdList := *
 			};
         	
 			template ProvideUserIdListADU m_aduProvideUserIdList(in template UserId p_originalUserId):= {
 				originalUserIdRequestType := UserIdRequestType_allUserIdsToGivenCustomer_,
-				originalUserId := p_originalUserId, //PX_EXISTING_USER_ID,
+				originalUserId := p_originalUserId, //PX_USER_ID,
 				userIdList :={TD_USERID_1,TD_USERID_2,TD_USERID_3}
 			};
         	
@@ -857,7 +857,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				{paymentClaimADUs:={{
 					paymentClaimId := 1,
 					startDateTime := fx_getUtc(),
-					userId := PX_EXISTING_USER_ID,
+					userId := PX_USER_ID,
 					paymentClaimAmount := TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_1,
 					paymentClaimStatus := PaymentClaimStatus_firstVersion_,
 					typeOfFee := TypeOfFee_toll_,
@@ -1203,7 +1203,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			}
 			
 			template (value) @fuzzy ReportAbnormalOBEADU m_aduReportAbnormalObe:= {
-				userId := PX_EXISTING_USER_ID,
+				userId := PX_USER_ID,
 				dateAndTime := fx_getUtc(),
 				efcContextMark := TD_EFC_CONTEXT_MARK,
 				abnormalOBEReasonCode := {AbnormalOBEReasonCode_reasonNotToBeDisclosed_}

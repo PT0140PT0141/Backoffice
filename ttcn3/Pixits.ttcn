@@ -37,9 +37,10 @@ module EfcInfoExchange_Pixits {
     modulepar Provider APDU_ORIGINATOR_FOR_IUT; //value of the InfoExchange.infoExchangeContent.apci.apduOriginator
     modulepar Provider INFORMATION_SENDER_ID_FOR_IUT;	//value of the InfoExchange.infoExchangeContent.apci.informationSenderID
 
-    modulepar UserId PX_EXISTING_USER_ID; // Valid user, associated with other UserIds for LISTOFUSERS transactions
-    modulepar UserId PX_EMPTYLIST_USER_ID; // Valid user, with no other associated UserIds for LISTOFUSERS transactions
-    modulepar UserId PX_WRONG_USER_ID; // Wrong (not existing) user
+	modulepar UserId PX_USER_ID; // Valid user id
+    modulepar UserId PX_USER_ID_RELATED;// Valid user id, the ONLY ONE one associated with PX_USER_ID for LISTOFUSERS transactions
+    modulepar UserId PX_USER_ID_NO_RELATED;// Valid user, with no other associated UserIds for LISTOFUSERS transactions
+    modulepar UserId PX_USER_ID_NON_EXISTING;// Wrong (not registered) user id
     
     modulepar Provider MANUFACTURERID1; // Valid ManufacturerID for ContractIssuerList transactions
     modulepar Provider MANUFACTURERID2; // Valid ManufacturerID for ContractIssuerList transactions

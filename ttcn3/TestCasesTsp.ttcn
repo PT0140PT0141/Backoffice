@@ -806,16 +806,16 @@ module EfcInfoExchange_TestCasesTsp {
 				var integer v_notSupportedUserDetailsParameter;
 				for (
 					v_notSupportedUserDetailsParameter := 0; 
-					v_notSupportedUserDetailsParameter < sizeof(USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS); 
+					v_notSupportedUserDetailsParameter < 28; //There are defined values numbered 0 to 27 in the UserParameterRequest
 					v_notSupportedUserDetailsParameter := v_notSupportedUserDetailsParameter + 1
 				) {
 					if (
-							match(v_notSupportedUserDetailsParameter, integer:complement(USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS))
+							match(v_notSupportedUserDetailsParameter, complement(all from USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS))
 					) {break;}
 				};
 
 				// If IUT implements all possible details, the test cannot be run				
-				if (sizeof(v_notSupportedUserDetailsParameter) == 0) {
+				if (sizeof(USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS) == 27) {
 					setverdict(inconc);
 					f_addLogEntry("All user details supported by IUT. Test cannot be executed");
 					stop;
@@ -846,10 +846,10 @@ module EfcInfoExchange_TestCasesTsp {
 						if (not match(
 							v_apduReceived.infoExchangeContent.adus.provideUserDetailsADUs[0],						
 							ProvideUserDetailsADU: modifies mw_aduProvideUserDetails := {
-								listOfUserParameters:= {
+								listOfUserParameters:= {{
 									requestedUserParameter := omit,
 									userParameterStatus := UserParameterStatus_notAvailable_
-								}
+								}}
 							}
 						)) 
 						{
@@ -995,26 +995,28 @@ module EfcInfoExchange_TestCasesTsp {
 				f_sendAndLogApdu(v_apduForSending);
 
 				// Set timer
-                 t_step.start(LISTOFUSERS_TIME1_MAX_TSP);
+                t_step.start(LISTOFUSERS_TIME1_MAX_TSP);
 				// Step #2: Wait for UserList ADU
 				// Either we receive an APDU containing  User List ADU(s) or the timeout expires
 				// timeout expiration is handled in the altstep branch
 
-                 alt {
-                      [] mtcPort.receive(mw_apduProvideUserIdList(v_apduForSending)) -> value v_apduReceived {
+                alt {
+                	[] mtcPort.receive(mw_apduProvideUserIdList(v_apduForSending)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME1_MIN_TSP); 
 						setverdict(pass);
  						
- 						//	Check whether the list of users contains elements
- 						// If not, set verdict fail
+ 						//Check whether the list of users contains elements
+ 						//If not, set verdict fail
 						if (
 							(lengthof(v_apduReceived.infoExchangeContent.adus.provideUserIdListADUs[0].userIdList) == 0)){
 							f_addLogEntry("Empty user list received");
 							setverdict(fail);
 							stop;
 						};                        
-                        if (not (v_apduReceived.infoExchangeContent.adus.provideUserIdListADUs[0].userIdList == PX_EXISTING_USER_ID)) {
-                          	f_addLogEntry("Wrong User ID received");
+                        if ((v_apduReceived.infoExchangeContent.adus.provideUserIdListADUs[0].userIdList[0] != PX_USER_ID_RELATED) or
+                        	(sizeof(v_apduReceived.infoExchangeContent.adus.provideUserIdListADUs[0].userIdList)!=1)
+                        ) {
+                          	f_addLogEntry("Wrong User ID or too many User IDs received");
                           	setverdict(fail);
                           	stop;
                         };
@@ -1022,8 +1024,7 @@ module EfcInfoExchange_TestCasesTsp {
 						f_waitAndAcknowledgeReceivedApdu(LISTOFUSERS_TIME2_MIN_TSP);
 						
                  	}
-                 } // End of alt statement
-				
+                } // End of alt statement
 				f_closeDownMtc();  
 
              } // End of TP_TSP_LISTOFUSERS_BV_01           
@@ -1044,7 +1045,7 @@ module EfcInfoExchange_TestCasesTsp {
 
 				// Prepare and send the record of ADUs with 1 ADU
 				v_apduForSending := m_apduNoAuthInitTester({requestAdus:={
-					m_aduRequestListOfUsers(PX_EMPTYLIST_USER_ID)
+					m_aduRequestListOfUsers(PX_USER_ID_NO_RELATED)
 				}});
 				f_sendAndLogApdu(v_apduForSending);
 
@@ -1062,11 +1063,6 @@ module EfcInfoExchange_TestCasesTsp {
  						// If yes, set verdict fail		                              
                         if (lengthof(v_apduReceived.infoExchangeContent.adus.provideUserIdListADUs[0].userIdList) > 0) {
                           	f_addLogEntry("Not empty user list received");
-                          	setverdict(fail);
-                          	stop;
-                        };
-                        if (not(v_apduReceived.infoExchangeContent.adus.provideUserIdListADUs[0].userIdList == PX_EMPTYLIST_USER_ID)) {
-                          	f_addLogEntry("Wrong User ID received");
                           	setverdict(fail);
                           	stop;
                         };
@@ -1852,14 +1848,14 @@ module EfcInfoExchange_TestCasesTsp {
 				f_initForPaymentClaim();
 				
                 // Send PAYMENTCLAIM with ActionCode=SEND and setting:
-                		// UserId within declared valid values
-                		// valid values of TypeOfFee
-                		// paymentReference valid and not present
+                // 	UserId within declared valid values
+                // 	valid values of TypeOfFee
+                // 	paymentReference valid and not present
 
 				v_apduForSending := m_apduPaymentClaim;                 
 				f_sendAndLogApdu(v_apduForSending);                 
                 		
-              		// Wait for Ack (if negative Ack or not received set test failure)
+              	// Wait for Ack (if negative Ack or not received set test failure)
 				// Set timer
                 t_step.start(PAYMENTCLAIM_TIME1_MAX_TSP);                 
 				alt {
@@ -1869,12 +1865,11 @@ module EfcInfoExchange_TestCasesTsp {
 				} // End of Alt statement
 				
                 // Step 1: Second interaction
-                	// Note: no Billing Details sent to be referred by the following Payment Claim
-                	// Send PAYMENTCLAIM with ActionCode=SEND and changing:
-                		// UserId within declared valid values
-                		// valid values of TypeOfFee
-                		// paymentReference valid and not present
-
+                // Note: no Billing Details sent to be referred by the following Payment Claim
+                // Send PAYMENTCLAIM with ActionCode=SEND and changing:
+                // UserId within declared valid values
+                // valid values of TypeOfFee
+                // paymentReference valid and not present
 				v_apduForSending := m_apduNoAuthInitTester(
 					{modifies mw_aduPaymentClaim:= {
 					  	paymentClaimId := 2,
@@ -2001,7 +1996,7 @@ module EfcInfoExchange_TestCasesTsp {
 				//TODO Fausto consider continue to replace the paymentClaim definition below with the m_apduPaymentClaim
 				v_apduForSending := m_apduNoAuthInitTester(
 					{modifies mw_aduPaymentClaim:= {
-					  	userId := PX_EXISTING_USER_ID,
+					  	userId := PX_USER_ID,
 					  	paymentClaimId := 2,
 					  	startDateTime := fx_getUtc(),
 					  	actionCode := ActionCode_revoke_,
@@ -2050,7 +2045,7 @@ module EfcInfoExchange_TestCasesTsp {
                 		// paymentReference valid and not present
 				v_apduForSending := m_apduNoAuthInitTester(
 					{modifies mw_aduPaymentClaim:= {
-					  	userId := PX_EXISTING_USER_ID,
+					  	userId := PX_USER_ID,
 					  	paymentClaimId := 1,
 					  	startDateTime := fx_getUtc(),
 					  	paymentClaimStatus := PaymentClaimStatus_firstVersion_,
@@ -2074,7 +2069,7 @@ module EfcInfoExchange_TestCasesTsp {
 
 				v_apduForSending := m_apduNoAuthInitTester(
 					{modifies mw_aduPaymentClaim:= {
-					  	userId := PX_EXISTING_USER_ID,
+					  	userId := PX_USER_ID,
 					  	paymentClaimId := 1,
 					  	startDateTime := fx_getUtc(),
 					  	actionCode := ActionCode_adjust_,
@@ -2118,7 +2113,7 @@ module EfcInfoExchange_TestCasesTsp {
                 // Send PAYMENTCLAIM with ActionCode=SEND and referring to a wrong reference details list	
 					v_apduForSending := m_apduNoAuthInitTester(
 						{modifies mw_aduPaymentClaim:= {
-						  	userId := PX_EXISTING_USER_ID,
+						  	userId := PX_USER_ID,
 						  	paymentClaimId := 1,
 						  	startDateTime := fx_getUtc(),
 						  	actionCode := ActionCode_send_,
@@ -2165,7 +2160,7 @@ module EfcInfoExchange_TestCasesTsp {
 
 				v_apduForSending := m_apduNoAuthInitTester(
 					{modifies mw_aduPaymentClaim:= {
-					  	userId := PX_EXISTING_USER_ID,
+					  	userId := PX_USER_ID,
 					  	paymentClaimId := 1,
 					  	startDateTime := fx_getUtc(),
 					  	actionCode := ActionCode_credit_,
@@ -2213,7 +2208,7 @@ module EfcInfoExchange_TestCasesTsp {
 
 				v_apduForSending := m_apduNoAuthInitTester(
 					{modifies mw_aduPaymentClaim:= {
-					  	userId := PX_EXISTING_USER_ID,
+					  	userId := PX_USER_ID,
 					  	paymentClaimId := 1,
 					  	startDateTime := fx_getUtc(),
 					  	endDateTime := 0.0,
@@ -2270,7 +2265,7 @@ module EfcInfoExchange_TestCasesTsp {
 
 				v_apduForSending := m_apduNoAuthInitTester(
 					{modifies mw_aduPaymentClaim:= {
-					  	userId := PX_EXISTING_USER_ID,
+					  	userId := PX_USER_ID,
 					  	paymentClaimId := 1,
 					  	startDateTime := fx_getUtc(),
 					  	actionCode := ActionCode_send_,
@@ -2298,7 +2293,7 @@ module EfcInfoExchange_TestCasesTsp {
 
 				v_apduForSending := m_apduNoAuthInitTester(
 					{modifies mw_aduPaymentClaim:= {
-					  	userId := PX_EXISTING_USER_ID,
+					  	userId := PX_USER_ID,
 					  	paymentClaimId := 1,
 					  	startDateTime := fx_getUtc(),
 					  	actionCode := ActionCode_send_,
@@ -2326,7 +2321,7 @@ module EfcInfoExchange_TestCasesTsp {
 
 				v_apduForSending := m_apduNoAuthInitTester(
 					{modifies mw_aduPaymentClaim:= {
-					  	userId := PX_EXISTING_USER_ID,
+					  	userId := PX_USER_ID,
 					  	paymentClaimId := 1,
 					  	startDateTime := fx_getUtc(),
 					  	actionCode := ActionCode_send_,
@@ -2378,7 +2373,7 @@ module EfcInfoExchange_TestCasesTsp {
 
 				v_apduForSending := m_apduNoAuthInitTester({
 					modifies mw_aduPaymentClaim:= {
-					  	userId := PX_EXISTING_USER_ID,
+					  	userId := PX_USER_ID,
 					  	paymentClaimId := 1,
 					  	startDateTime := fx_getUtc(),
 					  	actionCode := ActionCode_send_,
@@ -2396,7 +2391,7 @@ module EfcInfoExchange_TestCasesTsp {
 
 				v_apduForSending := m_apduNoAuthInitTester(
 					{modifies mw_aduPaymentClaim:= {
-					  	userId := PX_EXISTING_USER_ID,
+					  	userId := PX_USER_ID,
 					  	paymentClaimId := 1,
 					  	startDateTime := fx_getUtc(),
 					  	actionCode := ActionCode_revoke_,
@@ -3395,7 +3390,7 @@ module EfcInfoExchange_TestCasesTsp {
 					  		}
 						}),
 					m_apduNoAuthInitTester({modifies m_aduReportAbnormalObe:= {
-					  		userId := PX_WRONG_USER_ID
+					  		userId := PX_USER_ID_NON_EXISTING
 					  		}
 						})	
            			};                 
