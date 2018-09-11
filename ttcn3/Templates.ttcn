@@ -341,10 +341,10 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 
 		type record NackParams {
 			NumberOfADUStruct issueADUStruct,
-			ASNAUX.UTF8String issueLocation length (0 .. 512) optional,
-			ASNAUX.UTF8String issueContent length (0 .. 1024) optional,
+			UTF8String issueLocation length (0 .. 512) optional,
+			UTF8String issueContent length (0 .. 1024) optional,
 			AduReasonCode issueCode,
-			ASNAUX.UTF8String issueText length (0 .. 1024) optional
+			UTF8String issueText length (0 .. 1024) optional
 	  	};
 	  	
 	  	type record of NackParams RoNackParams;
@@ -736,10 +736,10 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				
 			// Generic received Request for Trust Object, to receive a requestADU for any Trust Object 			
 			template InfoExchange mw_apduRequestTrustObject := mw_apduNoAuthInitIut(
-				Adus:{requestAdus:={{
+				Adus:{requestAdus:={{trustObjectRequest:={
 					requestedADUType := 3,
 					requestedTrustObject := ?
-				}}}
+				}}}}
 			);
 			
 			
@@ -806,8 +806,9 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				trustObjectRequest:={
 					requestedADUType := 3,
 					requestedTrustObject:={
-						typeOfTrustObject:=?,
-						trustObjectSpec := omit
+						trustObjectSpec := {
+							typeOfTrustObject:=?
+						}
 					}
 				}
 			}
@@ -903,7 +904,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				typeOfEFCApplication := ?,
 				securityLevel := ?,
 				acCrKeyReference := ?,
-				authKeyRererence := ?,
+				authKeyReference := ?,
 				validFrom := ?
 			} 		
 		
@@ -1508,7 +1509,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 					}}
 				};
 								
-				template (value) UsageList m_sectionsUsed modifies mw_sectionedRoadGnssUsageList := {
+				template (value) UsageList m_sectionedRoadGnssUsageList modifies mw_sectionedRoadGnssUsageList := {
 					usageListEntry:= {
 						forSectionedRoads:= {		
 							howManyTimes := 1,
