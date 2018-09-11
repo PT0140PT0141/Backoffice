@@ -412,7 +412,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduRequestListOfUsersOneAdu) -> value v_apduReceived {
 						// Log what we received, check and stop time
-						f_logReceivedThenCheckAndStopTime(0.0); // no minimum time specified
+						f_logApduReceivedAndTStep(); // no minimum time specified
 					}
 				}
 
@@ -582,8 +582,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduNoAuthInitIut({requestAdus:={mw_aduRequestProvideUserDetails}})) -> value v_apduReceived {
 						// Log what we received, check and stop time
-						//TODO Jan we should never use f_logReceivedThenCheckAndStopTime(0.0), instead use f_logApduReceivedAndTStep(), there are 19 occurences
-						f_logReceivedThenCheckAndStopTime(0.0); // no minimum time specified
+						f_logApduReceivedAndTStep(); // no minimum time specified
 					}
 				}
 
@@ -690,7 +689,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduNoAuthInitIut({{mw_aduRequestProvideUserDetails}})) -> value v_apduReceived {
 						// Log what we received, check and stop time
-						f_logReceivedThenCheckAndStopTime(0.0); // no minimum time specified
+						f_logApduReceivedAndTStep(); // no minimum time specified
 					}
 				}
 
@@ -791,7 +790,7 @@ module EfcInfoExchange_TestCasesTc {
 					//TODO Jan could be more than 1 ADU
 					[] mtcPort.receive(mw_apduNoAuthInitIut({requestAdus:={mw_aduRequestProvideUserDetails}})) -> value v_apduReceived {
 						// Log what we received, check and stop time
-						f_logReceivedThenCheckAndStopTime(0.0); // no minimum time specified
+						f_logApduReceivedAndTStep(); // no minimum time specified
 					}
 				}
 
@@ -892,7 +891,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduNoAuthInitIut({{mw_aduRequestProvideUserDetails}})) -> value v_apduReceived {
 						// Log what we received, check and stop time
-						f_logReceivedThenCheckAndStopTime(0.0); // no minimum time specified
+						f_logApduReceivedAndTStep(); // no minimum time specified
 					}
 				}
 
@@ -988,7 +987,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduNoAuthInitIut({{mw_aduRequestProvideUserDetails}})) -> value v_apduReceived {
 						// Log what we received, check and stop time
-						f_logReceivedThenCheckAndStopTime(0.0); // no minimum time specified
+						f_logApduReceivedAndTStep(); // no minimum time specified
 					}
 				}
 
@@ -1089,7 +1088,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduNoAuthInitIut({{mw_aduRequestProvideUserDetails}})) -> value v_apduReceived {
 						// Log what we received, check and stop time
-						f_logReceivedThenCheckAndStopTime(0.0); // no minimum time specified
+						f_logApduReceivedAndTStep(); // no minimum time specified
 					}
 				}
 
@@ -1202,7 +1201,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduNoAuthInitIut({{mw_aduRequestListOfUsers}})) -> value v_apduReceived {
 						// Log what we received, check and stop time
-						f_logReceivedThenCheckAndStopTime(0.0); // no minimum time specified
+						f_logApduReceivedAndTStep(); // no minimum time specified
 					}
 				}
 
@@ -1270,7 +1269,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduNoAuthInitIut({mw_aduRequestListOfUsers})) -> value v_apduReceived {
 						// Log what we received, check and stop time
-						f_logReceivedThenCheckAndStopTime(0.0); // no minimum time specified
+						f_logApduReceivedAndTStep(); // no minimum time specified
 					}
 				}
 
@@ -1337,7 +1336,7 @@ module EfcInfoExchange_TestCasesTc {
 						{mw_aduRequestListOfUsers},
 						{mw_aduRequestListOfUsers})) -> value v_apduReceived {
 						// Log what we received, check and stop time
-						f_logReceivedThenCheckAndStopTime(0.0); // no minimum time specified
+						f_logApduReceivedAndTStep(); // no minimum time specified
 					}
 				}
 
@@ -1416,7 +1415,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduNoAuthInitIut({mw_aduRequestListOfUsers})) -> value v_apduReceived {
 						// Log what we received, check and stop time
-						f_logReceivedThenCheckAndStopTime(0.0); // no minimum time specified
+						f_logApduReceivedAndTStep(); // no minimum time specified
 					}
 				}
 
@@ -3052,7 +3051,7 @@ module EfcInfoExchange_TestCasesTc {
 					alt {
 						[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
 							// Log what we received, no minimum time	
-							f_logReceivedThenCheckAndStopTime(0.0);					              		
+							f_logApduReceivedAndTStep();					              		
 						}
 					} // End of alt statement
 
@@ -3075,7 +3074,7 @@ module EfcInfoExchange_TestCasesTc {
 					alt {
 						[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
 							// Log what we received, no minimum time	
-							f_logReceivedThenCheckAndStopTime(0.0);					              		
+							f_logApduReceivedAndTStep();					              		
 						}
 					} // End of alt statement
 					
