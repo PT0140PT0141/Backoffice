@@ -1833,7 +1833,6 @@ module EfcInfoExchange_TestCasesTsp {
        
    
     group PAYMENTCLAIM {
-    	//TODO Fausto, none of these have setups in the form of Tolldeclaration transactions and BillingDetails transactions - do we need to complement? In that case revisit the template for billingDetailsID
          group Valid_Behaviour {
             testcase TP_TSP_PAYMENTCLAIM_BV_01() runs on MainTestComponent system TestAdapter {
                    /**    
@@ -1847,10 +1846,8 @@ module EfcInfoExchange_TestCasesTsp {
 				// Perform a BillingDetails transaction according to the supported types
 				f_initForPaymentClaim();
 				
-                // Send PAYMENTCLAIM with ActionCode=SEND and setting:
-                // 	UserId within declared valid values
-                // 	valid values of TypeOfFee
-                // 	paymentReference valid and not present
+
+                // Send PAYMENTCLAIM with ActionCode=SEND with the basic settings of the m_apduPaymentClaim template
 
 				v_apduForSending := m_apduPaymentClaim;                 
 				f_sendAndLogApdu(v_apduForSending);                 
@@ -1873,10 +1870,7 @@ module EfcInfoExchange_TestCasesTsp {
 				v_apduForSending := m_apduNoAuthInitTester(
 					{modifies mw_aduPaymentClaim:= {
 					  	paymentClaimId := 2,
-					  	startDateTime := fx_getUtc(),
-					  	actionCode := ActionCode_send_,
-					  	paymentClaimStatus := PaymentClaimStatus_firstVersion_,					  	
-					  	paymentClaimAmount := 33,
+					  	paymentClaimAmount := TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_2,
 					  	typeOfFee := TypeOfFee_penalty_,
 					  	paymentReference := "Lane jumping"
 					  	}
