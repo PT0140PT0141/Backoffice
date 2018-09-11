@@ -3990,7 +3990,7 @@ module EfcInfoExchange_TestCasesTsp {
 				f_intialiseMtc(v_runOrNot);                   				
 				//Trigger IUT with GNSS_TOLLDECLARATION_TR_TSP_1_SEND_SECTIONED to send one valid TollDeclarationADU with actionCode = send and CHOICE forSectionedRoad
 				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1_SEND_SECTIONED);
-				f_macroForTP_TSP_GNSS_BILLINGDETAILS_TC_BV_02to05(m_sectionedRoadGnssUsageList);
+				f_receiveTollDeclSendBillingDetReceiveAck({m_sectionedRoadGnssUsageList});
 				f_closeDownMtc();                
 		   } // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BV_02           
 
@@ -4007,7 +4007,7 @@ module EfcInfoExchange_TestCasesTsp {
 				f_intialiseMtc(v_runOrNot);                   				
 				//Trigger IUT with GNSS_TOLLDECLARATION_TR_TSP_1_SEND_TRAVELLINGINAREA to send one valid TollDeclarationADU with actionCode = send and CHOICE forTravellingInArea
 				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1_SEND_TRAVELLINGINAREA);
-				f_macroForTP_TSP_GNSS_BILLINGDETAILS_TC_BV_02to05(m_stayingInAreaGnssUsageList);
+				f_receiveTollDeclSendBillingDetReceiveAck(m_stayingInAreaGnssUsageList);
 				f_closeDownMtc();                
                 
 			} // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BV_03           
@@ -4025,7 +4025,7 @@ module EfcInfoExchange_TestCasesTsp {
 				f_intialiseMtc(v_runOrNot);                   				
 				//Trigger IUT with GNSS_TOLLDECLARATION_TR_TSP_1_SEND_STAYINGINAREA to send one valid TollDeclarationADU with actionCode = send and CHOICE forStayingInArea
 				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1_SEND_STAYINGINAREA);
-				f_macroForTP_TSP_GNSS_BILLINGDETAILS_TC_BV_02to05(m_travellingInAreaGnssUsageList);
+				f_receiveTollDeclSendBillingDetReceiveAck(m_travellingInAreaGnssUsageList);
 				f_closeDownMtc();                
                 
 			} // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BV_04           
@@ -4042,7 +4042,7 @@ module EfcInfoExchange_TestCasesTsp {
 				f_intialiseMtc(v_runOrNot);                   				
 				//Trigger IUT with GNSS_TOLLDECLARATION_TR_TSP_1_SEND_CORDONCROSSING to send one valid TollDeclarationADU with actionCode = send and CHOICE forCordonCrossing
 				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1_SEND_CORDONCROSSING);
-				f_macroForTP_TSP_GNSS_BILLINGDETAILS_TC_BV_02to05(m_cordonCrossingGnssUsageList);
+				f_receiveTollDeclSendBillingDetReceiveAck(m_cordonCrossingGnssUsageList);
 				f_closeDownMtc();                
                 
 			} // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BV_05            

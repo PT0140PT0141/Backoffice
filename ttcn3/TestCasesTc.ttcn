@@ -4274,7 +4274,7 @@ module EfcInfoExchange_TestCasesTc {
 				//		- actionCode=send
 		
 				//var UsageList v_sectionsUsed;
-				//template (value) UsageList m_sectionsUsed modifies mw_sectionedRoadGnssUsageList := {
+				//template (value) UsageList m_sectionedRoadGnssUsageList modifies mw_sectionedRoadGnssUsageList := {
 				//	usageListEntry {
 				//		forSectionedRoads {		
 				//			howManyTimes := 1,
@@ -5512,7 +5512,7 @@ module EfcInfoExchange_TestCasesTc {
 				  		{TD_IDENTIFIER, 1},
 				  		TD_USERID_1,
 				  		TD_PERIOD_1,
-				  		{m_sectionsUsed},
+				  		{m_sectionedRoadGnssUsageList},
 				  		TD_BILLINGDETAILS_AMOUNT_1,
 				  		{TD_IDENTIFIER, 1},
 				  		ActionCode_send_
@@ -5521,7 +5521,7 @@ module EfcInfoExchange_TestCasesTc {
 				  		{TD_IDENTIFIER, 2},
 				  		TD_USERID_2,
 				  		TD_PERIOD_1,
-				  		{m_sectionsUsed},
+				  		{m_sectionedRoadGnssUsageList},
 				  		TD_BILLINGDETAILS_AMOUNT_2,
 				  		{TD_IDENTIFIER, 2},
 				  		ActionCode_send_
@@ -5530,7 +5530,7 @@ module EfcInfoExchange_TestCasesTc {
 				  		{TD_IDENTIFIER, 3},
 				  		TD_USERID_3,
 				  		TD_PERIOD_1,
-				  		{m_sectionsUsed},
+				  		{m_sectionedRoadGnssUsageList},
 				  		TD_BILLINGDETAILS_AMOUNT_3,
 				  		{TD_IDENTIFIER, 3},
 				  		ActionCode_send_
@@ -5539,7 +5539,7 @@ module EfcInfoExchange_TestCasesTc {
 				  		{TD_IDENTIFIER, 4},
 				  		TD_USERID_4,
 				  		TD_PERIOD_1,
-				  		{m_sectionsUsed},
+				  		{m_sectionedRoadGnssUsageList},
 				  		TD_BILLINGDETAILS_AMOUNT_4,
 				  		{TD_IDENTIFIER, 4},
 				  		ActionCode_send_
@@ -5548,7 +5548,7 @@ module EfcInfoExchange_TestCasesTc {
 				  		{TD_IDENTIFIER, 5},
 				  		TD_USERID_5,
 				  		TD_PERIOD_1,
-				  		{m_sectionsUsed},
+				  		{m_sectionedRoadGnssUsageList},
 				  		TD_BILLINGDETAILS_AMOUNT_5,
 				  		{TD_IDENTIFIER, 5},
 				  		ActionCode_send_
@@ -5694,7 +5694,7 @@ module EfcInfoExchange_TestCasesTc {
 				  		{TD_IDENTIFIER, 1},
 				  		TD_USERID_1,
 				  		TD_PERIOD_1,
-				  		{m_sectionsUsed},
+				  		{m_sectionedRoadGnssUsageList},
 				  		TD_BILLINGDETAILS_AMOUNT_1,
 				  		{TD_IDENTIFIER, 1},
 				  		ActionCode_send_
@@ -5703,7 +5703,7 @@ module EfcInfoExchange_TestCasesTc {
 				  		{TD_IDENTIFIER, 2},
 				  		TD_USERID_2,
 				  		TD_PERIOD_1,
-				  		{m_sectionsUsed},
+				  		{m_sectionedRoadGnssUsageList},
 				  		TD_BILLINGDETAILS_AMOUNT_2,
 				  		{TD_IDENTIFIER, 2},
 				  		ActionCode_send_
@@ -5712,7 +5712,7 @@ module EfcInfoExchange_TestCasesTc {
 				  		{TD_IDENTIFIER, 3},
 				  		TD_USERID_3,
 				  		TD_PERIOD_1,
-				  		{m_sectionsUsed},
+				  		{m_sectionedRoadGnssUsageList},
 				  		TD_BILLINGDETAILS_AMOUNT_3,
 				  		{TD_IDENTIFIER, 3},
 				  		ActionCode_send_
@@ -5721,7 +5721,7 @@ module EfcInfoExchange_TestCasesTc {
 				  		{TD_IDENTIFIER, 4},
 				  		TD_USERID_4,
 				  		TD_PERIOD_1,
-				  		{m_sectionsUsed},
+				  		{m_sectionedRoadGnssUsageList},
 				  		TD_BILLINGDETAILS_AMOUNT_4,
 				  		{TD_IDENTIFIER, 4},
 				  		ActionCode_send_
@@ -5730,7 +5730,7 @@ module EfcInfoExchange_TestCasesTc {
 				  		{TD_IDENTIFIER, 5},
 				  		TD_USERID_5,
 				  		TD_PERIOD_1,
-				  		{m_sectionsUsed},
+				  		{m_sectionedRoadGnssUsageList},
 				  		TD_BILLINGDETAILS_AMOUNT_5,
 				  		{TD_IDENTIFIER, 5},
 				  		ActionCode_send_
@@ -5928,7 +5928,7 @@ module EfcInfoExchange_TestCasesTc {
 				  		{TD_IDENTIFIER, 1},
 				  		TD_USERID_1,
 				  		TD_PERIOD_1,
-				  		{m_sectionsUsed},
+				  		{m_sectionedRoadGnssUsageList},
 				  		TD_BILLINGDETAILS_AMOUNT_1,
 				  		{TD_IDENTIFIER, 1},
 				  		ActionCode_send_
@@ -5937,7 +5937,7 @@ module EfcInfoExchange_TestCasesTc {
 				  		{TD_IDENTIFIER, 2},
 				  		TD_USERID_2,
 				  		TD_PERIOD_1,
-				  		{m_sectionsUsed},
+				  		{m_sectionedRoadGnssUsageList},
 				  		TD_BILLINGDETAILS_AMOUNT_2,
 				  		{TD_IDENTIFIER, 2},
 				  		ActionCode_send_
@@ -5946,7 +5946,7 @@ module EfcInfoExchange_TestCasesTc {
 				  		{TD_IDENTIFIER, 3},
 				  		TD_USERID_3,
 				  		TD_PERIOD_1,
-				  		{m_sectionsUsed},
+				  		{m_sectionedRoadGnssUsageList},
 				  		TD_BILLINGDETAILS_AMOUNT_3,
 				  		{TD_IDENTIFIER, 3},
 				  		ActionCode_send_
@@ -5955,7 +5955,7 @@ module EfcInfoExchange_TestCasesTc {
 				  		{TD_IDENTIFIER, 4},
 				  		TD_USERID_4,
 				  		TD_PERIOD_1,
-				  		{m_sectionsUsed},
+				  		{m_sectionedRoadGnssUsageList},
 				  		TD_BILLINGDETAILS_AMOUNT_4,
 				  		{TD_IDENTIFIER, 4},
 				  		ActionCode_send_
@@ -5964,7 +5964,7 @@ module EfcInfoExchange_TestCasesTc {
 				  		{TD_IDENTIFIER, 5},
 				  		TD_USERID_5,
 				  		TD_PERIOD_1,
-				  		{m_sectionsUsed},
+				  		{m_sectionedRoadGnssUsageList},
 				  		TD_BILLINGDETAILS_AMOUNT_5,
 				  		{TD_IDENTIFIER, 5},
 				  		ActionCode_send_
@@ -6364,7 +6364,7 @@ module EfcInfoExchange_TestCasesTc {
                         {TD_IDENTIFIER, v_i},
                         TD_USERID_1,
                         TD_PERIOD_1,
-                        {m_sectionsUsed},
+                        {m_sectionedRoadGnssUsageList},
                         TD_BILLINGDETAILS_AMOUNT_1,
                         {TD_IDENTIFIER, v_i},
                         ActionCode_send_
@@ -6611,7 +6611,7 @@ module EfcInfoExchange_TestCasesTc {
                             {TD_IDENTIFIER, v_i},
                             TD_USERID_1,
                             TD_PERIOD_1,
-                            {m_sectionsUsed},
+                            {m_sectionedRoadGnssUsageList},
                             TD_BILLINGDETAILS_AMOUNT_1,
                             {TD_IDENTIFIER, v_i},
                             ActionCode_send_
