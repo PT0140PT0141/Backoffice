@@ -1420,7 +1420,25 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 					refTollDeclaration := p_refTollDeclaration,
 					actionCode := p_actionCode,
 					paymentReference := omit 				  		
-				};				
+				};	
+				
+				template (value) BillingDetailsADU m_aduGnssBillingDetailsSpecialised(
+					in integer p_billingDetailsNum,
+					in UserId p_userId,
+					in TollDeclarationId p_tollDeclarationId
+				):=
+				m_aduGnssBillingDetails(
+					p_billingDetailsNum,
+					p_userId,
+					TD_PERIOD_1,
+					{{usageListEntry:={freeTextDetail := {
+						textLanguage:= TD_GNSS_BILLINGDETAILS_LANG,
+						textDetail := TD_GNSS_BILLINGDETAILS_TEXT
+					}}}},
+					MAX_ACCEPTED_BILLINGDETAILS_AMOUNT,
+					{p_tollDeclarationId},
+					ActionCode_send_
+				);			
 				
 			}//end of group GNSS_BILLINGDETAILS
 													 							
