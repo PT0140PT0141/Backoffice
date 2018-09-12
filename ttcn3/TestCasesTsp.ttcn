@@ -4295,7 +4295,8 @@ module EfcInfoExchange_TestCasesTsp {
 				var ObeId v_receivedObeId := v_receivedTollDeclaration.gnssTollDeclaration.chargeReport.obeId; // To be used as UserId in BillingDetails
 				var UserId v_userId:={obeId :=v_receivedObeId};
 				var Adus v_adus;
-
+				
+				//TODO extract magic numbers into Tester Data (possibly as constants)
 				v_adus.billingDetailsADUs[0]:= {modifies m_aduGnssBillingDetailsSpecialised(1,	v_userId, v_receivedTollDeclarationId):= {
 					billingDetailsId := {issuerId:=0} //billingDetailsIssuerIdRejected
 				}};

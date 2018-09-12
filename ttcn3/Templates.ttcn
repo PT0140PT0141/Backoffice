@@ -215,7 +215,8 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			
 		template InfoExchange mw_apduAuthRequest := mw_apduAuthInitIut(Adus:{requestAdus:=?});
 
-		template (value) Adus m_oneAckInAdusStruct(in AckADU p_ackADU):={ackAdus:={p_ackADU}};
+		template (value) Adus mw_oneAckInAdusStruct(in template AckADU p_ackADU):={ackAdus:={p_ackADU}};
+		template (value) Adus m_oneAckInAdusStruct(in AckADU p_ackADU):=mw_oneAckInAdusStruct(p_ackADU);
 		
 		/**
 		 * 
@@ -327,8 +328,8 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		 */ 
 		template InfoExchange mw_apduNAckIndividualIssuesIut(
 			in InfoExchange p_apduToAck,
-			in RoNackParams p_nAckParams
-		):=mw_apduNoAuthRespIut(p_apduToAck, m_oneAckInAdusStruct(mw_aduNAckWIssues(p_apduToAck, p_nAckParams)));
+			in template RoNackParams p_nAckParams
+		):=mw_apduNoAuthRespIut(p_apduToAck, mw_oneAckInAdusStruct(mw_aduNAckWIssues(p_apduToAck, p_nAckParams)));
 
 		/**
 		 * 
@@ -353,9 +354,9 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		 * 
 		 * @desc Construct with one issueCode value, to be used when creating customised m_apduNAck)
 		 */ 		
-		template (value) NackParams m_nackParams(
+		template (value) NackParams mw_nackParams(
 			in NumberOfADUStruct p_issueADUStruct, 
-			in AduReasonCode p_issueCode
+			in template AduReasonCode p_issueCode
 		):={
 			issueADUStruct:=p_issueADUStruct,
 			issueLocation := omit,
@@ -363,6 +364,11 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			issueCode := p_issueCode,
 			issueText:= omit
 		};
+
+		template (value) NackParams m_nackParams(
+			in NumberOfADUStruct p_issueADUStruct, 
+			in AduReasonCode p_issueCode
+		):=mw_nackParams(p_issueADUStruct,p_issueCode);
 
 		template (value) RoNackParams m_roNackParamsSingle(
 			in NumberOfADUStruct p_issueADUStruct, 
@@ -394,7 +400,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			issues := omit
 		}
     	
-		template AckADU mw_aduNAckWIssues(in InfoExchange p_apduToAck, in RoNackParams p_nackParams) := {
+		template AckADU mw_aduNAckWIssues(in InfoExchange p_apduToAck, in template RoNackParams p_nackParams) := {
 			apduIdentifier := p_apduToAck.infoExchangeContent.apci.apduIdentifier,
 			explicitlyAckedAdus := omit,
 			apduAckCode := ApduReasonCode_apduOK_,
@@ -1209,8 +1215,8 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				abnormalOBEReasonCode := {AbnormalOBEReasonCode_reasonNotToBeDisclosed_}
 			}
 
-			template Adus mw_adusReportAbnormalObe := Adus:{reportAbnormalOBEADUs:=?};
-
+			//template Adus mw_adusReportAbnormalObe := Adus:{reportAbnormalOBEADUs:=?};
+			//TODO delete? seems to be not needed	
 		}
 				
 		group BILLINGDETAILS{
@@ -1324,27 +1330,6 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 					associatedEventData := omit, // shall not be used in IAP
 					externalCosts := *
 				}
-
-//				template UsageList dummyTemplate:={
-//					usageListEntry:={
-//						forCordonCrossing:={
-//							union {
-//							  integer howOften,
-//							  GeneralizedTime entranceTime
-//							} qualifier optional,
-//							EfcAutonomousContextData.CordonEntryLocation entranceChargeObject,
-//							UTF8String entranceChargeObjectName optional,
-//							EfcAutonomousContextData.CordonExitLocation exitChargeObject optional,
-//							UTF8String exitChargeObjectName optional,
-//							GeneralizedTime exitTime optional,
-//							ExtendedPaymentAmount fee optional,
-//							FeeQualifier feeQualifier optional						
-//						}
-//					},
-//					includedDiscounts := *,
-//					associatedEventData := omit, // shall not be used in IAP
-//					externalCosts := *
-//				}
 	
 				template UsageList mw_cordonCrossingGnssUsageList := {
 					usageListEntry :={
@@ -1438,7 +1423,93 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 					MAX_ACCEPTED_BILLINGDETAILS_AMOUNT,
 					{p_tollDeclarationId},
 					ActionCode_send_
-				);			
+				);
+				
+				template (value) UsageList m_sectionedRoadGnssUsageList modifies mw_sectionedRoadGnssUsageList := {
+					usageListEntry:= {
+						forSectionedRoads:= {		
+							howManyTimes := 1,
+							listOfSections := {
+								{
+									tollContext := omit, // shall not be used in IAP
+									chargeObjectId := TD_CHARGE_OBJECT_ID,
+									chargeObjectName := omit, // shall not be used in IAP
+									tollEventId := TD_TOLL_EVENT_ID, // mandatory in IAP
+									tollEventTime := TD_TOLL_EVENT_TIME, // mandatory in IAP
+									modeOfOperation := omit // shall not be used in IAP				
+								}
+							}
+						}
+					},
+					includedDiscounts := {{
+						textLanguage := omit,
+						textDetail := omit,
+						discount := TD_DISCOUNT_AMOUNT,
+						discountQualifier := TD_DISCOUNT_QUALIFIER
+					}},
+					externalCosts := omit
+				};
+				
+				//TODO break out "magic numbers" to tester data
+				template (value) UsageList m_travellingInAreaGnssUsageList := {
+					usageListEntry := {
+						forTravellingInArea :={		
+	        				areaDisplayName := "The area name",
+	        				accumulatedDistance :=10 ,
+	        				beginOfAccumulation := fx_getUtc(-3600),
+	        				endOfAccumulation := fx_getUtc(-1800),
+	        				fee := omit, // shall not be used in IAP
+	        				feeQualifier := omit // shall not be used in IAP
+						}
+					},
+					includedDiscounts := omit,
+					associatedEventData := omit, // shall not be used in IAP
+					externalCosts := omit
+				}
+
+				//TODO Jan break out "magic numbers" below and put in Tester Data
+				template (value) UsageList m_stayingInAreaGnssUsageList := {
+					usageListEntry :={
+						forStayingInArea :={
+							areaDisplayName := "Area 51, Nevada",
+							qualifier := omit,
+							stayedDuration := 1800,
+	        				chargeUnit := {time:={dur:=100,durUnit:=DurUnit_seconds_}}, //event and distance shall not be used
+	        				fee := omit, // shall not be used in IAP
+	        				feeQualifier := omit // shall not be used in IAP
+						}
+					},
+					includedDiscounts := omit,
+					associatedEventData := omit, // shall not be used in IAP
+					externalCosts := omit
+				}
+
+				template (value) UsageList m_cordonCrossingGnssUsageList := {
+					usageListEntry :={
+						forCordonCrossings :={		
+							qualifier := omit,
+	        				entranceChargeObject := {
+								entryLocationId:=100,        //is ChargeObjectDesignation (Int4),
+								entryLocationClass:=200      //is LocationClassId (Int4)	        				
+	        				},
+	        				entranceChargeObjectName := omit,
+	        				exitChargeObject := {
+								exitLocationId:=200,        //is ChargeObjectDesignation (Int4),
+								exitLocationClass:={{locationClass:=200}}      //is LocationClassId (Int4)	        				
+							}, // mandatory in IAP
+	        				exitChargeObjectName := omit, //shall not be used in IAP
+	        				exitTime := fx_getUtc(-3600), // mandatory in IAP
+	        				fee := omit, // shall not be used in IAP
+	        				feeQualifier := omit // shall not be used in IAP				
+	        			}
+					},
+					includedDiscounts := omit,
+					associatedEventData := omit, // shall not be used in IAP
+					externalCosts := omit
+				}
+
+	
+							
 				
 			}//end of group GNSS_BILLINGDETAILS
 													 							
@@ -1527,31 +1598,6 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 					}}
 				};
 								
-				template (value) UsageList m_sectionedRoadGnssUsageList modifies mw_sectionedRoadGnssUsageList := {
-					usageListEntry:= {
-						forSectionedRoads:= {		
-							howManyTimes := 1,
-							listOfSections := {
-								{
-									tollContext := omit, // shall not be used in IAP
-									chargeObjectId := TD_CHARGE_OBJECT_ID,
-									chargeObjectName := omit, // shall not be used in IAP
-									tollEventId := TD_TOLL_EVENT_ID, // mandatory in IAP
-									tollEventTime := TD_TOLL_EVENT_TIME, // mandatory in IAP
-									modeOfOperation := omit // shall not be used in IAP				
-								}
-							}
-						}
-					},
-					includedDiscounts := {{
-						textLanguage := omit,
-						textDetail := omit,
-						discount := TD_DISCOUNT_AMOUNT,
-						discountQualifier := TD_DISCOUNT_QUALIFIER
-					}},
-					externalCosts := omit
-				};
-				
 			}	    			
 		}
 				
@@ -1937,29 +1983,44 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			}
 			
 
-			template (value) PaymentAnnouncementADU m_aduPaymentAnnouncement(
+			template PaymentAnnouncementADU mw_aduPaymentAnnouncementWAttachment(
 				in integer p_paymentAnnouncemmentID,
 				in ExtendedPaymentAmount p_totalAmount,
 				in RoBillingDetailsId p_billingDetailsList,
-				in Int1 p_actionCode		
+				in Int1 p_actionCode,
+				in template octetstring p_attachment		
 			) := {
-				paymentAnnouncementID := TD_PAYMENTANNOUNCEMENT_ID_1,
+				paymentAnnouncementID := p_paymentAnnouncemmentID,
 				dueDate := TD_PAYMENTANNOUNCEMENT_DUE_DATE,
-				totalamount := TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_1,
+				totalamount := p_totalAmount,
 				paymentStatus := PaymentStatus_paid_,
-				numberOfItems := 1,	// this ADU contains reference to one BillingDeatail
+				numberOfItems := 1,	// this ADU contains reference to one BillingDetail
 				referenceDetailsList := {{
 					referenceDetail:={
-						billingDetailsList := {{TD_IDENTIFIER, 21}}
+						billingDetailsList := p_billingDetailsList
 					},
 					amount := TD_BILLINGDETAILS_AMOUNT_1,
 					paymentMeansType := omit,
 					valueDate := omit,
 					interestAmount := omit
 					}},
-				attachment := omit,
-				actionCode := ActionCode_send_
+				attachment := p_attachment,
+				actionCode := p_actionCode
 			} 	
+
+			template (value) PaymentAnnouncementADU m_aduPaymentAnnouncement(
+				in integer p_paymentAnnouncemmentID,
+				in ExtendedPaymentAmount p_totalAmount,
+				in RoBillingDetailsId p_billingDetailsList,
+				in Int1 p_actionCode
+			) := mw_aduPaymentAnnouncementWAttachment(
+				p_paymentAnnouncemmentID,
+				p_totalAmount,
+				p_billingDetailsList,
+				p_actionCode,
+				omit		
+			);
+
 							
 		}
 	}

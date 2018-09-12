@@ -313,7 +313,8 @@ module EfcInfoExchange_TesterData{
 
 		modulepar AuthenticatedChargeReport TD_AUTHENTICATED_CHARGE_REPORT;
 		modulepar AggregatedSingleTariffClassSession TD_SINGLE_TARIFF_CLASS_SESSION;
-		modulepar DetectedChargeObject TD_LIST_OF_CHARGE_OBJECTS;
+		type set of DetectedChargeObject SoDetectedChargeObject;
+		modulepar SoDetectedChargeObject TD_LIST_OF_CHARGE_OBJECTS;
 		modulepar ListOfRawUsageData TD_LIST_OF_RAW_USAGE_DATA;
 
 	}
