@@ -102,7 +102,7 @@ module EfcInfoExchange_TesterData{
 		modulepar PayUnit TD_BILLINGDETAILS_PAYUNIT:='0978'O; //Currency EUR in main units [SEMANTIC DEFINITION]The currency unit that will appear on the bill according to ISO 4217
 	    type integer IntMax10000 (0..10000);
 	    modulepar IntMax10000 TD_BILLINGDETAILS_VAT:=0;//[SEMANTIC DEFINITION]The VAT rate expressed in 0.01% 
-		modulepar integer TD_BILLING_DETAILS_NUM:=1;//[SEMATIC DEFINITION] Identifer that together with the issuerId forms a unique BillingDetailsId 
+		modulepar integer TD_BILLING_DETAILS_NUM_1:=1, TD_BILLING_DETAILS_NUM_2:=2;//[SEMATIC DEFINITION] Identifer that together with the issuerId forms a unique BillingDetailsId 
 		modulepar UTF8String TD_DSRC_BILLINGDETAILS_CONTEXTNAME:="TheContextName";//[SEMANTIC DEFINITION] According to ISO 17575-3
 		modulepar UTF8String TD_DSRC_BILLINGDETAILS_USERCLASS:="TheUserClass";//[SEMANTIC DEFINITION] According to ISO 17575-3
 		modulepar UTF8String TD_DSRC_BILLINGDETAILS_DECLAREDVEHCLASS:="TheVehicleClass";//[SEMANTIC DEFINITION] According to ISO 17575-3
