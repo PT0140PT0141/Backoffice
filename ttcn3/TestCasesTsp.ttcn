@@ -1987,20 +1987,13 @@ module EfcInfoExchange_TestCasesTsp {
 					} // End of Alt statement
 
                 // Step 1:
-                	// Send PAYMENTCLAIM with ActionCode=REVOKE not referring to the previoulsy sent PAYMENTCLAIM
-				//TODO Fausto consider continue to replace the paymentClaim definition below with the m_apduPaymentClaim
-				v_apduForSending := m_apduNoAuthInitTester(
-					{modifies mw_aduPaymentClaim:= {
-					  	userId := PX_USER_ID,
-					  	paymentClaimId := 2,
-					  	startDateTime := fx_getUtc(),
-					  	actionCode := ActionCode_revoke_,
-					  	paymentClaimStatus := PaymentClaimStatus_firstVersion_,
-					  	paymentClaimAmount := 0,
-					  	typeOfFee := TypeOfFee_toll_,
-					  	referenceDetailsList := {{TD_APDU_ORIGINATOR_FOR_TESTER, 1}}
-					  	}
-					});                 
+                // Send PAYMENTCLAIM with ActionCode=REVOKE not referring to the previoulsy sent PAYMENTCLAIM
+				v_apduForSending := m_apduPaymentClaim;
+				v_apduForSending.infoExchangeContent.adus.paymentClaimADUs[0].paymentClaimId:=2;
+				v_apduForSending.infoExchangeContent.adus.paymentClaimADUs[0].paymentClaimAmount.paymentFeeAmount:=0;
+				v_apduForSending.infoExchangeContent.adus.paymentClaimADUs[0].actionCode:=ActionCode_revoke_;
+				v_apduForSending.infoExchangeContent.adus.paymentClaimADUs[0].paymentClaimStatus:=PaymentClaimStatus_amendedVersion_;
+                 
 				f_sendAndLogApdu(v_apduForSending);                 
 				// Set timer
                  t_step.start(PAYMENTCLAIM_TIME1_MAX_TSP);                 
@@ -2038,18 +2031,7 @@ module EfcInfoExchange_TestCasesTsp {
                 		// UserId within declared valid values
                 		// valid values of TypeOfFee
                 		// paymentReference valid and not present
-				v_apduForSending := m_apduNoAuthInitTester(
-					{modifies mw_aduPaymentClaim:= {
-					  	userId := PX_USER_ID,
-					  	paymentClaimId := 1,
-					  	startDateTime := fx_getUtc(),
-					  	paymentClaimStatus := PaymentClaimStatus_firstVersion_,
-					  	actionCode := ActionCode_send_,
-					  	paymentClaimAmount := 45,
-					  	typeOfFee := TypeOfFee_toll_,
-					  	referenceDetailsList := {{TD_APDU_ORIGINATOR_FOR_TESTER, 1}}
-					  	}
-					});                 
+				v_apduForSending := m_apduPaymentClaim;                 
 				f_sendAndLogApdu(v_apduForSending);                 
                 		
 				// Set timer
@@ -2062,18 +2044,9 @@ module EfcInfoExchange_TestCasesTsp {
 					// Step 1: send invalid PAYMENTCLAIM				
                 	// Send PAYMENTCLAIM with ActionCode=ADJUST, but with status = first version
 
-				v_apduForSending := m_apduNoAuthInitTester(
-					{modifies mw_aduPaymentClaim:= {
-					  	userId := PX_USER_ID,
-					  	paymentClaimId := 1,
-					  	startDateTime := fx_getUtc(),
-					  	actionCode := ActionCode_adjust_,
-					  	paymentClaimStatus := PaymentClaimStatus_firstVersion_,
-					  	paymentClaimAmount := 45,
-					  	typeOfFee := TypeOfFee_toll_,
-					  	referenceDetailsList := {{TD_APDU_ORIGINATOR_FOR_TESTER, 1}}
-					  	}
-					});                 
+				v_apduForSending := m_apduPaymentClaim; // needs to be done again, m_apduPaymentClaim is a dynamic template
+				v_apduForSending.infoExchangeContent.adus.paymentClaimADUs[0].actionCode:=ActionCode_adjust_;
+
 				f_sendAndLogApdu(v_apduForSending);                 
 				// Set timer
                  t_step.start(PAYMENTCLAIM_TIME1_MAX_TSP);                 
@@ -2106,18 +2079,8 @@ module EfcInfoExchange_TestCasesTsp {
 				f_initForPaymentClaim();
 					
                 // Send PAYMENTCLAIM with ActionCode=SEND and referring to a wrong reference details list	
-					v_apduForSending := m_apduNoAuthInitTester(
-						{modifies mw_aduPaymentClaim:= {
-						  	userId := PX_USER_ID,
-						  	paymentClaimId := 1,
-						  	startDateTime := fx_getUtc(),
-						  	actionCode := ActionCode_send_,
-						  	paymentClaimStatus := PaymentClaimStatus_firstVersion_,
-						  	paymentClaimAmount := 45,
-						  	typeOfFee := TypeOfFee_toll_,
-						  	referenceDetailsList := {{TD_APDU_ORIGINATOR_FOR_TESTER, 2}}
-					  }
-					});                 
+				v_apduForSending := m_apduPaymentClaim;
+				v_apduForSending.infoExchangeContent.adus.paymentClaimADUs[0].referenceDetailsList[0].billingDetailsList[0].billingDetailsNum:=2;
 
 				f_sendAndLogApdu(v_apduForSending);                 
 				// Set timer
@@ -2152,19 +2115,10 @@ module EfcInfoExchange_TestCasesTsp {
 				f_initForPaymentClaim();
 
                 // Send PAYMENTCLAIM with ActionCode=SEND and with action code = credit (not allowed)
+				
+				v_apduForSending := m_apduPaymentClaim;
+				v_apduForSending.infoExchangeContent.adus.paymentClaimADUs[0].actionCode:=ActionCode_credit_;
 
-				v_apduForSending := m_apduNoAuthInitTester(
-					{modifies mw_aduPaymentClaim:= {
-					  	userId := PX_USER_ID,
-					  	paymentClaimId := 1,
-					  	startDateTime := fx_getUtc(),
-					  	actionCode := ActionCode_credit_,
-					  	paymentClaimStatus := PaymentClaimStatus_firstVersion_,
-					  	paymentClaimAmount := 45,
-					  	typeOfFee := TypeOfFee_toll_,
-					  	referenceDetailsList := {{TD_APDU_ORIGINATOR_FOR_TESTER, 1}}
-					  	}
-					});                 
 				f_sendAndLogApdu(v_apduForSending);                 
 				// Set timer
                  t_step.start(PAYMENTCLAIM_TIME1_MAX_TSP);                 
@@ -2200,20 +2154,10 @@ module EfcInfoExchange_TestCasesTsp {
 				f_initForPaymentClaim();
 
                 // Send PAYMENTCLAIM with ActionCode=SEND and referencing the performed BillingDetails transaction
+				
+				v_apduForSending := m_apduPaymentClaim;
+				v_apduForSending.infoExchangeContent.adus.paymentClaimADUs[0].endDateTime:=fx_getUtc(-31539600);//set end date to one hour before start date;
 
-				v_apduForSending := m_apduNoAuthInitTester(
-					{modifies mw_aduPaymentClaim:= {
-					  	userId := PX_USER_ID,
-					  	paymentClaimId := 1,
-					  	startDateTime := fx_getUtc(),
-					  	endDateTime := 0.0,
-					  	actionCode := ActionCode_send_,
-					  	paymentClaimStatus := PaymentClaimStatus_firstVersion_,
-					  	paymentClaimAmount := 1, // Set to a minimum, just to be a valid value
-					  	typeOfFee := TypeOfFee_toll_,
-					  	referenceDetailsList := {{TD_APDU_ORIGINATOR_FOR_TESTER, 1}}
-					  	}
-					});                 
 				f_sendAndLogApdu(v_apduForSending);                 
                 // Wait for a NAck_Apdu containing one AckADU with issues containing issueCode = paymentClaimEndDateTimeRejected (804)
 
@@ -2230,18 +2174,9 @@ module EfcInfoExchange_TestCasesTsp {
 
                 // Send PAYMENTCLAIM with ActionCode=SEND and referencing the  performed BillingDetails transaction, and containing userId unknown to the IUT
 
-				v_apduForSending := m_apduNoAuthInitTester(
-					{modifies mw_aduPaymentClaim:= {
-					  	userId := PX_USER_NOT_EXISTING_1,
-					  	paymentClaimId := 1,
-					  	startDateTime := fx_getUtc(),
-					  	actionCode := ActionCode_send_,
-					  	paymentClaimStatus := PaymentClaimStatus_firstVersion_,
-					  	paymentClaimAmount := 1, // Set to a minimum, just to be a valid value
-					  	typeOfFee := TypeOfFee_toll_,
-					  	referenceDetailsList := {{TD_APDU_ORIGINATOR_FOR_TESTER, 1}}
-					  	}
-					});                 
+				v_apduForSending := m_apduPaymentClaim;
+				v_apduForSending.infoExchangeContent.adus.paymentClaimADUs[0].userId := PX_USER_NOT_EXISTING_1;
+
 				f_sendAndLogApdu(v_apduForSending);                 
                 // Wait for a NAck_Apdu containing one AckADU with issues containing issueCode = paymentClaimUserIdRejected (805)
 
@@ -2258,18 +2193,11 @@ module EfcInfoExchange_TestCasesTsp {
 
                 // Send PAYMENTCLAIM with ActionCode=SEND and referencing the performed BillingDetails transaction, and containing paymentClaimAmount exceeding maximum permitted
 
-				v_apduForSending := m_apduNoAuthInitTester(
-					{modifies mw_aduPaymentClaim:= {
-					  	userId := PX_USER_ID,
-					  	paymentClaimId := 1,
-					  	startDateTime := fx_getUtc(),
-					  	actionCode := ActionCode_send_,
-					  	paymentClaimStatus := PaymentClaimStatus_firstVersion_,
-					  	paymentClaimAmount := MAX_ACCEPTED_PAYMENTCLAIM_AMOUNT + 1,
-					  	typeOfFee := TypeOfFee_toll_,
-					  	referenceDetailsList := {{TD_APDU_ORIGINATOR_FOR_TESTER, 1}}
-					  	}
-					});                 
+				v_apduForSending := m_apduPaymentClaim;
+				v_apduForSending.infoExchangeContent.adus.paymentClaimADUs[0].paymentClaimAmount := MAX_ACCEPTED_PAYMENTCLAIM_AMOUNT;
+				v_apduForSending.infoExchangeContent.adus.paymentClaimADUs[0].paymentClaimAmount.paymentFeeAmount := 
+				v_apduForSending.infoExchangeContent.adus.paymentClaimADUs[0].paymentClaimAmount.paymentFeeAmount+1;
+				
 				f_sendAndLogApdu(v_apduForSending);                 
                 // Wait for a NAck_Apdu containing one AckADU with issues containing issueCode = paymentClaimAmountRejected (806)
 
@@ -2278,26 +2206,16 @@ module EfcInfoExchange_TestCasesTsp {
 						f_logReceivedThenCheckAndStopTime(PAYMENTCLAIM_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
-					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, {{1, AduReasonCode_paymentClaimAmountRejected_}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, m_roNackParamsSingle(1, AduReasonCode_paymentClaimAmountRejected_))) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(PAYMENTCLAIM_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
 					} // End of Alt statement
 
                 // Send PAYMENTCLAIM with ActionCode=SEND and referencing the  performed BillingDetails transaction, and containing paymentClaimStatus = 2
+				v_apduForSending := m_apduPaymentClaim;
+				v_apduForSending.infoExchangeContent.adus.paymentClaimADUs[0].paymentClaimStatus:=2;//undefnied and not allowed value;
 
-				v_apduForSending := m_apduNoAuthInitTester(
-					{modifies mw_aduPaymentClaim:= {
-					  	userId := PX_USER_ID,
-					  	paymentClaimId := 1,
-					  	startDateTime := fx_getUtc(),
-					  	actionCode := ActionCode_send_,
-					  	paymentClaimStatus := 2,
-					  	paymentClaimAmount := 1,
-					  	typeOfFee := TypeOfFee_toll_,
-					  	referenceDetailsList := {{TD_APDU_ORIGINATOR_FOR_TESTER, 1}}
-					  	}
-					});                 
 				f_sendAndLogApdu(v_apduForSending);                 
                 // Wait for a NAck_Apdu containing one AckADU with issues containing issueCode = paymentClaimStatusRejected (807)
 
@@ -2314,27 +2232,22 @@ module EfcInfoExchange_TestCasesTsp {
 
                 // Send PAYMENTCLAIM with ActionCode=SEND and referencing the  performed BillingDetails transaction, and containing typeOfFee omitted
 
-				v_apduForSending := m_apduNoAuthInitTester(
-					{modifies mw_aduPaymentClaim:= {
-					  	userId := PX_USER_ID,
-					  	paymentClaimId := 1,
-					  	startDateTime := fx_getUtc(),
-					  	actionCode := ActionCode_send_,
-					  	paymentClaimStatus := PaymentClaimStatus_firstVersion_,
-					  	paymentClaimAmount := 1,
-					  	typeOfFee := null,
-					  	referenceDetailsList := {{TD_APDU_ORIGINATOR_FOR_TESTER, 1}}
-					  	}
-					});                 
+				v_apduForSending := m_apduPaymentClaim;
+				v_apduForSending.infoExchangeContent.adus.paymentClaimADUs[0].typeOfFee := 42; //this type of fee is not defined, reserved for future CEN and ISO use and shall be rejected
+
 				f_sendAndLogApdu(v_apduForSending);                 
                 // Wait for a NAck_Apdu containing one AckADU with issues containing issueCode = paymentClaimTypeOfFeeRejected	(808)
 
 				alt {
-					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduForSending, AduReasonCode_paymentClaimTypeOfFeeRejected_)) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(
+						v_apduForSending, m_roNackParamsSingle(0,AduReasonCode_paymentClaimTypeOfFeeRejected_)
+					)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(PAYMENTCLAIM_TIME1_MIN_TSP); 
 						setverdict(pass);
-						}
-					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, {{1, AduReasonCode_paymentClaimTypeOfFeeRejected_}})) -> value v_apduReceived {
+					}
+					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(
+						v_apduForSending, m_roNackParamsSingle(1, AduReasonCode_paymentClaimTypeOfFeeRejected_)
+					)) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(PAYMENTCLAIM_TIME1_MIN_TSP); 
 						setverdict(pass);
 						}
@@ -2366,36 +2279,18 @@ module EfcInfoExchange_TestCasesTsp {
 
 				// Send one PAYMENTCLAIM related to the sent BILLINGDETAILS within allowed time constraints
 
-				v_apduForSending := m_apduNoAuthInitTester({
-					modifies mw_aduPaymentClaim:= {
-					  	userId := PX_USER_ID,
-					  	paymentClaimId := 1,
-					  	startDateTime := fx_getUtc(),
-					  	actionCode := ActionCode_send_,
-					  	paymentClaimStatus := PaymentClaimStatus_firstVersion_,
-					  	paymentClaimAmount := 1,
-					  	typeOfFee := TypeOfFee_toll_,
-					  	referenceDetailsList := {{TD_APDU_ORIGINATOR_FOR_TESTER, 1}}
-					  	}
-					});                 
+				v_apduForSending := m_apduPaymentClaim;
+
 				f_sendAndLogApdu(v_apduForSending);                 
 
                 // Step 1:
                 	// Send PAYMENTCLAIM with ActionCode=REVOKE before TIMEA_MIN
               		// Wait for negative Ack (if positive Ack or not received set test failure) 
 
-				v_apduForSending := m_apduNoAuthInitTester(
-					{modifies mw_aduPaymentClaim:= {
-					  	userId := PX_USER_ID,
-					  	paymentClaimId := 1,
-					  	startDateTime := fx_getUtc(),
-					  	actionCode := ActionCode_revoke_,
-					  	paymentClaimStatus := PaymentClaimStatus_amendedVersion_,
-					  	paymentClaimAmount := 0,
-					  	typeOfFee := TypeOfFee_toll_,
-					  	referenceDetailsList := {{TD_APDU_ORIGINATOR_FOR_TESTER, 1}}
-					  	}
-					});                 
+				v_apduForSending := m_apduPaymentClaim;
+				v_apduForSending.infoExchangeContent.adus.paymentClaimADUs[0].actionCode := ActionCode_revoke_;
+				v_apduForSending.infoExchangeContent.adus.paymentClaimADUs[0].paymentClaimStatus := PaymentClaimStatus_amendedVersion_;
+               
 				f_sendAndLogApdu(v_apduForSending); 
                 		
               	// Wait for negative Ack  with NAck_requestSentTooOften code
@@ -4431,8 +4326,10 @@ module EfcInfoExchange_TestCasesTsp {
 						1, // BillingDetailsnum
 						{obeId := v_receivedObeId }, // UserId
 						TD_PERIOD_1,
-						{usageListEntry:{freeTextDetail := {textLanguage:= TD_GNSS_BILLINGDETAILS_LANG ,textDetail := TD_GNSS_BILLINGDETAILS_TEXT}},
-							null},
+						{{usageListEntry:={freeTextDetail := {
+							textLanguage:= TD_GNSS_BILLINGDETAILS_LANG,
+							textDetail := TD_GNSS_BILLINGDETAILS_TEXT
+						}}}},
 						TD_BILLINGDETAILS_AMOUNT_1, // Valid amount in Billing Details
 						v_receivedTollDeclarationId, // Reference to received Toll Declaration
 						ActionCode_send_
@@ -4459,8 +4356,10 @@ module EfcInfoExchange_TestCasesTsp {
 						PX_BILLINGDETAILSNUM_NOT_EXISTING, // BillingDetailsnum same as previously sent BillingDetailsADU
 						{obeId := v_receivedObeId }, // UserId
 						TD_PERIOD_1,
-						{usageListEntry:{freeTextDetail := {textLanguage:= TD_GNSS_BILLINGDETAILS_LANG ,textDetail := TD_GNSS_BILLINGDETAILS_TEXT}},
-							null},
+						{{usageListEntry:={freeTextDetail := {
+							textLanguage:= TD_GNSS_BILLINGDETAILS_LANG,
+							textDetail := TD_GNSS_BILLINGDETAILS_TEXT
+						}}}},
 						TD_BILLINGDETAILS_AMOUNT_1, // Valid amount in Billing Details
 						v_receivedTollDeclarationId, // Reference to received Toll Declaration
 						ActionCode_revoke_
@@ -4522,8 +4421,10 @@ module EfcInfoExchange_TestCasesTsp {
 						1, // BillingDetailsnum
 						{obeId := v_receivedObeId }, // UserId
 						TD_PERIOD_1,
-						{usageListEntry:{freeTextDetail := {textLanguage:= TD_GNSS_BILLINGDETAILS_LANG ,textDetail := TD_GNSS_BILLINGDETAILS_TEXT}},
-							null},
+						{{usageListEntry:={freeTextDetail := {
+							textLanguage:= TD_GNSS_BILLINGDETAILS_LANG,
+							textDetail := TD_GNSS_BILLINGDETAILS_TEXT
+						}}}},
 						TD_BILLINGDETAILS_AMOUNT_1, // Amount in Billing Details
 						v_receivedTollDeclarationId, // Reference to received Toll Declaration
 						ActionCode_send_
@@ -4534,8 +4435,10 @@ module EfcInfoExchange_TestCasesTsp {
 						2, // BillingDetailsnum
 						{obeId := v_receivedObeId }, // UserId
 						TD_PERIOD_1,
-						{usageListEntry:{freeTextDetail := {textLanguage:= TD_GNSS_BILLINGDETAILS_LANG ,textDetail := TD_GNSS_BILLINGDETAILS_TEXT}},
-							null},
+						{{usageListEntry:={freeTextDetail := {
+							textLanguage:= TD_GNSS_BILLINGDETAILS_LANG,
+							textDetail := TD_GNSS_BILLINGDETAILS_TEXT
+						}}}},
 						TD_BILLINGDETAILS_AMOUNT_1, // Amount in Billing Details
 						v_receivedTollDeclarationId, // Reference to received Toll Declaration
 						ActionCode_send_
@@ -4602,7 +4505,9 @@ module EfcInfoExchange_TestCasesTsp {
                   * @desc    GNSS.PAYMENTANNOUCEMENT transaction with actionCode=adjust 
                   * @remark  [16986:2016], Clause 6.8 and Table A.1/2 AND Table A.2/2 AND Table A.52/4 
                   */
-                 // Initialisation 
+				var integer v_idReceived;
+				var ExtendedPaymentAmount v_amountReceived;
+                // Initialisation 
 
 				// The IUT is supposedly being prepared with valid test toll declaration data
 					
@@ -4612,21 +4517,21 @@ module EfcInfoExchange_TestCasesTsp {
 				// Trigger IUT with GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1_A to send one valid PaymentAnnouncementADU with actionCode = send
 				f_sendAndLogTrigger(GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1_SEND); 												
 				//  Wait for GNSS.PAYMENTANNOUNCEMENT
-				var InfoExchange v_apduToBeReceived := mw_apduNoAuthInitIut(
-					{modifies mw_aduGnssPaymentAnnouncement:= {
+				var InfoExchange v_apduToBeReceived := mw_apduNoAuthInitIut({paymentAnnouncementADUs:={
+					modifies mw_aduPaymentAnnouncement:= {
 					  	actionCode := ActionCode_send_
-					  	}
-					});
+					}
+				}});
 				// Wait for PaymentAnnouncementADU within allowed time constraints
 				t_step.start(TIMEOUT_FOR_SETUP_OF_TRANSACTION);	
 				alt {
 					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
 						f_logReceivedWaitAndAcknowledge(GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TSP);
 						// Remember Payment Announcement ID and amount for future usage
-						var integer v_idReceived := v_apduReceived.infoExchangeContent.adus.PaymentAnnouncementADU.paymentAnnouncementID;
-						var ExtendedPaymentAmount v_amountReceived := v_apduReceived.infoExchangeContent.adus.PaymentAnnouncementADU.totalamount
-						}
- 					} // End of alt statement
+						v_idReceived := v_apduReceived.infoExchangeContent.adus.PaymentAnnouncementADU.paymentAnnouncementID;
+						v_amountReceived := v_apduReceived.infoExchangeContent.adus.PaymentAnnouncementADU.totalamount
+					}
+ 				} // End of alt statement
 
 				
 				// Step 1: Trigger IUT with GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1_ADJUST 
@@ -4642,7 +4547,8 @@ module EfcInfoExchange_TestCasesTsp {
 							  	paymentAnnouncementID := v_idReceived,
 							  	actionCode := ActionCode_adjust_							}
 						}}
-					});
+					}
+				);
 				// Wait for PaymentAnnouncementADU within allowed time constraints
 				alt {
 					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {

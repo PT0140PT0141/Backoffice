@@ -862,7 +862,8 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			template InfoExchange m_apduPaymentClaim:=m_apduNoAuthInitTester(
 				{paymentClaimADUs:={{
 					paymentClaimId := 1,
-					startDateTime := fx_getUtc(),
+					startDateTime := fx_getUtc(-31536000), //set the start date to one year ago
+					endDateTime:=fx_getUtc(), //set end date to now
 					userId := PX_USER_ID,
 					paymentClaimAmount := TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_1,
 					paymentClaimStatus := PaymentClaimStatus_firstVersion_,
