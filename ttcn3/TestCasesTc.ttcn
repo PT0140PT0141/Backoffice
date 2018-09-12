@@ -578,48 +578,25 @@ module EfcInfoExchange_TestCasesTc {
 				
              	// Wait for expected RequestADU 
               	// if not received set test failure --> is done in altstep				
-				//TODO Jan we can not be sure that there is only one request in the APDU...
 				alt {
 					[] mtcPort.receive(mw_apduNoAuthInitIut({requestAdus:={mw_aduRequestProvideUserDetails}})) -> value v_apduReceived {
 						// Log what we received, check and stop time
 						f_logApduReceivedAndTStep(); // no minimum time specified
+
+						for (var integer v_i:=0; v_i<lengthof(v_apduReceived.infoExchangeContent.adus.requestAdus);v_i:=v_i+1){
+							if (not (match(v_apduReceived.infoExchangeContent.adus.requestAdus[v_i],mw_aduRequestProvideUserDetails))){
+								f_addLogEntry("One of the ADUs does not match the ADU restrictions");
+								setverdict(fail);
+								f_closeDownMtc();   						           				
+								stop;
+							}
+						}					               		
 					}
 				}
 
 				// Capture the number of Adus received
 				var integer v_noReqAdusReceived;
-				// PT140 TODO: I have replaced sizeof by lengthof in below assignment
-				// Attention: sizeof shall not be used any longer for getting the length of a record of
-				// according to TTCN-3 and is replaced by lengthof !!!
-				v_noReqAdusReceived := lengthof(v_apduReceived.infoExchangeContent.adus.requestAdus);
-			
-				//TODO PT140. I think we don't need the piece in comments now below
-				// allowed values of UserParameterRequest (=0..255) are implicitely checked by the template
-				// mw_aduRequestProvideUserDetails
-				// the tester is anyhow prepared with tester data for all predefined user details parameters
-				// Note: in case we finally need it we need to introduce the template mw_userDetailsSupportedListOfParameters
-				// which could also be included in the template mw_aduRequestProvideUserDetails
-				// remaining usefull part (get list of requested user parameters per adu) is mooved downwards
-
-				/* 
-				var RecordOfUserParameterRequest v_listOfParametersRequested;
-												
-				for (var integer v_loop1 :=0; v_loop1<v_noReqAdusReceived;v_loop1:=v_loop1+1) {	
-					var RequestADU v_receivedRequestAdu:=v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1];
- 					if ( match(v_receivedRequestAdu, mw_aduRequestProvideUserDetails)) {
-						v_listOfParametersRequested := v_receivedRequestAdu.userDetailsRequest.listOfParametersRequested;
-						for (var integer v_loop2 :=0; v_loop2<sizeof(v_listOfParametersRequested);v_loop2:=v_loop2+1) {
-							if (not (match(v_listOfParametersRequested[v_loop2], mw_userDetailsSupportedListOfParameters))) {
-								setverdict(fail);
-								stop;
-							}
-						}
- 					} else {
- 						setverdict(fail);
- 						stop;
- 					}						
-				}
-				*/								                   
+				v_noReqAdusReceived := lengthof(v_apduReceived.infoExchangeContent.adus.requestAdus);			
 				
 				//Step 2 send ProvideUserDetails after TIME1
 				f_wait(USERDETAILS_TIME1_MIN_TC);
@@ -690,6 +667,15 @@ module EfcInfoExchange_TestCasesTc {
 					[] mtcPort.receive(mw_apduNoAuthInitIut({requestAdus:={mw_aduRequestProvideUserDetails}})) -> value v_apduReceived {
 						// Log what we received, check and stop time
 						f_logApduReceivedAndTStep(); // no minimum time specified
+
+						for (var integer v_i:=0; v_i<lengthof(v_apduReceived.infoExchangeContent.adus.requestAdus);v_i:=v_i+1){
+							if (not (match(v_apduReceived.infoExchangeContent.adus.requestAdus[v_i],mw_aduRequestProvideUserDetails))){
+								f_addLogEntry("One of the ADUs does not match the ADU restrictions");
+								setverdict(fail);
+								f_closeDownMtc();   						           				
+								stop;
+							}
+						}					               		
 					}
 				}
 
@@ -784,10 +770,18 @@ module EfcInfoExchange_TestCasesTc {
               	// if not received set test failure --> is done in altstep				
 				
 				alt {
-					//TODO Jan could be more than 1 ADU
 					[] mtcPort.receive(mw_apduNoAuthInitIut({requestAdus:={mw_aduRequestProvideUserDetails}})) -> value v_apduReceived {
 						// Log what we received, check and stop time
 						f_logApduReceivedAndTStep(); // no minimum time specified
+
+						for (var integer v_i:=0; v_i<lengthof(v_apduReceived.infoExchangeContent.adus.requestAdus);v_i:=v_i+1){
+							if (not (match(v_apduReceived.infoExchangeContent.adus.requestAdus[v_i],mw_aduRequestProvideUserDetails))){
+								f_addLogEntry("One of the ADUs does not match the ADU restrictions");
+								setverdict(fail);
+								f_closeDownMtc();   						           				
+								stop;
+							}
+						}					               		
 					}
 				}
 
@@ -886,6 +880,15 @@ module EfcInfoExchange_TestCasesTc {
 					[] mtcPort.receive(mw_apduNoAuthInitIut({requestAdus:={mw_aduRequestProvideUserDetails}})) -> value v_apduReceived {
 						// Log what we received, check and stop time
 						f_logApduReceivedAndTStep(); // no minimum time specified
+
+						for (var integer v_i:=0; v_i<lengthof(v_apduReceived.infoExchangeContent.adus.requestAdus);v_i:=v_i+1){
+							if (not (match(v_apduReceived.infoExchangeContent.adus.requestAdus[v_i],mw_aduRequestProvideUserDetails))){
+								f_addLogEntry("One of the ADUs does not match the ADU restrictions");
+								setverdict(fail);
+								f_closeDownMtc();   						           				
+								stop;
+							}
+						}					               		
 					}
 				}
 
@@ -979,6 +982,15 @@ module EfcInfoExchange_TestCasesTc {
 					[] mtcPort.receive(mw_apduNoAuthInitIut({requestAdus:={mw_aduRequestProvideUserDetails}})) -> value v_apduReceived {
 						// Log what we received, check and stop time
 						f_logApduReceivedAndTStep(); // no minimum time specified
+
+						for (var integer v_i:=0; v_i<lengthof(v_apduReceived.infoExchangeContent.adus.requestAdus);v_i:=v_i+1){
+							if (not (match(v_apduReceived.infoExchangeContent.adus.requestAdus[v_i],mw_aduRequestProvideUserDetails))){
+								f_addLogEntry("One of the ADUs does not match the ADU restrictions");
+								setverdict(fail);
+								f_closeDownMtc();   						           				
+								stop;
+							}
+						}					               		
 					}
 				}
 
@@ -1077,6 +1089,15 @@ module EfcInfoExchange_TestCasesTc {
 					[] mtcPort.receive(mw_apduNoAuthInitIut({requestAdus:={mw_aduRequestProvideUserDetails}})) -> value v_apduReceived {
 						// Log what we received, check and stop time
 						f_logApduReceivedAndTStep(); // no minimum time specified
+
+						for (var integer v_i:=0; v_i<lengthof(v_apduReceived.infoExchangeContent.adus.requestAdus);v_i:=v_i+1){
+							if (not (match(v_apduReceived.infoExchangeContent.adus.requestAdus[v_i],mw_aduRequestProvideUserDetails))){
+								f_addLogEntry("One of the ADUs does not match the ADU restrictions");
+								setverdict(fail);
+								f_closeDownMtc();   						           				
+								stop;
+							}
+						}					               		
 					}
 				}
 
@@ -1187,6 +1208,15 @@ module EfcInfoExchange_TestCasesTc {
 					[] mtcPort.receive(mw_apduNoAuthInitIut({requestAdus:={mw_aduRequestListOfUsers}})) -> value v_apduReceived {
 						// Log what we received, check and stop time
 						f_logApduReceivedAndTStep(); // no minimum time specified
+
+						for (var integer v_i:=0; v_i<lengthof(v_apduReceived.infoExchangeContent.adus.requestAdus);v_i:=v_i+1){
+							if (not (match(v_apduReceived.infoExchangeContent.adus.requestAdus[v_i],mw_aduRequestListOfUsers))){
+								f_addLogEntry("One of the ADUs does not match the ADU restrictions");
+								setverdict(fail);
+								f_closeDownMtc();   						           				
+								stop;
+							}
+						}					               		
 					}
 				}
 
@@ -1255,6 +1285,15 @@ module EfcInfoExchange_TestCasesTc {
 					[] mtcPort.receive(mw_apduNoAuthInitIut({requestAdus:={mw_aduRequestListOfUsers}})) -> value v_apduReceived {
 						// Log what we received, check and stop time
 						f_logApduReceivedAndTStep(); // no minimum time specified
+
+						for (var integer v_i:=0; v_i<lengthof(v_apduReceived.infoExchangeContent.adus.requestAdus);v_i:=v_i+1){
+							if (not (match(v_apduReceived.infoExchangeContent.adus.requestAdus[v_i],mw_aduRequestListOfUsers))){
+								f_addLogEntry("One of the ADUs does not match the ADU restrictions");
+								setverdict(fail);
+								f_closeDownMtc();   						           				
+								stop;
+							}
+						}					               		
 					}
 				}
 
