@@ -130,7 +130,7 @@ module EfcInfoExchange_TesterData{
 		}			
 		
 		modulepar VehicleParameters TD_VEHICLE_PARAMETERS;
-		modulepar ASNAUX.UTF8String TD_VAT_ID; 
+		modulepar UTF8String TD_VAT_ID; 
  
 
 		modulepar UserId TD_USERID_1, TD_USERID_2, TD_USERID_3, TD_USERID_4, TD_USERID_5, TD_USERID_6, TD_USERID_7, TD_USERID_8; 
@@ -321,13 +321,13 @@ module EfcInfoExchange_TesterData{
 
 	group GNSS_BILLINGDETAILS {	
 		modulepar EfcAutonomousCharging.Period TD_PERIOD_1; // period in billing details
-		modulepar ASNAUX.UTF8String TD_USER_CLASS; // applied user class
-		modulepar ASNAUX.UTF8String TD_DECLARED_VEHICLE_CLASS; // declared vehicle class
-		modulepar ASNAUX.UTF8String TD_APPLIED_TIME_CLASS; // applied time class
-		modulepar ASNAUX.UTF8String TD_COST_CENTER; // cost center
+		modulepar UTF8String TD_USER_CLASS; // applied user class
+		modulepar UTF8String TD_DECLARED_VEHICLE_CLASS; // declared vehicle class
+		modulepar UTF8String TD_APPLIED_TIME_CLASS; // applied time class
+		modulepar UTF8String TD_COST_CENTER; // cost center
 		modulepar EfcAutonomousCharging.ChargeObjectId TD_CHARGE_OBJECT_ID; // charge object id
 		modulepar TollEventId TD_TOLL_EVENT_ID;
-		modulepar ASNAUX.GeneralizedTime TD_TOLL_EVENT_TIME;
+		modulepar GeneralizedTime TD_TOLL_EVENT_TIME;
 		modulepar ExtendedPaymentAmount TD_DISCOUNT_AMOUNT;
 		modulepar DiscountQualifier TD_DISCOUNT_QUALIFIER;
 		const ExtendedPaymentAmount c_extPayAmountNothing:={0,TD_BILLINGDETAILS_PAYUNIT,0};
@@ -338,7 +338,7 @@ module EfcInfoExchange_TesterData{
  	group PAYMENTANNOUNCEMENT {
 		modulepar integer TD_PAYMENTANNOUNCEMENT_ID_1, TD_PAYMENTANNOUNCEMENT_ID_2, TD_PAYMENTANNOUNCEMENT_ID_3;
  		modulepar integer TD_PAYMENTANNOUNCEMENT_ID_NON_EXISTING;
- 		modulepar ASNAUX.GeneralizedTime TD_PAYMENTANNOUNCEMENT_DUE_DATE;
+ 		modulepar GeneralizedTime TD_PAYMENTANNOUNCEMENT_DUE_DATE;
  		modulepar ExtendedPaymentAmount TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_1, TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_2,
  			TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_3, TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_WITHOUTVAT; //NOTE THESE ARE ALSO USED FOR PAYMENTCLAIM transactions
 	}	

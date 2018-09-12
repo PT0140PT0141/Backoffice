@@ -26,7 +26,7 @@ module EfcInfoExchange_Pixits {
 	// Toll Context ID and Toll Context Name of the Toll Context managed by the
 	// IUT in case it is a Toll Charger
 	modulepar Provider TOLL_CONTEXT_ID_IUT; 
-	modulepar ASNAUX.UTF8String TOLL_CONTEXT_NAME_IUT;
+	modulepar UTF8String TOLL_CONTEXT_NAME_IUT;
 	
     modulepar float INITIALISE_TRANSACTION_TIMEOUT := 10.0;
     

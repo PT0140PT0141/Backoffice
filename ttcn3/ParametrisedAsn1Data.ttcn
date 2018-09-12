@@ -102,7 +102,7 @@ module EfcInfoExchange_ParameterisedAsn1Data language "TTCN-3:2010 Advanced Para
 //	  } 
   type record CCCEvent {
     UserId userId optional,
-    ASNAUX.GeneralizedTime timeOfEvent optional,
+    GeneralizedTime timeOfEvent optional,
     Location locationOfEvent optional,
     AttributeList<CccContainer>	cccMessages,
     record of InitiatedAction initiatedActions
@@ -294,15 +294,15 @@ module EfcInfoExchange_ParameterisedAsn1Data language "TTCN-3:2010 Advanced Para
       record {
         integer howManyTimes,
         record of Section listOfSections optional,
-        ASNAUX.UTF8String invoiceAggregationNumber optional,
+        UTF8String invoiceAggregationNumber optional,
         ExtendedPaymentAmount fee optional,
         FeeQualifier feeQualifier optional
       } forSectionedRoads,
       record {
         UTF8String areaDisplayName,
         integer accumulatedDistance,
-        ASNAUX.GeneralizedTime beginOfAccumulation optional,
-        ASNAUX.GeneralizedTime endOfAccumulation optional,
+        GeneralizedTime beginOfAccumulation optional,
+        GeneralizedTime endOfAccumulation optional,
         ExtendedPaymentAmount fee optional,
         FeeQualifier feeQualifier optional
       } forTravellingInArea,
@@ -310,7 +310,7 @@ module EfcInfoExchange_ParameterisedAsn1Data language "TTCN-3:2010 Advanced Para
         UTF8String areaDisplayName,
         union {
           integer howOften,
-          ASNAUX.GeneralizedTime entranceTime
+          GeneralizedTime entranceTime
         } qualifier optional,
         integer stayedDuration,
         EfcAutonomousContextData.ChargeUnit chargeUnit,
@@ -320,26 +320,26 @@ module EfcInfoExchange_ParameterisedAsn1Data language "TTCN-3:2010 Advanced Para
       record {
         union {
           integer howOften,
-          ASNAUX.GeneralizedTime entranceTime
+          GeneralizedTime entranceTime
         } qualifier optional,
         EfcAutonomousContextData.CordonEntryLocation entranceChargeObject,
-        ASNAUX.UTF8String entranceChargeObjectName optional,
+        UTF8String entranceChargeObjectName optional,
         EfcAutonomousContextData.CordonExitLocation exitChargeObject optional,
-        ASNAUX.UTF8String exitChargeObjectName optional,
-        ASNAUX.GeneralizedTime exitTime optional,
+        UTF8String exitChargeObjectName optional,
+        GeneralizedTime exitTime optional,
         ExtendedPaymentAmount fee optional,
         FeeQualifier feeQualifier optional
       } forCordonCrossings,
       record {
         LanguageID textLanguage,
-        ASNAUX.UTF8String textDetail,
+        UTF8String textDetail,
         ExtendedPaymentAmount fee optional,
         FeeQualifier feeQualifier optional
       } freeTextDetail
     } usageListEntry,
     record of record {
       LanguageID textLanguage optional,
-      ASNAUX.UTF8String textDetail optional,
+      UTF8String textDetail optional,
       ExtendedPaymentAmount discount,
       DiscountQualifier discountQualifier
     } includedDiscounts optional,

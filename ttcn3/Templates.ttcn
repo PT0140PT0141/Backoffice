@@ -1330,13 +1330,13 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 //						forCordonCrossing:={
 //							union {
 //							  integer howOften,
-//							  ASNAUX.GeneralizedTime entranceTime
+//							  GeneralizedTime entranceTime
 //							} qualifier optional,
 //							EfcAutonomousContextData.CordonEntryLocation entranceChargeObject,
-//							ASNAUX.UTF8String entranceChargeObjectName optional,
+//							UTF8String entranceChargeObjectName optional,
 //							EfcAutonomousContextData.CordonExitLocation exitChargeObject optional,
-//							ASNAUX.UTF8String exitChargeObjectName optional,
-//							ASNAUX.GeneralizedTime exitTime optional,
+//							UTF8String exitChargeObjectName optional,
+//							GeneralizedTime exitTime optional,
 //							ExtendedPaymentAmount fee optional,
 //							FeeQualifier feeQualifier optional						
 //						}
@@ -1750,7 +1750,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			//	        EFC_ContextMark                     serviceProviderContract,
 			//	        Provider                            tollContext optional,
 			//	        Provider                            chargeReportFinalRecipient optional,
-			//			ASNAUX.GeneralizedTime              timeOfReport optional,
+			//			GeneralizedTime              timeOfReport optional,
 			//	        Period                              reportPeriod optional,
 			//	        VersionId                           versionInfo optional,
 			//			record of union {
@@ -1915,7 +1915,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
       			} referenceDetail,
       			ExtendedPaymentAmount amount,
       			integer paymentMeansType (0 .. 255) optional,
-      			ASNAUX.GeneralizedTime valueDate optional,
+      			GeneralizedTime valueDate optional,
       			ExtendedPaymentAmount interestAmount optional
     		} ReferenceDetailsList; 
                	

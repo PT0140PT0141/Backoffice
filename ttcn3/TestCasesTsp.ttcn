@@ -1861,6 +1861,8 @@ module EfcInfoExchange_TestCasesTsp {
 					}
 				} // End of Alt statement
 				
+				//TODO PT140 checl in whole project that whenever we send multiple APDUs we actually wait the required time (usually TIMEA)
+				f_wait(PAYMENTCLAIM_TIMEA_MIN_TSP);				
                 // Step 1: Second interaction
                 // Note: no Billing Details sent to be referred by the following Payment Claim
                 // Send PAYMENTCLAIM with ActionCode=SEND and changing:
@@ -1868,14 +1870,12 @@ module EfcInfoExchange_TestCasesTsp {
                 // valid values of TypeOfFee
                 // valid value for paymentReference
                 // paymentClaimAmount without VAT
-				v_apduForSending := m_apduNoAuthInitTester(
-					{modifies mw_aduPaymentClaim:= {
-					  	paymentClaimId := 2,
-					  	paymentClaimAmount := TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_WITHOUTVAT,
-					  	typeOfFee := TypeOfFee_penalty_,
-					  	paymentReference := "Lane jumping"
-					  	}
-					});                 
+				v_apduForSending := m_apduPaymentClaim;
+				v_apduForSending.infoExchangeContent.adus.paymentClaimADUs[0].paymentClaimId:=2;                 
+				v_apduForSending.infoExchangeContent.adus.paymentClaimADUs[0].paymentClaimAmount:=TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_WITHOUTVAT;                 
+				v_apduForSending.infoExchangeContent.adus.paymentClaimADUs[0].typeOfFee := TypeOfFee_penalty_;
+				v_apduForSending.infoExchangeContent.adus.paymentClaimADUs[0].paymentReference := "Lane jumping";
+
 				f_sendAndLogApdu(v_apduForSending);                 
                 		
               	// Wait for Ack (if negative Ack or not received set test failure)
