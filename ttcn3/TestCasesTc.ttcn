@@ -2121,7 +2121,7 @@ module EfcInfoExchange_TestCasesTc {
 					}}
 				};
             	            	
-               	v_apduForSending := m_apduNoAuthInitTester({{exceptionListADUs:={c_exceptionListAduBlackInvalid2}});
+               	v_apduForSending := m_apduNoAuthInitTester({exceptionListADUs:={c_exceptionListAduBlackInvalid2}});
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
 
                 // Start timer
@@ -4397,7 +4397,7 @@ module EfcInfoExchange_TestCasesTc {
 					ActionCode_send_
 					);
 
-				v_apduForSending := m_apduNoAuthInitTester({billingDetailsADUs{v_aduGnssBillingDetailsSectionedRoads}});	
+				v_apduForSending := m_apduNoAuthInitTester({billingDetailsADUs:={v_aduGnssBillingDetailsSectionedRoads}});	
 
 				// Note: No wait, as there is no minimum time beteween TollDeclaration and corresponding BillingDetails defined				
 				f_sendAndLogApdu(v_apduForSending);                	 	 	

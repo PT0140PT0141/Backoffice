@@ -1920,7 +1920,7 @@ module EfcInfoExchange_TestCasesTsp {
                 // Step 1:
                 // Send PAYMENTCLAIM with ActionCode=ADJUST referring to the previoulsy sent PAYMENTCLAIM and changing the charged value
 				v_apduForSending := m_apduPaymentClaim;
-				v_apduForSending.infoExchangeContent.adus.paymentClaimADUs[0].paymentClaimAmount:=44;
+				v_apduForSending.infoExchangeContent.adus.paymentClaimADUs[0].paymentClaimAmount:=TD_BILLINGDETAILS_AMOUNT_1;
 				v_apduForSending.infoExchangeContent.adus.paymentClaimADUs[0].actionCode := ActionCode_adjust_;
 				v_apduForSending.infoExchangeContent.adus.paymentClaimADUs[0].paymentClaimStatus:= PaymentClaimStatus_amendedVersion_;
 
@@ -1937,7 +1937,7 @@ module EfcInfoExchange_TestCasesTsp {
 
                 // Send PAYMENTCLAIM with ActionCode=REVOKE referring to the previoulsy sent PAYMENTCLAIM
 				v_apduForSending := m_apduPaymentClaim;
-				v_apduForSending.infoExchangeContent.adus.paymentClaimADUs[0].paymentClaimAmount:=0;
+				v_apduForSending.infoExchangeContent.adus.paymentClaimADUs[0].paymentClaimAmount:=c_extPayAmountNothing;
 				v_apduForSending.infoExchangeContent.adus.paymentClaimADUs[0].actionCode := ActionCode_revoke_;
 				v_apduForSending.infoExchangeContent.adus.paymentClaimADUs[0].paymentClaimStatus:= PaymentClaimStatus_amendedVersion_;
 				f_sendAndLogApdu(v_apduForSending);                 
