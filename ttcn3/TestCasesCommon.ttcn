@@ -23,7 +23,6 @@ module EfcInfoExchange_TestCasesCommon {
     import from EfcInfoExchange_Profile all;
   
   
-//TODO Ulrik edit the descriptive comments of the test cases to say IUT and Tester instead of TC and TSP     
     
 	 /**
 	  * @desc    These Test Cases are common for the Toll Service Provider and Toll Charger for claiming 
@@ -39,9 +38,8 @@ module EfcInfoExchange_TestCasesCommon {
 	           
 		 	testcase TP_TRUSTOBJECTS_BV_01(in TransactionType p_transType, in Role p_role) runs on MainTestComponent system TestAdapter {
               /**
-              * @desc    TP_TSP_TRUSTOBJECTS_BV_01: Verify that the TSP correctly provides a TrustObjectADU without TC request
+              * @desc    TP_TSP_TRUSTOBJECTS_BV_01: Verify that the IUT correctly provides a TrustObjectADU without Tester request
               * @remark  [16986:2016], Clause 6.6 and Table A.1/2
-              * @remark  Same as  TP_TC_TRUSTOBJECTS_BV_01
               */
 				//Declaration
 				var boolean isCertificateOrPublicKey:=false;
@@ -57,7 +55,7 @@ module EfcInfoExchange_TestCasesCommon {
 					((ICS_A1_2_isTsp and (p_role==TSP)) or (ICS_A1_1_isTc and (p_role==TSP))) and 
 					ICS_A7_4_implementedTRUSTOBJECTSElectronicTransfer;
 				
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall be run, activate altsteps on ports, etc
 				
 				// Step 1: Trigger IUT with TRUSTOBJECTS_TR_2
 				f_sendAndLogTrigger(TRUSTOBJECTS_TR_2);
@@ -83,7 +81,7 @@ module EfcInfoExchange_TestCasesCommon {
 						{isDsrcKey:=true;}
 	
 						objectsReceived := objectsReceived + 1; // Count the number of trust objects received
-						if (objectsReceived < sizeof(SENT_TRUST_OBJECTS_SUPPORTED)) {
+						if (objectsReceived < sizeof(PX_TRUST_OBJECTS_TYPE_PURPOSE_SUPPORTED_SEND)) {
 							repeat;
 						}
 					}										
@@ -102,16 +100,15 @@ module EfcInfoExchange_TestCasesCommon {
            testcase TP_TRUSTOBJECTS_BV_02(in TransactionType p_transType, in Role p_role) runs on MainTestComponent system TestAdapter {
              
               /**
-              * @desc    TP_TSP_TRUSTOBJECTS_BV_02: Verify that the TSP correctly responds to 
-              * @desc	 a TrustObjectADU received from a TC without having issued a request 
+              * @desc    TP_TSP_TRUSTOBJECTS_BV_02: Verify that the IUT correctly responds to 
+              * @desc	 a TrustObjectADU received from a Tester without having issued a request 
               * @remark  [16986:2016], Clause 6.6 and Table A.1/2 
-              * @remark  Same as TP_TC_TRUSTOBJECTS_BV_02
               */
 				// Initialisation
 				var boolean v_runOrNot := 
 				((ICS_A1_2_isTsp and (p_role==TSP)) or (ICS_A1_1_isTc and (p_role==TSP))) and 
 				ICS_A7_4_implementedTRUSTOBJECTSElectronicTransfer;
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall be run, activate altsteps on ports, etc
 				
                 // Step 1: Send one valid APDU containing the a valid TrustObjectADU with the only mandatorily supported type in both profiles, for all possible purposes
 				v_apduForSending := m_apduNoAuthInitTester({trustObjectAdus:={
@@ -142,27 +139,25 @@ module EfcInfoExchange_TestCasesCommon {
            testcase TP_TRUSTOBJECTS_BV_03(in TransactionType p_transType, in Role p_role) runs on MainTestComponent system TestAdapter {
              
               /**
-              * @desc    TP_TSP_TRUSTOBJECTS_BV_03: Verify that the TSP correctly provides a TrustObjectADU following a TC request 
+              * @desc    TP_TSP_TRUSTOBJECTS_BV_03: Verify that the IUT correctly provides a TrustObjectADU following a Tester request 
               * @remark  [16986:2016], Clause 6.6 and Table A.1/2 
-              * @remark  Same as TP_TC_TRUSTOBJECTS_BV_03
               */
 				// Initialisation
 				var boolean v_runOrNot := 
 				((ICS_A1_2_isTsp and (p_role==TSP)) or (ICS_A1_1_isTc and (p_role==TSP))) and 
 				ICS_A7_4_implementedTRUSTOBJECTSElectronicTransfer;
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall be run, activate altsteps on ports, etc
 				// Loop in all available types of trustobject supported by the IUT as specified by the length of SENT_TRUST_OBJECTS_SUPPORTED Pixit record
-				var integer v_trustObjectsToBeSent := sizeof(SENT_TRUST_OBJECTS_SUPPORTED);
+				var integer v_trustObjectsToBeSent := sizeof(PX_TRUST_OBJECTS_TYPE_PURPOSE_SUPPORTED_SEND);
 				for (var integer v_trustObjectsReceived :=1; v_trustObjectsReceived<v_trustObjectsToBeSent;v_trustObjectsReceived:=v_trustObjectsReceived+1)
 					{
-						// Prepare a request of a Trust Object by taking allowed type and purpose from the RECEIVED_TRUST_OBJECTS_SUPPORTED Pixit value
-						
-						var integer v_requestedTrustObjectType := SENT_TRUST_OBJECTS_SUPPORTED[v_trustObjectsReceived].trustObjectType;
-						var TrustObjectPurposes v_requestedTrustObjectPurposes := SENT_TRUST_OBJECTS_SUPPORTED[v_trustObjectsReceived].trustObjectPurpose;
-
-						//TODO Fausto right now we are only sending one TrustObjectPurposes, is that enough? Need to wrap it in an array in that case
+						// Prepare a request of a Trust Object by taking allowed type and purpose from 
+						// the PX_TRUST_OBJECTS_TYPE_PURPOSE_SUPPORTED_SEND Pixit value					
 						v_apduForSending :=m_apduNoAuthInitTester({requestAdus:=
-							{m_aduRequestTrustObject(v_requestedTrustObjectType,v_requestedTrustObjectPurposes)}
+							{m_aduRequestTrustObject(
+								PX_TRUST_OBJECTS_TYPE_PURPOSE_SUPPORTED_SEND[v_trustObjectsReceived].trustObjectType,
+								{PX_TRUST_OBJECTS_TYPE_PURPOSE_SUPPORTED_SEND[v_trustObjectsReceived].trustObjectPurpose}
+							)}
 						});
 						
 						f_sendAndLogApdu(v_apduForSending);
@@ -189,21 +184,20 @@ module EfcInfoExchange_TestCasesCommon {
            testcase TP_TRUSTOBJECTS_BV_04(in TransactionType p_transType, in Role p_role) runs on MainTestComponent system TestAdapter {
              
               /**
-              * @desc    TP_TSP_TRUSTOBJECTS_BV_04: Verify that the TSP correctly requests and responds to a TrustObjectADU
+              * @desc    TP_TSP_TRUSTOBJECTS_BV_04: Verify that the IUT correctly requests and responds to a TrustObjectADU
               * @remark  [16986:2016], Clause 6.6 and Table A.1/2 
-              * @remark  Same as TP_TC_TRUSTOBJECTS_BV_04
               */
 				// Initialisation
 				var boolean v_runOrNot :=
 				((ICS_A1_2_isTsp and (p_role==TSP)) or (ICS_A1_1_isTc and (p_role==TSP))) and 
 				ICS_A7_4_implementedTRUSTOBJECTSElectronicTransfer;
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall be run, activate altsteps on ports, etc
 				
 				// Step 1: Trigger IUT with TRUSTOBJECTS_TR_1
 				f_sendAndLogTrigger(TRUSTOBJECTS_TR_1);
 				//  Wait for request for TRUSTOBJECTS
 				// Loop in all available types of trustobject requested supported by the IUT by repeating receive
-				var integer v_expectedTrustObjectRequests := sizeof(SENT_TRUST_OBJECTS_SUPPORTED);
+				var integer v_expectedTrustObjectRequests := sizeof(PX_TRUST_OBJECTS_TYPE_PURPOSE_SUPPORTED_SEND);
 				var integer v_receivedTrustObjects := 0;
 				// Set timer
                 t_step.start(TRUSTOBJECTS_TIME1_MAX[enum2int(p_transType)][enum2int(p_role)]);                 
@@ -285,16 +279,15 @@ module EfcInfoExchange_TestCasesCommon {
            testcase TP_TRUSTOBJECTS_BI_01(in TransactionType p_transType, in Role p_role) runs on MainTestComponent system TestAdapter {
              
               /**
-              * @desc    TP_TSP_TRUSTOBJECTS_BI_01: Verify that the TSP correctly responds to a TrustObjectADU received without having issued a request and containing incorrect ADU parameters
+              * @desc    TP_TSP_TRUSTOBJECTS_BI_01: Verify that the IUT correctly responds to a TrustObjectADU received without having issued a request and containing incorrect ADU parameters
               * @remark  [16986:2016], Clause 6.6 and Table A.1/2 
-              * @remark  Same as TP_TC_TRUSTOBJECTS_BI_01
               */
 				// Initialisation
 				var boolean v_runOrNot := 
 				((ICS_A1_2_isTsp and (p_role==TSP)) or (ICS_A1_1_isTc and (p_role==TSP))) and 
 				ICS_A7_4_implementedTRUSTOBJECTSElectronicTransfer;
 				
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall be run, activate altsteps on ports, etc
 				v_apduForSending := m_apduNoAuthInitTester({trustObjectAdus:={m_aduTrustObjectInvalidStatus}});                 
 				f_sendAndLogApdu(v_apduForSending);                 
                 // Step 2: Wait for negative Ack within TRUSTOBJECTS.TIME2
@@ -318,18 +311,17 @@ module EfcInfoExchange_TestCasesCommon {
            testcase TP_TRUSTOBJECTS_BI_02(in TransactionType p_transType, in Role p_role) runs on MainTestComponent system TestAdapter {
              
               /**
-              * @desc    TP_TSP_TRUSTOBJECTS_BI_02: Verify that the TSP correctly responds to more 
+              * @desc    TP_TSP_TRUSTOBJECTS_BI_02: Verify that the IUT correctly responds to more 
               * @desc    than one correct Trust Object ADUs in the same APDU without having issued 
               * @desc    a request
               * @remark  [16986:2016], Clause 6.6 and Table A.1/2 
-              * @remark  Same as TP_TC_TRUSTOBJECTS_BI_02
               */
 				// Initialisation
 				var boolean v_runOrNot := 
 				((ICS_A1_2_isTsp and (p_role==TSP)) or (ICS_A1_1_isTc and (p_role==TSP))) and 
 				ICS_A7_4_implementedTRUSTOBJECTSElectronicTransfer;
 												
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall be run, activate altsteps on ports, etc
 				// Set two different TrustObject adus by varying the type of trust object 
 				v_apduForSending := m_apduNoAuthInitTester({trustObjectAdus:={
 					m_aduTrustObject(
@@ -363,19 +355,18 @@ module EfcInfoExchange_TestCasesCommon {
 
            testcase TP_TRUSTOBJECTS_BI_03(in TransactionType p_transType, in Role p_role) runs on MainTestComponent system TestAdapter {
               /**
-              * @desc    TP_TSP_TRUSTOBJECTS_BI_03: Verify that the TSP correctly responds to a not supported Trust Object
+              * @desc    TP_TSP_TRUSTOBJECTS_BI_03: Verify that the IUT correctly responds to a not supported Trust Object
               * @remark  [16986:2016], Clause 6.6 and Table A.1/2 
-              * @remark  Same as TP_TC_TRUSTOBJECTS_BI_03
               */
 				// Initialisation
 				var boolean v_runOrNot := 
 				((ICS_A1_2_isTsp and (p_role==TSP)) or (ICS_A1_1_isTc and (p_role==TSP))) and 
 				ICS_A7_4_implementedTRUSTOBJECTSElectronicTransfer;				
 				
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall be run, activate altsteps on ports, etc
 				// Prepare an invalid certificate (not supported by the profile)
-				v_apduForSending := m_apduNoAuthInitTester({trustObjectAdus:={
-					TrustObjectADU({TrustObjectPurposes_certIssuing_},invalidTESTERGenericObject)
+				v_apduForSending := m_apduNoAuthInitTester({requestAdus:={
+					m_aduRequestTrustObject(TrustObjectTypes_symmetricKey_ , {TrustObjectPurposes_certIssuing_})
 				}});                 
 				f_sendAndLogApdu(v_apduForSending);                 
                 // Step 2: Wait for negative Ack within TRUSTOBJECTS.TIME2
@@ -399,24 +390,19 @@ module EfcInfoExchange_TestCasesCommon {
 
            testcase TP_TRUSTOBJECTS_BI_04(in TransactionType p_transType, in Role p_role) runs on MainTestComponent system TestAdapter {             
               /**
-              * @desc    TP_TSP_TRUSTOBJECTS_BI_04: Verify that the TSP correctly responds to a RequestADU sent earlier than allowed
+              * @desc    TP_TSP_TRUSTOBJECTS_BI_04: Verify that the IUT correctly responds to a RequestADU sent earlier than allowed
               * @remark  [16986:2016], Clause 6.6 and Table A.1/2 
-              * @remark  Same as TP_TC_TRUSTOBJECTS_BI_04
               */
              
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_4_implementedTRUSTOBJECTSElectronicTransfer;
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall be run, activate altsteps on ports, etc
 				// Step1: send RequestADU by specifying the type of trustobject
 				// Prepare a request of a Trust Object by taking allowed type and purpose from the SENT_TRUST_OBJECTS_SUPPORTED Pixit value
-				var RequestADU v_requestAdu :={trustObjectRequest:={
-					requestedADUType := 3,
-					requestedTrustObject:={
-						trustObjectSpec := {
-							typeOfTrustObject := SENT_TRUST_OBJECTS_SUPPORTED[1].trustObjectType,
-							purposesOfTrustObject := SENT_TRUST_OBJECTS_SUPPORTED[1].trustObjectPurpose}
-						}
-				}}
+				var RequestADU v_requestAdu :=m_aduRequestTrustObject(
+					PX_TRUST_OBJECTS_TYPE_PURPOSE_SUPPORTED_SEND[1].trustObjectType, 
+					{PX_TRUST_OBJECTS_TYPE_PURPOSE_SUPPORTED_SEND[1].trustObjectPurpose}
+				);
 
 				var Adus v_adus:= {requestAdus:={v_requestAdu}};
 				
@@ -449,7 +435,7 @@ module EfcInfoExchange_TestCasesCommon {
            testcase TP_TRUSTOBJECTS_BI_05(in TransactionType p_transType, in Role p_role) runs on MainTestComponent system TestAdapter {
 
               /**
-              * @desc    TP_TSP_TRUSTOBJECTS_BI_05: Verify that the TSP correctly responds to a TrustObjectADU sent earlier than allowed
+              * @desc    TP_TSP_TRUSTOBJECTS_BI_05: Verify that the IUT correctly responds to a TrustObjectADU sent earlier than allowed
               * @remark  [16986:2016], Clause 6.6 and Table A.1/2 
               */
 				// Initialisation
@@ -457,7 +443,7 @@ module EfcInfoExchange_TestCasesCommon {
 				((ICS_A1_2_isTsp and (p_role==TSP)) or (ICS_A1_1_isTc and (p_role==TSP))) and 
 				ICS_A7_4_implementedTRUSTOBJECTSElectronicTransfer;
 												
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall be run, activate altsteps on ports, etc
 				// Step1: prepare TrustObjectADU by specifying KeyRef as type of trustobject
 				var TrustObjectADU v_trustObjectAdu:=	m_aduTrustObject(
 						{TrustObjectPurposes_dSRCCharging_,TrustObjectPurposes_dSRCAC_,TrustObjectPurposes_oBEInterrogation_,TrustObjectPurposes_oBEInterrogationAC_},

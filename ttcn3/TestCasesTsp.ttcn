@@ -70,7 +70,7 @@ module EfcInfoExchange_TestCasesTsp {
                
                // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS and ICS_A3_3_useAuthenticator;
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
                               
                // Step 1: Send Initiating APDU containing a valid RequestADU with requestedADUType=provideUserDetailsADU
                // and in addition an infoExchangeAuthenticator = value calculated according to clause 7.3 of EN ISO 12855
@@ -118,7 +118,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS;
 				 
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
 
 				// Step 1: Send Initiating APDU containing a valid RequestADU with requestedADUType=provideUserDetailsADU
 				// and in addition containing APCI parameter field containing aidIdentifier and valid RequestADU with requestedADUType=provideUserDetailsADU
@@ -156,7 +156,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS;
 				 
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
 			
 				// Step 1: Send Initiating APDU containing a valid RequestADU with requestedADUType=provideUserDetailsADU
 				// containing apduOriginator different from  value declared in the PIXIT
@@ -197,7 +197,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS;
 				 
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
 
 				// Step 1: Send Initiating APDU containing a valid RequestADU with requestedADUType=provideUserDetailsADU
 				// containing informationSenderID â‰  value declared in the PIXIT
@@ -238,7 +238,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS;
 				 
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
 				
 				// Step 1: Send Initiating APDU containing a valid RequestADU with requestedADUType=provideUserDetailsADU
 				// containing informationrecipientID  different from  value declared in the PIXIT
@@ -279,7 +279,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS;
 				 
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
 
 				// First, get the apdu to be sent in a variable to avoid apduIdentifier to be re-generated, then send the Apdu
 				v_apduForSending := m_apduNoAuthInitTester(m_adusRequestUserDetailsRandomParams);
@@ -342,7 +342,7 @@ module EfcInfoExchange_TestCasesTsp {
 		    		apduDate :=  fx_getUtc()
 		    	};
 
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
 
 				// Then send it together with the request ADU
 				v_apduForSending := m_apduNoAuth(
@@ -384,7 +384,7 @@ module EfcInfoExchange_TestCasesTsp {
 		    		apduDate :=  fx_getUtc()
 		    	};
 				 
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
 
 				// Step 1: Send Initiating APDU containing a valid RequestADU with APCI parameter field containing inResponseToApduId
 
@@ -431,7 +431,7 @@ module EfcInfoExchange_TestCasesTsp {
 				var boolean isCertificateRevocationList := false;
 				var boolean v_encryptedKey;
 
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc				
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc				
 				
 				// Send the IUT a  trigger to send one initial APDU with requestedADUType=trustObjectRequestADU and 
 				// complete its transaction
@@ -556,7 +556,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS;
 				 
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
 
 				// Step 1: Send an Initiating_Apdu containing APCI parameter field with apduDate = invalid
 				// and valid RequestADU with requestedADUType=provideUserDetailsADU
@@ -593,7 +593,7 @@ module EfcInfoExchange_TestCasesTsp {
                // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS and ICS_A3_3_useAuthenticator;
 				 
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
 
 				// Step 1: Send an Initiating_Apdu containing invalid authenticator
 				// and valid RequestADU with requestedADUType=provideUserDetailsADU
@@ -646,7 +646,7 @@ module EfcInfoExchange_TestCasesTsp {
                    
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS;
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
 				            
 				// Step1: send RequestADU
 				f_sendAndLogApdu(m_apduNoAuthInitTester(m_adusRequestUserDetailsRandomParams));
@@ -691,7 +691,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS;
 				 
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
 
 				// Check if there are parameters that are privacy bound
 				// If not, exit test
@@ -751,7 +751,7 @@ module EfcInfoExchange_TestCasesTsp {
 			  */
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS;
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
              
 				// Step 1: Send APDU with 2 incorrect ADUs, the first one without userDetails, the second one with empty userDetails
 				var InfoExchange v_apduToSend:= 
@@ -794,7 +794,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS;
 				 
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc             
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc             
 
 				// Front End shall initially receive a Request named as Transaction sequence #1
 				// Find a parameter whose value  is not supported by the IUT
@@ -876,7 +876,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS;
 				 
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
 
 				// Check if there are parameters that are privacy bound
 				// If not, exit test
@@ -941,7 +941,7 @@ module EfcInfoExchange_TestCasesTsp {
 					stop;			  
 				};			
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_1_implementedUSERDETAILS;
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
 				             
 				// Step1: send RequestADU
 				f_sendAndLogApdu(m_apduNoAuthInitTester({requestAdus:={m_aduRequestProvideUserDetails(f_userDetailsParameters())}}));
@@ -982,7 +982,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_2_implementedLISTOFUSERS;
 				 
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
                  
 				// we want to ask for all userids of a given user
 				// IUT shall initially receive a Request as per Transaction sequence #1
@@ -1035,7 +1035,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_2_implementedLISTOFUSERS;
 				 
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
                  
 				// we want to ask for all userids of a given user who has no other userids
 				// IUT shall initially receive a Request as per Transaction sequence #1
@@ -1084,7 +1084,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_2_implementedLISTOFUSERS;
 				 
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
                  
 				// we want to ask for all userids of a given user who has no other userids
 				// IUT shall initially receive a Request as per Transaction sequence #1
@@ -1129,7 +1129,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_2_implementedLISTOFUSERS;
 				 
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
                  
 				// we want to ask for all userids of a given user who has no other userids
 				// IUT shall initially receive a Request as per Transaction sequence #1
@@ -1172,7 +1172,7 @@ module EfcInfoExchange_TestCasesTsp {
 				var RequestADU v_aduRequestInvalid;
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_2_implementedLISTOFUSERS;
 				 
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
                  
 				// we want to ask for all userids of a given user who has no other userids
 				// IUT shall initially receive a Request as per Transaction sequence #1
@@ -1214,7 +1214,7 @@ module EfcInfoExchange_TestCasesTsp {
 				var RequestADU v_aduRequestInvalid;
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_2_implementedLISTOFUSERS;
 				 
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
                  
 				// IUT shall initially receive a Request as per Transaction sequence #1
 
@@ -1263,7 +1263,7 @@ module EfcInfoExchange_TestCasesTsp {
 					stop;			  
 				};			
 				 
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
                  
 				// we want to ask for all userids of a given user
 				// IUT shall initially receive a Request as per Transaction sequence #1
@@ -1305,7 +1305,7 @@ module EfcInfoExchange_TestCasesTsp {
               */
 				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_3_implementedEXCEPTIONLIST;
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
 				
 				// Step 1a: Trigger IUT with EXCEPTIONLIST.TR_TSP_1 LIST_TYPE=BLACK
 				f_sendAndLogTrigger(EXCEPTIONLIST_TR_TSP_1_BLACK);
@@ -1342,7 +1342,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Initialisation
 				var ExceptionListADU v_theAdu;
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_3_implementedEXCEPTIONLIST;
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
 				
 				// Step 1: Trigger IUT with EXCEPTIONLIST.TR_TSP_1 LIST_TYPE=DISCOUNT
 				f_sendAndLogTrigger(EXCEPTIONLIST_TR_TSP_1_DISCOUNT);
@@ -1392,7 +1392,7 @@ module EfcInfoExchange_TestCasesTsp {
                   */
  				// Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_5_implementedPAYMENTCLAIM;
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
 				// Perform a BillingDetails transaction according to the supported types
 				f_initForPaymentClaim();
 				
@@ -1517,7 +1517,7 @@ module EfcInfoExchange_TestCasesTsp {
                   
                  // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_5_implementedPAYMENTCLAIM;
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
 				
 				// Perform a BillingDetails transaction according to the supported types
 				f_initForPaymentClaim();
@@ -1572,7 +1572,7 @@ module EfcInfoExchange_TestCasesTsp {
                  // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_5_implementedPAYMENTCLAIM;
 				 
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
 				
 				// Perform a BillingDetails transaction according to the supported types
 				f_initForPaymentClaim();
@@ -1623,7 +1623,7 @@ module EfcInfoExchange_TestCasesTsp {
                  // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_5_implementedPAYMENTCLAIM;
 				 
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
 				
 				// Perform a BillingDetails transaction according to the supported types
 				f_initForPaymentClaim();
@@ -1659,7 +1659,7 @@ module EfcInfoExchange_TestCasesTsp {
                  // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_5_implementedPAYMENTCLAIM;
 				 
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
 				
 				// Perform a BillingDetails transaction according to the supported types
 				f_initForPaymentClaim();
@@ -1698,7 +1698,7 @@ module EfcInfoExchange_TestCasesTsp {
                  // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_5_implementedPAYMENTCLAIM;
 				 
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc								
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc								
 				
 				// Perform a BillingDetails transaction according to the supported types
 				f_initForPaymentClaim();
@@ -1818,7 +1818,7 @@ module EfcInfoExchange_TestCasesTsp {
                  // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A7_5_implementedPAYMENTCLAIM;
 				 
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
 				if (PAYMENTCLAIM_TIMEA_MIN_TSP == 0.0)	{
 					setverdict(inconc);
 					f_addLogEntry("Cannot perform minimum time test because IUT sets it to 0");
@@ -1870,7 +1870,7 @@ module EfcInfoExchange_TestCasesTsp {
                   */
                  // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_1_implementedDSRCCONTRACTISSUERLIST;
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
 				// Step 1: Trigger IUT with CONTRACTISSUERLIST.TR_TSP_1
 				f_sendAndLogTrigger(DSRC_CONTRACTISSUERLIST_TR_TSP_1_DIFFMANUFID);
 
@@ -1913,7 +1913,7 @@ module EfcInfoExchange_TestCasesTsp {
                  // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_2_implementedDSRCEFCCONTEXTDATA;
 				 
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
 
                  // Step 1: Send EFCCONTEXTDATA with:
                  	// domainType = dsrcContext 
@@ -1946,7 +1946,7 @@ module EfcInfoExchange_TestCasesTsp {
                 // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_2_implementedDSRCEFCCONTEXTDATA;
 				 
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
                 // Step 1: Send EFCCONTEXTDATA with:
                	// domainType = dsrcClosedContext 
                	// ClosedContextDefinition containing only mandatory field with valid values
@@ -1981,7 +1981,7 @@ module EfcInfoExchange_TestCasesTsp {
                  // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_2_implementedDSRCEFCCONTEXTDATA;
 				 
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
 								
 				v_apduForSending := m_apduNoAuthInitTester({m_aduEfcContextDataDsrcClosedContextTariffClassDefinition});
                  // Step 1: Send EFCCONTEXTDATA with:
@@ -2016,7 +2016,7 @@ module EfcInfoExchange_TestCasesTsp {
                  // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_2_implementedDSRCEFCCONTEXTDATA;
 				 
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
                 // Step 1: Send EFCCONTEXTDATA with:
                 // domainType = dsrcClosedContext 
                 // dsrcClosedContext with valid values and feeModifiers set to null
@@ -2047,7 +2047,7 @@ module EfcInfoExchange_TestCasesTsp {
                  // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_2_implementedDSRCEFCCONTEXTDATA;
 				 
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
                  // Step 1: Send EFCCONTEXTDATA with:
                  	// domainType = dsrcClosedContext 
                  	// dsrcClosedContext with valid values and feeModifiers set to null
@@ -2078,7 +2078,7 @@ module EfcInfoExchange_TestCasesTsp {
                  // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_2_implementedDSRCEFCCONTEXTDATA;
 				 
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
                  // Step 1: Send EFCCONTEXTDATA with:
                  	// domainType = dsrcClosedContext 
                  	// dsrcClosedContext with valid values and feeModifiers set to null
@@ -2110,7 +2110,7 @@ module EfcInfoExchange_TestCasesTsp {
                 // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_2_implementedDSRCEFCCONTEXTDATA;
 				 
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
                 // Step 1: Send EFCCONTEXTDATA with:
                 // domainType = dsrcClosedContext 
                 // dsrcClosedContext with valid values and feeModifiers set to null
@@ -2146,7 +2146,7 @@ module EfcInfoExchange_TestCasesTsp {
                  // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_2_implementedDSRCEFCCONTEXTDATA;
 				 
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
                  // Step 1: Send EFCCONTEXTDATA with:
                  	// domainType = dsrcContext 
                  	// iso17573ADU containing only mandatory field with one invalid value
@@ -2184,7 +2184,7 @@ module EfcInfoExchange_TestCasesTsp {
                  // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_2_implementedDSRCEFCCONTEXTDATA;
 				 
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
                  // Step 1: Send EFCCONTEXTDATA with:
                  	// domainType = dsrcContext 
                  	// dsrcClosedContext containing invalid values
@@ -2230,7 +2230,7 @@ module EfcInfoExchange_TestCasesTsp {
 					stop;			  
 				};			
 				 
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
                  // Send EFCCONTEXTDATA with:
                  	// domainType = dsrcContext 
                  	// iso17573ADU containing only mandatory field with valid values
@@ -2272,7 +2272,7 @@ module EfcInfoExchange_TestCasesTsp {
                   */                  
                  // Initialisation 
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_3_implementedDSRCBILLINGDETAILS;
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
 
                  // Step 1: Send one valid APDU containing one valid BillingDetailsADU with no optional fields except includedDiscounts
 				var InfoExchange v_apduToSend := m_apduNoAuthInitTester({m_aduDsrcBillingDetails});                 
@@ -2301,7 +2301,7 @@ module EfcInfoExchange_TestCasesTsp {
                  // Initialisation 
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_3_implementedDSRCBILLINGDETAILS;
 				 
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
 
                  // Step 1: Send one valid APDU containing 10 valid BillingDetailsADU with actionCode = SEND
 				v_apduForSending := m_apduNoAuthInitTester({
@@ -2340,7 +2340,7 @@ module EfcInfoExchange_TestCasesTsp {
                   */
                  // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_3_implementedDSRCBILLINGDETAILS;
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
 				// Prepare a billingdetails with excessive amount
 				var InfoExchange v_apduToSend :=m_apduNoAuthInitTester(
 				{modifies mw_aduDsrcBillingDetails(1):= {
@@ -2404,7 +2404,7 @@ module EfcInfoExchange_TestCasesTsp {
                  // Initialisation 
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_3_implementedDSRCBILLINGDETAILS;
 				 
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
 
                  // Send one valid APDU containing one valid BillingDetailsADU numbered 1 with only mandatory field
 				v_apduForSending := m_apduNoAuthInitTester(
@@ -2456,7 +2456,7 @@ module EfcInfoExchange_TestCasesTsp {
                  // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_3_implementedDSRCBILLINGDETAILS;
 				 
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
 
                  //  Send one valid APDU containing one BillingDetailsADU numbered 3 with actionCode = SEND and only mandatory fields
 				v_apduForSending := m_apduNoAuthInitTester(
@@ -2586,7 +2586,7 @@ module EfcInfoExchange_TestCasesTsp {
                  // Initialisation 
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_3_implementedDSRCBILLINGDETAILS;
 				 
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
 
                  //  Send one valid APDU containing one BillingDetailsADU numbered 3 with actionCode = SEND and only mandatory fields
 				v_apduForSending := m_apduNoAuthInitTester(
@@ -2646,7 +2646,7 @@ module EfcInfoExchange_TestCasesTsp {
                  // Initialisation
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_3_implementedDSRCBILLINGDETAILS;
 				 
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
 
                  //  Send one valid APDU containing one BillingDetailsADU numbered 3 with actionCode = SEND and only mandatory fields
 				v_apduForSending := m_apduNoAuthInitTester(
@@ -2706,7 +2706,7 @@ module EfcInfoExchange_TestCasesTsp {
 					stop;			  
 				};			
 				 
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
 
 				// Send one valid DSRC.BILLINGDETAILS numbered 3
                  //  Send one valid APDU containing one BillingDetailsADU numbered 3 with actionCode = SEND and only mandatory fields
@@ -2754,7 +2754,7 @@ module EfcInfoExchange_TestCasesTsp {
                  // Initialisation 
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_4_implementedDSRCREPORTABNORMALOBE;
 				 
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
 
                 // Send one valid DSRC.REPORTABNORMALOBE
 				v_apduForSending := m_apduNoAuthInitTester({m_aduReportAbnormalObe});                 
@@ -2784,7 +2784,7 @@ module EfcInfoExchange_TestCasesTsp {
                  // Initialisation 
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_4_implementedDSRCREPORTABNORMALOBE;
 				 
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
 
                 // Send one  DSRC.REPORTABNORMALOBE with userId field missing
 				v_apduForSending := m_apduNoAuthInitTester(
@@ -2820,7 +2820,7 @@ module EfcInfoExchange_TestCasesTsp {
                  // Initialisation 
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_4_implementedDSRCREPORTABNORMALOBE;
 				 
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
                 // Step 1:
                 // Send one  APDU containg 2 ReportAbnormalOBEADUs, first one with missing and second one with userID set to an invalid value
 
@@ -2859,7 +2859,7 @@ module EfcInfoExchange_TestCasesTsp {
                  // Initialisation 
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_4_implementedDSRCREPORTABNORMALOBE;
 				 
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
 				// Step 1:
                 // Send one  DSRC.REPORTABNORMALOBE with dateAndTime field missing
 				v_apduForSending := {
@@ -2898,7 +2898,7 @@ module EfcInfoExchange_TestCasesTsp {
                  // Initialisation 
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_4_implementedDSRCREPORTABNORMALOBE;
 				 
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
                 // Step 1:
                 // Send one  DSRC.REPORTABNORMALOBE with efcContextMark field missing
 				v_apduForSending := {
@@ -2935,7 +2935,7 @@ module EfcInfoExchange_TestCasesTsp {
                  // Initialisation 
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_4_implementedDSRCREPORTABNORMALOBE;
 				 
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
                 // Step 1:
                 	// Send one  APDU containg 2 ReportAbnormalOBEADUs, first one with efcContextMark missing and second one with efcContextMark set to an invalid value
 
@@ -2975,7 +2975,7 @@ module EfcInfoExchange_TestCasesTsp {
                  // Initialisation 
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_4_implementedDSRCREPORTABNORMALOBE;
 				 
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
                 // Step 1:
                 	// Send one  DSRC.REPORTABNORMALOBE with abnormalOBEReason field missing
 				v_apduForSending := {
@@ -3014,7 +3014,7 @@ module EfcInfoExchange_TestCasesTsp {
                  // Initialisation 
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A26_4_implementedDSRCREPORTABNORMALOBE;
 				 
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
                 // Step 1:
                 	// Send one  APDU containg 2 ReportAbnormalOBEADUs, first one with abnormalOBEReason missing and second one with abnormalOBEReason set to an invalid value
 
@@ -3060,7 +3060,7 @@ module EfcInfoExchange_TestCasesTsp {
 					stop;			  
 				};			
 				 
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
                 // Send one valid DSRC_REPORTABNORMALOBE
 				v_apduForSending := m_apduNoAuthInitTester({m_aduReportAbnormalObe}); 
  
@@ -3104,7 +3104,7 @@ module EfcInfoExchange_TestCasesTsp {
                   
                  // Initialisation 
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A52_3_implementedGNSSTOLLDECLARATION;
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
 				// Step 1: Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send three valid TollDeclarationADUs with actionCode = send, revoke, and adjust, respectively
 				var InfoExchange v_apduToBeReceived := mw_apduNoAuthInitIut(
 					{modifies mw_aduTollDeclaration:= {	actionCode := ActionCode_send_	}},
@@ -3152,7 +3152,7 @@ module EfcInfoExchange_TestCasesTsp {
                   */
                 // Initialisation 
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A52_3_implementedGNSSTOLLDECLARATION and ICS_A52_1_implementedGNSSBILLINGDETAILSTSP;
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
 				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1_SEND);												
 				//  Wait for GNSS.TOLLDECLARATION
 				// Receive the correct adu, send positive ack
@@ -3191,7 +3191,7 @@ module EfcInfoExchange_TestCasesTsp {
                   
                  // Initialisation 
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A52_3_implementedGNSSTOLLDECLARATION and ICS_A52_1_implementedGNSSBILLINGDETAILSTSP;
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
 				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1_SEND);												
 				//  Wait for GNSS.TOLLDECLARATION
 				
@@ -3272,7 +3272,7 @@ module EfcInfoExchange_TestCasesTsp {
                  	// Trigger IUT with GNSS.BILLINGDETAILS.TR_TSP_1 to send a valid BillingDetails ADU with billingDetailsNum field value = 1
                  	// Send a positive Ack to conclude the BILLINGDETAILS ADU
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A52_3_implementedGNSSTOLLDECLARATION and ICS_A52_1_implementedGNSSBILLINGDETAILSTSP;
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
 				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1_SEND);												
 				//  Wait for GNSS.TOLLDECLARATION
 				
@@ -4026,7 +4026,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// The IUT is supposedly being prepared with valid test toll declaration data
 					
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A2_2_isGnss and ICS_A52_4_implementedGNSSPAYMENTANNOUNCEMENT;
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
 				
 				// Step 1: Trigger IUT with GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1_SEND to send one valid PaymentAnnouncementADU with actionCode = send
 				f_sendAndLogTrigger(GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1_SEND);												
@@ -4062,7 +4062,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// The IUT is supposedly being prepared with valid test toll declaration data
 					
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A2_2_isGnss and ICS_A52_4_implementedGNSSPAYMENTANNOUNCEMENT;
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
 				
 				// Trigger IUT with GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1_A to send one valid PaymentAnnouncementADU with actionCode = send
 				f_sendAndLogTrigger(GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1_SEND); 												
@@ -4121,7 +4121,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// The IUT is supposedly being prepared with valid test toll declaration data
 				var integer v_idReceived;	
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A2_2_isGnss and ICS_A52_4_implementedGNSSPAYMENTANNOUNCEMENT;
-				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
 				
 				// Trigger IUT with GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1_SEND to send one valid PaymentAnnouncementADU with actionCode = send
 				f_sendAndLogTrigger(GNSS_PAYMENTANNOUNCEMENT_TR_TSP_1_SEND);												

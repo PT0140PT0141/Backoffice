@@ -60,10 +60,10 @@ module EfcInfoExchange_Pixits {
         integer trustObjectPurpose
     }
 	type record of TrustObjectTypePurposePair RecordOfTrustObjectTypePurposePair;
-	modulepar RecordOfTrustObjectTypePurposePair RECEIVED_TRUST_OBJECTS_SUPPORTED;	//Should contain all the allowed pairs {TrustObjectType,TrustObjectPurpose} pairs accepted by the IUT for receiving 
-	modulepar RecordOfTrustObjectTypePurposePair SENT_TRUST_OBJECTS_SUPPORTED;		//Should contain all the allowed pairs {TrustObjectType,TrustObjectPurpose} pairs accepted by the IUT for sending
+	modulepar RecordOfTrustObjectTypePurposePair PX_TRUST_OBJECTS_TYPE_PURPOSE_SUPPORTED_RECEIVE;	//Shall contain all the allowed pairs {TrustObjectType,TrustObjectPurpose} pairs accepted by the IUT for receiving 
+	modulepar RecordOfTrustObjectTypePurposePair PX_TRUST_OBJECTS_TYPE_PURPOSE_SUPPORTED_SEND;	//Shall contain all the allowed pairs {TrustObjectType,TrustObjectPurpose} pairs accepted by the IUT for sending
 	 	
-    modulepar integer PX_BILLINGDETAILSNUM_NOT_EXISTING:=14; //Used in TP_TSP_GNSS_BILLINGDETAILS_TC_BI_03(). Should contain reference to a non existing billingdetailsnum    
+    modulepar integer PX_BILLINGDETAILSNUM_NOT_EXISTING:=14; //Used in TP_TSP_GNSS_BILLINGDETAILS_TC_BI_03(). Shall contain reference to a non existing billingdetailsnum    
 	
 	modulepar EfcDsrcApplication.Int4 PX_CHARGE_OBJECT_DESIGNATION_NON_EXISTING:=999999;
 }

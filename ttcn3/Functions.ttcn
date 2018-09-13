@@ -30,7 +30,7 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
     group External {
 		external function fx_computeAuthenticator(in InfoExchangeContent p_infoExchangeContent) return ApduAuthenticator;
 		external function fx_checkAuthenticator(in InfoExchange p_infoExchange) return boolean;
-    	external function fx_getUtc(in integer secondOffset:= 0) return GeneralizedTime; //Should return current time offset by the number of seconds (positive or negative) specified by the parameter secondOffset
+    	external function fx_getUtc(in integer secondOffset:= 0) return GeneralizedTime; //Shall return current time offset by the number of seconds (positive or negative) specified by the parameter secondOffset
     } 
 
 	group Internal {
