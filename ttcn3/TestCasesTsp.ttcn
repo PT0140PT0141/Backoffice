@@ -1876,9 +1876,9 @@ module EfcInfoExchange_TestCasesTsp {
 
 				//  Wait for apdu containing CONTRACTISSUERLIST for three different manufacturers
 				var template InfoExchange v_apduToBeReceived := mw_apduNoAuthInitIut(
-					{modifies mw_aduContractIssuerList:= {manufacturerIdId := MANUFACTURERID1}},
-					{modifies mw_aduContractIssuerList:= {manufacturerIdId := MANUFACTURERID2}},
-					{modifies mw_aduContractIssuerList:= {manufacturerIdId := MANUFACTURERID3}}
+					{modifies mw_aduContractIssuerList:= {manufacturerID := MANUFACTURERID1}},
+					{modifies mw_aduContractIssuerList:= {manufacturerID := MANUFACTURERID2}},
+					{modifies mw_aduContractIssuerList:= {manufacturerID := MANUFACTURERID3}}
            			);                 
 
 				alt {
@@ -1920,7 +1920,7 @@ module EfcInfoExchange_TestCasesTsp {
                  	// iso17573ADU containing only mandatory field with valid values
                  	// feeModifiers set to null
 				// set tester tolling domain characteristics
-				v_apduForSending := m_apduNoAuthInitTester({m_aduDsrcEfcContextDataTestValues});                 
+				v_apduForSending := m_apduNoAuthInitTester({efcContextDataADUs:={m_aduDsrcEfcContextDataTestValues}});                 
 				f_sendAndLogApdu(v_apduForSending);                 
                  // Step 2: Wait for positive Ack within DSRC.EFCCONTEXTDATA.TIME1
 				// Set timer
@@ -1952,7 +1952,7 @@ module EfcInfoExchange_TestCasesTsp {
                	// ClosedContextDefinition containing only mandatory field with valid values
                	// feeModifiers set to null
 				// Only tollContextOverview in ClosedContextDefinition set to a valid value
-				v_apduForSending :=m_apduNoAuthInitTester({m_aduEfcContextDataDsrcClosedContextTollContextOverview});
+				v_apduForSending :=m_apduNoAuthInitTester({efcContextDataADUs:={m_aduEfcContextDataDsrcClosedContextTollContextOverview}});
 				f_sendAndLogApdu(v_apduForSending);                 
 
                 // Step 2: Wait for positive Ack within DSRC.EFCCONTEXTDATA.TIME1
