@@ -262,7 +262,7 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
 			v_tollDeclarationId:=v_apduReceived.infoExchangeContent.adus.tollDeclarationADUs[0].tollDeclarationId;
 						
 			v_aduGnssBillingDetails:=m_aduGnssBillingDetails(
-				TD_BILLING_DETAILS_NUM,
+				TD_BILLING_DETAILS_NUM_1,
 				UserId:{obeID:=v_obeId}, 
 				TD_PERIOD_1,
 				p_roUsageList,

@@ -420,9 +420,6 @@ module EfcInfoExchange_TestCasesTc {
 				var ApduIdentifier v_apduId := v_apduReceived.infoExchangeContent.apci.apduIdentifier;
 				
 				// prepare wrong APCI-fields with wrong inResponseToApduId
-				//TODO Jan check that the fix below does what it should
-//				template (value) ApciFields m_apciInvalidInResponseToApduIdRespTester
-//					modifies m_apciRespTester := {inResponseToApduId := {APDU_ORIGINATOR_FOR_IUT, v_apduId+1}};
 				v_apciInvalidInResponseToApduIdRespTester:=m_apciRespTester(v_apduReceived);
 				v_apciInvalidInResponseToApduIdRespTester.inResponseToApduId.apduIdentifier:=v_apduId+1;
 
@@ -526,10 +523,6 @@ module EfcInfoExchange_TestCasesTc {
 				// Step 0:
 				// Prepare APCI for an Initiating APDU (White-list) in which the authenticator is replaced by
 				// the one calculated above for the black-list, thus inserting an incorrect authenticator
-				//TODO Jan check that the fix below does what it is intended to do 
-//				template (value) InfoExchange m_apduInvalidAuthInitTester
-//					modifies m_apduAuthInitTester := {infoExchangeAuthenticator := v_authenticator};
-
 															
 				// Step 1:
                 // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for white list with authenticator
@@ -697,12 +690,12 @@ module EfcInfoExchange_TestCasesTc {
 					// capture the requested user parameters for this individual adu
 					v_listOfParametersRequested := v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1].userDetailsRequest.listOfParametersRequested;
 					// prepare adu elements
-					v_theAdu.originaluserIdRequest := v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1].userDetailsRequest.userId;
+					v_theAdu.originaluserIdRequest :=PX_USER_ID_NON_EXISTING;//This shall provoke a semanticError
 					v_theAdu.userId := v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1].userDetailsRequest.userId; // It is enough to resend the received UserIds
 					v_theAdu.statusFlag := UserStatus_standardCommercialUserContract_;
+					
 					for (var integer v_loop2 :=0; v_loop2<sizeof(v_listOfParametersRequested);v_loop2:=v_loop2+1) {
 						v_theAdu.listOfUserParameters[v_loop2].requestedUserParameter:= omit;
-						// PT140 TODO: ensure the provided perameter does never match the requested one 
 						v_theAdu.listOfUserParameters[v_loop2].userParameterResponse:= TD_USER_PARAM_RESP_DETAILS[v_listOfParametersRequested[v_loop2]];					
 						v_theAdu.listOfUserParameters[v_loop2].userParameterStatus:= UserParameterStatus_userParameterAvailable_;					
 						v_theAdu.listOfUserParameters[v_loop2].userInfoValidityPeriod:= omit;
@@ -725,7 +718,7 @@ module EfcInfoExchange_TestCasesTc {
               	// if not received set test failure --> is done in altstep
               	
               	// prepare nackParams for second alternative
-				var RoNackParams v_nAckParamsList; //Nte, this is a record of record
+				var RoNackParams v_nAckParamsList; //Note, this is a record of record
 				for (var integer v_loop1 :=0; v_loop1<v_noReqAdusReceived;v_loop1:=v_loop1+1) {
 					v_nAckParamsList[v_loop1] := {
 						issueADUStruct := v_loop1+1,
@@ -1563,7 +1556,6 @@ module EfcInfoExchange_TestCasesTc {
                 // Wait for above specified Initiating_Apdu within time constraints
                 // if not received or received outside specification set test fail (done in altstep)
 
-				//TODO Jan mw_apduNoAuthInitIut does not accept an ADU as input. HERE we KNOW that it is just one ADU, so is suitable to define a template ensuring that
 				alt {
 					[] mtcPort.receive(mw_apduNoAuthInitIut({efcContextDataADUs:={mw_aduDsrcEfcContextData}})) -> value v_apduReceived {
 						// Log what we received
@@ -1598,8 +1590,6 @@ module EfcInfoExchange_TestCasesTc {
 
                 // Wait for above specified Initiating_Apdu within time constraints
                 // if not received or received outside specification set test fail (done in altstep)
-
-				// PT140 TODO : aduDsrcClosedContextEfcContextData template exsisting but details yet to be defined
 
 				alt {
 					[] mtcPort.receive(mw_apduNoAuthInitIut({efcContextDataADUs:={mw_aduDsrcClosedContextEfcContextData}})) -> value v_apduReceived {
@@ -2583,6 +2573,7 @@ module EfcInfoExchange_TestCasesTc {
   
  				// define templates required for later matching with data in PaymentClaim
  				var template UserIdList v_receivedBillingDetailsUserIdList, v_receivedPaymentClaimUserIdList;
+ 
  				// Note: Type definition for this is in module templates
  				var template BillingDetailsIdList v_receivedBillingDetailsIdList;
 				
@@ -2625,7 +2616,7 @@ module EfcInfoExchange_TestCasesTc {
 							
 						// check inside the adu for each billing details id in the billing details list
 						// if this billing details ID (and user id used in the adu) is inside the list of pairs received in billing details 
-						// TODO Jan check that we can be sure that the record of construct referenceDetailsList only has one element 
+						// TODO Jan check that we can be sure that the record of construct referenceDetailsList only has one element - hypothesis, it should be referenceDetailsList[v_j]
 						var boolean v_matchingUserIdBillingDetailsIdPair;
 						for (var integer v_j:=0; v_j < lengthof(v_apduReceived.infoExchangeContent.adus.paymentClaimADUs[0].referenceDetailsList[0].billingDetailsList); v_j := v_j + 1) {
 						// go through list of pairs of userIds and billingDeatilsIds receive in billing details
@@ -3097,23 +3088,21 @@ module EfcInfoExchange_TestCasesTc {
                 // Wait for NAck_Apdu within GNSS.TOLLDECLARATION.TIME1             
                 // if not received or received outside specification or time constraints set test fail 
 
-				// TODO: Two particulat adu reasons are not allowed to provoke an adjust
-				// Need to exclude them below
                 // Prepare parameters to be expected in the NAck-APDU of any adu reason
 				var template RoNackParams v_nAckParams_1 := {
-					mw_nackParams(0, ?)
+					m_nackParams(0, AduReasonCode_invalidADU_)
 				};
 				var template RoNackParams v_nAckParams_2 := {
-					mw_nackParams(1, ?),
-					mw_nackParams(2, ?),
-					mw_nackParams(3, ?),
-					mw_nackParams(4, ?),
-					mw_nackParams(5, ?),
-					mw_nackParams(6, ?),
-					mw_nackParams(7, ?),
-					mw_nackParams(8, ?),
-					mw_nackParams(9, ?),
-					mw_nackParams(10, ?)
+					m_nackParams(1, AduReasonCode_invalidADU_),
+					m_nackParams(2, AduReasonCode_invalidADU_),
+					m_nackParams(3, AduReasonCode_invalidADU_),
+					m_nackParams(4, AduReasonCode_invalidADU_),
+					m_nackParams(5, AduReasonCode_invalidADU_),
+					m_nackParams(6, AduReasonCode_invalidADU_),
+					m_nackParams(7, AduReasonCode_invalidADU_),
+					m_nackParams(8, AduReasonCode_invalidADU_),
+					m_nackParams(9, AduReasonCode_invalidADU_),
+					m_nackParams(10, AduReasonCode_invalidADU_)
 				};
 				
 				alt {
@@ -3548,7 +3537,6 @@ module EfcInfoExchange_TestCasesTc {
 				
                 // Prepare and send one Initiating_Apdu containing exactly one TollDeclaratioN
                 // of Choice AuthenticatedChargeReport with actionCode = send
-                // TODO define TD_AUTHENTICATED_CHARGE_REPORT in module TesterData
 
 				var TollDeclarationADU v_aduTollDeclarationAuthenticatedChargeReport := {
 					tollDeclarationId := {TD_IDENTIFIER, 1}, 
@@ -3599,8 +3587,8 @@ module EfcInfoExchange_TestCasesTc {
 				 
 				var Adus v_adusToBeSent;
 				var UsageStatement v_usageStatementToBeSent;
-				var ListOfGnssTollDeclaration v_gnssTollDeclaration;
-
+				var RoChargeReportChoice v_roChargeReportChoice;
+				
 				for (var integer v_loop := 0; v_loop < GNSS_TOLLDECLARATIONS_PARAM2_MAX_TC; v_loop := v_loop + 1) {	
  					v_usageStatementToBeSent := {
 						usageStatementId := v_loop,
@@ -3611,25 +3599,28 @@ module EfcInfoExchange_TestCasesTc {
 						additionalUsageInformation := omit
 					};
 
- 				v_adusToBeSent.tollDeclarationADUs := {
+					v_roChargeReportChoice[v_loop]:={
+						chargeReport := {
+							protocolVersion := AidIdentifier_iso17575_1_2016_,
+							obeId := TD_OBE_ID_1,
+							vehicleLPNr := TD_LPN_1,
+							paymentMeans := TD_PAYMENT_MEANS_1,
+							serviceProviderContract := TD_EFC_CONTEXT_MARK,
+							tollContext:= TD_TOLL_CONTEXT,
+							usageStatementList := {
+								{usageStatement := v_usageStatementToBeSent}
+							},
+							chargeReportCounter := v_loop
+						}
+					}
+					
+				};
+										
+ 				v_adusToBeSent.tollDeclarationADUs[0] := {
  					tollDeclarationId := {TD_IDENTIFIER, 1},
-					gnssTollDeclaration[v_loop].chargeReport := {
-						protocolVersion := AidIdentifier_iso17575_1_2016_,
-						obeId := TD_OBE_ID_1,
-						vehicleLPNr := TD_LPN_1,
-						paymentMeans := TD_PAYMENT_MEANS_1,
-						serviceProviderContract := TD_EFC_CONTEXT_MARK,
-						tollContext:= TD_TOLL_CONTEXT,
-						usageStatementList := {
-							{
-							usageStatement := v_usageStatementToBeSent
-							}
-						},
-						chargeReportCounter := v_loop
-						},
+					gnssTollDeclaration:=v_roChargeReportChoice,
 					actionCode := ActionCode_send_						
-					};
-											
+				};
 				v_apduForSending := m_apduNoAuthInitTester(v_adusToBeSent);
 				                	               	                	                	                	                	                	              	
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
@@ -4648,52 +4639,37 @@ module EfcInfoExchange_TestCasesTc {
  				var Adus v_adus;
 				
 				//TODO extract magic numbers into Tester Data (possibly as constants)
-				v_adus.billingDetailsADUs[0]:= {modifies m_aduGnssBillingDetailsSpecialised(1,	TD_USERID_1, v_receivedTollDeclarationId):= {
-					billingDetailsId := {issuerId:=0} //billingDetailsIssuerIdRejected
-				}};
+				v_adus.billingDetailsADUs[0]:= m_aduGnssBillingDetailsSpecialised(1,TD_USERID_1, c_refTollDeclaration1);
+				v_adus.billingDetailsADUs[0].billingDetailsId.issuerId:=TD_INVALID_APDU_ORIGINATOR_TESTER; //billingDetailsIssuerIdRejected
 
-				v_adus.billingDetailsADUs[1]:={modifies m_aduGnssBillingDetailsSpecialised(2,	TD_USERID_1, v_receivedTollDeclarationId):= {
-					tollContext:={providerIdentifier:= 0} ///billingDetailsContextIdRejected
-				}};
+
+				v_adus.billingDetailsADUs[1]:=m_aduGnssBillingDetailsSpecialised(2,	TD_USERID_1, c_refTollDeclaration1);
+				v_adus.billingDetailsADUs[1].tollContext:= TD_INVALID_APDU_ORIGINATOR_TESTER; ///billingDetailsContextIdRejected
+				//TODO Consider renaming TD_INVALID_APDU_ORIGINATOR_TESTER to TD_PROVIDER_NON_EXISTING
 
 				v_adus.billingDetailsADUs[2]:=m_aduGnssBillingDetailsSpecialised(3,	{}, c_refTollDeclaration1); //billingDetailsUserIdRejected 							
 
-				v_adus.billingDetailsADUs[3]:={modifies m_aduGnssBillingDetailsSpecialised(4,	TD_USERID_1, c_refTollDeclaration1):= {
-					billingDetailsAmount:={paymentFeeAmount:=-5} //billingDetailsAmountRejected
-				}};
+				v_adus.billingDetailsADUs[3]:=m_aduGnssBillingDetailsSpecialised(4,	TD_USERID_1, c_refTollDeclaration1);
+				v_adus.billingDetailsADUs[3].billingDetailsAmount.paymentFeeUnit:='0999'O; //this corresponds to ISO 4217 "No currency", shall provoke billingDetailsAmountRejected
 							
-				v_adus.billingDetailsADUs[4]:={modifies m_aduGnssBillingDetailsSpecialised(5,	TD_USERID_1, c_refTollDeclaration1):= {
-				  	usageDetails := {contextName:="AREA 51, NEVADA"} //billingDetailsContextNameRejected
-				}};
+				v_adus.billingDetailsADUs[4]:=m_aduGnssBillingDetailsSpecialised(5,	TD_USERID_1, c_refTollDeclaration1);
+				v_adus.billingDetailsADUs[4].usageDetails.contextName:="AREA 51, NEVADA"; //billingDetailsContextNameRejected
 							
-				v_adus.billingDetailsADUs[5]:={modifies m_aduGnssBillingDetailsSpecialised(6,	TD_USERID_1, c_refTollDeclaration1):= {
-	  				usageDetails := {appliedUserClass:="NON-EXISTING USER CLASS"} //billingDetailsAppliedUserClassRejected
-
-				}};
+				v_adus.billingDetailsADUs[5]:=m_aduGnssBillingDetailsSpecialised(6,	TD_USERID_1, c_refTollDeclaration1);
+				v_adus.billingDetailsADUs[5].usageDetails.appliedUserClass:="NON-EXISTING USER CLASS"; //billingDetailsAppliedUserClassRejected
+			
+				v_adus.billingDetailsADUs[6]:=m_aduGnssBillingDetailsSpecialised(7, TD_USERID_1, c_refTollDeclaration1);
+				v_adus.billingDetailsADUs[6].usageDetails.perDeclaredVehicleClasses[0].declaredVehicleClass:="NON-EXISTING VEHICLE CLASS"; //billingDetailsDeclaredVehicleClassRejected 
 				
-				v_adus.billingDetailsADUs[6]:={modifies m_aduGnssBillingDetailsSpecialised(7, TD_USERID_1, c_refTollDeclaration1):= {
-	  				usageDetails := {
-						perDeclaredVehicleClasses:={{
-							declaredVehicleClass:="NON-EXISTING VEHICLE CLASS"
-						}} //billingDetailsDeclaredVehicleClassRejected 
-	  				}	  				
-				}};
-				
-				v_adus.billingDetailsADUs[7]:={modifies m_aduGnssBillingDetailsSpecialised(8, TD_USERID_1, c_refTollDeclaration1):= {
-					usageDetails := {
-						perDeclaredVehicleClasses:={{
-							perUsedTimeClasses:={{
-								appliedTimeClass:="NON-EXISTING TIME CLASS"//billingDetailsAppliedTimeClassRejected 
-							}}
-						}}
-					}	  				  				
-				}};
+				v_adus.billingDetailsADUs[7]:=m_aduGnssBillingDetailsSpecialised(8, TD_USERID_1, c_refTollDeclaration1);
+				v_adus.billingDetailsADUs[7].usageDetails.perDeclaredVehicleClasses[0].perUsedTimeClasses[0].appliedTimeClass:="NON-EXISTING TIME CLASS";//billingDetailsAppliedTimeClassRejected 
 				
 				v_adus.billingDetailsADUs[8]:=m_aduGnssBillingDetails(
 					9,
 					TD_USERID_1,
 					TD_PERIOD_1,
 					{{usageListEntry:={forStayingInArea := {
+						areaDisplayName:="The area display name",
 						qualifier:= {entranceTime:=fx_getUtc(86400)},//set to 24 hours in the future - billingDetailsEntranceTimeRejected
 						stayedDuration:=1000,
 						chargeUnit:={time:={dur:=100,durUnit:=DurUnit_seconds_}}
@@ -4710,7 +4686,9 @@ module EfcInfoExchange_TestCasesTc {
 					{{usageListEntry:={forSectionedRoads := {
 						howManyTimes:=1,
 						listOfSections:={{
-							chargeObjectId:="NON-EXISTING CHARGE OBJECT ID" //billingDetailsIntermediateSectionRejected
+							chargeObjectId:={
+								chargeObjectDesignation:=PX_CHARGE_OBJECT_DESIGNATION_NON_EXISTING //billingDetailsIntermediateSectionRejected
+							}
 						}}
 					}}}},
 					MAX_ACCEPTED_BILLINGDETAILS_AMOUNT,
@@ -4825,10 +4803,10 @@ module EfcInfoExchange_TestCasesTc {
                 //		- one tollDeclaration reference to first toll declaration in previouse TollDeclarationADU
 
 				// prepare this adu below
-				var UsageList v_usageListSectionedRoads :=m_sectionedRoadGnssUsageList;
+				v_usageListSectionedRoads :=m_sectionedRoadGnssUsageList;
 				v_usageListSectionedRoads.includedDiscounts:=omit;
 				
-				var BillingDetailsADU v_aduGnssBillingDetailsSectionedRoads := m_aduGnssBillingDetails (
+				v_aduGnssBillingDetailsSectionedRoads := m_aduGnssBillingDetails (
 					TD_BILLING_DETAILS_NUM_1,
 					TD_USERID_1,
 					TD_PERIOD_1,
@@ -4838,7 +4816,7 @@ module EfcInfoExchange_TestCasesTc {
 					ActionCode_send_
 					);
 																
-				v_apduForSending := m_apduNoAuthInitTester({billingDetailsADUs:={v_usageListSectionedRoads}});	
+				v_apduForSending := m_apduNoAuthInitTester({billingDetailsADUs:={v_aduGnssBillingDetailsSectionedRoads}});	
 
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
@@ -4867,7 +4845,9 @@ module EfcInfoExchange_TestCasesTc {
                 *			when the TSP sends too many BillingDetailsADUs
                 * @remark  [16986:2016], Clauses 8.2 and Table A.1/1 AND Table A.2/2 AND Table A.52/1
                 */
- 
+				//Declaration
+				var Adus v_adusTollDeclaration, v_adusBillingDetails;
+				 
   				// Initialisation
  				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A2_2_isGnss and ICS_A52_1_implementedGNSSBILLINGDETAILSTSP;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase should be run, activate altsteps on ports, etc 
@@ -4912,9 +4892,9 @@ module EfcInfoExchange_TestCasesTc {
                 //		- the values corresponding the previous TollDeclarationADUs; and
                 //		- actionCode=send
     
-               	// Prepare APDU with 1+GNSS_TOLLDECLARATIONS_TIME1_MIN_TC BillingDetails ADUs 
+               	// Prepare APDU with 1+GNSS_TOLLDECLARATIONS_PARAM1_MAX_TC BillingDetails ADUs 
            	
-               	for (var integer v_i := 1; v_i == 1+GNSS_TOLLDECLARATIONS_TIME1_MIN_TC; v_i := v_i + 1) {
+               	for (var integer v_i := 1; v_i == 1+GNSS_TOLLDECLARATIONS_PARAM1_MAX_TC; v_i := v_i + 1) {
 					v_adusBillingDetails.billingDetailsADUs[v_i]:=m_aduGnssBillingDetails (
                         v_i,
                         TD_USERID_1,
@@ -6481,14 +6461,13 @@ module EfcInfoExchange_TestCasesTc {
 				for (var integer v_i := 1; v_i == 2+GNSS_PAYMENTANNOUNCEMENT_PARAM2_MAX_TC; v_i := v_i + 1) {
 					v_referenceDetailsList[v_i] := {
 						referenceDetail:={billingDetailsList := {{TD_IDENTIFIER, v_i}}},
-						amount := TD_BILLINGDETAILS_AMOUNT_1, // PT140 TODO we may want to randomize this
+						amount := TD_BILLINGDETAILS_AMOUNT_1, 
 						paymentMeansType := omit,
 						valueDate := omit,
 						interestAmount := omit
 					};
 				};
                	
-               	//TODO Jan check that the parameters fed to the template and the subsequent modifications are adequate
 				var PaymentAnnouncementADU v_aduPaymentAnnouncementInvalid:= m_aduPaymentAnnouncement(
 					TD_PAYMENTANNOUNCEMENT_ID_2,
 					TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_2,
@@ -6607,6 +6586,9 @@ module EfcInfoExchange_TestCasesTc {
                 * @remark  [16986:2016], Clauses 8.3 and Table A.1/1 AND Table A.2/2 AND Table A.52/1 AND Table A.52/4
                 */
  
+ 				//Declaration
+ 				var Adus v_adus;
+ 				
  				// Initialisation
  				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A2_2_isGnss and ICS_A52_1_implementedGNSSBILLINGDETAILSTSP
  					and ICS_A52_4_implementedGNSSPAYMENTANNOUNCEMENT;
@@ -6651,22 +6633,21 @@ module EfcInfoExchange_TestCasesTc {
                 //		- actionCode=send
     
                	// Prepare APDU with 1+GNSS.PAYMENTANNOUNCEMENT.PARAM1_MAX BillingDetails ADUs              	
-                // TODO: created by Jan 09.09. This for loop does not create more than one adu
                                  	
                	for (var integer v_i := 1; v_i == 1+GNSS_PAYMENTANNOUNCEMENT_PARAM1_MAX_TC; v_i := v_i + 1) {
-                	v_apduForSending := m_apduNoAuthInitTester({billingDetailsADUs:={
-                        m_aduGnssBillingDetails (
-                            v_i,
-                            TD_USERID_1,
-                            TD_PERIOD_1,
-                            {m_sectionedRoadGnssUsageList},
-                            TD_BILLINGDETAILS_AMOUNT_1,
-                            {{TD_IDENTIFIER, v_i}},
-                            ActionCode_send_
-                        )
-                	}});	
+                	v_adus.billingDetailsADUs[v_i]:=m_aduGnssBillingDetails(
+                        v_i,
+                        TD_USERID_1,
+                        TD_PERIOD_1,
+                        {m_sectionedRoadGnssUsageList},
+                        TD_BILLINGDETAILS_AMOUNT_1,
+                        {{TD_IDENTIFIER, v_i}},
+                        ActionCode_send_
+                    );
                 };		
-                    
+                
+				v_apduForSending := m_apduNoAuthInitTester(v_adus);
+                
                 // respect time restriction TIMEA_MIN set by the IuT
                 f_wait(GNSS_BILLINGDETAILS_TSP_TIMEA_MIN_TC);
                 f_sendAndLogApdu(v_apduForSending);                	 	 	
@@ -6689,16 +6670,15 @@ module EfcInfoExchange_TestCasesTc {
                 //		- 1+GNSS.PAYMENTANNOUNCEMENT.PARAM1_MAX valid PaymentAnnouncementADU
 				                	
                	for (var integer v_i := 1; v_i == 1+GNSS_PAYMENTANNOUNCEMENT_PARAM1_MAX_TC; v_i := v_i + 1) {               		              	             					  
-					v_apduForSending := m_apduNoAuthInitTester ({paymentAnnouncementADUs:={
-						//TODO this must not be in a for-loop
-						m_aduPaymentAnnouncement(
-							v_i,
-							TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_1,
-							{{TD_IDENTIFIER, v_i}},
-							ActionCode_send_
-						)
-					}});
+					v_adus.paymentAnnouncementADUs[v_i]:=m_aduPaymentAnnouncement(
+						v_i,
+						TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_1,
+						{{TD_IDENTIFIER, v_i}},
+						ActionCode_send_
+					);
 				};
+				
+				v_apduForSending := m_apduNoAuthInitTester(v_adus);
 				
 				// respect time restriction TIMEA_MIN set by the IuT
 				(GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
