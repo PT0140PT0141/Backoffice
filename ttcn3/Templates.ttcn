@@ -748,9 +748,9 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				
 			// Generic received Request for Trust Object, to receive a requestADU for any Trust Object 			
 			template InfoExchange mw_apduRequestTrustObject := mw_apduNoAuthInitIut(
-				Adus:{requestAdus:={{trustObjectRequest:={
+				{requestAdus:={{trustObjectRequest:={
 					requestedADUType := 3,
-					requestedTrustObject := ?
+					requestedTrustObject := {trustObjectSpec:=?}
 				}}}}
 			);
 			

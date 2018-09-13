@@ -179,7 +179,11 @@ module EfcInfoExchange_TesterData{
 	group TRUSTOBJECTS {
 		modulepar TrustObjectCode TD_DSRC_MASTER_KEY:={dsrcMasterKeys:=TD_SYMMETRIC_KEY};
 		modulepar octetstring TD_CERT_REVOKE_LIST;
-		modulepar octetstring TD_CERTIFICATE;
+		modulepar octetstring TD_CERTIFICATE_OCT_STR;
+	 	const CertificateObject TD_CERTIFICATE:={
+			certificateType:=CertificateType_certTcHTTPS_,
+			certificate:=TD_CERTIFICATE_OCT_STR
+		}
 	 	modulepar octetstring TD_GENERIC_TRUST_OBJECT;
 	 	modulepar PublicKeyObject TD_PUBLICKEY;
     	modulepar DsrcKeyObject TD_SYMMETRIC_KEY;
@@ -189,10 +193,7 @@ module EfcInfoExchange_TesterData{
     	 	keyRef := 0,
     	 	referenceType := ReferenceType_cCCAuthenticationKeyRef_ 
     	};
-    	modulepar CertificateObject certificateTESTER_OBJECT := {
-    	  certificateType := CertificateType_certTcHTTPS_,
-    	  certificate := TD_CERTIFICATE
-    	};
+
 		modulepar GenericTrustObject invalidTESTERGenericObject := {
 		  typeOfTrustObject := TrustObjectTypes_certificate_,
 		  genericTrustObject := TD_GENERIC_TRUST_OBJECT
