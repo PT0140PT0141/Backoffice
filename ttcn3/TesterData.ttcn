@@ -59,7 +59,7 @@ module EfcInfoExchange_TesterData{
             // [SEMANTIC DEFINITION] The contract serial number applied by the tester in test cases 		
 		
 		modulepar VehicleParameters TD_VEHICLE_PARAMETERS := {
-			dateAndTime:= , // TODO is of type ASNAUX.GeneralizedTime 
+			dateAndTime:= 20180831120000, // expressed in YYYYMMDDHHMMSS 
 			vehicleClass:="HGV > 3,5t",
 			vehicleLength:=omit, // not used in this tester data
 			vehicleWidth:=omit, // not used in this tester data
