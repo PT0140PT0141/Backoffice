@@ -26,7 +26,7 @@ module EfcInfoExchange_TesterData{
         modulepar EfcDsrcApplication.Provider TD_IDENTIFIER:= {'1010010000'B, 99}; // Default is Sweden.99 = 'A40053'H
             // [SEMANTIC DEFINITION] The provider identifier of the tester
             // acccording to ISO 14906 consisting of countryCode and issuerIdentifier
-        modulepar EfcDsrcApplication.Provider TD_APDU_ORIGINATOR_FOR_TESTER{'1010010000'B, 99};
+        modulepar EfcDsrcApplication.Provider TD_APDU_ORIGINATOR_FOR_TESTER:={'1010010000'B, 99};
             // [SEMANTIC DEFINITION] The originator id of the tester
             // that is used in the APCI field apdu originator. Same syntax as the provider identifier. 
         modulepar EfcDsrcApplication.Provider TD_INFORMATION_SENDER_TESTER:={'1010010000'B, 99};
@@ -46,20 +46,20 @@ module EfcInfoExchange_TesterData{
             // [SEMANTIC DEFINITION] The personal account number applied by the tester in test cases
         modulepar EfcDsrcApplication.LPN TD_LPN_1 := {
         	countryCode:='1010010000'B, // country of registration = Sweden
-        	alphabetIndicator:=latinAlphabetNo1(1), // alphabeth indicator = latin(1)
+        	alphabetIndicator:=latinAlphabetNo1, // alphabeth indicator = latin(1)
         	licencePlateNumber:= '4f4344353630'O // plate number = "OCD560"
         };
             // [SEMANTIC DEFINITION] The license plate number applied by the tester in test cases        
 		modulepar EfcAutonomousCharging.ObeId TD_OBE_ID_1 := {
 			manufacturerId := TD_MANUFACTURER_ID_1,
-			equipmentObuId := '9876543210' // id of the obe = 9876543210
+			equipmentObuId := '9876543210'O // id of the obe = 9876543210
 		};
             // [SEMANTIC DEFINITION] The license plate number applied by the tester in test cases        
 		modulepar EfcDsrcApplication.ContractSerialNumber TD_CSN_1 := 1234567890; // if of the contract = 1234567890
             // [SEMANTIC DEFINITION] The contract serial number applied by the tester in test cases 		
 		
 		modulepar VehicleParameters TD_VEHICLE_PARAMETERS := {
-			dateAndTime:= , // TODO is of type ASNAUX.GeneralizedTime 
+			dateAndTime:=SOMETHINGSOMETHING, // TODO is of type ASNAUX.GeneralizedTime 
 			vehicleClass:="HGV > 3,5t",
 			vehicleLength:=omit, // not used in this tester data
 			vehicleWidth:=omit, // not used in this tester data
@@ -102,7 +102,7 @@ module EfcInfoExchange_TesterData{
 		modulepar integer TD_AUTH_KEY_REFERENCE := 112;
 			// [SEMANTIC DEFINITION] The value used by the tester
 			// for the authentication key reference (refer to also ISO 14906) 
-		modulepar UTF8String TD_UNIQUE_PART_OF_PAN_INVALID "99999";
+		modulepar UTF8String TD_UNIQUE_PART_OF_PAN_INVALID:="99999";
 			// [SEMANTIC DEFINITION] The unique part of thge PAN the tester applies as part of invalid contract issuer data;
 		modulepar EfcInfoExchange.Int2 TD_AC_CR_KEY_REFERENCE_INVALID := 0;
 			// [SEMANTIC DEFINITION] An invalid value used by the tester the access key reference (refer to also ISO 14906)
@@ -164,7 +164,7 @@ module EfcInfoExchange_TesterData{
 
 	group DSRC_BILLINGDETAILS {
 	    type integer IntMax10000 (0..10000);
-		modulepar UserId TD_BILLINGDETAILS_USERID:={TD_PAN_1, TD_CSN_1,D_LPN_1,TD_OBE_ID_1};	
+		modulepar UserId TD_BILLINGDETAILS_USERID:={TD_PAN_1, TD_CSN_1,TD_LPN_1,TD_OBE_ID_1};	
  			// [SEMANTIC DEFINITION] The ID of the user that is to be billed in when the tester sends a BillingDetailsADU in the DSRC.BILLINGDETAILS transaction
  			// applied all four parts of the user Id as defined in this module
 		modulepar Int8Signed TD_PAYMENT_FEE_AMOUNT:=10;
