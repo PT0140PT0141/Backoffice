@@ -7,7 +7,7 @@ module EfcInfoExchange_Ics {
     /**
      * @desc    Replicate the PICS in TTCN3 code
      */
-	//TODO add tags for semantic definitions in comments
+	//See CEN/TS 16986:2016 Appendix A.5-11 
     modulepar boolean ICS_A1_1_isTc := true; 
     modulepar boolean ICS_A1_2_isTsp := true;
     modulepar boolean ICS_A2_1_isDsrc := true; 
@@ -24,10 +24,6 @@ module EfcInfoExchange_Ics {
     modulepar boolean ICS_A26_4_implementedDSRCREPORTABNORMALOBE := true;
     modulepar boolean ICS_A30_2_implementedDSRCCONTEXT := true;  
     modulepar boolean ICS_A30_2_implementedDSRCCLOSEDCONTEXT := true; 
-	//TODO PT140 How do we use these three? They are not values actually given in the PICS. Is it PICS btw, or ICS
-//    modulepar boolean ICS_A36_15_isSent := true;
-//    modulepar boolean ICS_A36_15_isRevoke := true;
-//    modulepar boolean ICS_A36_15_isAdjust := true;   
     modulepar boolean ICS_A52_1_implementedGNSSBILLINGDETAILSTSP := true; 
     modulepar boolean ICS_A52_2_implementedGNSSBILLINGDETAILSTC := true; 
     modulepar boolean ICS_A52_3_implementedGNSSTOLLDECLARATION := true; 

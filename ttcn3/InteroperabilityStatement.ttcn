@@ -13,7 +13,6 @@ module EfcInfoExchange_InteroperabilityStatement {
      */
      //Time values expressed in seconds
      
-    // TODO PT 140: Below data type f xxx-PARA
     const float c_veryLongTime := 100000.0;
     const integer c_veryHighNumber := 10000;
     modulepar float USERDETAILS_TIME1_MAX_TC := c_veryLongTime;

@@ -86,10 +86,7 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
     	function f_closeDownMtc() runs on MainTestComponent {
         	// Deactivate communication stack
         	
-        	//PT140 TODO is this needed. Uncomment in that case
-            //f_deactivateCommunication();
-                
-            // Unmap TTCN-3 ports from TestAdapter ports
+        	// Unmap TTCN-3 ports from TestAdapter ports
 			unmap(self:mtcPort, system:taPort);
 			unmap(self:mtcAccessPort, system:taAccessPort);
                 
@@ -107,7 +104,6 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
 			f_addLogEntry("At time step value " & any2unistr(t_step.read) & " sent the following APDU to the IUT: " & any2unistr(p_apduToSend));
 		}
 		
-		//TODO sometimes the IUT needs to be mindful of the time interval in which it shall send, but for initialisations NOT
 		function f_sendAndLogTrigger(in Iso16986Trigger iut_Trigger) runs on MainTestComponent {
 		  	mtcAccessPort.send(iut_Trigger);
 		  	f_addLogEntry("At time step value " & any2unistr(t_step.read) & " sent the following Trigger to the IUT: " & any2unistr(iut_Trigger));
@@ -152,7 +148,6 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
          * @desc v_apduReceived and that the MainTestComponent t_step timer 
          * @desc is used and running (otherwise it is set back to 0)
          */	
-         //TODO is not a f_checkMinimumTStep needed here?	
 		function f_logReceivedWaitAndAcknowledge(in float p_wait) runs on MainTestComponent{
 			f_logApduReceivedAndTStep();						         		
 			// Send Ack within time constraints
@@ -252,8 +247,15 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
 				}
 			} // End of first alt statement
 			
-			//TODO Ulrik This did not work. Need to check the template in a more manual way
-			//f_checkAdusAgainstTemplate(v_apduReceived, mw_aduTollDeclaration);
+			//Check formatting of each and everyone of the received TOllDeclaration ADUs 
+			for (var integer v_loop:=0; v_loop<lengthof(v_apduReceived.infoExchangeContent.adus.tollDeclarationADUs);v_loop:=v_loop+1){
+				if (not (match(v_apduReceived.infoExchangeContent.adus.tollDeclarationADUs[v_loop],mw_aduTollDeclaration))){
+					f_addLogEntry("One of the ADUs does not match the ADU restrictions");
+					setverdict(fail);
+					f_closeDownMtc();   						           				
+					stop;
+				}
+			}					               		
 			
 			v_chargeReportFirst:=v_apduReceived.infoExchangeContent.adus.tollDeclarationADUs[0].gnssTollDeclaration[0].chargeReport;			
 			v_usageStatement:=v_chargeReportFirst.usageStatementList[0].usageStatement;

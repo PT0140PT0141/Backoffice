@@ -897,8 +897,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			template BillingDetailsId mw_billingDetailsId:={
 				issuerId := ?,
 				billingDetailsNum := ?,//(0..9223372036854775807), // range 0..2^63-1
-				dateOfService := * //TODO PT140 definition for billingDetails is missing in IAP but at other locations
-									//inside IAP the billingDetailsId shall contain NO dateOfService
+				dateOfService := * 
 			}
 			
 			//These are some extra type definitions needed for the building and matching of test data (see TP_TC_PAYMENTCLAIM_BV_01)			
@@ -938,14 +937,44 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				domainType:={
 					dsrcContext:= {
 						regimeContextData := {
-								iso175753ADU := ?, // PT140 TODO: Details for this element are required in a receiving template (mw_..)
+								iso175753ADU := mw_iso17575_3AduBody,
 								feeModifiers := omit
 						}
 					}					
 				}
 			}
 	
-	
+	    	template Iso17575_3AduBody mw_iso17575_3AduBody :={
+		        tollContextOverview:= mw_tollContextOverview ifpresent
+//		        tollContextPartitionOverview:=*,
+//		        tariffTable:=*,
+//		        currencyConversionTable:=*,
+//		        tariffClassDefinition:=mw_tariffClassDefinition ifpresent,
+//		        localVehicleClassDefinition:=mw_localVehicleClassDefinition ifpresent,
+//		        timeClassDefinition:=mw_timeClassDefinition ifpresent,
+//		        userClassDefinition:=mw_userClassDefinition ifpresent,
+//		        tollContextLayout:=*,
+//		        chargeReportingEvents:=*,
+//		        chargeReportConfiguration:=*,
+//		        tollContextVersion:=?
+		    }
+//        Optionally_Signed<TollContextOverview>              tollContextOverview optional,
+//        Optionally_Signed<TollContextPartitionOverviews>    tollContextPartitionOverview optional,
+//        Optionally_Signed<TariffTables>                     tariffTable optional,
+//        Optionally_Signed<CurrencyConversionTable>          currencyConversionTable optional,
+//        Optionally_Signed<TariffClassDefinition>            tariffClassDefinition optional,
+//        Optionally_Signed<LocalVehicleClassDefinition>      localVehicleClassDefinition optional,
+//        Optionally_Signed<TimeClassDefinition>              timeClassDefinition optional,
+//        Optionally_Signed<UserClassDefinition>              userClassDefinition optional,
+//        Optionally_Signed<TollContextPartitionLayouts>      tollContextLayout optional,
+//        Optionally_Signed<ChargeReportingEventss>           chargeReportingEvents optional,
+//        Optionally_Signed<ChargeReportConfigurations>       chargeReportConfiguration optional,
+//        EfcDsrcApplication.Int1                             tollContextVersion
+			
+			template Optionally_Signed<TollContextOverview> mw_tollContextOverview :={
+				tollSchemeName:=omit,
+				tollContextBoundingBoxes:=omit
+			}
 		
 			type record DsrcClosedContext {
 				ClosedContextDefinition closedContext,
