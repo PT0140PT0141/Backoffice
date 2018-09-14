@@ -2769,7 +2769,7 @@ module EfcInfoExchange_TestCasesTc {
 
 				//  Wait for DSRC.REPORTABNORMALOBE ADU
 				alt {
-					[] mtcPort.receive(mw_apduNoAuthInitIut({reportAbnormalOBEADUs:={mw_aduReportAbnormalObe}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNoAuthInitIut(mw_adusReportAbnormalObe)) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();					
 
