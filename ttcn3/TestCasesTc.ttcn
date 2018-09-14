@@ -1,32 +1,10 @@
  /**
  * @author  PT0140 
  * @desc    This module provides test cases for TPs specified in Annex A of CEN/TC 17154-1 (i.e. Toll Charger system is IUT)
- * @see     [17154-1:2017]: Test suite structure and test purpose
- * @see     [17154-1:2017], Clause 5.3.2 for TP namimg conventions
+ * @see     [17154-1:2018]: Test suite structure and test purpose
+ * @see     [17154-1:2018], Clause 5.3.2 for TP namimg conventions
  * @version $id$
- */
- 
- 
- /**
- * work in progress status overview
- *
- *	Transaction type			!	BV					! BI			! Comments
- * 	----------------------------!-----------------------!---------------!--------------------------------
- *	Base						! done					! done			! ready for compile
- *	UserDetails					! done					! done			! ready for compile
- *	ListOfUsers					! done					! done			! ready for compile
- *	ExceptionList				! done					! done			! ready for compile
- *	TrustObjects				! done					! done			! ready for compile
- *	PaymentClaim				! done					! n.a.			! ready for compile
- *	DSRC.ContractIssuerList		! done					! done			! ready for compile
- *	DSRC.EFCContextData			! done					! n.a.			! ready for compile 
- *	DSRC.BillingDetails			! done					! n.a.			! ready for compile
- *	DSRC.ReportAbnormalOBE		! done					! n.a.			! ready for compile
- *	GNSS.TollDeclaration		! done					! done			! ready for compile
- *	GNSS.BillingDetails.TSP		! done					! open			! ready for compile for BVs
- *	GNSS.BillingDetails.TC		! done					! n.a.			! ready for compile
- *	GNSS.PaymentAnnouncement	! done					! done			! ready for compile
- */
+ */ 
  
 module EfcInfoExchange_TestCasesTc {
 	/**
@@ -2050,7 +2028,7 @@ module EfcInfoExchange_TestCasesTc {
 							f_logApduReceivedAndTStep();
 							
                             for (var integer v_i:=0; v_i<lengthof(v_apduReceived.infoExchangeContent.adus.billingDetailsADUs);v_i:=v_i+1){
-                                if (not (match(v_apduReceived.infoExchangeContent.adus.billingDetailsADUs[v_i],mw_aduDsrcBillingDetails))){
+                                if (not (match(v_apduReceived.infoExchangeContent.adus.billingDetailsADUs[v_i].mw_aduGnssBillingDetails))){
                                     f_addLogEntry("One of the ADUs does not match the ADU restrictions");
                                     setverdict(fail);
                                     f_closeDownMtc();   						           				
@@ -2078,7 +2056,7 @@ module EfcInfoExchange_TestCasesTc {
  				// fill templates (two records of) with received data
  				for (var integer v_i := 0; v_i < v_numberOfReceivedBillingDetailsAdus; v_i := v_i +1) {
  					v_receivedBillingDetailsUserIdList[v_i] := v_apduReceived.infoExchangeContent.adus.billingDetailsADUs[v_i].userId;
- 					v_receivedBillingDetailsIdList[v_i] := v_apduReceived.infoExchangeContent.adus.billingDetailsADUs[v_i].relatedBillingDetails;
+ 					v_receivedBillingDetailsIdList[v_i] := v_apduReceived.infoExchangeContent.adus.billingDetailsADUs[v_i].billingDetailsId;
 				}
   				  
                 // Step 1:
@@ -2110,24 +2088,28 @@ module EfcInfoExchange_TestCasesTc {
 							
 						// check inside the adu for each billing details id in the billing details list
 						// if this billing details ID (and user id used in the adu) is inside the list of pairs received in billing details 
-						// TODO Jan check that we can be sure that the record of construct referenceDetailsList only has one element - hypothesis, it should be referenceDetailsList[v_j]
 						var boolean v_matchingUserIdBillingDetailsIdPair;
-						for (var integer v_j:=0; v_j < lengthof(v_apduReceived.infoExchangeContent.adus.paymentClaimADUs[0].referenceDetailsList[0].billingDetailsList); v_j := v_j + 1) {
-						// go through list of pairs of userIds and billingDeatilsIds receive in billing details
-							v_matchingUserIdBillingDetailsIdPair := false;
-							for (var integer v_k := 0; v_k < v_numberOfReceivedBillingDetailsAdus; v_k := v_k + 1) {
-								if ((v_apduReceived.infoExchangeContent.adus.paymentClaimADUs[0].userId == v_receivedBillingDetailsUserIdList[v_k])
-								and
-								(v_apduReceived.infoExchangeContent.adus.paymentClaimADUs[0].referenceDetailsList[0].billingDetailsList[v_j] == v_receivedBillingDetailsIdList[v_k])) {
-									v_matchingUserIdBillingDetailsIdPair := true;
-								} else { //matching pair not found. Test failed
-									v_matchingUserIdBillingDetailsIdPair := false;
+						// Note: there is only one paymentClaimAdu and consequentely only one userID
+						for (var integer v_i:=0; v_i < lengthof(v_apduReceived.infoExchangeContent.adus.paymentClaimADUs[0].referenceDetailsList; v_i:=v_i + 1) {
+							for (var integer v_j:=0; v_j < lengthof(v_apduReceived.infoExchangeContent.adus.paymentClaimADUs[0].referenceDetailsList[v_i].billingDetailsList; v_j:=v_j + 1) {
+								for (var integer v_k:=0; v_k < v_numberOfReceivedBillingDetailsAdus; v_k:=v_k + 1) {									
+									if ((v_apduReceived.infoExchangeContent.adus.paymentClaimADUs[0].userId == v_receivedBillingDetailsUserIdList[v_k]) 
+										// if matching user Id found
+									and (v_apduReceived.infoExchangeContent.adus.paymentClaimADUs[0].referenceDetailsList[v_i].billingDetailsList[v_j] == v_receivedBillingDetailsIdList[v_k])) {	
+										v_matchingUserIdBillingDetailsIdPair := true; // matching pair found
+										break; // move out from the k-loop
+									} else { // matching pair not present
+										v_matchingUserIdBillingDetailsIdPair := false;
+									}
+								}
+								if (v_matchingUserIdBillingDetailsIdPair == false) {
 									f_addLogEntry("Fail. UserId and/or billingDetailsId in PaymentClaim do not match with those in BillingDetails");
 									setverdict(fail);
 									stop;
 								}
 							}
-						}			
+						};
+
 						if (v_matchingUserIdBillingDetailsIdPair) { 
 							// Step 2: Send Ack within time constraints
 							f_wait(PAYMENTCLAIM_TIME1_MIN_TC);
@@ -2201,7 +2183,7 @@ module EfcInfoExchange_TestCasesTc {
 							f_logApduReceivedAndTStep();
 							
                             for (var integer v_i:=0; v_i<lengthof(v_apduReceived.infoExchangeContent.adus.billingDetailsADUs);v_i:=v_i+1){
-                                if (not (match(v_apduReceived.infoExchangeContent.adus.billingDetailsADUs[v_i],mw_aduDsrcBillingDetails))){
+                                if (not (match(v_apduReceived.infoExchangeContent.adus.billingDetailsADUs[v_i].mw_aduGnssBillingDetails))){
                                     f_addLogEntry("One of the ADUs does not match the ADU restrictions");
                                     setverdict(fail);
                                     f_closeDownMtc();   						           				
@@ -2261,26 +2243,29 @@ module EfcInfoExchange_TestCasesTc {
 						f_logApduReceivedAndTStep();
 							
 						// check inside the adu for each billing details id in the billing details list
-						// if this billing details ID (and user id used in the adu) is inside the list of pairs received in billing details  
-						// TODO Jan check that we can be sure that the record of construct referenceDetailsList only has one element 
+						// if this billing details ID (and user id used in the adu) is inside the list of pairs received in billing details 
 						var boolean v_matchingUserIdBillingDetailsIdPair;
-						for (var integer v_j:=0; v_j < lengthof(v_apduReceived.infoExchangeContent.adus.paymentClaimADUs[0].referenceDetailsList[0].billingDetailsList); v_j := v_j + 1) {
-						// go through list of pairs of userIds and billingDeatilsIds receive in billing details
-							f_logApduReceivedAndTStep();
-							v_matchingUserIdBillingDetailsIdPair := false;
-							for (var integer v_k := 0; v_k < v_numberOfReceivedBillingDetailsAdus; v_k := v_k + 1) {
-								if ((v_apduReceived.infoExchangeContent.adus.paymentClaimADUs[0].userId == v_receivedBillingDetailsUserIdList[v_k])
-								and
-								(v_apduReceived.infoExchangeContent.adus.paymentClaimADUs[0].referenceDetailsList[0].billingDetailsList[v_j] == v_receivedBillingDetailsIdList[v_k])) {
-									v_matchingUserIdBillingDetailsIdPair := true;
-								} else { //matching pair not found. Test failed
-									v_matchingUserIdBillingDetailsIdPair := false;
+						// Note: there is only one paymentClaimAdu and consequentely only one userID
+						for (var integer v_i:=0; v_i < lengthof(v_apduReceived.infoExchangeContent.adus.paymentClaimADUs[0].referenceDetailsList; v_i:=v_i + 1) {
+							for (var integer v_j:=0; v_j < lengthof(v_apduReceived.infoExchangeContent.adus.paymentClaimADUs[0].referenceDetailsList[v_i].billingDetailsList; v_j:=v_j + 1) {
+								for (var integer v_k:=0; v_k < v_numberOfReceivedBillingDetailsAdus; v_k:=v_k + 1) {									
+									if ((v_apduReceived.infoExchangeContent.adus.paymentClaimADUs[0].userId == v_receivedBillingDetailsUserIdList[v_k]) 
+										// if matching user Id found
+									and (v_apduReceived.infoExchangeContent.adus.paymentClaimADUs[0].referenceDetailsList[v_i].billingDetailsList[v_j] == v_receivedBillingDetailsIdList[v_k])) {	
+										v_matchingUserIdBillingDetailsIdPair := true; // matching pair found
+										break; // move out from the k-loop
+									} else { // matching pair not present
+										v_matchingUserIdBillingDetailsIdPair := false;
+									}
+								}
+								if (v_matchingUserIdBillingDetailsIdPair == false) {
 									f_addLogEntry("Fail. UserId and/or billingDetailsId in PaymentClaim do not match with those in BillingDetails");
 									setverdict(fail);
 									stop;
 								}
 							}
-						}			
+						};
+						
 						if (v_matchingUserIdBillingDetailsIdPair) { 
 							f_addLogEntry("Billing details in payment claim received correspond t the billing details in the previous billing details trasnaction");
 							// Step 2: Send Ack within time constraints
