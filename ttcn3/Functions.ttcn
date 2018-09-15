@@ -243,7 +243,7 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
 			
 			alt { 
 				[] mtcPort.receive(mw_apduNoAuthInitIut(mw_adusTollDeclaration)) -> value v_apduReceived {
-					f_logReceivedWaitAndAcknowledge(GNSS_TOLLDECLARATIONS_TIME1_MIN_TSP);
+					f_logReceivedWaitAndAcknowledge(IS_GNSS_TOLLDECLARATIONS_TIME1_MIN_TSP);
 				}
 			} // End of first alt statement
 			
@@ -277,12 +277,12 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
 	
 			f_sendAndLogApdu(v_apduForSending);                 
 	        
-	        // Step 2: Wait for positive Ack within GNSS_BILLINGDETAILS_TC_TIME1_MAX_TSP
+	        // Step 2: Wait for positive Ack within IS_GNSS_BILLINGDETAILS_TC_TIME1_MAX_TSP
 			// Set timer
-	        t_step.start(GNSS_BILLINGDETAILS_TC_TIME1_MAX_TSP);                 
+	        t_step.start(IS_GNSS_BILLINGDETAILS_TC_TIME1_MAX_TSP);                 
 			alt {
 				[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {
-					f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TSP);
+					f_logReceivedThenCheckAndStopTime(IS_GNSS_BILLINGDETAILS_TC_TIME1_MIN_TSP);
 					setverdict(pass);
 				}
 			} // End of Alt statement
@@ -294,14 +294,14 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
             // Send one preset Billing Details according to the implementation choice
 			if (ICS_A26_3_implementedDSRCBILLINGDETAILS) {
 				v_apduForSending := m_apduNoAuthInitTester(Adus:{billingDetailsADUs:={m_aduDsrcBillingDetails}});
-				v_timeToWait := DSRC_BILLINGDETAILS_TIME1_MIN_TSP;                
+				v_timeToWait := IS_DSRC_BILLINGDETAILS_TIME1_MIN_TSP;                
 				f_sendAndLogApdu(v_apduForSending);                 
                  // Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
 				// Set timer
-                 t_step.start(DSRC_BILLINGDETAILS_TIME1_MAX_TSP);
+                 t_step.start(IS_DSRC_BILLINGDETAILS_TIME1_MAX_TSP);
 				}
 			else if (ICS_A52_2_implementedGNSSBILLINGDETAILSTC and ICS_A52_3_implementedGNSSTOLLDECLARATION) {
-				v_timeToWait := GNSS_BILLINGDETAILS_TC_TIME1_MIN_TSP;                
+				v_timeToWait := IS_GNSS_BILLINGDETAILS_TC_TIME1_MIN_TSP;                
 				// Trigger IUT with GNSS_TOLLDECLARATION_TR_TSP_1_SEND to send one valid TollDeclarationADU with actionCode = send
 				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1_SEND);
 				// Receive Toll Declaration, send positive Ack
@@ -309,7 +309,7 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
 				//Setting the Record of UsageList to type sectionsUsed, other possibilities are possible. TollDeclarations does not impose any restrictions on the type of UsageList
 				f_receiveTollDeclSendBillingDetReceiveAck({m_sectionedRoadGnssUsageList});
 				// Set timer
-               	t_step.start(GNSS_BILLINGDETAILS_TC_TIME1_MAX_TSP);
+               	t_step.start(IS_GNSS_BILLINGDETAILS_TC_TIME1_MAX_TSP);
 				}
 			else {
 			  	setverdict(fail);
@@ -350,7 +350,7 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
                                                                                                                                                                         
             f_sendAndLogApdu(v_apduForSending);                	 	 	
             // Start timer
-            t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
+            t_step.start(IS_GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
 
             // Step 2:
             // Wait for Default_Ack_Apdu within GNSS.TOLLDECLARARTION.TIME1             
@@ -359,7 +359,7 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
             alt {				
                 [] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
                     // Log what we received, check minimum time and stop time
-                    f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
+                    f_logReceivedThenCheckAndStopTime(IS_GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
                 }
             }	
 
@@ -391,11 +391,11 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
                 
             // respect time restriction TIMEB_MAX set by the IuT
 			//TODO Jan I updated this timing requirement - please check it
-            //f_wait(GNSS_BILLINGDETAILS_TSP_TIMEB_MAX_TC/2);
-			f_wait(GNSS_BILLINGDETAILS_TSP_TIMEA_MIN_TC);
+            //f_wait(IS_GNSS_BILLINGDETAILS_TSP_TIMEB_MAX_TC/2);
+			f_wait(IS_GNSS_BILLINGDETAILS_TSP_TIMEA_MIN_TC);
             f_sendAndLogApdu(v_apduForSending);                	 	 	
             // Start timer
-            t_step.start(GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
+            t_step.start(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
                 
             // Step 4:
             // Wait for Default_Ack_Apdu within GNSS.BILLINGDETAILS_TSP.TIME1             
@@ -404,7 +404,7 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
             alt {				
                 [] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
                     // Log what we received, check minimum time and stop time
-                    f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
+                    f_logReceivedThenCheckAndStopTime(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
                 }
             }	
         } // end function definition
@@ -433,11 +433,11 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
 			
 			// respect time restriction TIMEB_MAX set by the IuT
 			//TODO Jan I updated this time requirement, please check
-			//f_wait(GNSS_PAYMENTANNOUNCEMENT_TIMEB_MAX_TC/2);
-			f_wait(GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
+			//f_wait(IS_GNSS_PAYMENTANNOUNCEMENT_TIMEB_MAX_TC/2);
+			f_wait(IS_GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
 			f_sendAndLogApdu(v_apduForSending);                	 	 	
             // Start timer
-            t_step.start(GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC);   				
+            t_step.start(IS_GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC);   				
 			
             // Step 2: Wait for Default_Ack_Apdu within GNSS.PAYMENTANNOUNCEMENT.TIME1             
             // if not received or received outside specification or time constraints set test fail
@@ -445,7 +445,7 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
 			alt {				
 				[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 					// Log what we received, check minimum time and stop time
-					f_logReceivedThenCheckAndStopTime(GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC);
+					f_logReceivedThenCheckAndStopTime(IS_GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC);
 				}
 			}	
 		} // end function definition		 

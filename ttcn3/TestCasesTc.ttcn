@@ -56,7 +56,7 @@ module EfcInfoExchange_TestCasesTc {
 				f_sendAndLogApdu(v_apduForSending);                	
   	
                 // Start timer
-                t_step.start(EXCEPTIONLIST_WHITE_TIME1_MAX_TC);               
+                t_step.start(IS_EXCEPTIONLIST_WHITE_TIME1_MAX_TC);               
                 // Step 2:	
               	// Wait for Default_Ack_Apdu within time EXCEPTIONLIST.TIME1
               	// if negative Ack or not received set test failure --> is done in altstep
@@ -65,7 +65,7 @@ module EfcInfoExchange_TestCasesTc {
 					[] mtcPort.receive(mw_apduAuthRespIut(v_apduForSending, m_oneAckInAdusStruct(m_aduDefaultAck(v_apduForSending)))) -> value v_apduReceived {
 						
 						if (fx_checkAuthenticator(v_apduReceived)) {
-							f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
+							f_logReceivedThenCheckAndStopTime(IS_EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
 							setverdict(pass);
 						}
 						else {
@@ -101,7 +101,7 @@ module EfcInfoExchange_TestCasesTc {
 				f_sendAndLogApdu(v_apduForSending);                	
   	
                 // Start timer
-                t_step.start(EXCEPTIONLIST_WHITE_TIME1_MAX_TC);               
+                t_step.start(IS_EXCEPTIONLIST_WHITE_TIME1_MAX_TC);               
                 // Step 2:	
               	// Wait for NAck_Protocol_Apdu(protocolVersionError (6))
               	// within time EXCEPTIONLIST.TIME1
@@ -110,7 +110,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduForSending, ApduReasonCode_protocolVersionError_)) -> value v_apduReceived {
 						// Log what we received, check and stop time
-						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
 						setverdict(pass);
 					}
 				}
@@ -138,7 +138,7 @@ module EfcInfoExchange_TestCasesTc {
 				f_sendAndLogApdu(v_apduForSending);                	
   	
                 // Start timer
-                t_step.start(EXCEPTIONLIST_WHITE_TIME1_MAX_TC);               
+                t_step.start(IS_EXCEPTIONLIST_WHITE_TIME1_MAX_TC);               
                 // Step 2:	
               	// Wait for NAck_Protocol_Apdu(originatorRejected (7))
               	// within time EXCEPTIONLIST.TIME1
@@ -147,7 +147,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduForSending, ApduReasonCode_originatorRejected_)) -> value v_apduReceived {
 						// Log what we received, check and stop time
-						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
 						setverdict(pass);
 					}
 				}
@@ -175,7 +175,7 @@ module EfcInfoExchange_TestCasesTc {
 				f_sendAndLogApdu(v_apduForSending);                	
   	
                 // Start timer
-                t_step.start(EXCEPTIONLIST_WHITE_TIME1_MAX_TC);               
+                t_step.start(IS_EXCEPTIONLIST_WHITE_TIME1_MAX_TC);               
                 // Step 2:	
               	// Wait for NAck_Protocol_Apdu(originatorRejected (7))
               	// within time EXCEPTIONLIST.TIME1
@@ -184,7 +184,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduForSending, ApduReasonCode_originatorRejected_)) -> value v_apduReceived {
 						// Log what we received, check and stop time
-						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
 						setverdict(pass);
 					}
 				}
@@ -213,7 +213,7 @@ module EfcInfoExchange_TestCasesTc {
 				f_sendAndLogApdu(v_apduForSending);                	
   	
                 // Start timer
-                t_step.start(EXCEPTIONLIST_WHITE_TIME1_MAX_TC);               
+                t_step.start(IS_EXCEPTIONLIST_WHITE_TIME1_MAX_TC);               
                 // Step 2:	
               	// Wait for NAck_Protocol_Apdu(recipientUnknown (8))
               	// within time EXCEPTIONLIST.TIME1
@@ -222,7 +222,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduForSending, ApduReasonCode_recipientUnknown_)) -> value v_apduReceived {
 						// Log what we received, check and stop time
-						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
 						setverdict(pass);
 					}
 				}
@@ -248,7 +248,7 @@ module EfcInfoExchange_TestCasesTc {
 				f_sendAndLogApdu(v_apduForSending);              	
 
                 // Start timer
-                t_step.start(EXCEPTIONLIST_WHITE_TIME1_MAX_TC);               
+                t_step.start(IS_EXCEPTIONLIST_WHITE_TIME1_MAX_TC);               
 
               	// Wait for Default_Ack_Apdu within time EXCEPTIONLIST.TIME1
               	// if negative Ack or not received set test failure --> is done in altstep
@@ -256,7 +256,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
 					}
 				}											
 											
@@ -264,7 +264,7 @@ module EfcInfoExchange_TestCasesTc {
 				f_sendAndLogApdu(v_apduForSending);              	
 
                 // Start timer
-                t_step.start(EXCEPTIONLIST_WHITE_TIME1_MAX_TC);               
+                t_step.start(IS_EXCEPTIONLIST_WHITE_TIME1_MAX_TC);               
 
                 // Step 2:	
               	// Wait for NAck_Protocol_Apdu(apduNotOk (3))
@@ -274,7 +274,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduForSending, ApduReasonCode_apduNotOK_)) -> value v_apduReceived {
 						// Log what we received, check and stop time
-						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
 						setverdict(pass);
 					}
 				}
@@ -312,7 +312,7 @@ module EfcInfoExchange_TestCasesTc {
 				f_sendAndLogApdu(v_apduForSending);                	
   	
                 // Start timer
-                t_step.start(EXCEPTIONLIST_WHITE_TIME1_MAX_TC);               
+                t_step.start(IS_EXCEPTIONLIST_WHITE_TIME1_MAX_TC);               
                 // Step 2:	
               	// Wait for NAck_Protocol_Apdu(apduNotOk (3))
               	// within time EXCEPTIONLIST.TIME1
@@ -321,7 +321,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduForSending, ApduReasonCode_apduNotOK_)) -> value v_apduReceived {
 						// Log what we received, check and stop time
-						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
 						setverdict(pass);
 					}
 				}
@@ -347,7 +347,7 @@ module EfcInfoExchange_TestCasesTc {
 				f_sendAndLogApdu(v_apduForSending);                	
   	
                 // Start timer
-                t_step.start(EXCEPTIONLIST_WHITE_TIME1_MAX_TC);               
+                t_step.start(IS_EXCEPTIONLIST_WHITE_TIME1_MAX_TC);               
                 // Step 2:	
               	// Wait for NAck_Protocol_Apdu(apduNotOk (3)) or NAck_Protocol_Apdu(sequenceError (4)) 
               	// within time EXCEPTIONLIST.TIME1
@@ -356,13 +356,13 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduForSending, ApduReasonCode_apduNotOK_)) -> value v_apduReceived {
 						// Log what we received, check and stop time
-						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
 						setverdict(pass);
 					}
 					
 					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduForSending, ApduReasonCode_sequenceError_)) -> value v_apduReceived {
 						// Log what we received, check and stop time
-						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
 						setverdict(pass);
 					}
 				}
@@ -419,10 +419,10 @@ module EfcInfoExchange_TestCasesTc {
                 v_apduForSending.infoExchangeContent.apci:=v_apciInvalidInResponseToApduIdRespTester;        	
 
 				// send ProvideUserIdList within TIME1
-				f_wait(LISTOFUSERS_TIME1_MIN_TC);
+				f_wait(IS_LISTOFUSERS_TIME1_MIN_TC);
 				f_sendAndLogApdu(v_apduForSending);       				
 				// Start timer
-                t_step.start(LISTOFUSERS_TIME2_MAX_TC);               	
+                t_step.start(IS_LISTOFUSERS_TIME2_MAX_TC);               	
              	             
                 // Step 3:	
               	// Wait for NAck_Protocol_Apdu(apduNotOk (3)) or NAck_Protocol_Apdu(sequenceError (4)) 
@@ -431,13 +431,13 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduForSending, ApduReasonCode_apduNotOK_)) -> value v_apduReceived {
 						// Log what we received, check and stop time
-						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME2_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_LISTOFUSERS_TIME2_MIN_TC);
 						setverdict(pass);
 					}
 					
 					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduForSending, ApduReasonCode_sequenceError_)) -> value v_apduReceived {
 						// Log what we received, check and stop time
-						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME2_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_LISTOFUSERS_TIME2_MIN_TC);
 						setverdict(pass);
 					}
 				}
@@ -466,7 +466,7 @@ module EfcInfoExchange_TestCasesTc {
 				f_sendAndLogApdu(v_apduForSending);                	
   	
                 // Start timer
-                t_step.start(EXCEPTIONLIST_WHITE_TIME1_MAX_TC);               
+                t_step.start(IS_EXCEPTIONLIST_WHITE_TIME1_MAX_TC);               
                 // Step 2:	
               	// Wait for NAck_Protocol_Apdu(apduNotOk (3)) 
               	// within time EXCEPTIONLIST.TIME1
@@ -475,7 +475,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduForSending, ApduReasonCode_apduNotOK_)) -> value v_apduReceived {
 						// Log what we received, check and stop time
-						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
 						setverdict(pass);
 					}
 				}
@@ -510,7 +510,7 @@ module EfcInfoExchange_TestCasesTc {
 				f_sendAndLogApdu(v_apduForSending);                	
   	
                 // Start timer
-                t_step.start(EXCEPTIONLIST_WHITE_TIME1_MAX_TC);               
+                t_step.start(IS_EXCEPTIONLIST_WHITE_TIME1_MAX_TC);               
 
                	// Step 2:	
               	// Wait for NAck_Protocol_Apdu(apduNotOk (3)) 
@@ -519,7 +519,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduForSending, ApduReasonCode_apduNotOK_)) -> value v_apduReceived {
 						// Log what we received, check and stop time
-						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
 						setverdict(pass);
 					}
 				}
@@ -570,7 +570,7 @@ module EfcInfoExchange_TestCasesTc {
 				v_noReqAdusReceived := lengthof(v_apduReceived.infoExchangeContent.adus.requestAdus);			
 				
 				//Step 2 send ProvideUserDetails after TIME1
-				f_wait(USERDETAILS_TIME1_MIN_TC);
+				f_wait(IS_USERDETAILS_TIME1_MIN_TC);
 
 				//Prepare ProvideUserDetailsADUs
 				//All ADUs will be put in the array v_adus
@@ -602,13 +602,13 @@ module EfcInfoExchange_TestCasesTc {
 				f_sendAndLogApdu(v_apduForSending);
 
 				//Start timer
-				t_step.start(USERDETAILS_TIME2_MAX_TC);
+				t_step.start(IS_USERDETAILS_TIME2_MAX_TC);
 				
 				//Step 3 wait for AckADU
 				alt {
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME2_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_USERDETAILS_TIME2_MIN_TC);
 						setverdict(pass);
 					}
 				} // End of alt statement
@@ -655,7 +655,7 @@ module EfcInfoExchange_TestCasesTc {
 				v_noReqAdusReceived := lengthof(v_apduReceived.infoExchangeContent.adus.requestAdus);
 				
 				//Step 2 send ProvideUserDetails after TIME1
-				f_wait(USERDETAILS_TIME1_MIN_TC);
+				f_wait(IS_USERDETAILS_TIME1_MIN_TC);
 
 				//Prepare ProvideUserDetailsADUs
 				//All ADUs will be put in the array v_adus
@@ -688,7 +688,7 @@ module EfcInfoExchange_TestCasesTc {
 				f_sendAndLogApdu(v_apduForSending);
 
 				//Start timer
-				t_step.start(USERDETAILS_TIME2_MAX_TC);
+				t_step.start(IS_USERDETAILS_TIME2_MAX_TC);
 
 				// Step 3: Wait for
                 //		- NAck_Apdu with aduReasonCode = semantic error (3000) for all ADUs, or
@@ -710,12 +710,12 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduForSending, AduReasonCode_semanticError_)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME2_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_USERDETAILS_TIME2_MIN_TC);
 						setverdict(pass);
 					}					
 					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, v_nAckParamsList)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME2_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_USERDETAILS_TIME2_MIN_TC);
 						setverdict(pass);
 					}										
 				}
@@ -762,7 +762,7 @@ module EfcInfoExchange_TestCasesTc {
 				v_noReqAdusReceived := lengthof(v_apduReceived.infoExchangeContent.adus.requestAdus);
 				
 				// Step 2 send ProvideUserDetails after TIME1
-				f_wait(USERDETAILS_TIME1_MIN_TC);
+				f_wait(IS_USERDETAILS_TIME1_MIN_TC);
 
 				// Prepare ProvideUserDetailsADUs
 				// StatusFlg not present
@@ -795,7 +795,7 @@ module EfcInfoExchange_TestCasesTc {
 				f_sendAndLogApdu(v_apduForSending);
 
 				//Start timer
-				t_step.start(USERDETAILS_TIME2_MAX_TC);
+				t_step.start(IS_USERDETAILS_TIME2_MAX_TC);
 
 				// Step 3: Wait for
                 //		- NAck_Apdu with aduReasonCode = invalidADU (0) for all ADUs, or
@@ -817,12 +817,12 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduForSending, AduReasonCode_invalidADU_)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME2_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_USERDETAILS_TIME2_MIN_TC);
 						setverdict(pass);
 					}					
 					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, v_nAckParamsList)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME2_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_USERDETAILS_TIME2_MIN_TC);
 						setverdict(pass);
 					}										
 				}
@@ -869,7 +869,7 @@ module EfcInfoExchange_TestCasesTc {
 				v_noReqAdusReceived := lengthof(v_apduReceived.infoExchangeContent.adus.requestAdus);
 				
 				// Step 2 send ProvideUserDetails after TIME1
-				f_wait(USERDETAILS_TIME1_MIN_TC);
+				f_wait(IS_USERDETAILS_TIME1_MIN_TC);
 
 				// Prepare ProvideUserDetailsADUs
 				// with statusFlag ranging from 1 to 5 and no listOfUserParameters being present
@@ -897,7 +897,7 @@ module EfcInfoExchange_TestCasesTc {
 				f_sendAndLogApdu(v_apduForSending);
 
 				//Start timer
-				t_step.start(USERDETAILS_TIME2_MAX_TC);
+				t_step.start(IS_USERDETAILS_TIME2_MAX_TC);
 
 				// Step 3: Wait for
                 //		- NAck_Apdu with aduReasonCode = invalidADU (0) for all ADUs, or
@@ -919,12 +919,12 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduForSending, AduReasonCode_invalidADU_)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME2_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_USERDETAILS_TIME2_MIN_TC);
 						setverdict(pass);
 					}					
 					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, v_nAckParamsList)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME2_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_USERDETAILS_TIME2_MIN_TC);
 						setverdict(pass);
 					}										
 				}
@@ -971,7 +971,7 @@ module EfcInfoExchange_TestCasesTc {
 				v_noReqAdusReceived := lengthof(v_apduReceived.infoExchangeContent.adus.requestAdus);
 				
 				// Step 2 send ProvideUserDetails after TIME1
-				f_wait(USERDETAILS_TIME1_MIN_TC);
+				f_wait(IS_USERDETAILS_TIME1_MIN_TC);
 
 				// Prepare ProvideUserDetailsADUs
 				// with statusFlag value not included in the interval from 1 to 5
@@ -1004,7 +1004,7 @@ module EfcInfoExchange_TestCasesTc {
 				f_sendAndLogApdu(v_apduForSending);
 
 				// Start timer
-				t_step.start(USERDETAILS_TIME2_MAX_TC);
+				t_step.start(IS_USERDETAILS_TIME2_MAX_TC);
 
 				// Step 3: Wait for
                 //		- NAck_Apdu with aduReasonCode = invalidADU (0) for all ADUs, or
@@ -1026,12 +1026,12 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduForSending, AduReasonCode_invalidADU_)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME2_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_USERDETAILS_TIME2_MIN_TC);
 						setverdict(pass);
 					}					
 					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, v_nAckParamsList)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME2_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_USERDETAILS_TIME2_MIN_TC);
 						setverdict(pass);
 					}										
 				}
@@ -1078,7 +1078,7 @@ module EfcInfoExchange_TestCasesTc {
 				v_noReqAdusReceived := lengthof(v_apduReceived.infoExchangeContent.adus.requestAdus);
 				
 				//Step 2 send ProvideUserDetails after TIME1
-				f_wait(USERDETAILS_TIME1_MIN_TC);
+				f_wait(IS_USERDETAILS_TIME1_MIN_TC);
 
 				// Prepare ProvideUserDetailsADUs
 				// with invalid parameters in the UserParameterResponse field; i.e. requestUserParameter present OR
@@ -1112,7 +1112,7 @@ module EfcInfoExchange_TestCasesTc {
 				f_sendAndLogApdu(v_apduForSending);
 
 				//Start timer
-				t_step.start(USERDETAILS_TIME2_MAX_TC);
+				t_step.start(IS_USERDETAILS_TIME2_MAX_TC);
 
 				// Step 3: Wait for
                 //		- NAck_Apdu with aduReasonCode = invalidADU (0) for all ADUs, or
@@ -1134,12 +1134,12 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduForSending, AduReasonCode_invalidADU_)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME2_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_USERDETAILS_TIME2_MIN_TC);
 						setverdict(pass);
 					}					
 					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, v_nAckParamsList)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(USERDETAILS_TIME2_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_USERDETAILS_TIME2_MIN_TC);
 						setverdict(pass);
 					}										
 				}
@@ -1207,11 +1207,11 @@ module EfcInfoExchange_TestCasesTc {
                 v_apduForSending := m_apduNoAuthRespTester(v_apduReceived, v_adusProvideUserIdList);              	
 
 				// send ProvideUserIdList within TIME1
-				f_wait(LISTOFUSERS_TIME1_MIN_TC);
+				f_wait(IS_LISTOFUSERS_TIME1_MIN_TC);
 				f_sendAndLogApdu(v_apduForSending);       				
 
 				// Start timer
-                t_step.start(LISTOFUSERS_TIME2_MAX_TC);               	
+                t_step.start(IS_LISTOFUSERS_TIME2_MAX_TC);               	
              	             
                 // Step 3:	
               	// Wait for Default_Ack 
@@ -1220,7 +1220,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {
 						// Log what we received, check and stop time
-						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME2_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_LISTOFUSERS_TIME2_MIN_TC);
 						setverdict(pass);
 					}
 				}
@@ -1275,11 +1275,11 @@ module EfcInfoExchange_TestCasesTc {
                 v_apduForSending := m_apduNoAuthRespTester(v_apduReceived, {provideUserIdListADUs:={m_aduProvideUserIdList(omit)}});              	
 
 				// send ProvideUserIdList within TIME1
-				f_wait(LISTOFUSERS_TIME1_MIN_TC);
+				f_wait(IS_LISTOFUSERS_TIME1_MIN_TC);
 				f_sendAndLogApdu(v_apduForSending);       				
 
 				// Start timer
-                t_step.start(LISTOFUSERS_TIME2_MAX_TC);               	
+                t_step.start(IS_LISTOFUSERS_TIME2_MAX_TC);               	
              	             
               	// Wait for Ack_Apdu within time LISTOFUSERS.TIME2
                 //		- NAck_Apdu with aduReasonCode = invalidAdu(0) for all ADUs, or
@@ -1288,12 +1288,12 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduForSending, AduReasonCode_invalidADU_)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME2_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_LISTOFUSERS_TIME2_MIN_TC);
 						setverdict(pass);
 					}					
 					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, m_roNackParamsSingle(1, AduReasonCode_invalidADU_))) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME2_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_LISTOFUSERS_TIME2_MIN_TC);
 						setverdict(pass);
 					}										
 				}
@@ -1350,11 +1350,11 @@ module EfcInfoExchange_TestCasesTc {
                 v_apduForSending := m_apduNoAuthRespTester(v_apduReceived, v_adus);              	
 
 				// send ProvideUserIdList within TIME1
-				f_wait(LISTOFUSERS_TIME1_MIN_TC);
+				f_wait(IS_LISTOFUSERS_TIME1_MIN_TC);
 				f_sendAndLogApdu(v_apduForSending);       				
 
 				// Start timer
-                t_step.start(LISTOFUSERS_TIME2_MAX_TC);               	
+                t_step.start(IS_LISTOFUSERS_TIME2_MAX_TC);               	
              	             
               	// Wait for Ack_Apdu within time LISTOFUSERS.TIME2
                 //		- NAck_Apdu with aduReasonCode = semanticError (3000) for all ADUs, or
@@ -1363,7 +1363,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduForSending, AduReasonCode_semanticError_)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME2_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_LISTOFUSERS_TIME2_MIN_TC);
 						setverdict(pass);
 					}					
 					[] mtcPort.receive(
@@ -1376,7 +1376,7 @@ module EfcInfoExchange_TestCasesTc {
 							}
 						)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME2_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_LISTOFUSERS_TIME2_MIN_TC);
 						setverdict(pass);
 					}										
 				}
@@ -1429,11 +1429,11 @@ module EfcInfoExchange_TestCasesTc {
                 v_apduForSending:= m_apduNoAuthRespTester(v_apduReceived, {provideUserIdListADUs:={v_aduProvideUserIdList}});              	
 
 				// send ProvideUserIdList within TIME1
-				f_wait(LISTOFUSERS_TIME1_MIN_TC);
+				f_wait(IS_LISTOFUSERS_TIME1_MIN_TC);
 				f_sendAndLogApdu(v_apduForSending);       				
 
 				// Start timer
-                t_step.start(LISTOFUSERS_TIME2_MAX_TC);               	
+                t_step.start(IS_LISTOFUSERS_TIME2_MAX_TC);               	
              	             
               	// Wait for Ack_Apdu within time LISTOFUSERS.TIME2
                 //		- NAck_Apdu with aduReasonCode = invalidADU(0) for all ADUs, or
@@ -1442,12 +1442,12 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduForSending, AduReasonCode_invalidADU_)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME2_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_LISTOFUSERS_TIME2_MIN_TC);
 						setverdict(pass);
 					}					
 					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending,m_roNackParamsSingle(1, AduReasonCode_invalidADU_))) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(LISTOFUSERS_TIME2_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_LISTOFUSERS_TIME2_MIN_TC);
 						setverdict(pass);
 					}										
 				}
@@ -1482,7 +1482,7 @@ module EfcInfoExchange_TestCasesTc {
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
   	
                 // Start timer
-                t_step.start(EXCEPTIONLIST_BLACK_TIME1_MAX_TC);               
+                t_step.start(IS_EXCEPTIONLIST_BLACK_TIME1_MAX_TC);               
                 // Step 2:	
               	// Wait for Default_Ack_Apdu within time EXCEPTIONLIST.TIME1
               	// if negative Ack or not received set test failure --> is done in altstep
@@ -1490,7 +1490,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
 					}
 				}
 				
@@ -1502,7 +1502,7 @@ module EfcInfoExchange_TestCasesTc {
 				f_sendAndLogApdu(v_apduForSending);                	
   	
                 // Start timer
-                t_step.start(EXCEPTIONLIST_WHITE_TIME1_MAX_TC);               
+                t_step.start(IS_EXCEPTIONLIST_WHITE_TIME1_MAX_TC);               
                 // Step 2:	
               	// Wait for Default_Ack_Apdu within time EXCEPTIONLIST.TIME1
               	// if negative Ack or not received set test failure --> is done in altstep
@@ -1510,7 +1510,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_EXCEPTIONLIST_WHITE_TIME1_MIN_TC);
 						//Set verdict
 						setverdict(pass);												
 					}
@@ -1537,7 +1537,7 @@ module EfcInfoExchange_TestCasesTc {
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
   	
                 // Start timer
-                t_step.start(EXCEPTIONLIST_DISCOUNT_TIME1_MAX_TC);               
+                t_step.start(IS_EXCEPTIONLIST_DISCOUNT_TIME1_MAX_TC);               
                 // Step 2:	
               	// Wait for Default_Ack_Apdu within time EXCEPTIONLIST.TIME1
                 //		- Default_Ack, or
@@ -1548,19 +1548,19 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_DISCOUNT_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_EXCEPTIONLIST_DISCOUNT_TIME1_MIN_TC);
 						//Set verdict
 						setverdict(pass);												
 					}
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduForSending, AduReasonCode_semanticError_)) -> value v_apduReceived {				  
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_DISCOUNT_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_EXCEPTIONLIST_DISCOUNT_TIME1_MIN_TC);
 						//Set verdict
 						setverdict(pass);												
 					}
 					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, m_roNackParamsSingle(1, AduReasonCode_semanticError_))) -> value v_apduReceived {				  
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_DISCOUNT_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_EXCEPTIONLIST_DISCOUNT_TIME1_MIN_TC);
 						//Set verdict
 						setverdict(pass);												
 					}								
@@ -1609,7 +1609,7 @@ module EfcInfoExchange_TestCasesTc {
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
             	
                 // Start timer
-                t_step.start(EXCEPTIONLIST_BLACK_TIME1_MAX_TC);               
+                t_step.start(IS_EXCEPTIONLIST_BLACK_TIME1_MAX_TC);               
 
               	// Wait for Ack_Apdu within time EXCEPTIONLIST.BLACK_TIME1
                 //		- NAck_Apdu with aduReasonCode = exceptionListsDateAndTimeRejected(405) for all ADUs, or
@@ -1619,12 +1619,12 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduForSending, AduReasonCode_exceptionListsDateAndTimeRejected_)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
 						setverdict(pass);
 					}
 					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, m_roNackParamsSingle(1, AduReasonCode_exceptionListsDateAndTimeRejected_))) -> value v_apduReceived {				  
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
 						//Set verdict
 						setverdict(pass);												
 					}								
@@ -1670,7 +1670,7 @@ module EfcInfoExchange_TestCasesTc {
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
 
                 // Start timer
-                t_step.start(EXCEPTIONLIST_BLACK_TIME1_MAX_TC);     
+                t_step.start(IS_EXCEPTIONLIST_BLACK_TIME1_MAX_TC);     
             	
               	// Wait for Ack_Apdu within time EXCEPTIONLIST.BLACK_TIME1
                 //		- NAck_Apdu with aduReasonCode = invalidAdu(0) for all ADUs, or
@@ -1680,12 +1680,12 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduForSending, AduReasonCode_invalidADU_)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
 						setverdict(pass);
 					}					
 					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, m_roNackParamsSingle(1, AduReasonCode_invalidADU_))) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
 						setverdict(pass);
 					}										
 				}
@@ -1712,7 +1712,7 @@ module EfcInfoExchange_TestCasesTc {
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
 		
                 // Start timer
-                t_step.start(EXCEPTIONLIST_BLACK_TIME1_MAX_TC);               
+                t_step.start(IS_EXCEPTIONLIST_BLACK_TIME1_MAX_TC);               
             	
               	// Wait for Ack_Apdu within time EXCEPTIONLIST.BLACK_TIME1
                 //		- NAck_Apdu with apduNotOk(3)
@@ -1721,7 +1721,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduForSending, ApduReasonCode_apduNotOK_)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
 						setverdict(pass);
 					}					
 				}
@@ -1766,7 +1766,7 @@ module EfcInfoExchange_TestCasesTc {
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
 		
                 // Start timer
-                t_step.start(EXCEPTIONLIST_BLACK_TIME1_MAX_TC);               
+                t_step.start(IS_EXCEPTIONLIST_BLACK_TIME1_MAX_TC);               
             	
               	// Wait for Ack_Apdu within time EXCEPTIONLIST.BLACK_TIME1
                 //		- NAck_Apdu with aduReasonCode = exceptionListsVersionRejected(400) for all ADUs, or
@@ -1776,12 +1776,12 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduForSending, AduReasonCode_exceptionListsVersionRejected_)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
 						setverdict(pass);
 					}					
 					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, m_roNackParamsSingle(1, AduReasonCode_exceptionListsVersionRejected_))) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
 						setverdict(pass);
 					}										
 				}
@@ -1825,7 +1825,7 @@ module EfcInfoExchange_TestCasesTc {
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
 		
                 // Start timer
-                t_step.start(EXCEPTIONLIST_BLACK_TIME1_MAX_TC);            
+                t_step.start(IS_EXCEPTIONLIST_BLACK_TIME1_MAX_TC);            
             	
               	// Wait for Ack_Apdu within time TIME_DEFAULT
                 //		- NAck_Apdu with aduReasonCode = exceptionListsTypeRejected(401) for all ADUs, or
@@ -1878,7 +1878,7 @@ module EfcInfoExchange_TestCasesTc {
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
 		
                 // Start timer
-                t_step.start(EXCEPTIONLIST_BLACK_TIME1_MAX_TC);           
+                t_step.start(IS_EXCEPTIONLIST_BLACK_TIME1_MAX_TC);           
             	
               	// Wait for Ack_Apdu within time EXCEPTIONLIST.BLACK_TIME1
                 //		- NAck_Apdu with aduReasonCode = exceptionListsUserIdRejected(402) for all ADUs, or
@@ -1888,12 +1888,12 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduForSending, AduReasonCode_exceptionListsUserIdRejected_)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
 						setverdict(pass);
 					}					
 					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, m_roNackParamsSingle(1, AduReasonCode_exceptionListsUserIdRejected_))) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
 						setverdict(pass);
 					}										
 				}
@@ -1910,7 +1910,7 @@ module EfcInfoExchange_TestCasesTc {
 
 				// Initialisation
 				//check if the testcase shall run, activate altsteps on ports, etc 
- 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A7_3_implementedEXCEPTIONLIST and (EXCEPTIONLIST_BLACK_TIME0_MIN_TC > 0.0);
+ 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A7_3_implementedEXCEPTIONLIST and (IS_EXCEPTIONLIST_BLACK_TIME0_MIN_TC > 0.0);
 				f_intialiseMtc(v_runOrNot);                 
 							
                 // Transaction 1
@@ -1921,7 +1921,7 @@ module EfcInfoExchange_TestCasesTc {
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
   	
                 // Start timer
-                t_step.start(EXCEPTIONLIST_BLACK_TIME1_MAX_TC);               
+                t_step.start(IS_EXCEPTIONLIST_BLACK_TIME1_MAX_TC);               
 
                 // Transaction 1 / Step 2:	
               	// Wait for Default_Ack_Apdu within time EXCEPTIONLIST.TIME1
@@ -1930,7 +1930,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
 					}
 				}
 								
@@ -1943,7 +1943,7 @@ module EfcInfoExchange_TestCasesTc {
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
   	
                 // Start timer
-                t_step.start(EXCEPTIONLIST_BLACK_TIME1_MAX_TC);               
+                t_step.start(IS_EXCEPTIONLIST_BLACK_TIME1_MAX_TC);               
 
 				// Step 2: Wait for NAck_Apdu with issueCode=NAck_requestSentTooOften(10)
             	// within the time EXCEPTIONLIST.BLACK_TIME1 
@@ -1952,7 +1952,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduNAckRequestSentTooOften(v_apduForSending)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time		
-						f_logReceivedThenCheckAndStopTime(EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
 						setverdict(pass);
 					}
 				}
@@ -2008,7 +2008,7 @@ module EfcInfoExchange_TestCasesTc {
 					} // End of alt statement
 
 					// Step 2: Send Ack within time constraints
-					f_wait(DSRC_BILLINGDETAILS_TIME1_MIN_TC);
+					f_wait(IS_DSRC_BILLINGDETAILS_TIME1_MIN_TC);
 					f_sendAndLogApdu(m_apduDefaultAckTester(v_apduReceived));
 				} // end if-branch
 				else { // else-branch for GNSS Toll Charger
@@ -2039,7 +2039,7 @@ module EfcInfoExchange_TestCasesTc {
 					} // End of alt statement
 
 					// Step 2: Send Ack within time constraints
-					f_wait(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC);
+					f_wait(IS_GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC);
 					f_sendAndLogApdu(m_apduDefaultAckTester(v_apduReceived));
 				}; // end else-branch      	                              
   
@@ -2064,7 +2064,7 @@ module EfcInfoExchange_TestCasesTc {
 
                 // Start timer for TIMEB_MAX (time between receiving the AckADU of the BillingDeatails transaction and
                 // sending an corresponding PaymentClaim ADU)
-                t_step.start(PAYMENTCLAIM_TIMEB_MAX_TC);               
+                t_step.start(IS_PAYMENTCLAIM_TIMEB_MAX_TC);               
 
 				// Send trigger (IuT to perform a Payment Claim transaction
 				// containing exactly one PaymentClaim ADU with action_code = send 
@@ -2122,7 +2122,7 @@ module EfcInfoExchange_TestCasesTc {
 
 						if (v_matchingUserIdBillingDetailsIdPair) { 
 							// Step 2: Send Ack within time constraints
-							f_wait(PAYMENTCLAIM_TIME1_MIN_TC);
+							f_wait(IS_PAYMENTCLAIM_TIME1_MIN_TC);
 							f_sendAndLogApdu(m_apduDefaultAckTester(v_apduReceived));
 							// Set test success
 							setverdict(pass);
@@ -2174,7 +2174,7 @@ module EfcInfoExchange_TestCasesTc {
 					} // End of alt statement
 
 					// Step 2: Send Ack within time constraints
-					f_wait(DSRC_BILLINGDETAILS_TIME1_MIN_TC);
+					f_wait(IS_DSRC_BILLINGDETAILS_TIME1_MIN_TC);
 					
 					f_sendAndLogApdu(m_apduDefaultAckTester(v_apduReceived));
 				} // end if-branch
@@ -2204,7 +2204,7 @@ module EfcInfoExchange_TestCasesTc {
 					} // End of alt statement
 					
 					// Step 2: Send Ack within time constraints
-					f_wait(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC);
+					f_wait(IS_GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC);
 					f_sendAndLogApdu(m_apduDefaultAckTester(v_apduReceived));
 				} // end else-branch      	                              
 
@@ -2228,7 +2228,7 @@ module EfcInfoExchange_TestCasesTc {
 
                 // Start timer for TIMEB_MAX (time between receiving the AckADU of the BillingDeatails transaction and
                 // sending an corresponding PaymentClaim ADU)
-                t_step.start(PAYMENTCLAIM_TIMEB_MAX_TC);               
+                t_step.start(IS_PAYMENTCLAIM_TIMEB_MAX_TC);               
 
 				// Send trigger (IuT to perform a Payment Claim transaction
 				// containing exactly one PaymentClaim ADU with action_code = send 
@@ -2279,14 +2279,14 @@ module EfcInfoExchange_TestCasesTc {
 						if (v_matchingUserIdBillingDetailsIdPair) { 
 							f_addLogEntry("Billing details in payment claim received correspond t the billing details in the previous billing details trasnaction");
 							// Step 2: Send Ack within time constraints
-							f_wait(PAYMENTCLAIM_TIME1_MIN_TC);
+							f_wait(IS_PAYMENTCLAIM_TIME1_MIN_TC);
 						} 
 					} // end this alt-branch
 				} // End of alt statement            	                              
 
 				// Step 2: Send NAck (except of issueCode "acceptedWithWarning")
 				// within time constraints to initiate the following adjust
-				f_wait(PAYMENTCLAIM_TIME1_MIN_TC);
+				f_wait(IS_PAYMENTCLAIM_TIME1_MIN_TC);
 				f_sendAndLogApdu(m_apduNAckIndividualIssuesTester(v_apduReceived, m_roNackParamsSingle(1, AduReasonCode_semanticError_)));
 
                 // Step 3:
@@ -2307,7 +2307,7 @@ module EfcInfoExchange_TestCasesTc {
 				f_sendAndLogTrigger(PAYMENTCLAIM_TR_TC_1_ADJUST);
 
 				// start time to check compliance to TIMEA_MIN
-				// Note: there is no maximum time defined but a timer is started check below minimum PAYMENTCLAIM_TIMEA_MIN_TC 
+				// Note: there is no maximum time defined but a timer is started check below minimum IS_PAYMENTCLAIM_TIMEA_MIN_TC 
                 t_step.start(c_veryLongTime);                
  
                 // Wait for above specified APDU within time constraints
@@ -2316,13 +2316,13 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
 						// Log what we received, no minimum time required	
-						f_logReceivedThenCheckAndStopTime(PAYMENTCLAIM_TIMEA_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_PAYMENTCLAIM_TIMEA_MIN_TC);
 						f_addLogEntry("Adjust transaction passed");
 					}
 				}
 
 				// Step 4: Send Ack within time constraints
-				f_wait(PAYMENTCLAIM_TIME1_MIN_TC);
+				f_wait(IS_PAYMENTCLAIM_TIME1_MIN_TC);
 				f_sendAndLogApdu(m_apduDefaultAckTester(v_apduReceived));
                  
                 // Step 5:
@@ -2342,7 +2342,7 @@ module EfcInfoExchange_TestCasesTc {
 				f_sendAndLogTrigger(PAYMENTCLAIM_TR_TC_1_REVOKE);
 
 				// start time to check compliance to TIMEEA_MIN
-				// Note: there is no maximum time defined but a timer shall be started to check below minimum PAYMENTCLAIM_TIMEA_MIN_TC 
+				// Note: there is no maximum time defined but a timer shall be started to check below minimum IS_PAYMENTCLAIM_TIMEA_MIN_TC 
                 t_step.start(c_veryLongTime);                
 
                 // Wait for above specified APDU within time constraints
@@ -2351,9 +2351,9 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
 						// Log what we received, no minimum time required	
-						f_logReceivedThenCheckAndStopTime(PAYMENTCLAIM_TIMEA_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_PAYMENTCLAIM_TIMEA_MIN_TC);
 						// Step 6: Send Ack within time constraints
-						f_wait(PAYMENTCLAIM_TIME1_MIN_TC);
+						f_wait(IS_PAYMENTCLAIM_TIME1_MIN_TC);
 						f_sendAndLogApdu(m_apduDefaultAckTester(v_apduReceived));
 						// Set test success
 						setverdict(pass);
@@ -2407,7 +2407,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time	
-						f_logReceivedThenCheckAndStopTime(DSRC_BILLINGDETAILS_TIME1_MIN_TC);					              		
+						f_logReceivedThenCheckAndStopTime(IS_DSRC_BILLINGDETAILS_TIME1_MIN_TC);					              		
 
 						for (var integer v_i:=0; v_i<lengthof(v_apduReceived.infoExchangeContent.adus.billingDetailsADUs);v_i:=v_i+1){
 							if (not (match(v_apduReceived.infoExchangeContent.adus.billingDetailsADUs[v_i],mw_aduDsrcBillingDetails))){
@@ -2418,7 +2418,7 @@ module EfcInfoExchange_TestCasesTc {
 							}
 						}					               		
 						// Step 2: Send Ack within time constraints
-						f_wait(DSRC_BILLINGDETAILS_TIME1_MIN_TSP);
+						f_wait(IS_DSRC_BILLINGDETAILS_TIME1_MIN_TSP);
 						f_sendAndLogApdu(m_apduDefaultAckTester(v_apduReceived));
 						// Set test success
 						setverdict(pass);
@@ -2454,7 +2454,7 @@ module EfcInfoExchange_TestCasesTc {
 					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
-						f_checkMinimumTStep(DSRC_BILLINGDETAILS_TIME1_MIN_TC);	
+						f_checkMinimumTStep(IS_DSRC_BILLINGDETAILS_TIME1_MIN_TC);	
 
 						for (var integer v_i:=0; v_i<lengthof(v_apduReceived.infoExchangeContent.adus.billingDetailsADUs);v_i:=v_i+1){
 							if (not (match(v_apduReceived.infoExchangeContent.adus.billingDetailsADUs[v_i],mw_aduDsrcBillingDetails))){
@@ -2472,7 +2472,7 @@ module EfcInfoExchange_TestCasesTc {
 				v_receivedBillingDetailsId := v_apduReceived.infoExchangeContent.adus.billingDetailsADUs[0].billingDetailsId;
 
 				// Step 2: Send NAck within time constraints
-				f_wait(DSRC_BILLINGDETAILS_TIME1_MIN_TSP);				
+				f_wait(IS_DSRC_BILLINGDETAILS_TIME1_MIN_TSP);				
 
 				// send a negative Ack (except of issueCode "acceptedWithWarning")
 				v_apduForSending:=m_apduNAckIndividualIssuesTester(v_apduReceived, m_roNackParamsSingle(1, AduReasonCode_semanticError_));
@@ -2497,7 +2497,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(DSRC_BILLINGDETAILS_TIME1_MIN_TC);					              		
+						f_logReceivedThenCheckAndStopTime(IS_DSRC_BILLINGDETAILS_TIME1_MIN_TC);					              		
 
 						for (var integer v_i:=0; v_i<lengthof(v_apduReceived.infoExchangeContent.adus.billingDetailsADUs);v_i:=v_i+1){
 							if (not (match(v_apduReceived.infoExchangeContent.adus.billingDetailsADUs[v_i],mw_aduDsrcBillingDetails))){
@@ -2509,7 +2509,7 @@ module EfcInfoExchange_TestCasesTc {
 						}					               		
 
 						// Step 2: Send Ack within time constraints
-						f_wait(DSRC_BILLINGDETAILS_TIME1_MIN_TSP);
+						f_wait(IS_DSRC_BILLINGDETAILS_TIME1_MIN_TSP);
 						f_sendAndLogApdu(m_apduDefaultAckTester(v_apduReceived));
 						// Set test success
 						setverdict(pass);
@@ -2545,7 +2545,7 @@ module EfcInfoExchange_TestCasesTc {
 					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
 						// Log what we received
 						f_logApduReceivedAndTStep();
-						f_checkMinimumTStep(DSRC_BILLINGDETAILS_TIME1_MIN_TC);	
+						f_checkMinimumTStep(IS_DSRC_BILLINGDETAILS_TIME1_MIN_TC);	
 					}
 				}
 
@@ -2554,7 +2554,7 @@ module EfcInfoExchange_TestCasesTc {
 				v_receivedBillingDetailsId := v_apduReceived.infoExchangeContent.adus.billingDetailsADUs[0].billingDetailsId;
 
 				// Step 2: Send NAck within time constraints
-				f_wait(DSRC_BILLINGDETAILS_TIME1_MIN_TSP);
+				f_wait(IS_DSRC_BILLINGDETAILS_TIME1_MIN_TSP);
 				v_apduForSending:=m_apduDefaultAckTester(v_apduReceived);
 				f_sendAndLogApdu(v_apduForSending);
 
@@ -2575,7 +2575,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(DSRC_BILLINGDETAILS_TIME1_MIN_TC);					              		
+						f_logReceivedThenCheckAndStopTime(IS_DSRC_BILLINGDETAILS_TIME1_MIN_TC);					              		
 
 						for (var integer v_i:=0; v_i<lengthof(v_apduReceived.infoExchangeContent.adus.billingDetailsADUs);v_i:=v_i+1){
 							if (not (match(v_apduReceived.infoExchangeContent.adus.billingDetailsADUs[v_i],mw_aduDsrcBillingDetails))){
@@ -2587,7 +2587,7 @@ module EfcInfoExchange_TestCasesTc {
 						}					               		
 
 						// Step 2: Send Ack within time constraints
-						f_wait(DSRC_BILLINGDETAILS_TIME1_MIN_TSP);
+						f_wait(IS_DSRC_BILLINGDETAILS_TIME1_MIN_TSP);
 						f_sendAndLogApdu(m_apduDefaultAckTester(v_apduReceived));
 						// Set test success
 						setverdict(pass);
@@ -2632,7 +2632,7 @@ module EfcInfoExchange_TestCasesTc {
 				f_sendAndLogApdu(v_apduForSending);                     
                 
                 // Start timer
-                t_step.start(DSRC_CONTRACTISSUERLIST_TIME1_MAX_TC);               
+                t_step.start(IS_DSRC_CONTRACTISSUERLIST_TIME1_MAX_TC);               
                 // Step 2:	
               	// Wait for Default_Ack_Apdu within time DSRC.CONTRACTISSUERLIST.TIME1
               	// if negative Ack or not received set test failure --> is done in altstep
@@ -2640,7 +2640,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(DSRC_CONTRACTISSUERLIST_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_DSRC_CONTRACTISSUERLIST_TIME1_MIN_TC);
 						//Set verdict
 						setverdict(pass);												
 					}
@@ -2674,7 +2674,7 @@ module EfcInfoExchange_TestCasesTc {
 				f_sendAndLogApdu(v_apduForSending); 
                 
                 // Start timer
-                t_step.start(DSRC_CONTRACTISSUERLIST_TIME1_MAX_TC);   
+                t_step.start(IS_DSRC_CONTRACTISSUERLIST_TIME1_MAX_TC);   
 
               	// Wait for NAck_Apdu within time DSRC.CONTRACTISSUERLIST.TIME1
                 //		- NAck_Apdu with aduReasonCode = semanticError (3000) for all ADUs, or
@@ -2684,7 +2684,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduForSending, AduReasonCode_semanticError_)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(DSRC_CONTRACTISSUERLIST_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_DSRC_CONTRACTISSUERLIST_TIME1_MIN_TC);
 						// set verdict
 						setverdict(pass);
 					}
@@ -2694,7 +2694,7 @@ module EfcInfoExchange_TestCasesTc {
 						m_nackParams(2, AduReasonCode_semanticError_),
 						m_nackParams(3, AduReasonCode_semanticError_)})) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(DSRC_CONTRACTISSUERLIST_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_DSRC_CONTRACTISSUERLIST_TIME1_MIN_TC);
 						// set verdict
 						setverdict(pass);
 					}										
@@ -2727,7 +2727,7 @@ module EfcInfoExchange_TestCasesTc {
 				f_sendAndLogApdu(v_apduForSending); 
                 
                 // Start timer
-                t_step.start(DSRC_CONTRACTISSUERLIST_TIME1_MAX_TC);   
+                t_step.start(IS_DSRC_CONTRACTISSUERLIST_TIME1_MAX_TC);   
 
 				// Step 2: Wait for NAck_Apdu with issueCode=NAck_requestSentTooOften(10)
             	// within the time DSRC.CONTRACTISSUERLIST.TIME1  
@@ -2736,7 +2736,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduNAckRequestSentTooOften(v_apduForSending)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(DSRC_CONTRACTISSUERLIST_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_DSRC_CONTRACTISSUERLIST_TIME1_MIN_TC);
 						// set verdict
 						setverdict(pass);
 					}
@@ -2782,7 +2782,7 @@ module EfcInfoExchange_TestCasesTc {
 							}
 						}					               		
 						// Step 2: Send Ack within time constraints
-						f_wait(DSRC_REPORTABNORMALOBE_TIME1_MIN_TSP);
+						f_wait(IS_DSRC_REPORTABNORMALOBE_TIME1_MIN_TSP);
 						f_sendAndLogApdu(m_apduDefaultAckTester(v_apduReceived));
 						// Set test success
 						setverdict(pass);
@@ -2827,7 +2827,7 @@ module EfcInfoExchange_TestCasesTc {
 						// Log what we received
 						f_logApduReceivedAndTStep();					              		
 						// Step 2: Send Ack within time constraints
-						f_wait(DSRC_EFCCONTEXTDATA_TIME1_MIN_TSP);
+						f_wait(IS_DSRC_EFCCONTEXTDATA_TIME1_MIN_TSP);
 						f_sendAndLogApdu(m_apduDefaultAckTester(v_apduReceived));
 						// Set test success
 						setverdict(pass);
@@ -2862,7 +2862,7 @@ module EfcInfoExchange_TestCasesTc {
 						// Log what we received
 						f_logApduReceivedAndTStep();					              		
 						// Step 2: Send Ack within time constraints
-						f_wait(DSRC_EFCCONTEXTDATA_TIME1_MIN_TSP);
+						f_wait(IS_DSRC_EFCCONTEXTDATA_TIME1_MIN_TSP);
 						f_sendAndLogApdu(m_apduDefaultAckTester(v_apduReceived));
 						// Set test success
 						setverdict(pass);
@@ -2909,7 +2909,7 @@ module EfcInfoExchange_TestCasesTc {
 				                	               	                	                	                	                	                	              	
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
+                t_step.start(IS_GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
                 
                 // Step 2:
                 // Wait for Default_Ack_Apdu within GNSS.TOLLDECLARARTION.TIME1             
@@ -2919,7 +2919,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(m_apduDefaultAckTester(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
 						//Set verdict
 						setverdict(pass)												
 					}
@@ -2953,7 +2953,7 @@ module EfcInfoExchange_TestCasesTc {
 				                	               	                	                	                	                	                	              	
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
+                t_step.start(IS_GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
 				
                 // Wait for Default_Ack_Apdu within GNSS.TOLLDECLARARTION.TIME1             
                 // use template for Default_Ack_Apdu
@@ -2962,7 +2962,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(m_apduDefaultAckTester(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);												
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);												
 					}
 				}
 											
@@ -2976,8 +2976,8 @@ module EfcInfoExchange_TestCasesTc {
 				//		- actionCode = revoke
                              
                 // Send second Initiating_Apdu containing ten valid TollDeclarationADUs with actionCode = revoke
-                // after GNSS_TOLLDECLARATIONS_TIMEA_MIN_TSP has passed
-				f_wait(GNSS_TOLLDECLARATIONS_TIMEA_MIN_TSP);
+                // after IS_GNSS_TOLLDECLARATIONS_TIMEA_MIN_TSP has passed
+				f_wait(IS_GNSS_TOLLDECLARATIONS_TIMEA_MIN_TSP);
 
                 // Prepare and send one Initiating_Apdu containing exactly ten TollDeclarationADUs with actionCode = revoke
                 // Note that it is required to send again with same TollDeclarationId,
@@ -2992,7 +2992,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(m_apduDefaultAckTester(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);												
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);												
 						//Set verdict
 						setverdict(pass)												
 					}					
@@ -3078,7 +3078,7 @@ module EfcInfoExchange_TestCasesTc {
 				                	               	                	                	                	                	                	              	
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
+                t_step.start(IS_GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
 								
                 // Wait for NAck_Apdu within GNSS.TOLLDECLARATION.TIME1             
                 // if not received or received outside specification or time constraints set test fail 
@@ -3102,12 +3102,12 @@ module EfcInfoExchange_TestCasesTc {
 				
 				alt {
 					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, v_nAckParams_1)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
 					}
 
 					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, v_nAckParams_2)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
 					}
 				}
@@ -3115,7 +3115,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(m_apduDefaultAckTester(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);												
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);												
 					}
 				}
 								
@@ -3129,7 +3129,7 @@ module EfcInfoExchange_TestCasesTc {
 				//		- actionCode = adjust
 
                 // Send second Initiating_Apdu containing ten valid TollDeclarationADUs with actionCode = adjust
-                // before GNSS_TOLLDECLARATIONS_TIMEA_MIN_TSP has passed
+                // before IS_GNSS_TOLLDECLARATIONS_TIMEA_MIN_TSP has passed
 				f_wait(0.0);
 				
                 // Prepare and send one Initiating_Apdu containing exactly ten TollDeclarationADUs with actionCode = adjust
@@ -3195,7 +3195,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(m_apduDefaultAckTester(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);												
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);												
 						//Set verdict
 						setverdict(pass)												
 					}
@@ -3229,7 +3229,7 @@ module EfcInfoExchange_TestCasesTc {
 				var Adus v_adusToBeSent; //List of ADUs to be sent 
 				var UsageStatement v_usageStatementToBeSent;
 
-				for (var integer v_loop := 0; v_loop < GNSS_TOLLDECLARATIONS_PARAM1_MAX_TC; v_loop := v_loop + 1) {	
+				for (var integer v_loop := 0; v_loop < IS_GNSS_TOLLDECLARATIONS_PARAM1_MAX_TC; v_loop := v_loop + 1) {	
  					v_usageStatementToBeSent := {
 						usageStatementId := v_loop,
 						tollContext := TD_TOLL_CONTEXT,
@@ -3249,7 +3249,7 @@ module EfcInfoExchange_TestCasesTc {
 				                	               	                	                	                	                	                	              	
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
+                t_step.start(IS_GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
                 
                 // Step 2:
                 // Wait for NAck_Apdu with
@@ -3260,16 +3260,16 @@ module EfcInfoExchange_TestCasesTc {
                 
                 // Prepare parameters to be expected in the NAck-APDU
 				var RoNackParams v_nAckParams_1 := m_roNackParamsSingle(0, AduReasonCode_semanticError_);
-				var RoNackParams v_nAckParams_2 := m_roNackParamsSingle(GNSS_TOLLDECLARATIONS_PARAM1_MAX_TC, AduReasonCode_semanticError_);
+				var RoNackParams v_nAckParams_2 := m_roNackParamsSingle(IS_GNSS_TOLLDECLARATIONS_PARAM1_MAX_TC, AduReasonCode_semanticError_);
 
 				alt {
 					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduForSending, v_nAckParams_1)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
 					}
 
 					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduForSending, v_nAckParams_2)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
 					}
 				}
@@ -3309,7 +3309,7 @@ module EfcInfoExchange_TestCasesTc {
 
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
+                t_step.start(IS_GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
 				
                 // Wait for Default_Ack_Apdu within GNSS.TOLLDECLARARTION.TIME1             
                 // if not received or received outside specification or time constraints set test fail 
@@ -3317,7 +3317,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(m_apduDefaultAckTester(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);												
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);												
 					}
 				}
 								
@@ -3331,7 +3331,7 @@ module EfcInfoExchange_TestCasesTc {
 				//		- actionCode = revoke
 
                 // Send second Initiating_Apdu containing one valid TollDeclarationADUs with actionCode = revoke
-                // before GNSS_TOLLDECLARATIONS_TIMEA_MIN_TSP has passed
+                // before IS_GNSS_TOLLDECLARATIONS_TIMEA_MIN_TSP has passed
 				f_wait(0.0);
 
                 // Prepare and send one Initiating_Apdu containing exactly one TollDeclarationADUs with actionCode = revoke
@@ -3357,12 +3357,12 @@ module EfcInfoExchange_TestCasesTc {
 
 				alt {
 					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduForSending, v_nAckParams_1)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
 					}
 
 					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduForSending, v_nAckParams_2)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
 					}
 				}
@@ -3402,7 +3402,7 @@ module EfcInfoExchange_TestCasesTc {
 
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
+                t_step.start(IS_GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
 				
                 // Wait for Default_Ack_Apdu within GNSS.TOLLDECLARARTION.TIME1             
                 // if not received or received outside specification or time constraints set test fail 
@@ -3410,7 +3410,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(m_apduDefaultAckTester(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);												
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);												
 					}
 				}
 								
@@ -3424,7 +3424,7 @@ module EfcInfoExchange_TestCasesTc {
 				//		- actionCode = adjust
 
                 // Send second Initiating_Apdu containing one valid TollDeclarationADUs with actionCode = revoke
-                // before GNSS_TOLLDECLARATIONS_TIMEA_MIN_TSP has passed
+                // before IS_GNSS_TOLLDECLARATIONS_TIMEA_MIN_TSP has passed
 				f_wait(0.0);
 
                 // Prepare and send one Initiating_Apdu containing exactly one TollDeclarationADUs with actionCode = revoke
@@ -3450,12 +3450,12 @@ module EfcInfoExchange_TestCasesTc {
 
 				alt {
 					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduForSending, v_nAckParams_1)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
 					}
 
 					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduForSending, v_nAckParams_2)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
 					}
 				}
@@ -3497,7 +3497,7 @@ module EfcInfoExchange_TestCasesTc {
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 
                 // Start timer
-                t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
+                t_step.start(IS_GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
 				
                 // Wait for NAck_Apdu with apduAckCode = apduNotOK (3)
                 // within GNSS.TOLLDECLARARTION.TIME1             
@@ -3506,7 +3506,7 @@ module EfcInfoExchange_TestCasesTc {
                 // Prepare parameters to be expected in the NAck-APDU
 				alt {
 					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduForSending, ApduReasonCode_apduNotOK_)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
 					}
 				}
@@ -3546,7 +3546,7 @@ module EfcInfoExchange_TestCasesTc {
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 
                 // Start timer
-                t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
+                t_step.start(IS_GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
 				
                 // Wait for NAck_Apdu with apduAckCode = apduNotOK (3)
                 // within GNSS.TOLLDECLARARTION.TIME1             
@@ -3554,7 +3554,7 @@ module EfcInfoExchange_TestCasesTc {
 
  				alt {
 					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduForSending, ApduReasonCode_apduNotOK_)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
 					}
 				}
@@ -3584,7 +3584,7 @@ module EfcInfoExchange_TestCasesTc {
 				var UsageStatement v_usageStatementToBeSent;
 				var RoChargeReportChoice v_roChargeReportChoice;
 				
-				for (var integer v_loop := 0; v_loop < GNSS_TOLLDECLARATIONS_PARAM2_MAX_TC; v_loop := v_loop + 1) {	
+				for (var integer v_loop := 0; v_loop < IS_GNSS_TOLLDECLARATIONS_PARAM2_MAX_TC; v_loop := v_loop + 1) {	
  					v_usageStatementToBeSent := {
 						usageStatementId := v_loop,
 						tollContext := TD_TOLL_CONTEXT,
@@ -3620,7 +3620,7 @@ module EfcInfoExchange_TestCasesTc {
 				                	               	                	                	                	                	                	              	
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
+                t_step.start(IS_GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
                 
                 // Step 2:
                 // Wait for NAck_Apdu with (with issues= NULL)
@@ -3629,7 +3629,7 @@ module EfcInfoExchange_TestCasesTc {
                 
 				alt {
 					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduForSending, ApduReasonCode_apduNotOK_)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
 					}
 				}
@@ -3671,7 +3671,7 @@ module EfcInfoExchange_TestCasesTc {
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 
                 // Start timer
-                t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
+                t_step.start(IS_GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
 				
                 // Wait for NAck_Apdu with
                 //		- ({0,semanticError(3000)}) OR
@@ -3685,12 +3685,12 @@ module EfcInfoExchange_TestCasesTc {
 
 				alt {
 					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduForSending, v_nAckParams_1)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
 					}
 
 					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduForSending, v_nAckParams_2)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
 					}
 				}
@@ -3729,7 +3729,7 @@ module EfcInfoExchange_TestCasesTc {
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 
                 // Start timer
-                t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
+                t_step.start(IS_GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
 				
                 // Wait for NAck_Apdu with
                 //		- ({0,actionCodeNotSupported(3010)}) OR
@@ -3743,12 +3743,12 @@ module EfcInfoExchange_TestCasesTc {
 
 				alt {
 					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduForSending, v_nAckParams_1)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
 					}
 
 					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduForSending, v_nAckParams_2)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
 						setverdict(pass);
 					}
 				}
@@ -3825,7 +3825,7 @@ module EfcInfoExchange_TestCasesTc {
 				                	               	                	                	                	                	                	              	
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
+                t_step.start(IS_GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
 
                 // Wait for Default_Ack_Apdu within GNSS.TOLLDECLARARTION.TIME1             
                 // if not received or received outside specification or time constraints set test fail
@@ -3833,7 +3833,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {				
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
 					}
 				}	
 
@@ -3860,7 +3860,7 @@ module EfcInfoExchange_TestCasesTc {
 				// Note: No wait, as there is no minimum time beteween TollDeclaration and corresponding BillingDetails defined				
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
+                t_step.start(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
 				
                 // Step 2: Wait for Default_Ack_Apdu within GNSS.BILLINGDETAILS_TSP.TIME1             
                 // if not received or received outside specification or time constraints set test fail
@@ -3868,7 +3868,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {				
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
 						// Set test result
 						setverdict(pass);
 					}
@@ -3909,7 +3909,7 @@ module EfcInfoExchange_TestCasesTc {
 				                	               	                	                	                	                	                	              	
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
+                t_step.start(IS_GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
 
                 // Wait for Default_Ack_Apdu within GNSS.TOLLDECLARARTION.TIME1             
                 // if not received or received outside specification or time constraints set test fail
@@ -3917,7 +3917,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {				
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
 					}
 				}	
 
@@ -3962,7 +3962,7 @@ module EfcInfoExchange_TestCasesTc {
 				// Note: No wait, as there is no minimum time beteween TollDeclaration and corresponding BillingDetails defined				
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
+                t_step.start(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
 				
                 // Step 2: Wait for Default_Ack_Apdu within GNSS.BILLINGDETAILS_TSP.TIME1             
                 // if not received or received outside specification or time constraints set test fail
@@ -3970,7 +3970,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {				
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
 						// Set test result
 						setverdict(pass);
 					}
@@ -4011,7 +4011,7 @@ module EfcInfoExchange_TestCasesTc {
 				                	               	                	                	                	                	                	              	
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
+                t_step.start(IS_GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
 
                 // Wait for Default_Ack_Apdu within GNSS.TOLLDECLARARTION.TIME1             
                 // if not received or received outside specification or time constraints set test fail
@@ -4019,7 +4019,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {				
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
 					}
 				}	
 
@@ -4045,7 +4045,7 @@ module EfcInfoExchange_TestCasesTc {
 				// Note: No wait, as there is no minimum time beteween TollDeclaration and corresponding BillingDetails defined				
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
+                t_step.start(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
 				
                 // Step 2: Wait for Default_Ack_Apdu within GNSS.BILLINGDETAILS_TSP.TIME1             
                 // if not received or received outside specification or time constraints set test fail
@@ -4053,7 +4053,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {				
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
 						// Set test result
 						setverdict(pass);
 					}
@@ -4094,7 +4094,7 @@ module EfcInfoExchange_TestCasesTc {
 				                	               	                	                	                	                	                	              	
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
+                t_step.start(IS_GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
 
                 // Wait for Default_Ack_Apdu within GNSS.TOLLDECLARARTION.TIME1             
                 // if not received or received outside specification or time constraints set test fail
@@ -4102,7 +4102,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {				
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
 					}
 				}	
 
@@ -4127,7 +4127,7 @@ module EfcInfoExchange_TestCasesTc {
 				// Note: No wait, as there is no minimum time beteween TollDeclaration and corresponding BillingDetails defined								
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
+                t_step.start(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
 				
                 // Step 2: Wait for Default_Ack_Apdu within GNSS.BILLINGDETAILS_TSP.TIME1             
                 // if not received or received outside specification or time constraints set test fail
@@ -4135,7 +4135,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {				
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
 					}
 				}	
 				f_closeDownMtc();              	
@@ -4174,7 +4174,7 @@ module EfcInfoExchange_TestCasesTc {
 				                	               	                	                	                	                	                	              	
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
+                t_step.start(IS_GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
 
                 // Wait for Default_Ack_Apdu within GNSS.TOLLDECLARARTION.TIME1             
                 // if not received or received outside specification or time constraints set test fail
@@ -4182,7 +4182,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {				
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
 					}
 				}	
 
@@ -4207,7 +4207,7 @@ module EfcInfoExchange_TestCasesTc {
 				// Note: No wait, as there is no minimum time beteween TollDeclaration and corresponding BillingDetails defined								
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
+                t_step.start(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
 				
                 // Step 2: Wait for Default_Ack_Apdu within GNSS.BILLINGDETAILS_TSP.TIME1             
                 // if not received or received outside specification or time constraints set test fail
@@ -4215,7 +4215,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {				
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
 						// Set test result
 						setverdict(pass);
 					}
@@ -4247,7 +4247,7 @@ module EfcInfoExchange_TestCasesTc {
 				var UsageStatement v_usageStatementToBeSent;
 				var ListOfTollDeclarationIds v_listOfTollDeclarationIds;				
 
-				for (var integer v_loop := 0; v_loop < GNSS_BILLINGDETAILS_TSP_PARAM1_MAX_TC; v_loop := v_loop + 1) {	
+				for (var integer v_loop := 0; v_loop < IS_GNSS_BILLINGDETAILS_TSP_PARAM1_MAX_TC; v_loop := v_loop + 1) {	
  					v_usageStatementToBeSent := {
 						usageStatementId := v_loop,
 						tollContext := TD_TOLL_CONTEXT,
@@ -4267,7 +4267,7 @@ module EfcInfoExchange_TestCasesTc {
 				v_apduForSending := m_apduNoAuthInitTester(v_adusToBeSent);	
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
+                t_step.start(IS_GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
 
                 // Wait for Default_Ack_Apdu within GNSS.TOLLDECLARARTION.TIME1             
                 // if not received or received outside specification or time constraints set test fail
@@ -4275,7 +4275,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {				
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
 					}
 				}	
 								
@@ -4285,7 +4285,7 @@ module EfcInfoExchange_TestCasesTc {
  				 
 				var RoBillingDetailsId v_listOfBillingDetailsIds;
 				
-				for (var integer v_loop:= 0; v_loop < GNSS_BILLINGDETAILS_TSP_PARAM1_MAX_TC; v_loop := v_loop + 1) {	
+				for (var integer v_loop:= 0; v_loop < IS_GNSS_BILLINGDETAILS_TSP_PARAM1_MAX_TC; v_loop := v_loop + 1) {	
 				v_adusToBeSent.billingDetailsADUs[v_loop] := m_aduGnssBillingDetails (
 					v_listOfBillingDetailsIds[v_loop].billingDetailsNum,
 					TD_USERID_1,
@@ -4301,7 +4301,7 @@ module EfcInfoExchange_TestCasesTc {
 				// Note: No wait, as there is no minimum time beteween TollDeclaration and corresponding BillingDetails defined								
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
+                t_step.start(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
 				
                 // Step 2: Wait for Default_Ack_Apdu within GNSS.BILLINGDETAILS_TSP.TIME1             
                 // if not received or received outside specification or time constraints set test fail
@@ -4309,7 +4309,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {				
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
 						// Set test result
 						setverdict(pass);
 					}
@@ -4346,7 +4346,7 @@ module EfcInfoExchange_TestCasesTc {
 				                	               	                	                	                	                	                	              	
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
+                t_step.start(IS_GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
 
                 // Wait for Default_Ack_Apdu within GNSS.TOLLDECLARARTION.TIME1             
                 // if not received or received outside specification or time constraints set test fail
@@ -4354,7 +4354,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {				
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
 					}
 				}	
 
@@ -4384,7 +4384,7 @@ module EfcInfoExchange_TestCasesTc {
 				// Note: No wait, as there is no minimum time beteween TollDeclaration and corresponding BillingDetails defined				
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
+                t_step.start(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
 				
                 // Step 2: Wait for negative Ack_Apdu with AduReason code
                 //		- NAck_Apdu with aduReasonCode = billingDetailsUserIdRejected (704) for all ADUs, or
@@ -4396,11 +4396,11 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduForSending, AduReasonCode_billingDetailsUserIdRejected_)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
 					}					
 					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, m_roNackParamsSingle(1, AduReasonCode_billingDetailsUserIdRejected_))) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
 					}										
 				}	
 
@@ -4428,7 +4428,7 @@ module EfcInfoExchange_TestCasesTc {
 				// Note: No wait, as there is no minimum time beteween TollDeclaration and corresponding BillingDetails defined				
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
+                t_step.start(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
 
                 // Step 4:
                 // Wait for Default_Ack_Apdu within GNSS.BILLINGDETAILS.TSP.TIME1             
@@ -4439,7 +4439,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {				
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
 						// Set test result
 						setverdict(pass);
 					}
@@ -4477,7 +4477,7 @@ module EfcInfoExchange_TestCasesTc {
 				                	               	                	                	                	                	                	              	
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
+                t_step.start(IS_GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
 
                 // Wait for Default_Ack_Apdu within GNSS.TOLLDECLARARTION.TIME1             
                 // if not received or received outside specification or time constraints set test fail
@@ -4485,7 +4485,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {				
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
 					}
 				}	
 
@@ -4514,7 +4514,7 @@ module EfcInfoExchange_TestCasesTc {
 				// Note: No wait, as there is no minimum time beteween TollDeclaration and corresponding BillingDetails defined				
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
+                t_step.start(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
 				
                 // Step 2:
                 // Wait for Default_Ack_Apdu within GNSS.BILLINGDETAILS_TSP.TIME1             
@@ -4523,7 +4523,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {				
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
 					}
 				}	
 
@@ -4550,7 +4550,7 @@ module EfcInfoExchange_TestCasesTc {
 				// Note: No wait, as there is no minimum time beteween TollDeclaration and corresponding BillingDetails defined				
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
+                t_step.start(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
 
                 // Step 4:
                 // Wait for Default_Ack_Apdu within GNSS.BILLINGDETAILS.TSP.TIME1             
@@ -4561,7 +4561,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {				
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
 						// Set test result
 						setverdict(pass);
 					}
@@ -4603,7 +4603,7 @@ module EfcInfoExchange_TestCasesTc {
 				                	               	                	                	                	                	                	              	
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
+                t_step.start(IS_GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
 
                 // Wait for Default_Ack_Apdu within GNSS.TOLLDECLARARTION.TIME1             
                 // if not received or received outside specification or time constraints set test fail
@@ -4611,7 +4611,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {				
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
 					}
 				}	
                  
@@ -4694,10 +4694,10 @@ module EfcInfoExchange_TestCasesTc {
 				v_apduForSending := m_apduNoAuthInitTester(v_adus);                 
 				f_sendAndLogApdu(v_apduForSending);						
                	
-                 // Step 2: Wait for negative Ack within GNSS_BILLINGDETAILS_TC_TIME1_MAX_TSP with issue list present and the following issue codes:
+                 // Step 2: Wait for negative Ack within IS_GNSS_BILLINGDETAILS_TC_TIME1_MAX_TSP with issue list present and the following issue codes:
                  	// billingDetailsIssuerIdRejected, billingDetailsContextIdRejected, billingDetailsUserIdRejected, billingDetailsPeriodRejected, billingDetailsAmountRejected, billingDetailsContextNameRejected, billingDetailsAppliedUserClassRejected, billingDetailsDeclaredVehicleClassRejected, billingDetailsAppliedTimeClassRejected, billingDetailsEntranceTimeRejected, billingDetailsIntermediateSectionRejected, billingDetailsExitChargeObjectRejected, billingDetailsExitTimeRejected
 				// Set timer
-                t_step.start(GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);                 
+                t_step.start(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);                 
   				
 				alt {
 					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, {
@@ -4713,7 +4713,7 @@ module EfcInfoExchange_TestCasesTc {
 							m_nackParams(10,AduReasonCode_billingDetailsIntermediateSectionRejected_) 					  
 						})) -> value v_apduReceived {
 							// Log what we received, check minimum time and stop time
-							f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
+							f_logReceivedThenCheckAndStopTime(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
 							setverdict(pass);
 					}
 				} // End of Alt statement
@@ -4731,7 +4731,7 @@ module EfcInfoExchange_TestCasesTc {
  
   				// Initialisation
  				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A2_2_isGnss and ICS_A52_1_implementedGNSSBILLINGDETAILSTSP
- 					and GNSS_BILLINGDETAILS_TSP_TIMEA_MIN_TC > 0.0;
+ 					and IS_GNSS_BILLINGDETAILS_TSP_TIMEA_MIN_TC > 0.0;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc 
                 
 				// Step 0:
@@ -4755,7 +4755,7 @@ module EfcInfoExchange_TestCasesTc {
 				                	               	                	                	                	                	                	              	
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
+                t_step.start(IS_GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
 
                 // Wait for Default_Ack_Apdu within GNSS.TOLLDECLARARTION.TIME1             
                 // if not received or received outside specification or time constraints set test fail
@@ -4763,7 +4763,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {				
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
 					}
 				}	
 
@@ -4815,7 +4815,7 @@ module EfcInfoExchange_TestCasesTc {
 
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
+                t_step.start(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
 				
                 // Step 2:
                 // Wait for NAck_requestSentTooOften(10) within GNSS.BILLINGDETAILS.TSP.TIME1
@@ -4825,7 +4825,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduNAckRequestSentTooOften(v_apduForSending)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(DSRC_CONTRACTISSUERLIST_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_DSRC_CONTRACTISSUERLIST_TIME1_MIN_TC);
 						// set verdict
 						setverdict(pass);
 					}
@@ -4852,11 +4852,11 @@ module EfcInfoExchange_TestCasesTc {
 
 				// Step 1:
 				// Perform one GNSS_TOLLDECLARATION transaction
-				// with 1+GNSS_BILLINGDETAILS_TSP_PARAM1_MAX_TC TollDeclaration ADUs with positive Ack
+				// with 1+IS_GNSS_BILLINGDETAILS_TSP_PARAM1_MAX_TC TollDeclaration ADUs with positive Ack
 
-                // Prepare APDU with 1+GNSS_BILLINGDETAILS_TSP_PARAM1_MAX_TC TollDeclaration ADUs                
+                // Prepare APDU with 1+IS_GNSS_BILLINGDETAILS_TSP_PARAM1_MAX_TC TollDeclaration ADUs                
                  
-                for (var integer v_i := 1; v_i == 1+GNSS_BILLINGDETAILS_TSP_PARAM1_MAX_TC; v_i := v_i + 1) {
+                for (var integer v_i := 1; v_i == 1+IS_GNSS_BILLINGDETAILS_TSP_PARAM1_MAX_TC; v_i := v_i + 1) {
 					v_adusTollDeclaration.tollDeclarationADUs[v_i]:=m_aduTollDeclarationToSendOneObe(
                     	{TD_IDENTIFIER, v_i}, //tollDeclarationId
                     	TD_USAGE_STATEMENT_VALID_1, // usageStatement (always the same)
@@ -4869,7 +4869,7 @@ module EfcInfoExchange_TestCasesTc {
                                                                                                                                                                             
                 f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
+                t_step.start(IS_GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
     
                 // Step 2:
                 // Wait for Default_Ack_Apdu within GNSS.TOLLDECLARARTION.TIME1             
@@ -4878,18 +4878,18 @@ module EfcInfoExchange_TestCasesTc {
                 alt {				
                     [] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
                         // Log what we received, check minimum time and stop time
-                        f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
+                        f_logReceivedThenCheckAndStopTime(IS_GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
                     }
                 }	
 
                 // Step 3:
-                // Send valid Initiating_Apdu containing 1+GNSS_TOLLDECLARATIONS_TIME1_MIN_TC BillingDetailsADU, with
+                // Send valid Initiating_Apdu containing 1+IS_GNSS_TOLLDECLARATIONS_TIME1_MIN_TC BillingDetailsADU, with
                 //		- the values corresponding the previous TollDeclarationADUs; and
                 //		- actionCode=send
     
-               	// Prepare APDU with 1+GNSS_TOLLDECLARATIONS_PARAM1_MAX_TC BillingDetails ADUs 
+               	// Prepare APDU with 1+IS_GNSS_TOLLDECLARATIONS_PARAM1_MAX_TC BillingDetails ADUs 
            	
-               	for (var integer v_i := 1; v_i == 1+GNSS_TOLLDECLARATIONS_PARAM1_MAX_TC; v_i := v_i + 1) {
+               	for (var integer v_i := 1; v_i == 1+IS_GNSS_TOLLDECLARATIONS_PARAM1_MAX_TC; v_i := v_i + 1) {
 					v_adusBillingDetails.billingDetailsADUs[v_i]:=m_aduGnssBillingDetails (
                         v_i,
                         TD_USERID_1,
@@ -4903,10 +4903,10 @@ module EfcInfoExchange_TestCasesTc {
 				v_apduForSending := m_apduNoAuthInitTester(v_adusBillingDetails);
 				                   
                 // respect time restriction TIMEA_MIN set by the IuT
-                f_wait(GNSS_BILLINGDETAILS_TSP_TIMEA_MIN_TC);
+                f_wait(IS_GNSS_BILLINGDETAILS_TSP_TIMEA_MIN_TC);
                 f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
+                t_step.start(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
                     
                 // Step 4:
                 // Wait for NAck containing issueCode = NAck_Apdu with APDU ReasonCode apduNotOK(3)
@@ -4915,7 +4915,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduForSending, ApduReasonCode_apduNotOK_)) -> value v_apduReceived {
                         // Log what we received, check minimum time and stop time
-                        f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
+                        f_logReceivedThenCheckAndStopTime(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
                     }
                 }	
 			} // End testcase TP_TC_GNSS_BILLINGDETAILS_TSP_BI_03
@@ -4948,7 +4948,7 @@ module EfcInfoExchange_TestCasesTc {
 				                	               	                	                	                	                	                	              	
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
+                t_step.start(IS_GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
 
                 // Wait for Default_Ack_Apdu within GNSS.TOLLDECLARARTION.TIME1             
                 // if not received or received outside specification or time constraints set test fail
@@ -4956,7 +4956,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {				
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
 					}
 				}	
 
@@ -4986,7 +4986,7 @@ module EfcInfoExchange_TestCasesTc {
 				// Note: No wait, as there is no minimum time beteween TollDeclaration and corresponding BillingDetails defined				
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
+                t_step.start(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
 				
                 // Step 2: Wait for negative Ack_Apdu with AduReason code
                 //		- NAck_Apdu with aduReasonCode = billingDetailsUserIdRejected (704) for all ADUs, or
@@ -4998,11 +4998,11 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduForSending, AduReasonCode_billingDetailsUserIdRejected_)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
 					}					
 					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, m_roNackParamsSingle(1, AduReasonCode_billingDetailsUserIdRejected_))) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
 					}										
 				}	
 
@@ -5030,7 +5030,7 @@ module EfcInfoExchange_TestCasesTc {
 				// Note: No wait, as there is no minimum time beteween TollDeclaration and corresponding BillingDetails defined				
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
+                t_step.start(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
 
                 // Step 4:
                 // Wait for Default_Ack_Apdu within GNSS.BILLINGDETAILS.TSP.TIME1             
@@ -5041,13 +5041,13 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduForSending, AduReasonCode_semanticError_)) -> value v_apduReceived {				  
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
 						//Set verdict
 						setverdict(pass);												
 					}
 					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, m_roNackParamsSingle(1, AduReasonCode_semanticError_))) -> value v_apduReceived {				  
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
 						//Set verdict
 						setverdict(pass);												
 					}								
@@ -5083,7 +5083,7 @@ module EfcInfoExchange_TestCasesTc {
 				                	               	                	                	                	                	                	              	
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
+                t_step.start(IS_GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
 
                 // Wait for Default_Ack_Apdu within GNSS.TOLLDECLARARTION.TIME1             
                 // if not received or received outside specification or time constraints set test fail
@@ -5091,7 +5091,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {				
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
 					}
 				}	
 
@@ -5120,7 +5120,7 @@ module EfcInfoExchange_TestCasesTc {
 				// Note: No wait, as there is no minimum time beteween TollDeclaration and corresponding BillingDetails defined				
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
+                t_step.start(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
 				
                 // Step 2:
                 // Wait for Default_Ack_Apdu within GNSS.BILLINGDETAILS_TSP.TIME1             
@@ -5129,7 +5129,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {				
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
 					}
 				}	
 
@@ -5156,7 +5156,7 @@ module EfcInfoExchange_TestCasesTc {
 				// Note: No wait, as there is no minimum time beteween TollDeclaration and corresponding BillingDetails defined				
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
+                t_step.start(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
 
                 // Step 4:
                 // Wait for Default_Ack_Apdu within GNSS.BILLINGDETAILS.TSP.TIME1             
@@ -5167,13 +5167,13 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduForSending, AduReasonCode_semanticError_)) -> value v_apduReceived {				  
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
 						//Set verdict
 						setverdict(pass);												
 					}
 					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, m_roNackParamsSingle(1, AduReasonCode_semanticError_))) -> value v_apduReceived {				  
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
 						//Set verdict
 						setverdict(pass);												
 					}								
@@ -5239,7 +5239,7 @@ module EfcInfoExchange_TestCasesTc {
 				                	               	                	                	                	                	                	              	
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
+                t_step.start(IS_GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
 
                 // Wait for Default_Ack_Apdu within GNSS.TOLLDECLARARTION.TIME1             
                 // if not received or received outside specification or time constraints set test fail
@@ -5247,7 +5247,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {				
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
 					}
 				}	
 								
@@ -5279,7 +5279,7 @@ module EfcInfoExchange_TestCasesTc {
 						// Log what we received
 						f_logApduReceivedAndTStep();					              		
 						// Step 3: Send Ack within time constraints
-						f_wait(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC);
+						f_wait(IS_GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC);
 						f_sendAndLogApdu(m_apduDefaultAckTester(v_apduReceived));
 						// Set test success
 						setverdict(pass);
@@ -5318,7 +5318,7 @@ module EfcInfoExchange_TestCasesTc {
 				                	               	                	                	                	                	                	              	
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
+                t_step.start(IS_GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
 
                 // Wait for Default_Ack_Apdu within GNSS.TOLLDECLARARTION.TIME1             
                 // if not received or received outside specification or time constraints set test fail
@@ -5326,7 +5326,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {				
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
 					}
 				}	
 
@@ -5354,7 +5354,7 @@ module EfcInfoExchange_TestCasesTc {
 				v_receivedBillingDetailsId := v_apduReceived.infoExchangeContent.adus.billingDetailsADUs[0].billingDetailsId;
 
 				// Step 3: Send NAck (except of issueCode "acceptedWithWarning") within time constraints
-				f_wait(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TSP);
+				f_wait(IS_GNSS_BILLINGDETAILS_TC_TIME1_MIN_TSP);
 				f_sendAndLogApdu(m_apduNAckIndividualIssuesTester(v_apduReceived, m_roNackParamsSingle(1, AduReasonCode_semanticError_)));
 
                 // Step 4: Tigger IUT with GNSS.BILLINGDETAILS_TC_TR_TC_1_ADJUST to send an Initiating_Apdu containing one BillingDetailsADU
@@ -5378,9 +5378,9 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC);					              		
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC);					              		
 						// Send Ack within time constraints
-						f_wait(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC);
+						f_wait(IS_GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC);
 						f_sendAndLogApdu(m_apduDefaultAckTester(v_apduReceived));
 						// Set test success
 						setverdict(pass);
@@ -5419,7 +5419,7 @@ module EfcInfoExchange_TestCasesTc {
 				                	               	                	                	                	                	                	              	
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
+                t_step.start(IS_GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
 
                 // Wait for Default_Ack_Apdu within GNSS.TOLLDECLARARTION.TIME1             
                 // if not received or received outside specification or time constraints set test fail
@@ -5427,7 +5427,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {				
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
 					}
 				}	
 
@@ -5455,7 +5455,7 @@ module EfcInfoExchange_TestCasesTc {
 				v_receivedBillingDetailsId := v_apduReceived.infoExchangeContent.adus.billingDetailsADUs[0].billingDetailsId;
 
 				// Step 3: Send Ack within time constraints
-				f_wait(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TSP);
+				f_wait(IS_GNSS_BILLINGDETAILS_TC_TIME1_MIN_TSP);
 				f_sendAndLogApdu(m_apduDefaultAckTester(v_apduReceived));
 
                 // Step 4: Tigger IUT with GNSS.BILLINGDETAILS_TC_TR_TC_1_REVKE to send an Initiating_Apdu containing one BillingDetailsADU
@@ -5480,7 +5480,7 @@ module EfcInfoExchange_TestCasesTc {
 						// Log what we received, no time check
 						f_logApduReceivedAndTStep();					              		
 						// Send Ack within time constraints
-						f_wait(GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC);
+						f_wait(IS_GNSS_BILLINGDETAILS_TC_TIME1_MIN_TC);
 						f_sendAndLogApdu(m_apduDefaultAckTester(v_apduReceived));
 						// Set test success
 						setverdict(pass);
@@ -5557,7 +5557,7 @@ module EfcInfoExchange_TestCasesTc {
 				                	               	                	                	                	                	                	              	
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
+                t_step.start(IS_GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
 
                 // Step 2:
                 // Wait for Default_Ack_Apdu within GNSS.TOLLDECLARARTION.TIME1             
@@ -5566,7 +5566,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {				
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
 					}
 				}	
 
@@ -5625,10 +5625,10 @@ module EfcInfoExchange_TestCasesTc {
 				}});
 				
 				// respect time restriction TIMEA_MIN set by the IuT
-				f_wait(GNSS_BILLINGDETAILS_TSP_TIMEA_MIN_TC);
+				f_wait(IS_GNSS_BILLINGDETAILS_TSP_TIMEA_MIN_TC);
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
+                t_step.start(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
 				
                 // Step 4:
                 // Wait for Default_Ack_Apdu within GNSS.BILLINGDETAILS_TSP.TIME1             
@@ -5637,7 +5637,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {				
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
 					}
 				}	
 
@@ -5668,10 +5668,10 @@ module EfcInfoExchange_TestCasesTc {
 				}});
 				
 				// respect time restriction TIMEA_MIN set by the IuT
-				f_wait(GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
+				f_wait(IS_GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC);   				
+                t_step.start(IS_GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC);   				
 				
                 // Step 6: Wait for Default_Ack_Apdu within GNSS.PAYMENTANNOUNCEMENT.TIME1             
                 // if not received or received outside specification or time constraints set test fail
@@ -5679,7 +5679,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {				
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC);
 						// set test result
 						setverdict(pass);
 					}
@@ -5740,7 +5740,7 @@ module EfcInfoExchange_TestCasesTc {
 				                	               	                	                	                	                	                	              	
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
+                t_step.start(IS_GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
 
                 // Step 2:
                 // Wait for Default_Ack_Apdu within GNSS.TOLLDECLARARTION.TIME1             
@@ -5749,7 +5749,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {				
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
 					}
 				}	
 
@@ -5807,10 +5807,10 @@ module EfcInfoExchange_TestCasesTc {
 				}});
 				
 				// respect time restriction TIMEA_MIN set by the IuT
-				f_wait(GNSS_BILLINGDETAILS_TSP_TIMEA_MIN_TC);
+				f_wait(IS_GNSS_BILLINGDETAILS_TSP_TIMEA_MIN_TC);
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
+                t_step.start(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
 				
                 // Step 4:
                 // Wait for Default_Ack_Apdu within GNSS.BILLINGDETAILS_TSP.TIME1             
@@ -5819,7 +5819,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {				
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
 					}
 				}	
 
@@ -5852,10 +5852,10 @@ module EfcInfoExchange_TestCasesTc {
 				}});
 				
 				// respect time restriction TIMEA_MIN set by the IuT
-				(GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
+				(IS_GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC);   				
+                t_step.start(IS_GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC);   				
 				
                 // Step 6: Wait for Negative_Ack_Apdu within GNSS.PAYMENTANNOUNCEMENT.TIME1             
                 // if not received or received outside specification or time constraints set test fail
@@ -5863,14 +5863,14 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduForSending, AduReasonCode_semanticError_)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC);
 					}
 					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, {
 						m_nackParams(1, AduReasonCode_semanticError_),
 						m_nackParams(2, AduReasonCode_semanticError_),
 						m_nackParams(3, AduReasonCode_semanticError_)})) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC);
 					}
 				}
 
@@ -5901,10 +5901,10 @@ module EfcInfoExchange_TestCasesTc {
 				}});
 				
 				// respect time restriction TIMEA_MIN set by the IuT
-				f_wait(GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
+				f_wait(IS_GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC);   				
+                t_step.start(IS_GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC);   				
 				
                 // Step 8: Wait for Default_Ack_Apdu within GNSS.PAYMENTANNOUNCEMENT.TIME1             
                 // if not received or received outside specification or time constraints set test fail
@@ -5912,7 +5912,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {				
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC);
 						// set test result
 						setverdict(pass);
 					}
@@ -5974,7 +5974,7 @@ module EfcInfoExchange_TestCasesTc {
 				                	               	                	                	                	                	                	              	
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
+                t_step.start(IS_GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
 
                 // Step 2:
                 // Wait for Default_Ack_Apdu within GNSS.TOLLDECLARARTION.TIME1             
@@ -5983,7 +5983,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {				
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
 					}
 				}	
 
@@ -6041,10 +6041,10 @@ module EfcInfoExchange_TestCasesTc {
 				}});
 				
 				// respect time restriction TIMEA_MIN set by the IuT
-				f_wait(GNSS_BILLINGDETAILS_TSP_TIMEA_MIN_TC);
+				f_wait(IS_GNSS_BILLINGDETAILS_TSP_TIMEA_MIN_TC);
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
+                t_step.start(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
 				
                 // Step 4:
                 // Wait for Default_Ack_Apdu within GNSS.BILLINGDETAILS_TSP.TIME1             
@@ -6053,7 +6053,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {				
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
 					}
 				}	
 
@@ -6084,10 +6084,10 @@ module EfcInfoExchange_TestCasesTc {
 				}});
 				
 				// respect time restriction TIMEA_MIN set by the IuT
-				(GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
+				(IS_GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC);   				
+                t_step.start(IS_GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC);   				
 				
                 // Step 6: Wait for DefaultAck_Apdu within GNSS.PAYMENTANNOUNCEMENT.TIME1             
                 // if not received or received outside specification or time constraints set test fail
@@ -6095,7 +6095,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {				
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC);
 					}
 				}
 
@@ -6126,10 +6126,10 @@ module EfcInfoExchange_TestCasesTc {
 				}});
 				
 				// respect time restriction TIMEA_MIN set by the IuT
-				f_wait(GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
+				f_wait(IS_GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC);   				
+                t_step.start(IS_GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC);   				
 				
                 // Step 8: Wait for Default_Ack_Apdu within GNSS.PAYMENTANNOUNCEMENT.TIME1             
                 // if not received or received outside specification or time constraints set test fail
@@ -6137,7 +6137,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {				
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC);
 						// set test result
 						setverdict(pass);
 					}
@@ -6193,10 +6193,10 @@ module EfcInfoExchange_TestCasesTc {
 				}});
 				
 				// respect time restriction TIMEA_MIN set by the IuT
-				(GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
+				(IS_GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC);   				
+                t_step.start(IS_GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC);   				
 				
                 // Step 6: Wait for NAck_Apdu with ADUReasonCode invalidADU (0) within GNSS.PAYMENTANNOUNCEMENT.TIME1             
                 // if not received or received outside specification or time constraints set test fail
@@ -6204,14 +6204,14 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduForSending, AduReasonCode_actionCodeNotSupported_)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC);
 					}
 					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(
 						v_apduForSending, 
 						m_roNackParamsDouble(1, AduReasonCode_actionCodeNotSupported_,2, AduReasonCode_actionCodeNotSupported_)
 					)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC);
 						// set result
 						setverdict(pass);
 					}
@@ -6263,10 +6263,10 @@ module EfcInfoExchange_TestCasesTc {
 				}});
 				
 				// respect time restriction TIMEA_MIN set by the IuT
-				(GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
+				(IS_GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC);   				
+                t_step.start(IS_GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC);   				
 				
                 // Step 6: Wait for NAck_Apdu with ADUReasonCode invalidADU (0) for the entire APDU
                 // or invalidADU (0) for ADU#2 only,
@@ -6276,13 +6276,13 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduForSending, AduReasonCode_invalidADU_)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC);
 					}
 					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(
 						v_apduForSending, m_roNackParamsSingle(2, AduReasonCode_invalidADU_)
 					)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC);
 						// set result
 						setverdict(pass);
 					}
@@ -6336,10 +6336,10 @@ module EfcInfoExchange_TestCasesTc {
 				}});
 				
 				// respect time restriction TIMEA_MIN set by the IuT
-				(GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
+				(IS_GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC);   				
+                t_step.start(IS_GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC);   				
 				
                 // Step 6: Wait for NAck_Apdu with ADUReasonCode invalidADU (0) for ADU#2,
                 // within GNSS.PAYMENTANNOUNCEMENT.TIME1             
@@ -6348,7 +6348,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, m_roNackParamsSingle(2, AduReasonCode_invalidADU_))) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC);
 						// set result
 						setverdict(pass);
 					}
@@ -6377,7 +6377,7 @@ module EfcInfoExchange_TestCasesTc {
 
                 // Prepare APDU with 2+GNSS.PAYMENTANNOUNCEMENT.PARAM2_MAX TollDeclaration ADUs                
                  
-                for (var integer v_i := 1; v_i == 2+GNSS_PAYMENTANNOUNCEMENT_PARAM2_MAX_TC; v_i := v_i + 1) {
+                for (var integer v_i := 1; v_i == 2+IS_GNSS_PAYMENTANNOUNCEMENT_PARAM2_MAX_TC; v_i := v_i + 1) {
 					v_adusTollDeclaration.tollDeclarationADUs[v_i]:=m_aduTollDeclarationToSendOneObe(
                     	{TD_IDENTIFIER, v_i}, //tollDeclarationId
                     	TD_USAGE_STATEMENT_VALID_1, // usageStatement (always the same)
@@ -6390,7 +6390,7 @@ module EfcInfoExchange_TestCasesTc {
                                                                                                                                                                             
                 f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
+                t_step.start(IS_GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
     
                 // Step 2:
                 // Wait for Default_Ack_Apdu within GNSS.TOLLDECLARARTION.TIME1             
@@ -6399,7 +6399,7 @@ module EfcInfoExchange_TestCasesTc {
                 alt {				
                     [] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
                         // Log what we received, check minimum time and stop time
-                        f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
+                        f_logReceivedThenCheckAndStopTime(IS_GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
                     }
                 }	
     
@@ -6411,7 +6411,7 @@ module EfcInfoExchange_TestCasesTc {
     
                	// Prepare APDU with 2+GNSS.PAYMENTANNOUNCEMENT.PARAM2_MAX BillingDetails ADUs 
            	
-               	for (var integer v_i := 1; v_i == 2+GNSS_PAYMENTANNOUNCEMENT_PARAM2_MAX_TC; v_i := v_i + 1) {
+               	for (var integer v_i := 1; v_i == 2+IS_GNSS_PAYMENTANNOUNCEMENT_PARAM2_MAX_TC; v_i := v_i + 1) {
 					v_adusBillingDetails.billingDetailsADUs[v_i]:=m_aduGnssBillingDetails (
                         v_i,
                         TD_USERID_1,
@@ -6425,10 +6425,10 @@ module EfcInfoExchange_TestCasesTc {
 				v_apduForSending := m_apduNoAuthInitTester(v_adusBillingDetails);
 				                   
                 // respect time restriction TIMEA_MIN set by the IuT
-                f_wait(GNSS_BILLINGDETAILS_TSP_TIMEA_MIN_TC);
+                f_wait(IS_GNSS_BILLINGDETAILS_TSP_TIMEA_MIN_TC);
                 f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
+                t_step.start(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
                     
                 // Step 4:
                 // Wait for Default_Ack_Apdu within GNSS.BILLINGDETAILS_TSP.TIME1             
@@ -6437,7 +6437,7 @@ module EfcInfoExchange_TestCasesTc {
                 alt {				
                     [] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
                         // Log what we received, check minimum time and stop time
-                        f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
+                        f_logReceivedThenCheckAndStopTime(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
                     }
                 }	
 								
@@ -6453,7 +6453,7 @@ module EfcInfoExchange_TestCasesTc {
 				// for both ADUs
                	var ReferenceDetailsList v_referenceDetailsList;
 
-				for (var integer v_i := 1; v_i == 2+GNSS_PAYMENTANNOUNCEMENT_PARAM2_MAX_TC; v_i := v_i + 1) {
+				for (var integer v_i := 1; v_i == 2+IS_GNSS_PAYMENTANNOUNCEMENT_PARAM2_MAX_TC; v_i := v_i + 1) {
 					v_referenceDetailsList[v_i] := {
 						referenceDetail:={billingDetailsList := {{TD_IDENTIFIER, v_i}}},
 						amount := TD_BILLINGDETAILS_AMOUNT_1, 
@@ -6470,8 +6470,8 @@ module EfcInfoExchange_TestCasesTc {
 					ActionCode_send_
 				);
 				
-				v_aduPaymentAnnouncementInvalid.numberOfItems := 1+GNSS_PAYMENTANNOUNCEMENT_PARAM2_MAX_TC;
-				v_aduPaymentAnnouncementInvalid.referenceDetailsList:=v_referenceDetailsList[2 .. (2+GNSS_PAYMENTANNOUNCEMENT_PARAM2_MAX_TC)];
+				v_aduPaymentAnnouncementInvalid.numberOfItems := 1+IS_GNSS_PAYMENTANNOUNCEMENT_PARAM2_MAX_TC;
+				v_aduPaymentAnnouncementInvalid.referenceDetailsList:=v_referenceDetailsList[2 .. (2+IS_GNSS_PAYMENTANNOUNCEMENT_PARAM2_MAX_TC)];
 				
 				v_apduForSending := m_apduNoAuthInitTester({paymentAnnouncementADUs:={
 					m_aduPaymentAnnouncement(
@@ -6484,10 +6484,10 @@ module EfcInfoExchange_TestCasesTc {
 				}});
 				
 				// respect time restriction TIMEA_MIN set by the IuT
-				(GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
+				(IS_GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC);   				
+                t_step.start(IS_GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC);   				
 				
                 // Step 6: Wait for NAck_Apdu with ADUReasonCode invalidADU (0) for ADU#2,
                 // within GNSS.PAYMENTANNOUNCEMENT.TIME1             
@@ -6496,7 +6496,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, m_roNackParamsSingle(2, AduReasonCode_invalidADU_))) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC);
 						// set result
 						setverdict(pass);
 					}
@@ -6553,10 +6553,10 @@ module EfcInfoExchange_TestCasesTc {
 				}});
 				
 				// respect time restriction TIMEA_MIN set by the IuT
-				(GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
+				(IS_GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC);   				
+                t_step.start(IS_GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC);   				
 				
                 // Step 6: Wait for NAck_Apdu with ADUReasonCode invalidADU (0) for ADU#2,
                 // within GNSS.PAYMENTANNOUNCEMENT.TIME1             
@@ -6565,7 +6565,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, m_roNackParamsSingle(2, AduReasonCode_invalidADU_))) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC);
 						// set result
 						setverdict(pass);
 					}
@@ -6596,7 +6596,7 @@ module EfcInfoExchange_TestCasesTc {
                 // Prepare APDU with 1+GNSS.PAYMENTANNOUNCEMENT.PARAM1_MAX TollDeclaration ADUs                
                  
                 
-                for (var integer v_i := 1; v_i == 1+GNSS_PAYMENTANNOUNCEMENT_PARAM1_MAX_TC; v_i := v_i + 1) {
+                for (var integer v_i := 1; v_i == 1+IS_GNSS_PAYMENTANNOUNCEMENT_PARAM1_MAX_TC; v_i := v_i + 1) {
                 	v_apduForSending := m_apduNoAuthInitTester({tollDeclarationADUs:={
                     	m_aduTollDeclarationToSendOneObe(
                         	{TD_IDENTIFIER, v_i}, //tollDeclarationId
@@ -6609,7 +6609,7 @@ module EfcInfoExchange_TestCasesTc {
                                                                                                                                                                             
                 f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
+                t_step.start(IS_GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
     
                 // Step 2:
                 // Wait for Default_Ack_Apdu within GNSS.TOLLDECLARARTION.TIME1             
@@ -6618,7 +6618,7 @@ module EfcInfoExchange_TestCasesTc {
                 alt {				
                     [] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
                         // Log what we received, check minimum time and stop time
-                        f_logReceivedThenCheckAndStopTime(GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
+                        f_logReceivedThenCheckAndStopTime(IS_GNSS_TOLLDECLARATIONS_TIME1_MIN_TC);
                     }
                 }	
     
@@ -6629,7 +6629,7 @@ module EfcInfoExchange_TestCasesTc {
     
                	// Prepare APDU with 1+GNSS.PAYMENTANNOUNCEMENT.PARAM1_MAX BillingDetails ADUs              	
                                  	
-               	for (var integer v_i := 1; v_i == 1+GNSS_PAYMENTANNOUNCEMENT_PARAM1_MAX_TC; v_i := v_i + 1) {
+               	for (var integer v_i := 1; v_i == 1+IS_GNSS_PAYMENTANNOUNCEMENT_PARAM1_MAX_TC; v_i := v_i + 1) {
                 	v_adus.billingDetailsADUs[v_i]:=m_aduGnssBillingDetails(
                         v_i,
                         TD_USERID_1,
@@ -6644,10 +6644,10 @@ module EfcInfoExchange_TestCasesTc {
 				v_apduForSending := m_apduNoAuthInitTester(v_adus);
                 
                 // respect time restriction TIMEA_MIN set by the IuT
-                f_wait(GNSS_BILLINGDETAILS_TSP_TIMEA_MIN_TC);
+                f_wait(IS_GNSS_BILLINGDETAILS_TSP_TIMEA_MIN_TC);
                 f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
+                t_step.start(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
                     
                 // Step 4:
                 // Wait for Default_Ack_Apdu within GNSS.BILLINGDETAILS_TSP.TIME1             
@@ -6656,7 +6656,7 @@ module EfcInfoExchange_TestCasesTc {
                 alt {				
                     [] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {					  
                         // Log what we received, check minimum time and stop time
-                        f_logReceivedThenCheckAndStopTime(GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
+                        f_logReceivedThenCheckAndStopTime(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TC);
                     }
                 }	
 								
@@ -6664,7 +6664,7 @@ module EfcInfoExchange_TestCasesTc {
                 // Send Initiating_Apdu containing
                 //		- 1+GNSS.PAYMENTANNOUNCEMENT.PARAM1_MAX valid PaymentAnnouncementADU
 				                	
-               	for (var integer v_i := 1; v_i == 1+GNSS_PAYMENTANNOUNCEMENT_PARAM1_MAX_TC; v_i := v_i + 1) {               		              	             					  
+               	for (var integer v_i := 1; v_i == 1+IS_GNSS_PAYMENTANNOUNCEMENT_PARAM1_MAX_TC; v_i := v_i + 1) {               		              	             					  
 					v_adus.paymentAnnouncementADUs[v_i]:=m_aduPaymentAnnouncement(
 						v_i,
 						TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_1,
@@ -6676,10 +6676,10 @@ module EfcInfoExchange_TestCasesTc {
 				v_apduForSending := m_apduNoAuthInitTester(v_adus);
 				
 				// respect time restriction TIMEA_MIN set by the IuT
-				(GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
+				(IS_GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
-                t_step.start(GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC);   				
+                t_step.start(IS_GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC);   				
 				
                 // Step 6: Wait for NAck_Apdu with APDU ReasonCode apduNotOK(3),
                 // within GNSS.PAYMENTANNOUNCEMENT.TIME1             
@@ -6688,7 +6688,7 @@ module EfcInfoExchange_TestCasesTc {
 				alt {
 					[] mtcPort.receive(mw_apduNAckProtocolIut(v_apduForSending, ApduReasonCode_apduNotOK_)) -> value v_apduReceived {
 						// Log what we received, check minimum time and stop time
-						f_logReceivedThenCheckAndStopTime(GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC);
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_PAYMENTANNOUNCEMENT_TIME1_MIN_TC);
 						// set result
 						setverdict(pass);
 					}

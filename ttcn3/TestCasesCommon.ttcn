@@ -65,7 +65,7 @@ module EfcInfoExchange_TestCasesCommon {
 				alt {
 					[] mtcPort.receive(mw_apduTrustObjectInit) -> value v_apduReceived {
 						//send Ack whichever object received
-						f_logReceivedWaitAndAcknowledge(TRUSTOBJECTS_TIME2_MIN[enum2int(p_transType)][enum2int(p_role)]); 							
+						f_logReceivedWaitAndAcknowledge(IS_TRUSTOBJECTS_TIME2_MIN[enum2int(p_transType)][enum2int(p_role)]); 							
 						// Look at the type of Trust Object received and set the related variable
 						if (match(v_apduReceived.infoExchangeContent.adus, mw_adusTrustObjectCertificate)) 
 						{isCertificateOrPublicKey:=true;}
@@ -125,10 +125,10 @@ module EfcInfoExchange_TestCasesCommon {
 				f_sendAndLogApdu(v_apduForSending);                 
                  // Step 2: Wait for positive Ack within TRUSTOBJECTS.TIME2
 				// Set timer
-                 t_step.start(TRUSTOBJECTS_TIME2_MAX[enum2int(p_transType)][enum2int(p_role)]);                 
+                 t_step.start(IS_TRUSTOBJECTS_TIME2_MAX[enum2int(p_transType)][enum2int(p_role)]);                 
 				alt {
 					[] mtcPort.receive(mw_apduDefaultAckIut(v_apduForSending)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TIME2_MIN[enum2int(p_transType)][enum2int(p_role)]);
+						f_logReceivedThenCheckAndStopTime(IS_TRUSTOBJECTS_TIME2_MIN[enum2int(p_transType)][enum2int(p_role)]);
 						setverdict(pass);
 						} 
 					} // End of Alt statement 
@@ -163,15 +163,15 @@ module EfcInfoExchange_TestCasesCommon {
 						f_sendAndLogApdu(v_apduForSending);
 			
 						// Set timer
-                		 t_step.start(TRUSTOBJECTS_TIME1_MAX[enum2int(p_transType)][enum2int(p_role)]);
+                		 t_step.start(IS_TRUSTOBJECTS_TIME1_MAX[enum2int(p_transType)][enum2int(p_role)]);
 						// Step #2: Wait for TrustObjects ADU
 						// Either we receive an APDU containing  TrustObject or the timeout expires
                  		alt {
                       		[] mtcPort.receive(mw_apduTrustObject(v_apduForSending)) -> value v_apduReceived {
-								f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TIME1_MIN[enum2int(p_transType)][enum2int(p_role)]);  
+								f_logReceivedThenCheckAndStopTime(IS_TRUSTOBJECTS_TIME1_MIN[enum2int(p_transType)][enum2int(p_role)]);  
 
                         		// Step #3: Send DefaultACK with correct identifier
-								f_logReceivedWaitAndAcknowledge(TRUSTOBJECTS_TIME2_MIN[enum2int(p_transType)][enum2int(p_role)]);
+								f_logReceivedWaitAndAcknowledge(IS_TRUSTOBJECTS_TIME2_MIN[enum2int(p_transType)][enum2int(p_role)]);
                       			}
                     		} // End of alt statement
 						}; // end of for statement
@@ -200,7 +200,7 @@ module EfcInfoExchange_TestCasesCommon {
 				var integer v_expectedTrustObjectRequests := sizeof(PX_TRUST_OBJECTS_TYPE_PURPOSE_SUPPORTED_SEND);
 				var integer v_receivedTrustObjects := 0;
 				// Set timer
-                t_step.start(TRUSTOBJECTS_TIME1_MAX[enum2int(p_transType)][enum2int(p_role)]);                 
+                t_step.start(IS_TRUSTOBJECTS_TIME1_MAX[enum2int(p_transType)][enum2int(p_role)]);                 
 				alt {
 					[] mtcPort.receive(mw_apduRequestTrustObject) -> value v_apduReceived {
 						// Log what we received
@@ -250,7 +250,7 @@ module EfcInfoExchange_TestCasesCommon {
                 
                 		// Step 2: Wait for positive Ack within TRUSTOBJECTS.TIME2
 						// Set timer
-                 		t_step.start(TRUSTOBJECTS_TIME2_MAX[enum2int(p_transType)][enum2int(p_role)]);                 
+                 		t_step.start(IS_TRUSTOBJECTS_TIME2_MAX[enum2int(p_transType)][enum2int(p_role)]);                 
 						alt {
 							[] mtcPort.receive(mw_apduDefaultAckIut(v_apduToSend)) -> value v_apduReceived {
 								// Log what we received
@@ -263,7 +263,7 @@ module EfcInfoExchange_TestCasesCommon {
 							setverdict(pass);
 							break;  
 						};
-	                	t_step.start(TRUSTOBJECTS_TIME1_MAX[enum2int(p_transType)][enum2int(p_role)]);  // Restart timer               
+	                	t_step.start(IS_TRUSTOBJECTS_TIME1_MAX[enum2int(p_transType)][enum2int(p_role)]);  // Restart timer               
 						repeat;
 					}	
 				} // End of first alt 					
@@ -292,15 +292,15 @@ module EfcInfoExchange_TestCasesCommon {
 				f_sendAndLogApdu(v_apduForSending);                 
                 // Step 2: Wait for negative Ack within TRUSTOBJECTS.TIME2
 				// Set timer
-                 t_step.start(TRUSTOBJECTS_TIME2_MAX[enum2int(p_transType)][enum2int(p_role)]);                		
+                 t_step.start(IS_TRUSTOBJECTS_TIME2_MAX[enum2int(p_transType)][enum2int(p_role)]);                		
 
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduForSending, AduReasonCode_invalidADU_)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TIME1_MIN[enum2int(p_transType)][enum2int(p_role)]); 
+						f_logReceivedThenCheckAndStopTime(IS_TRUSTOBJECTS_TIME1_MIN[enum2int(p_transType)][enum2int(p_role)]); 
 						setverdict(pass);
 						}
 					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, m_roNackParamsDouble(1, AduReasonCode_invalidADU_,2,AduReasonCode_invalidADU_))) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TIME1_MIN[enum2int(p_transType)][enum2int(p_role)]); 
+						f_logReceivedThenCheckAndStopTime(IS_TRUSTOBJECTS_TIME1_MIN[enum2int(p_transType)][enum2int(p_role)]); 
 						setverdict(pass);
 						}
 					} // End of Alt statement
@@ -336,16 +336,16 @@ module EfcInfoExchange_TestCasesCommon {
 				f_sendAndLogApdu(v_apduForSending);                 
                 // Step 2: Wait for negative Ack within TRUSTOBJECTS.TIME2
 				// Set timer
-                 t_step.start(TRUSTOBJECTS_TIME2_MAX[enum2int(p_transType)][enum2int(p_role)]);                		
+                 t_step.start(IS_TRUSTOBJECTS_TIME2_MAX[enum2int(p_transType)][enum2int(p_role)]);                		
 				//Create parameters for the m_apduNAck			
 
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduForSending, AduReasonCode_semanticError_)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TIME1_MIN[enum2int(p_transType)][enum2int(p_role)]); 
+						f_logReceivedThenCheckAndStopTime(IS_TRUSTOBJECTS_TIME1_MIN[enum2int(p_transType)][enum2int(p_role)]); 
 						setverdict(pass);
 						}
 					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, m_roNackParamsDouble(1, AduReasonCode_semanticError_,2,AduReasonCode_semanticError_))) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TIME1_MIN[enum2int(p_transType)][enum2int(p_role)]); 
+						f_logReceivedThenCheckAndStopTime(IS_TRUSTOBJECTS_TIME1_MIN[enum2int(p_transType)][enum2int(p_role)]); 
 						setverdict(pass);
 						}
 					} // End of Alt statement
@@ -371,16 +371,16 @@ module EfcInfoExchange_TestCasesCommon {
 				f_sendAndLogApdu(v_apduForSending);                 
                 // Step 2: Wait for negative Ack within TRUSTOBJECTS.TIME2
 				// Set timer
-                 t_step.start(TRUSTOBJECTS_TIME2_MAX[enum2int(p_transType)][enum2int(p_role)]);                		
+                 t_step.start(IS_TRUSTOBJECTS_TIME2_MAX[enum2int(p_transType)][enum2int(p_role)]);                		
 				//Create parameters for the m_apduNAck			
 
 				alt {
 					[] mtcPort.receive(mw_apduNAckAllAdusNoAuthIut(v_apduForSending, AduReasonCode_semanticError_)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TIME1_MIN[enum2int(p_transType)][enum2int(p_role)]); 
+						f_logReceivedThenCheckAndStopTime(IS_TRUSTOBJECTS_TIME1_MIN[enum2int(p_transType)][enum2int(p_role)]); 
 						setverdict(pass);
 						}
 					[] mtcPort.receive(mw_apduNAckIndividualIssuesIut(v_apduForSending, m_roNackParamsDouble(1, AduReasonCode_semanticError_,2,AduReasonCode_semanticError_))) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TIME1_MIN[enum2int(p_transType)][enum2int(p_role)]); 
+						f_logReceivedThenCheckAndStopTime(IS_TRUSTOBJECTS_TIME1_MIN[enum2int(p_transType)][enum2int(p_role)]); 
 						setverdict(pass);
 						}
 					} // End of Alt statement
@@ -417,7 +417,7 @@ module EfcInfoExchange_TestCasesCommon {
 				f_sendAndLogApdu(v_secondApduRequest);
                               
 				//Set timer
-				t_step.start(TRUSTOBJECTS_TIME2_MAX[enum2int(p_transType)][enum2int(p_role)]);
+				t_step.start(IS_TRUSTOBJECTS_TIME2_MAX[enum2int(p_transType)][enum2int(p_role)]);
                 
 				// Step #2: Wait for NAck ADU				 					
 				// Either we receive an APDU containing  NAck or the timeout expires
@@ -425,7 +425,7 @@ module EfcInfoExchange_TestCasesCommon {
 				
 				alt {
 					[] mtcPort.receive(mw_apduNAckRequestSentTooOften(v_secondApduRequest)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TIME2_MIN[enum2int(p_transType)][enum2int(p_role)]);  
+						f_logReceivedThenCheckAndStopTime(IS_TRUSTOBJECTS_TIME2_MIN[enum2int(p_transType)][enum2int(p_role)]);  
 						setverdict(pass);
 						}
 					} // End of Alt statement 
@@ -459,14 +459,14 @@ module EfcInfoExchange_TestCasesCommon {
 				f_sendAndLogApdu(v_secondApduToBeSent);				
 
 				//Set timer
-				t_step.start(TRUSTOBJECTS_TIME1_MAX[enum2int(p_transType)][enum2int(p_role)]);
+				t_step.start(IS_TRUSTOBJECTS_TIME1_MAX[enum2int(p_transType)][enum2int(p_role)]);
                 
 				// Step #2: Wait for NAck ADU				 					
 				// Either we receive an APDU containing  NAck or the timeout expires
 				// timeout expiration is handled in the altstep branch
 				alt {
 					[] mtcPort.receive(mw_apduNAckRequestSentTooOften(v_secondApduToBeSent)) -> value v_apduReceived {
-						f_logReceivedThenCheckAndStopTime(TRUSTOBJECTS_TIME1_MIN[enum2int(p_transType)][enum2int(p_role)]);  
+						f_logReceivedThenCheckAndStopTime(IS_TRUSTOBJECTS_TIME1_MIN[enum2int(p_transType)][enum2int(p_role)]);  
 						setverdict(pass);
 						}
 					} 
