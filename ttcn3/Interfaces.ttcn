@@ -39,7 +39,7 @@ module EfcInfoExchange_Interfaces language "TTCN-3:2010 Advanced Parameterizatio
         port MtcPort mtcPort;
         port MtcAccessPort mtcAccessPort; 
         timer t_step;
-        timer t_transaction:=INITIALISE_TRANSACTION_TIMEOUT;
+        timer t_transaction:=PX_INITIALISE_TRANSACTION_TIMEOUT;
 		var InfoExchange v_apduReceived, v_apduForSending;
     }
 

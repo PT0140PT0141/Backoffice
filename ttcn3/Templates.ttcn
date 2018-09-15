@@ -63,7 +63,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		template (value) ApciFields m_apciInitTester modifies mw_apci :={
     		apduOriginator := TD_APDU_ORIGINATOR_FOR_TESTER,  
     		informationSenderID := TD_INFORMATION_SENDER_TESTER, 
-    		informationrecipientID := INFORMATION_SENDER_ID_FOR_IUT,
+    		informationrecipientID := PX_INFORMATION_SENDER_ID_FOR_IUT,
 			apduIdentifier := float2int(rnd()) * 65535,
     		previousApduId := omit,
     		inResponseToApduId := omit, 
@@ -74,19 +74,19 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		template (value) ApciFields m_apciRespTester(in InfoExchange p_apduBeingRespondedTo) modifies m_apciInitTester :={
 			apduOriginator := TD_APDU_ORIGINATOR_FOR_TESTER,  
 			informationSenderID := TD_INFORMATION_SENDER_TESTER, 
-			informationrecipientID := INFORMATION_SENDER_ID_FOR_IUT,
+			informationrecipientID := PX_INFORMATION_SENDER_ID_FOR_IUT,
 			apduIdentifier := float2int(rnd()) * 65535,
 			previousApduId := omit,
 			inResponseToApduId:={
-				apduOriginator:=INFORMATION_SENDER_ID_FOR_IUT,   
+				apduOriginator:=PX_INFORMATION_SENDER_ID_FOR_IUT,   
 				apduIdentifier:=p_apduBeingRespondedTo.infoExchangeContent.apci.apduIdentifier
 			},
 			apduDate:=fx_getUtc()
 		}
     	
 		template ApciFields mw_apciInitIut modifies mw_apci :={
-			apduOriginator := APDU_ORIGINATOR_FOR_IUT,  
-			informationSenderID := INFORMATION_SENDER_ID_FOR_IUT, 
+			apduOriginator := PX_APDU_ORIGINATOR_FOR_IUT,  
+			informationSenderID := PX_INFORMATION_SENDER_ID_FOR_IUT, 
 			informationrecipientID := TD_INFORMATION_SENDER_TESTER,
 			inResponseToApduId := omit
 		}
@@ -103,11 +103,11 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			aidIdentifier := 1, // 12855 Protocol Version number 
 			apduOriginator := TD_APDU_ORIGINATOR_FOR_TESTER, 
 			informationSenderID := TD_INFORMATION_SENDER_TESTER, // Sender of this content 
-			informationrecipientID := INFORMATION_SENDER_ID_FOR_IUT,  
+			informationrecipientID := PX_INFORMATION_SENDER_ID_FOR_IUT,  
 			apduIdentifier := float2int(rnd()) * 65535,
 			previousApduId := omit,
 			nextApduId := omit,
-			inResponseToApduId := {INFORMATION_SENDER_ID_FOR_IUT, 1}, // noe present in this BI test case 
+			inResponseToApduId := {PX_INFORMATION_SENDER_ID_FOR_IUT, 1}, // noe present in this BI test case 
 			apduDate := fx_getUtc()
 		}
 		  	  	
@@ -1457,7 +1457,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 						billingDetailsNum := p_billingDetailsNum,
 						dateOfService := omit
 					},
-					tollContext := TOLL_CONTEXT_ID_IUT,
+					tollContext := PX_TOLL_CONTEXT_ID_IUT,
 					userId := p_userId,
 					relatedBillingDetails := omit,
 					period := p_period,
@@ -1492,7 +1492,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 						textLanguage:= TD_GNSS_BILLINGDETAILS_LANG,
 						textDetail := TD_GNSS_BILLINGDETAILS_TEXT
 					}}}},
-					MAX_ACCEPTED_BILLINGDETAILS_AMOUNT,
+					PX_MAX_ACCEPTED_BILLINGDETAILS_AMOUNT,
 					{p_tollDeclarationId},
 					ActionCode_send_
 				);

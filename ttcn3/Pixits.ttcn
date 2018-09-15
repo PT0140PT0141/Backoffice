@@ -4,14 +4,11 @@
  * @version    $id$
  */
 module EfcInfoExchange_Pixits {
-	//TODO Prefix every modulepar with "PX" and add tags for semantic definitions in comments
+	//TODO add tags for semantic definitions in comments
+
 	//importing other modules
-	
-	//importing ASN.1 data automatically translated into TTCN-3	
 	import from EfcInfoExchange language "ASN.1:1997" all;
 	import from EfcDsrcApplication language "ASN.1:1997" all;
-
-	//importing ASN.1 data manually translated into TTCN-3
 
 	modulepar UserId PX_USER_NOT_EXISTING_1,PX_USER_NOT_EXISTING_2,PX_USER_NOT_EXISTING_3;
 
@@ -25,35 +22,35 @@ module EfcInfoExchange_Pixits {
 
 	// Toll Context ID and Toll Context Name of the Toll Context managed by the
 	// IUT in case it is a Toll Charger
-	modulepar Provider TOLL_CONTEXT_ID_IUT; 
+	modulepar Provider PX_TOLL_CONTEXT_ID_IUT; 
 	modulepar UTF8String PX_TOLL_CONTEXT_NAME_IUT;
 	
-    modulepar float INITIALISE_TRANSACTION_TIMEOUT := 10.0;
+    modulepar float PX_INITIALISE_TRANSACTION_TIMEOUT := 10.0;
     
-    modulepar ExtendedPaymentAmount MAX_ACCEPTED_BILLINGDETAILS_AMOUNT;
-    modulepar ExtendedPaymentAmount MAX_ACCEPTED_PAYMENTCLAIM_AMOUNT;
+    modulepar ExtendedPaymentAmount PX_MAX_ACCEPTED_BILLINGDETAILS_AMOUNT;
+    modulepar ExtendedPaymentAmount PX_MAX_ACCEPTED_PAYMENTCLAIM_AMOUNT;
     
 	//For APDUs sent from the IUT...
-    modulepar Provider APDU_ORIGINATOR_FOR_IUT; //value of the InfoExchange.infoExchangeContent.apci.apduOriginator
-    modulepar Provider INFORMATION_SENDER_ID_FOR_IUT;	//value of the InfoExchange.infoExchangeContent.apci.informationSenderID
+    modulepar Provider PX_APDU_ORIGINATOR_FOR_IUT; //value of the InfoExchange.infoExchangeContent.apci.apduOriginator
+    modulepar Provider PX_INFORMATION_SENDER_ID_FOR_IUT;	//value of the InfoExchange.infoExchangeContent.apci.informationSenderID
 
 	modulepar UserId PX_USER_ID; // Valid user id
     modulepar UserId PX_USER_ID_RELATED;// Valid user id, the ONLY ONE one associated with PX_USER_ID for LISTOFUSERS transactions
     modulepar UserId PX_USER_ID_NO_RELATED;// Valid user, with no other associated UserIds for LISTOFUSERS transactions
     modulepar UserId PX_USER_ID_NON_EXISTING;// Wrong (not registered) user id
     
-    modulepar Provider MANUFACTURERID1; // Valid ManufacturerID for ContractIssuerList transactions
-    modulepar Provider MANUFACTURERID2; // Valid ManufacturerID for ContractIssuerList transactions
-    modulepar Provider MANUFACTURERID3; // Valid ManufacturerID for ContractIssuerList transactions
+    modulepar Provider PX_MANUFACTURERID1; // Valid ManufacturerID for ContractIssuerList transactions
+    modulepar Provider PX_MANUFACTURERID2; // Valid ManufacturerID for ContractIssuerList transactions
+    modulepar Provider PX_MANUFACTURERID3; // Valid ManufacturerID for ContractIssuerList transactions
   
     
     type record of UserParameterRequest RecordOfUserParameterRequest;
     
  	type record of integer RecordOfInteger;
-    modulepar RecordOfInteger USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS;
-    template integer mw_userDetailsSupportedListOfParameters :=(all from USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS);
-    modulepar RecordOfInteger USERDETAILS_PRIVACYBOUND_LIST_OF_PARAMETERS;  
-    modulepar RecordOfInteger USERDETAILS_NOT_AGREED_LIST;
+    modulepar RecordOfInteger PX_USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS;
+    template integer mw_userDetailsSupportedListOfParameters :=(all from PX_USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS);
+    modulepar RecordOfInteger PX_USERDETAILS_PRIVACYBOUND_LIST_OF_PARAMETERS;  
+    modulepar RecordOfInteger PX_USERDETAILS_NOT_AGREED_LIST;
     
     type record TrustObjectTypePurposePair{
 		integer trustObjectType,

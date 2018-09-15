@@ -298,7 +298,7 @@ module EfcInfoExchange_TestCasesTc {
     				aidIdentifier := 1, // 12855 Protocol Version number 
     				apduOriginator := TD_APDU_ORIGINATOR_FOR_TESTER, 
     				informationSenderID := TD_INFORMATION_SENDER_TESTER, // Sender of this content 
-    				informationrecipientID := INFORMATION_SENDER_ID_FOR_IUT,  
+    				informationrecipientID := PX_INFORMATION_SENDER_ID_FOR_IUT,  
     				apduIdentifier := float2int(rnd()) * 65535,
     				previousApduId := omit,
     				nextApduId := {TD_APDU_ORIGINATOR_FOR_TESTER, 1}, // now present in the BI
@@ -4669,7 +4669,7 @@ module EfcInfoExchange_TestCasesTc {
 						stayedDuration:=1000,
 						chargeUnit:={time:={dur:=100,durUnit:=DurUnit_seconds_}}
 					}}}},
-					MAX_ACCEPTED_BILLINGDETAILS_AMOUNT,
+					PX_MAX_ACCEPTED_BILLINGDETAILS_AMOUNT,
 					{c_refTollDeclaration1},
 					ActionCode_send_
 				);			
@@ -4686,7 +4686,7 @@ module EfcInfoExchange_TestCasesTc {
 							}
 						}}
 					}}}},
-					MAX_ACCEPTED_BILLINGDETAILS_AMOUNT,
+					PX_MAX_ACCEPTED_BILLINGDETAILS_AMOUNT,
 					{c_refTollDeclaration1},
 					ActionCode_send_
 				);			

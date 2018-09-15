@@ -243,7 +243,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Step 1: Send Initiating APDU containing a valid RequestADU with requestedADUType=provideUserDetailsADU
 				// containing informationrecipientID  different from  value declared in the PIXIT
 				// Retrieve and alter informationrecipientID value
-				var Provider apduWrongRecipient := INFORMATION_SENDER_ID_FOR_IUT;
+				var Provider apduWrongRecipient := PX_INFORMATION_SENDER_ID_FOR_IUT;
 				apduWrongRecipient.providerIdentifier := apduWrongRecipient.providerIdentifier + 1;
 				template (value) ApciFields m_apciInvalidIuT modifies m_apciInitTester:= {informationrecipientID := apduWrongRecipient};
 				// Then send it together with the request ADU
@@ -334,7 +334,7 @@ module EfcInfoExchange_TestCasesTsp {
 		    		aidIdentifier := 1, // 12855 Protocol Version number 
 		    		apduOriginator := TD_APDU_ORIGINATOR_FOR_TESTER, // Source of the content of the APDU 
 		    		informationSenderID := TD_INFORMATION_SENDER_TESTER, // Sender of this content 
-		    		informationrecipientID := INFORMATION_SENDER_ID_FOR_IUT,  
+		    		informationrecipientID := PX_INFORMATION_SENDER_ID_FOR_IUT,  
 		    		apduIdentifier := float2int(rnd()) * 65535,
 		    		previousApduId := omit,
 		    		nextApduId := {TD_APDU_ORIGINATOR_FOR_TESTER,1},
@@ -376,7 +376,7 @@ module EfcInfoExchange_TestCasesTsp {
 		    		aidIdentifier := 1, // 12855 Protocol Version number 
 		    		apduOriginator := TD_APDU_ORIGINATOR_FOR_TESTER, // Source of the content of the APDU 
 		    		informationSenderID := TD_INFORMATION_SENDER_TESTER, // Sender of this content 
-		    		informationrecipientID := INFORMATION_SENDER_ID_FOR_IUT,  
+		    		informationrecipientID := PX_INFORMATION_SENDER_ID_FOR_IUT,  
 		    		apduIdentifier := float2int(rnd()) * 65535,
 		    		previousApduId := omit,
 		    		nextApduId := omit,
@@ -807,12 +807,12 @@ module EfcInfoExchange_TestCasesTsp {
 					v_notSupportedUserDetailsParameter := v_notSupportedUserDetailsParameter + 1
 				) {
 					if (
-							match(v_notSupportedUserDetailsParameter, complement(all from USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS))
+							match(v_notSupportedUserDetailsParameter, complement(all from PX_USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS))
 					) {break;}
 				};
 
 				// If IUT implements all possible details, the test cannot be run				
-				if (sizeof(USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS) == 27) {
+				if (sizeof(PX_USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS) == 27) {
 					setverdict(inconc);
 					f_addLogEntry("All user details supported by IUT. Test cannot be executed");
 					stop;
@@ -880,14 +880,14 @@ module EfcInfoExchange_TestCasesTsp {
 
 				// Check if there are parameters that are privacy bound
 				// If not, exit test
-				if (sizeof (USERDETAILS_NOT_AGREED_LIST) == 0) {
+				if (sizeof (PX_USERDETAILS_NOT_AGREED_LIST) == 0) {
 					setverdict(inconc);
 					f_addLogEntry("Not agreed parameters missing. Test cannot be executed");
 					stop;
 					};                
 				// Step1: send RequestADU
 				
-				v_apduForSending := m_apduNoAuthInitTester({requestAdus:={m_aduRequestProvideUserDetails(USERDETAILS_NOT_AGREED_LIST)}});
+				v_apduForSending := m_apduNoAuthInitTester({requestAdus:={m_aduRequestProvideUserDetails(PX_USERDETAILS_NOT_AGREED_LIST)}});
 				f_sendAndLogApdu(v_apduForSending);   	  
                                 		
 				//Set timer
@@ -1744,7 +1744,7 @@ module EfcInfoExchange_TestCasesTsp {
                 // Send PAYMENTCLAIM with ActionCode=SEND and referencing the performed BillingDetails transaction, and containing paymentClaimAmount exceeding maximum permitted
 
 				v_apduForSending := m_apduPaymentClaim;
-				v_apduForSending.infoExchangeContent.adus.paymentClaimADUs[0].paymentClaimAmount := MAX_ACCEPTED_PAYMENTCLAIM_AMOUNT;
+				v_apduForSending.infoExchangeContent.adus.paymentClaimADUs[0].paymentClaimAmount := PX_MAX_ACCEPTED_PAYMENTCLAIM_AMOUNT;
 				v_apduForSending.infoExchangeContent.adus.paymentClaimADUs[0].paymentClaimAmount.paymentFeeAmount := 
 				v_apduForSending.infoExchangeContent.adus.paymentClaimADUs[0].paymentClaimAmount.paymentFeeAmount+1;
 				
@@ -1876,9 +1876,9 @@ module EfcInfoExchange_TestCasesTsp {
 
 				//  Wait for apdu containing CONTRACTISSUERLIST for three different manufacturers
 				var template InfoExchange v_apduToBeReceived := mw_apduNoAuthInitIut(
-					{modifies mw_aduContractIssuerList:= {manufacturerID := MANUFACTURERID1}},
-					{modifies mw_aduContractIssuerList:= {manufacturerID := MANUFACTURERID2}},
-					{modifies mw_aduContractIssuerList:= {manufacturerID := MANUFACTURERID3}}
+					{modifies mw_aduContractIssuerList:= {manufacturerID := PX_MANUFACTURERID1}},
+					{modifies mw_aduContractIssuerList:= {manufacturerID := PX_MANUFACTURERID2}},
+					{modifies mw_aduContractIssuerList:= {manufacturerID := PX_MANUFACTURERID3}}
            			);                 
 
 				alt {
@@ -2345,7 +2345,7 @@ module EfcInfoExchange_TestCasesTsp {
 				var InfoExchange v_apduToSend :=m_apduNoAuthInitTester(
 				{modifies mw_aduDsrcBillingDetails(1):= {
 					billingDetailsAmount:={
-						paymentFeeAmount := MAX_ACCEPTED_BILLINGDETAILS_AMOUNT.paymentFeeAmount + 4000
+						paymentFeeAmount := PX_MAX_ACCEPTED_BILLINGDETAILS_AMOUNT.paymentFeeAmount + 4000
 					}
 			  	}});				
 				// Wait for a negative ack
@@ -3568,7 +3568,7 @@ module EfcInfoExchange_TestCasesTsp {
 				var TollDeclarationADU v_receivedTollDeclaration := v_apduReceived.infoExchangeContent.adus.tollDeclarationADUs[0];
 				var TollDeclarationId v_receivedTollDeclarationId := v_receivedTollDeclaration.tollDeclarationId;
 				var ObeId v_receivedObeId := v_receivedTollDeclaration.gnssTollDeclaration.chargeReport.obeId; // To be used as UserId in BillingDetails
-				var ExtendedPaymentAmount v_amount:=MAX_ACCEPTED_BILLINGDETAILS_AMOUNT;
+				var ExtendedPaymentAmount v_amount:=PX_MAX_ACCEPTED_BILLINGDETAILS_AMOUNT;
 				v_amount.paymentFeeAmount:=v_amount.paymentFeeAmount+1; //set it to a value that is so high it will provoke a Nack
                  // Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
                  // action code = send
@@ -3619,7 +3619,7 @@ module EfcInfoExchange_TestCasesTsp {
 							textLanguage:= TD_GNSS_BILLINGDETAILS_LANG,
 							textDetail := TD_GNSS_BILLINGDETAILS_TEXT
 						}}}},
-						MAX_ACCEPTED_BILLINGDETAILS_AMOUNT, // Amount in Billing Details less than the allowed maximum
+						PX_MAX_ACCEPTED_BILLINGDETAILS_AMOUNT, // Amount in Billing Details less than the allowed maximum
 						{v_receivedTollDeclarationId}, // Reference to received Toll Declaration
 						ActionCode_adjust_
 					)}
@@ -3692,7 +3692,7 @@ module EfcInfoExchange_TestCasesTsp {
 							textLanguage:= TD_GNSS_BILLINGDETAILS_LANG ,
 							textDetail := TD_GNSS_BILLINGDETAILS_TEXT
 						}}}},
-						MAX_ACCEPTED_BILLINGDETAILS_AMOUNT - 1, // Amount in Billing Details less than the allowed maximum
+						PX_MAX_ACCEPTED_BILLINGDETAILS_AMOUNT - 1, // Amount in Billing Details less than the allowed maximum
 						{v_receivedTollDeclarationId}, // Reference to received Toll Declaration
 						ActionCode_revoke_
 						)}
@@ -3792,7 +3792,7 @@ module EfcInfoExchange_TestCasesTsp {
 						stayedDuration:=1000,
 						chargeUnit:={time:={dur:=100,durUnit:=DurUnit_seconds_}}
 					}}}},
-					MAX_ACCEPTED_BILLINGDETAILS_AMOUNT,
+					PX_MAX_ACCEPTED_BILLINGDETAILS_AMOUNT,
 					{v_receivedTollDeclarationId},
 					ActionCode_send_
 				);			
@@ -3807,7 +3807,7 @@ module EfcInfoExchange_TestCasesTsp {
 							chargeObjectId:="NON-EXISTING CHARGE OBJECT ID" //billingDetailsIntermediateSectionRejected
 						}}
 					}}}},
-					MAX_ACCEPTED_BILLINGDETAILS_AMOUNT,
+					PX_MAX_ACCEPTED_BILLINGDETAILS_AMOUNT,
 					{v_receivedTollDeclarationId},
 					ActionCode_send_
 				);			
