@@ -26,36 +26,122 @@ module EfcInfoExchange_TesterData{
         modulepar EfcDsrcApplication.Provider TD_IDENTIFIER:= {'1010010000'B, 99}; // Default is Sweden.99 = 'A40053'H
             // [SEMANTIC DEFINITION] The provider identifier of the tester
             // acccording to ISO 14906 consisting of countryCode and issuerIdentifier
+ 
         modulepar EfcDsrcApplication.Provider TD_APDU_ORIGINATOR_FOR_TESTER:={'1010010000'B, 99};
             // [SEMANTIC DEFINITION] The originator id of the tester
             // that is used in the APCI field apdu originator. Same syntax as the provider identifier. 
+ 
         modulepar EfcDsrcApplication.Provider TD_INFORMATION_SENDER_TESTER:={'1010010000'B, 99};
             // [SEMANTIC DEFINITION] The sender id of tester
             // that is used in the APCI field sender id. Same syntax as the provider identifier.
+ 
         modulepar EfcDsrcApplication.Provider TD_INVALID_APDU_ORIGINATOR_TESTER:={'1010010000'B, 99};
             // [SEMANTIC DEFINITION] The originator id of the tester used
             // in an invalid base test case. Shall be different from the correct originator id of the tester 
+ 
         modulepar EfcDsrcApplication.Provider TD_INVALID_INFORMATION_SENDER_TESTER:={'1010010000'B, 99};
             // [SEMANTIC DEFINITION] The sender id of the tester used 
             // in an invalid base test case. Shall be different from the correct sender id of the tester
+ 
         modulepar EfcDsrcApplication.Provider TD_INVALID_INFORMATION_RECEPIENT_ID_FOR_IUT:={'1010010000'B, 99};
             // [SEMANTIC DEFINITION] The information recipient id of the IUT
             // used an invalid base test case. Shall be different from the correct recipient id of the IUT
             // TODO check if this is really used. SHould not be a tester data
-        modulepar EfcDsrcApplication.PersonalAccountNumber TD_PAN_1:= '11223344556677889900'O;
+
+        modulepar EfcDsrcApplication.PersonalAccountNumber TD_PAN_1:= '11223344556677889900'O,
+        	TD_PAN_2:= '22334455667788990011'O, TD_PAN_3:= '33445566778899001122'O, TD_PAN_4:= '44556677889900112233'O,
+        	TD_PAN_5:= '55667788990011223344'O, TD_PAN_6:= '66778899001122334455'O, TD_PAN_7:= '77889900112233445566'O,
+        	TD_PAN_8:= '88990011223344556677'O;       
             // [SEMANTIC DEFINITION] The personal account number applied by the tester in test cases
+
         modulepar EfcDsrcApplication.LPN TD_LPN_1 := {
-        	countryCode:='1010010000'B, // country of registration = Sweden
-        	alphabetIndicator:=latinAlphabetNo1, // alphabeth indicator = latin(1)
-        	licencePlateNumber:= '4f4344353630'O // plate number = "OCD560"
-        };
-            // [SEMANTIC DEFINITION] The license plate number applied by the tester in test cases        
+        		countryCode:='1010010000'B, // country of registration = Sweden
+        		alphabetIndicator:=latinAlphabetNo1, // alphabeth indicator = latin(1)
+        		licencePlateNumber:= '4f4344353631'O // plate number = "OCD561"
+        	},
+        	TD_LPN_2 := {
+        		countryCode:='1010010000'B, // country of registration = Sweden
+        		alphabetIndicator:=latinAlphabetNo1, // alphabeth indicator = latin(1)
+        		licencePlateNumber:= '4f4344353632'O // plate number = "OCD562"
+        	},
+        	TD_LPN_3 := {
+        		countryCode:='1010010000'B, // country of registration = Sweden
+        		alphabetIndicator:=latinAlphabetNo1, // alphabeth indicator = latin(1)
+        		licencePlateNumber:= '4f4344353633'O // plate number = "OCD563"
+        	},
+        	TD_LPN_4 := {
+        		countryCode:='1010010000'B, // country of registration = Sweden
+        		alphabetIndicator:=latinAlphabetNo1, // alphabeth indicator = latin(1)
+        		licencePlateNumber:= '4f4344353634'O // plate number = "OCD564"
+        	},
+			TD_LPN_5 := {
+        		countryCode:='1010010000'B, // country of registration = Sweden
+        		alphabetIndicator:=latinAlphabetNo1, // alphabeth indicator = latin(1)
+        		licencePlateNumber:= '4f4344353635'O // plate number = "OCD565"
+        	},
+			TD_LPN_6 := {
+        		countryCode:='1010010000'B, // country of registration = Sweden
+        		alphabetIndicator:=latinAlphabetNo1, // alphabeth indicator = latin(1)
+        		licencePlateNumber:= '4f4344353636'O // plate number = "OCD566"
+        	},
+			TD_LPN_7 := {
+        		countryCode:='1010010000'B, // country of registration = Sweden
+        		alphabetIndicator:=latinAlphabetNo1, // alphabeth indicator = latin(1)
+        		licencePlateNumber:= '4f4344353637'O // plate number = "OCD567"
+        	},
+			TD_LPN_8 := {
+        		countryCode:='1010010000'B, // country of registration = Sweden
+        		alphabetIndicator:=latinAlphabetNo1, // alphabeth indicator = latin(1)
+        		licencePlateNumber:= '4f4344353638'O // plate number = "OCD568"
+        	};
+            // [SEMANTIC DEFINITION] The license plate numbers applied by the tester in test cases        
+
+		modulepar EfcInfoExchange.Int4 TD_MANUFACTURER_ID_1 := 97, TD_MANUFACTURER_ID_2 := 98, TD_MANUFACTURER_ID_3 := 99;
+			// [SEMANTIC DEFINITION] Manufacturer ids used by the tester e.g. in contract issuer data 
+
+
 		modulepar EfcAutonomousCharging.ObeId TD_OBE_ID_1 := {
-			manufacturerId := TD_MANUFACTURER_ID_1,
-			equipmentObuId := '9876543210'O // id of the obe = 9876543210
-		};
-            // [SEMANTIC DEFINITION] The license plate number applied by the tester in test cases        
-		modulepar EfcDsrcApplication.ContractSerialNumber TD_CSN_1 := 1234567890; // if of the contract = 1234567890
+				manufacturerId := TD_MANUFACTURER_ID_1,
+				equipmentObuId := '112233445566'O // id of the obe = 112233445566
+			},
+			TD_OBE_ID_2 := {
+				manufacturerId := TD_MANUFACTURER_ID_2,
+				equipmentObuId := '223344556677'O // id of the obe = 223344556677
+			},
+			TD_OBE_ID_3 := {
+				manufacturerId := TD_MANUFACTURER_ID_3,
+				equipmentObuId := '334455667788'O // id of the obe = 334455667788
+			},
+			TD_OBE_ID_4 := {
+				manufacturerId := TD_MANUFACTURER_ID_1,
+				equipmentObuId := '445566778899'O // id of the obe = 445566778899
+			},
+			TD_OBE_ID_5 := {
+				manufacturerId := TD_MANUFACTURER_ID_2,
+				equipmentObuId := '556677889900'O // id of the obe = 556677889900
+			},
+			TD_OBE_ID_6 := {
+				manufacturerId := TD_MANUFACTURER_ID_3,
+				equipmentObuId := '667788990011'O // id of the obe = 667788990011
+			},
+			TD_OBE_ID_7 := {
+				manufacturerId := TD_MANUFACTURER_ID_1,
+				equipmentObuId := '778899001122'O // id of the obe = 778899001122
+			},
+			TD_OBE_ID_8 := {
+				manufacturerId := TD_MANUFACTURER_ID_2,
+				equipmentObuId := '889900112233'O // id of the obe = 889900112233
+			};
+            // [SEMANTIC DEFINITION] The obe ids applied by the tester in test cases        
+
+		modulepar EfcDsrcApplication.ContractSerialNumber TD_CSN_1 := 1234567890, // id of the contract = 1234567890
+			TD_CSN_2 := 2345678901, // id of the contract = 2345678901
+			TD_CSN_3 := 3456789012, // id of the contract = 3456789012
+			TD_CSN_4 := 4567890123, // id of the contract = 4567890123
+			TD_CSN_5 := 5678901234, // id of the contract = 5678901234
+			TD_CSN_6 := 6789012345, // id of the contract = 6789012345
+			TD_CSN_7 := 7890123456, // id of the contract = 7890123456
+			TD_CSN_8 := 8901234567, // id of the contract = 8901234567
             // [SEMANTIC DEFINITION] The contract serial number applied by the tester in test cases 		
 		
 		modulepar VehicleParameters TD_VEHICLE_PARAMETERS := {
@@ -73,7 +159,17 @@ module EfcInfoExchange_TesterData{
 		modulepar UTF8String TD_VAT_ID := "ATU99999";
             // [SEMANTIC DEFINITION] The vat identification number applied by the tester in test cases 		
 		 
-		modulepar UserId TD_USERID_1, TD_USERID_2, TD_USERID_3, TD_USERID_4, TD_USERID_5, TD_USERID_6, TD_USERID_7, TD_USERID_8; 
+		modulepar UserId TD_USERID_1:={TD_PAN_1, TD_CSN_1,TD_LPN_1,TD_OBE_ID_1},
+			TD_USERID_2:={TD_PAN_2, TD_CSN_2,TD_LPN_2,TD_OBE_ID_2},
+			TD_USERID_3:={TD_PAN_3, TD_CSN_3,TD_LPN_3,TD_OBE_ID_3},
+			TD_USERID_4:={TD_PAN_4, TD_CSN_4,TD_LPN_4,TD_OBE_ID_4},
+			TD_USERID_5:={TD_PAN_5, TD_CSN_5,TD_LPN_5,TD_OBE_ID_5},
+			TD_USERID_6:={TD_PAN_6, TD_CSN_6,TD_LPN_6,TD_OBE_ID_6},
+			TD_USERID_7:={TD_PAN_7, TD_CSN_7,TD_LPN_7,TD_OBE_ID_7},
+			TD_USERID_8:={TD_PAN_8, TD_CSN_8,TD_LPN_8,TD_OBE_ID_8}; 
+ 			// [SEMANTIC DEFINITION] The IDs of users including the individual identifieres for the account,
+ 			// contract, license plate and obe that is used in multiple testcases inside toll declarations,
+ 			// billing details and payment claims.
             
 	} // end group CommonTesterData		
 
@@ -84,28 +180,35 @@ module EfcInfoExchange_TesterData{
 		modulepar EfcDsrcApplication.EFC_ContextMark TD_EFC_CONTEXT_MARK := {TD_INFORMATION_SENDER_TESTER, '1111'O ,99}; //'A40053000503'H;
 			// [SEMANTIC DEFINITION] The EFCContextMark used by the tester
 			// in contract issuer data. Used according to ISO 14906.
+
 		modulepar EfcInfoExchange.Int2 TD_EQUIPMENT_CLASS := 341;
 			// [SEMANTIC DEFINITION] The equipment class value (for OBU) the tester applies in Contract Issuer data.
-		modulepar EfcInfoExchange.Int4 TD_MANUFACTURER_ID_1 := 97, TD_MANUFACTURER_ID_2 := 98, TD_MANUFACTURER_ID_3 := 99;
-			// [SEMANTIC DEFINITION] Manufacturer ids used by the tester e.g. in contract issuer data 
+
 		modulepar UTF8String TD_UNIQUE_PART_OF_PAN := "76543";
 			// [SEMANTIC DEFINITION] The unique part of thge PAN the tester applies in contract issuer data;
+
 		modulepar UTF8String TD_TYPE_OF_EFCAPPLICATION := "TheEFCApplicationType";
 			// [SEMANTIC DEFINITION] The designation of the type of the efc application
 			// used by the tester as part of the contract issuer data (refer also to ISO 12855)
+
 		modulepar UTF8String TD_SECURITY_LEVEL := "TheSecurityLevel";
 			// [SEMANTIC DEFINITION] The designation of the security level 
 			// used by the tester as part of the contract issuer data (refer also to ISO 12855)
+
 		modulepar EfcInfoExchange.Int2 TD_AC_CR_KEY_REFERENCE := 120;
 			// [SEMANTIC DEFINITION] The value used by the tester
 			// for the access key reference (refer also to ISO 14906) 
+
 		modulepar integer TD_AUTH_KEY_REFERENCE := 112;
 			// [SEMANTIC DEFINITION] The value used by the tester
 			// for the authentication key reference (refer to also ISO 14906) 
+
 		modulepar UTF8String TD_UNIQUE_PART_OF_PAN_INVALID:="99999";
 			// [SEMANTIC DEFINITION] The unique part of thge PAN the tester applies as part of invalid contract issuer data;
+
 		modulepar EfcInfoExchange.Int2 TD_AC_CR_KEY_REFERENCE_INVALID := 0;
 			// [SEMANTIC DEFINITION] An invalid value used by the tester the access key reference (refer to also ISO 14906)
+
 		modulepar integer TD_AUTH_KEY_REFERENCE_INVALID;
 			// [SEMANTIC DEFINITION] An invalid value used by the tester for the authentication key reference (refer to also ISO 14906)
 				
@@ -125,9 +228,11 @@ module EfcInfoExchange_TesterData{
 		modulepar ContractIssuerListADU TD_CONTRACT_ISSUER_DATA_VALID_1 := m_contractIssuerListADU_Tester(TD_MANUFACTURER_ID_1);        
 			// [SEMANTIC DEFINITION] A ContractIssuerAdu containing data elements set with valid tester data as defined in this module
 			// and applying the value TD_MANUFACTURER_ID_1 as defined in this module for manufacturerId  	
+
         modulepar ContractIssuerListADU TD_CONTRACT_ISSUER_DATA_VALID_2 := m_contractIssuerListADU_Tester(TD_MANUFACTURER_ID_2);
         	// [SEMANTIC DEFINITION] A ContractIssuerAdu containing data elements set with valid tester data as defined in this module
 			// and applying the value TD_MANUFACTURER_ID_2 as defied in this module for manufacturerId  	
+
         modulepar ContractIssuerListADU TD_CONTRACT_ISSUER_DATA_VALID_3 := m_contractIssuerListADU_Tester(TD_MANUFACTURER_ID_3);
         	// [SEMANTIC DEFINITION] A ContractIssuerAdu containing data elements set with valid tester data as defined in this module
 			// and applying the value TD_MANUFACTURER_ID_3 as defined in this module for manufacturerId  	
@@ -151,10 +256,12 @@ module EfcInfoExchange_TesterData{
 			// [SEMANTIC DEFINITION] A ContractIssuerAdu containing data elements set with valid tester data as defined in this module
 			// and applying the invalid value TD_UNIQUE_PART_OF_PAN_INVALID for the unique part of the pan
 			// and the value TD_MANUFACTURER_ID_1 as defined in this module for manufacturerId  	
+
 		modulepar ContractIssuerListADU TD_CONTRACT_ISSUER_DATA_INVALID_2 := m_contractIssuerListADU_Invalid_2(TD_MANUFACTURER_ID_1);
 			// [SEMANTIC DEFINITION] A ContractIssuerAdu containing data elements set with valid tester data as defined in this module
 			// and applying the invalid value TD_AC_CR_KEY_REFERENCE_INVALID for the access credential key reference
 			// and the value TD_MANUFACTURER_ID_2 as defined in this module for manufacturerId  	
+
 		modulepar ContractIssuerListADU TD_CONTRACT_ISSUER_DATA_INVALID_3 := m_contractIssuerListADU_Invalid_3(TD_MANUFACTURER_ID_1);
 			// [SEMANTIC DEFINITION] A ContractIssuerAdu containing data elements set with valid tester data as defined in this module
 			// and applying the invalid value TD_AC_CR_KEY_REFERENCE_INVALID for the authentication key reference
@@ -167,28 +274,40 @@ module EfcInfoExchange_TesterData{
 		modulepar UserId TD_BILLINGDETAILS_USERID:={TD_PAN_1, TD_CSN_1,TD_LPN_1,TD_OBE_ID_1};	
  			// [SEMANTIC DEFINITION] The ID of the user that is to be billed in when the tester sends a BillingDetailsADU in the DSRC.BILLINGDETAILS transaction
  			// applied all four parts of the user Id as defined in this module
+
 		modulepar Int8Signed TD_PAYMENT_FEE_AMOUNT:=10;
 			// [SEMANTIC DEFINITION] The fee that will appear on the bill
+
 		modulepar PayUnit TD_BILLINGDETAILS_PAYUNIT:='0978'O; // currency in main units
 			// [SEMANTIC DEFINITION] The currency unit that will appear on the bill according to ISO 4217		
+
 	    modulepar IntMax10000 TD_BILLINGDETAILS_VAT:=0; 
 			// [SEMANTIC DEFINITION]The VAT rate expressed in 0.01%
+
 		modulepar integer TD_BILLING_DETAILS_NUM_1:=1, TD_BILLING_DETAILS_NUM_2:=2;
 			// [SEMATIC DEFINITION] Identifer that together with the issuerId forms a unique BillingDetailsId 		
+
 		modulepar UTF8String TD_DSRC_BILLINGDETAILS_CONTEXTNAME:="TheContextName";
 			// [SEMANTIC DEFINITION] According to ISO 17575-3		
+
 		modulepar UTF8String TD_DSRC_BILLINGDETAILS_USERCLASS:="TheUserClass";
 			// [SEMANTIC DEFINITION] According to ISO 17575-3
+
 		modulepar UTF8String TD_DSRC_BILLINGDETAILS_DECLAREDVEHCLASS:="TheVehicleClass";
 			// [SEMANTIC DEFINITION] According to ISO 17575-3
+
 		modulepar UTF8String TD_DSRC_BILLINGDETAILS_TIMECLASS:="TheTimeClass";
 			// [SEMANTIC DEFINITION] According to ISO 17575-3
+
 		modulepar LanguageID TD_DSRC_BILLINGDETAILS_LANG:="it"; // Default value set to Italy, 
 			// [SEMANTIC DEFINITION] According to definitions in ISO 639-1
+
 		modulepar UTF8String TD_DSRC_BILLINGDETAILS_TEXT:="Nothing to add";
  			// [SEMANTIC DEFINITION] Any comment needed to be added
+
 		modulepar LanguageID TD_GNSS_BILLINGDETAILS_LANG:="it"; // Default value set to Italy
 			// [SEMANTIC DEFINITION] According to definitions in ISO 639-1
+
 		modulepar UTF8String TD_GNSS_BILLINGDETAILS_TEXT:="Nothing to add";
  			// [SEMANTIC DEFINITION] Any comment needed to be added
 	}
@@ -199,19 +318,19 @@ module EfcInfoExchange_TesterData{
  			// [SEMANTIC DEFINITION] The version number of the exception list applied by the tester				
 
 		modulepar UserId TD_USERID_BLACK_1 := {
-			pan := TD_PAN_1, // personal account number as defined in TD_PAN_1 
-			contractSerialNumber := omit, // contract serial number not used
-			licencePlateNumber := TD_LPN_1, // license plate number as defined in TD_LPN_1
-			obeID := TD_OBE_ID_1 // obe identifier as defined in TD_OBE_ID_1
-		};			
+				pan := TD_PAN_1, // personal account number as defined in TD_PAN_1 
+				contractSerialNumber := omit, // contract serial number not used
+				licencePlateNumber := TD_LPN_1, // license plate number as defined in TD_LPN_1
+				obeID := TD_OBE_ID_1 // obe identifier as defined in TD_OBE_ID_1
+			};			
             // [SEMANTIC DEFINITION] The data structure UserId applied by the tester in test cases for a blacklisted user 		
 
 		modulepar UserId TD_USERID_DISCOUNTED_1 := {
-			pan := TD_PAN_1, // personal account number as defined in TD_PAN_1 
-			contractSerialNumber := TD_CSN_1, // contract serial number as defined in TD_CSN_1
-			licencePlateNumber := TD_LPN_1, // license plate number as defined in TD_LPN_1
-			obeID := TD_OBE_ID_1 // obe identifier as defined in TD_OBE_ID_1
-		};
+				pan := TD_PAN_1, // personal account number as defined in TD_PAN_1 
+				contractSerialNumber := TD_CSN_1, // contract serial number as defined in TD_CSN_1
+				licencePlateNumber := TD_LPN_1, // license plate number as defined in TD_LPN_1
+				obeID := TD_OBE_ID_1 // obe identifier as defined in TD_OBE_ID_1
+			};
             // [SEMANTIC DEFINITION] The data structure UserId applied by the tester in test cases for a discounted user 		
 				
 		const ExceptionListADU c_exceptionListAduBlackValid1:=m_aduExceptionList(
@@ -247,7 +366,6 @@ module EfcInfoExchange_TesterData{
 		);
 	} // end group EXCEPTIONLIST		
 
-
 	group TRUSTOBJECTS {
 		modulepar TrustObjectCode TD_DSRC_MASTER_KEY:={dsrcMasterKeys:=TD_SYMMETRIC_KEY};
 		modulepar octetstring TD_CERT_REVOKE_LIST;
@@ -273,11 +391,6 @@ module EfcInfoExchange_TesterData{
 	}	
 
 	group USERDETAILS {
-		modulepar LPN TD_LPN:={
-			countryCode:='0000000001'B,
-			alphabetIndicator:=latinAlphabetNo1, 
-			licencePlateNumber:='111111'O
-		}
 				
 		type record of UserParameterResponseDetails RoUserParameterResponseDetails;
 
@@ -301,7 +414,7 @@ module EfcInfoExchange_TesterData{
 			{vehicleAuthenticator := '1234567890ABCDEF'O},
 			{vehicleClass := 15},
 			{vehicleDimensions := {99, 99, 99}},
-			{vehicleLicencePlateNumber := TD_LPN},
+			{vehicleLicencePlateNumber := TD_LPN_1},
 			{vehicleIdentificationNumber := {"01234567890123456",'000000000'B}},
 			{vehicleWeightLaden := 255},
 			{vehicleWeightLimits := {99, 150, 50}}, 
@@ -315,16 +428,9 @@ module EfcInfoExchange_TesterData{
 				"12345678901234567890","test@email.biz"}}, 
 			{preferredUserLanguage := "SE"}
 		};	
-
-// Definition inserted for easy reference
-//		DieselEmissionValues::= SEQUENCE {
-//			particulate SEQUENCE {
-//				unitType UnitType,
-//				value INTEGER (0..32767)
-//			},
-//			absorptionCoeff Int2 
-//		}		
-		
+            // [SEMANTIC DEFINITION] The data structure UserParameterResponseDetails applied by the tester
+            // in test cases in which the user details are requested 
+				
 		modulepar RecOfUserParameterRequest TD_PRIVACYBOUND_USER_PARAM_REQS:={}; 
 	}
 	
@@ -418,34 +524,5 @@ module EfcInfoExchange_TesterData{
 	}	
 	
 } // end module 
-	
-//    
-//    /**
-//     * @desc    Preparing test user id data
-//     */    
-//    
-//    type record of UserId UserIdList;
-//	modulepar UserIdList TEST_USER_ID_LIST := f_createUserIdList(); 
-//
-//	function f_createUserIdList() return UserIdList{
-//        const integer c_maxTestUsers := 10000; 
-//        var UserIdList v_userIdList;
-//        
-//        //initialize test user Id values 
-//        for (var integer index:=0; index< c_maxTestUsers; index := index+1) {
-//        	v_userIdList[index] := {
-//        		index, //PT140: must be of type pan
-//        		index+10000, // contractSerialNumber = INT4; may start e.g. at 10000
-//        		"EU"&index, // licenseplatenumber = type LPN
-//        		"99"&index // type obeId = manufacturer id (i.e. 99) + equipment OBU id
-//        	}
-//        }
-//        return v_userIdList;
-//	}
-//	// make them availble at run time
-//
-//	
-//}
-//     
-//    
+  
    
