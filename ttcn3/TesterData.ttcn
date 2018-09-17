@@ -283,7 +283,8 @@ module EfcInfoExchange_TesterData{
 
 	    modulepar IntMax10000 TD_BILLINGDETAILS_VAT:=0; 
 			// [SEMANTIC DEFINITION]The VAT rate expressed in 0.01%
-
+		modulepar ExtendedPaymentAmount TD_BILLINGDETAILS_VALIDAMOUNT := {TD_PAYMENT_FEE_AMOUNT,TD_BILLINGDETAILS_PAYUNIT,TD_BILLINGDETAILS_VAT};
+			// [SEMANTIC DEFINITION] A complete valid payment amount for Billing Details
 		modulepar integer TD_BILLING_DETAILS_NUM_1:=1, TD_BILLING_DETAILS_NUM_2:=2;
 			// [SEMATIC DEFINITION] Identifer that together with the issuerId forms a unique BillingDetailsId 		
 

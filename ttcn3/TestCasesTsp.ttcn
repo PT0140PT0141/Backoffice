@@ -2371,7 +2371,7 @@ module EfcInfoExchange_TestCasesTsp {
                  // Step 1: Send one valid APDU containing one valid BillingDetailsADU with only mandatory fields and with
                  	// actionCode = adjust
                  	// billingDetailsNum = 1
-                 	// paymentFeeAmount = 45
+                 	// paymentFeeAmount = Max acceptable amount in BillingDetailsADU
 
 				v_apduToSend :=m_apduNoAuthInitTester({billingDetailsADUs:={
 						modifies m_aduDsrcBillingDetails:= {
@@ -2461,7 +2461,7 @@ module EfcInfoExchange_TestCasesTsp {
                  //  Send one valid APDU containing one BillingDetailsADU numbered 3 with actionCode = SEND and only mandatory fields
 				v_apduForSending := m_apduNoAuthInitTester({billingDetailsADUs:={
 					modifies m_aduDsrcBillingDetails:= {
-					  	billingDetailsAmount:={paymentFeeAmount := 50} //TODO FAusto extract magic number
+					  	billingDetailsAmount:=TD_BILLINGDETAILS_VALIDAMOUNT
 					}
 				}});                 
 				f_sendAndLogApdu(v_apduForSending);                 
@@ -2505,7 +2505,7 @@ module EfcInfoExchange_TestCasesTsp {
 					},                 
 					modifies m_aduDsrcBillingDetails(7):={
 						billingDetailsAmount:={
-							paymentFeeAmount := -5
+							paymentFeeAmount := -TD_PAYMENT_FEE_AMOUNT
 						}
 					},        
 					modifies m_aduDsrcBillingDetails(8):={
@@ -2579,7 +2579,7 @@ module EfcInfoExchange_TestCasesTsp {
 
                  //  Send one valid APDU containing one BillingDetailsADU numbered 3 with actionCode = SEND and only mandatory fields
 				var BillingDetailsADU v_adu:=m_aduDsrcBillingDetails(3);
-				v_adu.billingDetailsAmount.paymentFeeAmount:=50;//FAusto please extract magic number
+				v_adu.billingDetailsAmount.paymentFeeAmount:=TD_PAYMENT_FEE_AMOUNT;
 				v_apduForSending := m_apduNoAuthInitTester({billingDetailsADUs:={v_adu}});
 
 				f_sendAndLogApdu(v_apduForSending);                 
@@ -2595,10 +2595,12 @@ module EfcInfoExchange_TestCasesTsp {
 
                  // Step 1: Send one valid APDU containing one valid BillingDetailsADU numbered 14 with only mandatory fields with the following values:
                  	// actionCode = adjust
-                 	// paymentFeeAmount = 45
+
+				// paymentFeeAmount = TD_PAYMENT_FEE_AMOUNT - 1
 				v_adu:=m_aduDsrcBillingDetails(14);
+
 				v_adu.actionCode := ActionCode_adjust_;
-				v_adu.billingDetailsAmount.paymentFeeAmount:=45;//FAusto please extract magic number
+				v_adu.billingDetailsAmount.paymentFeeAmount:=TD_PAYMENT_FEE_AMOUNT - 1;
 				v_apduForSending := m_apduNoAuthInitTester({billingDetailsADUs:={v_adu}});
 				f_sendAndLogApdu(v_apduForSending);                 
 
@@ -2634,7 +2636,7 @@ module EfcInfoExchange_TestCasesTsp {
 				v_apduForSending := m_apduNoAuthInitTester({billingDetailsADUs:={
 					modifies m_aduDsrcBillingDetails(3):={
 							billingDetailsAmount:={
-								paymentFeeAmount := 50
+								paymentFeeAmount := TD_PAYMENT_FEE_AMOUNT
 							}
 					}
 				}});                 
@@ -2692,8 +2694,9 @@ module EfcInfoExchange_TestCasesTsp {
 
 				// Send one valid DSRC.BILLINGDETAILS numbered 3
                  //  Send one valid APDU containing one BillingDetailsADU numbered 3 with actionCode = SEND and only mandatory fields
+
 				v_apduForSending := m_apduNoAuthInitTester({billingDetailsADUs:={
-					modifies m_aduDsrcBillingDetails(3):= {billingDetailsAmount:={paymentFeeAmount := 50}}
+					modifies m_aduDsrcBillingDetails(3):= {billingDetailsAmount:={paymentFeeAmount := TD_PAYMENT_FEE_AMOUNT}}
 				}});
 
 				f_sendAndLogApdu(v_apduForSending);                 
@@ -2703,8 +2706,9 @@ module EfcInfoExchange_TestCasesTsp {
                 // Step 1:
                 // Send one valid DSRC.BILLINGDETAILS numbered 4  before TIME1
 				v_apduForSending := m_apduNoAuthInitTester({billingDetailsADUs:={
-					modifies m_aduDsrcBillingDetails(4):= {billingDetailsAmount:={paymentFeeAmount := 45}}
+					modifies m_aduDsrcBillingDetails(4):= {billingDetailsAmount:={paymentFeeAmount := TD_PAYMENT_FEE_AMOUNT-1}}
 				}});                 
+	
 				f_sendAndLogApdu(v_apduForSending);                 
 
               	// Wait for negative Ack with ADUReasonCode field = requestSentTooOften (if positive Ack or not received set test failure)                	
@@ -3751,7 +3755,7 @@ ULRIK FORTSÄTT HÄR. KODEN NEDANFÖR SKA RENSAS
 				v_adus.billingDetailsADUs[2]:=m_aduGnssBillingDetailsSpecialised(3,	{}, v_receivedTollDeclarationId); //billingDetailsUserIdRejected 							
 
 				v_adus.billingDetailsADUs[3]:={modifies m_aduGnssBillingDetailsSpecialised(4,	v_userId, v_receivedTollDeclarationId):= {
-					billingDetailsAmount:={paymentFeeAmount:=-5} //billingDetailsAmountRejected
+					billingDetailsAmount:={paymentFeeAmount:=-TD_PAYMENT_FEE_AMOUNT} //billingDetailsAmountRejected
 				}};
 							
 				v_adus.billingDetailsADUs[4]:={modifies m_aduGnssBillingDetailsSpecialised(5,	v_userId, v_receivedTollDeclarationId):= {
