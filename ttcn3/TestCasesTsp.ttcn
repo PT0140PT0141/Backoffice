@@ -1875,11 +1875,11 @@ module EfcInfoExchange_TestCasesTsp {
 				f_sendAndLogTrigger(DSRC_CONTRACTISSUERLIST_TR_TSP_1_DIFFMANUFID);
 
 				//  Wait for apdu containing CONTRACTISSUERLIST for three different manufacturers
-				var template InfoExchange v_apduToBeReceived := mw_apduNoAuthInitIut(
+				var template InfoExchange v_apduToBeReceived := mw_apduNoAuthInitIut(contractIssuerListADUs:={
 					{modifies mw_aduContractIssuerList:= {manufacturerID := PX_MANUFACTURERID1}},
 					{modifies mw_aduContractIssuerList:= {manufacturerID := PX_MANUFACTURERID2}},
 					{modifies mw_aduContractIssuerList:= {manufacturerID := PX_MANUFACTURERID3}}
-           			);                 
+				});                 
 
 				alt {
 					[] mtcPort.receive(v_apduToBeReceived) -> value v_apduReceived {
@@ -1983,12 +1983,12 @@ module EfcInfoExchange_TestCasesTsp {
 				 
 				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
 								
-				v_apduForSending := m_apduNoAuthInitTester({m_aduEfcContextDataDsrcClosedContextTariffClassDefinition});
+				v_apduForSending := m_apduNoAuthInitTester({efcContextDataADUs:={m_aduEfcContextDataDsrcClosedContextTariffClassDefinition}});
                  // Step 1: Send EFCCONTEXTDATA with:
                  	// domainType = dsrcClosedContext 
                  	// dsrcClosedContext with valid values and feeModifiers set to null
                  	// closedSystem with tariffClassDefinition = {valid contents} and all other fields set to null
-				f_sendAndLogApdu();                 
+				f_sendAndLogApdu(v_apduForSending);                 
 
                 // Step 2: Wait for positive Ack within DSRC.EFCCONTEXTDATA.TIME1
 				// Set timer
@@ -2021,7 +2021,7 @@ module EfcInfoExchange_TestCasesTsp {
                 // domainType = dsrcClosedContext 
                 // dsrcClosedContext with valid values and feeModifiers set to null
                 // closedSystem with localVehicleClassDefinition  = {valid contents} and all other fields set to null
-				v_apduForSending := m_apduNoAuthInitTester({m_aduEfcContextDataDsrcClosedContextLocVehClass});                
+				v_apduForSending := m_apduNoAuthInitTester({efcContextDataADUs:={m_aduEfcContextDataDsrcClosedContextLocVehClass}});                
 				f_sendAndLogApdu(v_apduForSending);                 
                  // Step 2: Wait for positive Ack within DSRC.EFCCONTEXTDATA.TIME1
 				// Set timer
@@ -2052,7 +2052,7 @@ module EfcInfoExchange_TestCasesTsp {
                  	// domainType = dsrcClosedContext 
                  	// dsrcClosedContext with valid values and feeModifiers set to null
                  	// closedSystem with timeClassDefinition  = {valid contents} and all other fields set to null
-				v_apduForSending := m_apduNoAuthInitTester({m_aduEfcContextDataDsrcClosedContextTimeClass});                
+				v_apduForSending := m_apduNoAuthInitTester({efcContextDataADUs:={m_aduEfcContextDataDsrcClosedContextTimeClass}});                
 				f_sendAndLogApdu(v_apduForSending);                 
                  // Step 2: Wait for positive Ack within DSRC.EFCCONTEXTDATA.TIME1
 				// Set timer
@@ -2083,7 +2083,7 @@ module EfcInfoExchange_TestCasesTsp {
                  	// domainType = dsrcClosedContext 
                  	// dsrcClosedContext with valid values and feeModifiers set to null
                  	// closedSystem with userClassDefinition  = {valid contents} and all other fields set to null
-				v_apduForSending := m_apduNoAuthInitTester({m_aduEfcContextDataDsrcClosedContextUserClass});                
+				v_apduForSending := m_apduNoAuthInitTester({efcContextDataADUs:={m_aduEfcContextDataDsrcClosedContextUserClass}});                
 				f_sendAndLogApdu(v_apduForSending);                 
 
                 // Step 2: Wait for positive Ack within DSRC.EFCCONTEXTDATA.TIME1
@@ -2154,7 +2154,7 @@ module EfcInfoExchange_TestCasesTsp {
                  	// set tester tolling domain characteristics
                  	// PT140 TODO: which field to be set to a wrong value? Is this test doable?
 				var Iso17575_3AduBody v_contextData;
-				v_apduForSending := m_apduNoAuthInitTester({m_aduDsrcEfcContextDataTestValues});                 
+				v_apduForSending := m_apduNoAuthInitTester({efcContextDataADUs:={m_aduDsrcEfcContextDataTestValues}});                 
 				f_sendAndLogApdu(v_apduForSending);                 
                  // Step 2: Wait for negative Ack within DSRC.EFCCONTEXTDATA.TIME1
 				// Set timer
@@ -2236,7 +2236,7 @@ module EfcInfoExchange_TestCasesTsp {
                  	// iso17573ADU containing only mandatory field with valid values
                  	// feeModifiers set to null
 				// set tester tolling domain characteristics
-				v_apduForSending := m_apduNoAuthInitTester({m_aduDsrcEfcContextDataTestValues});     
+				v_apduForSending := m_apduNoAuthInitTester({efcContextDataADUs:={m_aduDsrcEfcContextDataTestValues}});     
 				f_sendAndLogApdu(v_apduForSending);                 
                 // Step 1: Do not wait for positive Ack but send immediately another EFCCONTEXTDATA before TIME1
                 f_sendAndLogApdu(v_apduForSending);                 
@@ -2275,7 +2275,7 @@ module EfcInfoExchange_TestCasesTsp {
 				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
 
                  // Step 1: Send one valid APDU containing one valid BillingDetailsADU with no optional fields except includedDiscounts
-				var InfoExchange v_apduToSend := m_apduNoAuthInitTester({m_aduDsrcBillingDetails});                 
+				var InfoExchange v_apduToSend := m_apduNoAuthInitTester({billingDetailsADUs:={m_aduDsrcBillingDetails}});                 
 				f_sendAndLogApdu(v_apduToSend);                 
                  // Step 2: Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
 				// Set timer
@@ -2304,7 +2304,7 @@ module EfcInfoExchange_TestCasesTsp {
 				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
 
                  // Step 1: Send one valid APDU containing 10 valid BillingDetailsADU with actionCode = SEND
-				v_apduForSending := m_apduNoAuthInitTester({
+				v_apduForSending := m_apduNoAuthInitTester({billingDetailsADUs:={
 					m_aduDsrcBillingDetails(1),                 
 					m_aduDsrcBillingDetails(2),                 
 					m_aduDsrcBillingDetails(3),                 
@@ -2315,7 +2315,7 @@ module EfcInfoExchange_TestCasesTsp {
 					m_aduDsrcBillingDetails(8),                 
 					m_aduDsrcBillingDetails(9),                 
 					m_aduDsrcBillingDetails(10)                 
-				});                 
+				}});                 
 				f_sendAndLogApdu(v_apduForSending);                 
                  // Wait for positive Ack within DSRC.BILLINGDETAILS.TIME1
 				// Set timer
@@ -2343,7 +2343,7 @@ module EfcInfoExchange_TestCasesTsp {
 				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
 				// Prepare a billingdetails with excessive amount
 				var InfoExchange v_apduToSend :=m_apduNoAuthInitTester(
-				{modifies mw_aduDsrcBillingDetails(1):= {
+				{modifies mw_aduDsrcBillingDetails:= {
 					billingDetailsAmount:={
 						paymentFeeAmount := PX_MAX_ACCEPTED_BILLINGDETAILS_AMOUNT.paymentFeeAmount + 4000
 					}

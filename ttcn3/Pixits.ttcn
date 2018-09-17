@@ -39,9 +39,10 @@ module EfcInfoExchange_Pixits {
     modulepar UserId PX_USER_ID_NO_RELATED;// Valid user, with no other associated UserIds for LISTOFUSERS transactions
     modulepar UserId PX_USER_ID_NON_EXISTING;// Wrong (not registered) user id
     
-    modulepar Provider PX_MANUFACTURERID1; // Valid ManufacturerID for ContractIssuerList transactions
-    modulepar Provider PX_MANUFACTURERID2; // Valid ManufacturerID for ContractIssuerList transactions
-    modulepar Provider PX_MANUFACTURERID3; // Valid ManufacturerID for ContractIssuerList transactions
+    
+    modulepar EfcDsrcApplication.Int2 PX_MANUFACTURERID1; // Valid ManufacturerID for ContractIssuerList transactions, as defined in 14906
+    modulepar EfcDsrcApplication.Int2 PX_MANUFACTURERID2; // Valid ManufacturerID for ContractIssuerList transactions
+    modulepar EfcDsrcApplication.Int2 PX_MANUFACTURERID3; // Valid ManufacturerID for ContractIssuerList transactions
   
     
     type record of UserParameterRequest RecordOfUserParameterRequest;
