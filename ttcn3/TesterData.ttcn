@@ -530,7 +530,9 @@ module EfcInfoExchange_TesterData{
  		modulepar GeneralizedTime TD_PAYMENTANNOUNCEMENT_DUE_DATE;
  		modulepar ExtendedPaymentAmount TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_1, TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_2,
  			TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_3, TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_WITHOUTVAT; //NOTE THESE ARE ALSO USED FOR PAYMENTCLAIM transactions
-	}	
+	}
+	
+	const integer TD_ABNORMAL_OBE_REASON_CODE_INVALID:=100; // 5-100 reserved for future CEN and ISO use, thus the value 100 is invalid 	
 	
 } // end module 
   
