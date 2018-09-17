@@ -2,7 +2,7 @@
  * @author  PT0140 
  * @desc    This module provides test cases based on TS 16986 TPs
  * @see     [xxxx-1:2017]: Test suite structure and test purpose
- * @see     [xxxx-1:2016], Clause 5.2.1  Namimg conventions
+ * @see     [xxxx-1:2016], Clause 5.2.1  Naming conventions
  * @version $id$
  */
   /**
@@ -3257,16 +3257,16 @@ module EfcInfoExchange_TestCasesTsp {
 				
 				// Receive the correct adu, send positive ack
 				alt {
-					[] mtcPort.receive(mw_apduNoAuthInitIut({tollDeclarationADUs:={modifies mw_aduTollDeclaration:= {	actionCode := ActionCode_send_}}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNoAuthInitIut({tollDeclarationADUs:={modifies mw_aduTollDeclaration:= { actionCode := ActionCode_send_}}})) -> value v_apduReceived {
 						// Log what we received
 						f_logReceivedWaitAndAcknowledge(IS_GNSS_TOLLDECLARATIONS_TIME1_MIN_TSP); 	
 					}				
 				} // End of alt statement 
 				f_sendAndLogTrigger(GNSS_BILLINGDETAILS_TSP_TR_TSP_1_SEND);				
 				
-				//  Wait for GNSS.BILLINGDETAILS
+				//  Wait for GNSS.BILLINGDETAILS 
 				alt {
-					[] mtcPort.receive(mw_apduNoAuthInitIut(Adus:{billingDetailsADUs:={mw_aduGnssBillingDetails}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNoAuthInitIut(Adus:{billingDetailsADUs:={modifies mw_aduGnssBillingDetails:= { actionCode := ActionCode_send_}}})) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TSP); 
 							
 						// Send NAck within time constraints
@@ -3274,50 +3274,27 @@ module EfcInfoExchange_TestCasesTsp {
 						f_sendAndLogApdu(m_apduNAckIndividualIssuesTester(v_apduReceived, m_roNackParamsSingle(0,AduReasonCode_billingDetailsAmountRejected_)));
 					}
 				} // End of alt statement
-				// Retrieve all BillingDetails ADUs with action code=send and store their IDs in v_receivedIds
-				
-				//TODO Fausto depending on trigger AND receive statement it is not possible to get more than one ADU, simplify the following code as in the test case above
+
+				// Retrieve the BillingDetails ADUs with action code=send and store its ID in v_receivedId
 				var Adus v_receivedBillingDetails := v_apduReceived.infoExchangeContent.adus;
-				var integer v_numOfReceivedBillingDetails := sizeof(v_receivedBillingDetails.billingDetailsADUs);
-				var RoBillingDetailsId v_receivedIds;
-				var integer v_currentBillingDetailsId :=0;
-				for (var integer v_loop :=0; v_loop < v_numOfReceivedBillingDetails; v_loop := v_loop+1)
-					{
-					  if (v_receivedBillingDetails.billingDetailsADUs[v_loop].actionCode == ActionCode_send_) {
-					    v_receivedIds[v_currentBillingDetailsId] := v_receivedBillingDetails.billingDetailsADUs[v_loop].billingDetailsId;
-					    v_currentBillingDetailsId := v_currentBillingDetailsId + 1;
-					  };
-					}; // End of for
-				if (sizeof(v_receivedIds) == 0) {
-				  	setverdict(fail);
-					f_addLogEntry("Requested BillingDetails with Actioncode send, none received");
-					stop;
-					};
+				var BillingDetailsId v_receivedId := v_receivedBillingDetails.billingDetailsADUs[0].billingDetailsId;
+				
 				// Step 1: Trigger IUT with GNSS_BILLINGDETAILS_TSP_TR_TSP_1_REVOKE to send one APDU containing one valid BillingDetailsADU with:
 					// actionCode = ActionCode_revoke_
 					// only mandatory fields present with valid values
-					// billingDetailsNum field value = same as previous sent Billing Details
+					// billingDetailsId field value = same as previous sent Billing Details
 				f_sendAndLogTrigger(GNSS_BILLINGDETAILS_TSP_TR_TSP_1_REVOKE);				
 				
 				//  Wait for GNSS.BILLINGDETAILS
 				alt {
-					[] mtcPort.receive(mw_apduNoAuthInitIut({billingDetailsADUs:={mw_aduGnssBillingDetails}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNoAuthInitIut({billingDetailsADUs:={modifies mw_aduGnssBillingDetails:= {
+								actionCode := ActionCode_revoke_,
+								billingDetailsId := v_receivedId
+							}}})) -> value v_apduReceived {
 						f_logReceivedWaitAndAcknowledge(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TSP);
 						setverdict(pass);						
 						}
  					} // End of alt statement
-				v_receivedBillingDetails := v_apduReceived.infoExchangeContent.adus;
-				v_numOfReceivedBillingDetails := sizeof(v_receivedBillingDetails.billingDetailsADUs);
-				var boolean v_oneFound := false;
-				for (var integer v_loop :=0; v_loop < v_numOfReceivedBillingDetails; v_loop := v_loop+1)
-					{
-					  if ((v_receivedBillingDetails.billingDetailsADUs[v_loop].actionCode == ActionCode_revoke_) and match(v_receivedBillingDetails.billingDetailsADUs[v_loop].billingDetailsId, (all from v_receivedIds))) {
-					    v_oneFound := true;
-					    break;
-					  };
-					}; // End of for				
-				if (v_oneFound) {setverdict(pass)}
-				else {setverdict(fail)};
 				f_closeDownMtc();   						           				                                
 
 			} // End of TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_03           
