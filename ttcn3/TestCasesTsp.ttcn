@@ -2579,7 +2579,7 @@ module EfcInfoExchange_TestCasesTsp {
 
                  //  Send one valid APDU containing one BillingDetailsADU numbered 3 with actionCode = SEND and only mandatory fields
 				var BillingDetailsADU v_adu:=m_aduDsrcBillingDetails(3);
-				v_adu.billingDetailsAmount.paymentFeeAmount:=50;//FAusto please extract magic number
+				v_adu.billingDetailsAmount.paymentFeeAmount:=TD_PAYMENT_FEE_AMOUNT;
 				v_apduForSending := m_apduNoAuthInitTester({billingDetailsADUs:={v_adu}});
 
 				f_sendAndLogApdu(v_apduForSending);                 
@@ -2595,10 +2595,10 @@ module EfcInfoExchange_TestCasesTsp {
 
                  // Step 1: Send one valid APDU containing one valid BillingDetailsADU numbered 14 with only mandatory fields with the following values:
                  	// actionCode = adjust
-                 	// paymentFeeAmount = 45
+                 	// paymentFeeAmount = TD_PAYMENT_FEE_AMOUNT - 1
 				var BillingDetailsADU v_adu:=m_aduDsrcBillingDetails(14);
 				v_adu.actionCode := ActionCode_adjust_;
-				v_adu.billingDetailsAmount.paymentFeeAmount:=45;//FAusto please extract magic number
+				v_adu.billingDetailsAmount.paymentFeeAmount:=TD_PAYMENT_FEE_AMOUNT - 1;
 				v_apduForSending := m_apduNoAuthInitTester({billingDetailsADUs:={v_adu}});
 				f_sendAndLogApdu(v_apduForSending);                 
 
