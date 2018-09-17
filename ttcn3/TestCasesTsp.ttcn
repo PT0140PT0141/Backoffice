@@ -3180,15 +3180,15 @@ module EfcInfoExchange_TestCasesTsp {
 				f_closeDownMtc();
     		} // End of TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_01           
     		
-    		testcase TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_02() runs on MainTestComponent system TestAdapter {
-             
-                  /**
-                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_02: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TSP 
-                  * @desc    transaction with single BillingDetailsADU with actionCode = adjust and no optional fields 
-                  * @remark  [16986:2016], Clause 8.2.2 AND 8.2.4 and Table A.1/2 AND Table A.2/1 AND Table A.52/1 AND Table A.56/6
-                  */
-                  
-                 // Initialisation 
+			testcase TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_02() runs on MainTestComponent system TestAdapter {
+			 
+			      /**
+			      * @desc    TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_02: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TSP 
+			      * @desc    transaction with single BillingDetailsADU with actionCode = adjust and no optional fields 
+			      * @remark  [16986:2016], Clause 8.2.2 AND 8.2.4 and Table A.1/2 AND Table A.2/1 AND Table A.52/1 AND Table A.56/6
+			      */
+			      
+			     // Initialisation 
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A52_3_implementedGNSSTOLLDECLARATION and ICS_A52_1_implementedGNSSBILLINGDETAILSTSP;
 				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc
 				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1_SEND);												
@@ -3207,60 +3207,37 @@ module EfcInfoExchange_TestCasesTsp {
 				
 				//  Wait for GNSS.BILLINGDETAILS
 				alt {
-					[] mtcPort.receive(mw_apduNoAuthInitIut(Adus:{billingDetailsADUs:={modifies mw_aduGnssBillingDetails:={actionCode:=ActionCode_send_}}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNoAuthInitIut({billingDetailsADUs:={modifies mw_aduGnssBillingDetails:={actionCode:=ActionCode_send_}}})) -> value v_apduReceived {
 						f_logReceivedThenCheckAndStopTime(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TSP); 
 							
 						// Send NAck within time constraints
 						f_wait(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TSP);
 						f_sendAndLogApdu(m_apduNAckIndividualIssuesTester(v_apduReceived, m_roNackParamsSingle(0,AduReasonCode_billingDetailsAmountRejected_)));
 					}
- 				} // End of alt statement
+				} // End of alt statement
 				//The trigger should just produce one ADU and the receive only accepts one, so no need to loop through ADUs below
 				
-ULRIK FORTSÄTT HÄR. KODEN NEDANFÖR SKA RENSAS				
-				var Adus v_receivedBillingDetails := v_apduReceived.infoExchangeContent.adus;
-				var integer v_numOfReceivedBillingDetails := sizeof(v_receivedBillingDetails.billingDetailsADUs);
-				var RoBillingDetailsId v_receivedIds;
-				var integer v_currentBillingDetailsId :=0;
-				for (var integer v_loop :=0 ; v_loop < v_numOfReceivedBillingDetails; v_loop := v_loop+1){
-					if (v_receivedBillingDetails.billingDetailsADUs[v_loop].actionCode == ActionCode_send_) {
-						v_receivedIds[v_currentBillingDetailsId] := v_receivedBillingDetails.billingDetailsADUs[v_loop].billingDetailsId;
-						v_currentBillingDetailsId := v_currentBillingDetailsId + 1;
-					};
-				}; // End of for
-				if (sizeof(v_receivedIds) == 0) {
-				  	setverdict(fail);
-					f_addLogEntry("Requested BillingDetails with Actioncode send, none received");
-					stop;
-					};
+				var BillingDetailsId v_receivedId:=v_apduReceived.infoExchangeContent.adus.billingDetailsADUs[0].billingDetailsId;
+			
 				//Step 1: Trigger IUT with GNSS_BILLINGDETAILS_TSP_TR_TSP_1_ADJUST to send one APDU containing one 
 				//valid BillingDetailsADU with actionCode = adjust
 				f_sendAndLogTrigger(GNSS_BILLINGDETAILS_TSP_TR_TSP_1_ADJUST);				
 				
 				//  Wait for GNSS.BILLINGDETAILS
+				template BillingDetailsADU mw_aduToReceive modifies mw_aduGnssBillingDetails:={
+					billingDetailsId:=v_receivedId,
+					actionCode:=ActionCode_adjust_
+				};
+				
 				alt {
-					[] mtcPort.receive(mw_apduNoAuthInitIut(Adus:{billingDetailsADUs:={mw_aduGnssBillingDetails}})) -> value v_apduReceived {
+					[] mtcPort.receive(mw_apduNoAuthInitIut({billingDetailsADUs:={mw_aduToReceive}})) -> value v_apduReceived {
 						f_logReceivedWaitAndAcknowledge(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MIN_TSP);
 						setverdict(pass);						
 					}
- 				} // End of alt statement
-				v_receivedBillingDetails := v_apduReceived.infoExchangeContent.adus;
-				v_numOfReceivedBillingDetails := sizeof(v_receivedBillingDetails.billingDetailsADUs);
-				var boolean v_oneFound := false;
-				for (var integer v_loop :=0; v_loop < v_numOfReceivedBillingDetails; v_loop := v_loop+1)
-					{
-					  if (
-					  	(v_receivedBillingDetails.billingDetailsADUs[v_loop].actionCode == ActionCode_adjust_) and 
-					  	(match(v_receivedBillingDetails.billingDetailsADUs[v_loop].billingDetailsId, v_receivedIds))
-					  ) {
-					    v_oneFound := true;
-					    break;
-					  };
-					}; // End of for				
-				if (v_oneFound) {setverdict(pass)}
-				else {setverdict(fail)};
+				} // End of alt statement
+			
 				f_closeDownMtc();   						           				                                
-               
+			   
 			} // End of TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_02           
 
            	testcase TP_TSP_GNSS_BILLINGDETAILS_TSP_BV_03() runs on MainTestComponent system TestAdapter {
@@ -3298,6 +3275,8 @@ ULRIK FORTSÄTT HÄR. KODEN NEDANFÖR SKA RENSAS
 					}
 				} // End of alt statement
 				// Retrieve all BillingDetails ADUs with action code=send and store their IDs in v_receivedIds
+				
+				//TODO Fausto depending on trigger AND receive statement it is not possible to get more than one ADU, simplify the following code as in the test case above
 				var Adus v_receivedBillingDetails := v_apduReceived.infoExchangeContent.adus;
 				var integer v_numOfReceivedBillingDetails := sizeof(v_receivedBillingDetails.billingDetailsADUs);
 				var RoBillingDetailsId v_receivedIds;
@@ -3332,7 +3311,7 @@ ULRIK FORTSÄTT HÄR. KODEN NEDANFÖR SKA RENSAS
 				var boolean v_oneFound := false;
 				for (var integer v_loop :=0; v_loop < v_numOfReceivedBillingDetails; v_loop := v_loop+1)
 					{
-					  if ((v_receivedBillingDetails.billingDetailsADUs[v_loop].actionCode == ActionCode_revoke_) and match(v_receivedBillingDetails.billingDetailsADUs[v_loop].billingDetailsId, v_receivedIds)) {
+					  if ((v_receivedBillingDetails.billingDetailsADUs[v_loop].actionCode == ActionCode_revoke_) and match(v_receivedBillingDetails.billingDetailsADUs[v_loop].billingDetailsId, (all from v_receivedIds))) {
 					    v_oneFound := true;
 					    break;
 					  };
@@ -3376,9 +3355,10 @@ ULRIK FORTSÄTT HÄR. KODEN NEDANFÖR SKA RENSAS
 						}				
 					} // End of alt statement
 				// Extract the TollDeclaration ADU and its relevant fields to be used later
-				var TollDeclarationADU v_receivedTollDeclaration := v_apduReceived.infoExchangeContent.adus;
+				var TollDeclarationADU v_receivedTollDeclaration := v_apduReceived.infoExchangeContent.adus.tollDeclarationADUs[0];
 				var TollDeclarationId v_receivedTollDeclarationId := v_receivedTollDeclaration.tollDeclarationId;
-				var ObeId v_receivedObeId := v_receivedTollDeclaration.gnssTollDeclaration.chargeReport.obeId; // To be used as UserId in BillingDetails
+				//TODO Ulrik does the limitation to just ONE chargerport work here?
+				var ObeId v_receivedObeId := v_receivedTollDeclaration.gnssTollDeclaration.chargeReport[0].obeId; // To be used as UserId in BillingDetails
                  // Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
                  	// action code = send
                  	// includedDiscounts in usageList with textDetail field being set according to values specified in Table A.54 of CEN/TS 16986:2016
