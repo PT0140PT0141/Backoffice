@@ -3357,31 +3357,34 @@ module EfcInfoExchange_TestCasesTsp {
 				// Extract the TollDeclaration ADU and its relevant fields to be used later
 				var TollDeclarationADU v_receivedTollDeclaration := v_apduReceived.infoExchangeContent.adus.tollDeclarationADUs[0];
 				var TollDeclarationId v_receivedTollDeclarationId := v_receivedTollDeclaration.tollDeclarationId;
-				//TODO Ulrik does the limitation to just ONE chargerport work here?
-				var ObeId v_receivedObeId := v_receivedTollDeclaration.gnssTollDeclaration.chargeReport[0].obeId; // To be used as UserId in BillingDetails
+				var ObeId v_receivedObeId := v_receivedTollDeclaration.gnssTollDeclaration[0].chargeReport.obeId; // ObeId of FIRST Chargereport to be used as UserId in BillingDetails
+
                  // Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
                  	// action code = send
                  	// includedDiscounts in usageList with textDetail field being set according to values specified in Table A.54 of CEN/TS 16986:2016
-				v_apduForSending := m_apduNoAuthInitTester({m_aduGnssBillingDetails(
-						1, // BillingDetailsnum
-						{obeId := v_receivedObeId }, // UserId
+				v_apduForSending := m_apduNoAuthInitTester({billingDetailsADUs:={
+					m_aduGnssBillingDetails(
+						1, // TODO Fausto BillingDetailsnum, break out into Tester data. Define as const perhaps
+						{obeID := v_receivedObeId }, // UserId
 						TD_PERIOD_1,
 						{{
-								usageListEntry:={
-									freeTextDetail := {
-										textLanguage:= TD_GNSS_BILLINGDETAILS_LANG,
-										textDetail := TD_GNSS_BILLINGDETAILS_TEXT
-									},
-									includedDiscounts :={
-										discounts := 10, 
-							  			discountQualifier := DiscountQualifier_userDiscount_ 
-									}
+							usageListEntry:={
+								freeTextDetail := {
+									textLanguage:= TD_GNSS_BILLINGDETAILS_LANG,
+									textDetail := TD_GNSS_BILLINGDETAILS_TEXT								
 								}
+							},
+							includedDiscounts :={{
+								discount := TD_DISCOUNT_AMOUNT, 
+						  		discountQualifier := DiscountQualifier_userDiscount_ 
+							}}
+							
 						}},
-						TD_DISCOUNT_AMOUNT, // Amount in Billing Details
-						v_receivedTollDeclarationId, // Reference to received Toll Declaration
+						TD_BILLINGDETAILS_AMOUNT_1, // Amount in Billing Details
+						{v_receivedTollDeclarationId}, // Reference to received Toll Declaration
 						ActionCode_send_
-				)});                 
+					)
+				}});                 
 				f_sendAndLogApdu(v_apduForSending);                 
                  // Step 2: Wait for positive Ack within IS_GNSS_BILLINGDETAILS_TC_TIME1_MAX_TSP
 				// Set timer
@@ -3420,11 +3423,11 @@ module EfcInfoExchange_TestCasesTsp {
 				  */
 				 // Initialisation 
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A52_1_implementedGNSSBILLINGDETAILSTSP and ICS_A52_3_implementedGNSSTOLLDECLARATION;
-				 
+				//TOD Ulrik check the followin "short" test cases w r t the templates f_receiveTollDeclSendBillingDetReceiveAck is fed
 				f_intialiseMtc(v_runOrNot);                   				
 				//Trigger IUT with GNSS_TOLLDECLARATION_TR_TSP_1_SEND_TRAVELLINGINAREA to send one valid TollDeclarationADU with actionCode = send and CHOICE forTravellingInArea
 				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1_SEND_TRAVELLINGINAREA);
-				f_receiveTollDeclSendBillingDetReceiveAck(m_stayingInAreaGnssUsageList);
+				f_receiveTollDeclSendBillingDetReceiveAck({m_stayingInAreaGnssUsageList});
 				f_closeDownMtc();                
                 
 			} // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BV_03           
@@ -3442,7 +3445,7 @@ module EfcInfoExchange_TestCasesTsp {
 				f_intialiseMtc(v_runOrNot);                   				
 				//Trigger IUT with GNSS_TOLLDECLARATION_TR_TSP_1_SEND_STAYINGINAREA to send one valid TollDeclarationADU with actionCode = send and CHOICE forStayingInArea
 				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1_SEND_STAYINGINAREA);
-				f_receiveTollDeclSendBillingDetReceiveAck(m_travellingInAreaGnssUsageList);
+				f_receiveTollDeclSendBillingDetReceiveAck({m_travellingInAreaGnssUsageList});
 				f_closeDownMtc();                
                 
 			} // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BV_04           
@@ -3459,7 +3462,7 @@ module EfcInfoExchange_TestCasesTsp {
 				f_intialiseMtc(v_runOrNot);                   				
 				//Trigger IUT with GNSS_TOLLDECLARATION_TR_TSP_1_SEND_CORDONCROSSING to send one valid TollDeclarationADU with actionCode = send and CHOICE forCordonCrossing
 				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1_SEND_CORDONCROSSING);
-				f_receiveTollDeclSendBillingDetReceiveAck(m_cordonCrossingGnssUsageList);
+				f_receiveTollDeclSendBillingDetReceiveAck({m_cordonCrossingGnssUsageList});
 				f_closeDownMtc();                
                 
 			} // End of TP_TSP_GNSS_BILLINGDETAILS_TC_BV_05            
@@ -3475,17 +3478,17 @@ module EfcInfoExchange_TestCasesTsp {
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A52_1_implementedGNSSBILLINGDETAILSTSP and ICS_A52_3_implementedGNSSTOLLDECLARATION;
 				 
 				f_intialiseMtc(v_runOrNot);                   
-				// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one valid TollDeclarationADU with actionCode = send
+				// Trigger IUT with GNSS.TOLLDECLARATION.TR_TSP_1 to send one or more valid TollDeclarationADUs with actionCode = send
 				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1);
 				alt {
 					[] mtcPort.receive(mw_apduNoAuthInitIut(mw_adusTollDeclaration)) -> value v_apduReceived {
 						f_logReceivedWaitAndAcknowledge(IS_GNSS_TOLLDECLARATIONS_TIME1_MIN_TSP);
 						}
 					} // End of first alt statement
-				// Extract the TollDeclaration ADU and its relevant fields to be used later
-				var TollDeclarationADU v_receivedTollDeclaration := v_apduReceived.infoExchangeContent.adus;
+				// Extract first TollDeclaration ADU and its relevant fields to be used later
+				var TollDeclarationADU v_receivedTollDeclaration := v_apduReceived.infoExchangeContent.adus.tollDeclarationADUs[0];
 				var TollDeclarationId v_receivedTollDeclarationId := v_receivedTollDeclaration.tollDeclarationId;
-				var ObeId v_receivedObeId := v_receivedTollDeclaration.gnssTollDeclaration.chargeReport.obeId; // To be used as UserId in BillingDetails
+				var ObeId v_receivedObeId := v_receivedTollDeclaration.gnssTollDeclaration[0].chargeReport.obeId; // To be used as UserId of first ChargeReport in BillingDetails
                 // Step 1: Send one valid APDU containing a number of valid BillingDetailsADU equal to GNSS.BILLINGDETAILS.TSP.PARAM1_MAX, with
                  	// action code = send 
                  	// no optional fields
@@ -3495,7 +3498,7 @@ module EfcInfoExchange_TestCasesTsp {
 				for (var integer v_ind := 0; v_ind < (IS_GNSS_BILLINGDETAILS_TSP_PARAM1_MAX_TSP - 1); v_ind := v_ind + 1){
 					v_adus.billingDetailsADUs[v_ind] := m_aduGnssBillingDetails(
 						v_ind,
-						{obeId := v_receivedObeId }, // UserId
+						{obeID := v_receivedObeId }, // UserId
 						TD_PERIOD_1,
 						{{
 							usageListEntry:={
@@ -3549,7 +3552,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Extract the TollDeclaration ADU and its relevant fields to be used later
 				var TollDeclarationADU v_receivedTollDeclaration := v_apduReceived.infoExchangeContent.adus.tollDeclarationADUs[0];
 				var TollDeclarationId v_receivedTollDeclarationId := v_receivedTollDeclaration.tollDeclarationId;
-				var ObeId v_receivedObeId := v_receivedTollDeclaration.gnssTollDeclaration.chargeReport.obeId; // To be used as UserId in BillingDetails
+				var ObeId v_receivedObeId := v_receivedTollDeclaration.gnssTollDeclaration[0].chargeReport.obeId; // From FIRST ChargeReport, to be used as UserId in BillingDetails
 				var ExtendedPaymentAmount v_amount:=PX_MAX_ACCEPTED_BILLINGDETAILS_AMOUNT;
 				v_amount.paymentFeeAmount:=v_amount.paymentFeeAmount+1; //set it to a value that is so high it will provoke a Nack
                  // Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
@@ -3558,7 +3561,7 @@ module EfcInfoExchange_TestCasesTsp {
 				v_apduForSending := m_apduNoAuthInitTester(
 					{m_aduGnssBillingDetails(
 						1, // BillingDetailsnum
-						{obeId := v_receivedObeId }, // UserId
+						{obeID := v_receivedObeId }, // UserId
 						TD_PERIOD_1,
 						{{usageListEntry:={freeTextDetail := {
 							textLanguage:= TD_GNSS_BILLINGDETAILS_LANG,
@@ -3595,7 +3598,7 @@ module EfcInfoExchange_TestCasesTsp {
 				v_apduForSending := m_apduNoAuthInitTester(
 					{m_aduGnssBillingDetails(
 						1, // BillingDetailsnum same as previously sent BillingDetailsADU
-						{obeId := v_receivedObeId }, // UserId
+						{obeID := v_receivedObeId }, // UserId
 						TD_PERIOD_1,
 						{{usageListEntry:={freeTextDetail := {
 							textLanguage:= TD_GNSS_BILLINGDETAILS_LANG,
@@ -3641,13 +3644,13 @@ module EfcInfoExchange_TestCasesTsp {
 				// Extract the TollDeclaration ADU and its relevant fields to be used later
 				var TollDeclarationADU v_receivedTollDeclaration := v_apduReceived.infoExchangeContent.adus;
 				var TollDeclarationId v_receivedTollDeclarationId := v_receivedTollDeclaration.tollDeclarationId;
-				var ObeId v_receivedObeId := v_receivedTollDeclaration.gnssTollDeclaration.chargeReport.obeId; // To be used as UserId in BillingDetails
+				var ObeId v_receivedObeId := v_receivedTollDeclaration.gnssTollDeclaration[0].chargeReport.obeId; // To be used as UserId in BillingDetails
 
                  // Step 1: Send one valid APDU containing one valid BillingDetailsADU with:
                  // action code = send
                  // billingDetailsAmount set to a value (to be modified later)
 				v_apduForSending := m_apduNoAuthInitTester(
-					{m_aduGnssBillingDetailsSpecialised(1,	{obeId := v_receivedObeId }, v_receivedTollDeclarationId)}
+					{m_aduGnssBillingDetailsSpecialised(1,	{obeID := v_receivedObeId }, v_receivedTollDeclarationId)}
 				);                 
 				f_sendAndLogApdu(v_apduForSending);
 				
@@ -3668,7 +3671,7 @@ module EfcInfoExchange_TestCasesTsp {
 				v_apduForSending := m_apduNoAuthInitTester(
 					{m_aduGnssBillingDetails(
 						1, // BillingDetailsnum same as previously sent BillingDetailsADU
-						{obeId := v_receivedObeId }, // UserId
+						{obeID := v_receivedObeId }, // UserId
 						TD_PERIOD_1,
 						{{usageListEntry:={freeTextDetail := {
 							textLanguage:= TD_GNSS_BILLINGDETAILS_LANG ,
@@ -3720,7 +3723,7 @@ module EfcInfoExchange_TestCasesTsp {
 				var TollDeclarationADU v_receivedTollDeclaration := v_apduReceived.infoExchangeContent.adus;
 				var TollDeclarationId v_receivedTollDeclarationId := v_receivedTollDeclaration.tollDeclarationId;
 				var ObeId v_receivedObeId := v_receivedTollDeclaration.gnssTollDeclaration.chargeReport.obeId; // To be used as UserId in BillingDetails
-				var UserId v_userId:={obeId :=v_receivedObeId};
+				var UserId v_userId:={obeID :=v_receivedObeId};
 				var Adus v_adus;
 				
 				//TODO extract magic numbers into Tester Data (possibly as constants)
@@ -3858,7 +3861,7 @@ module EfcInfoExchange_TestCasesTsp {
 				v_apduForSending := m_apduNoAuthInitTester(
 					{m_aduGnssBillingDetails(
 						PX_BILLINGDETAILSNUM_NOT_EXISTING, // BillingDetailsnum invalid
-						{obeId := v_receivedObeId }, // UserId
+						{obeID := v_receivedObeId }, // UserId
 						TD_PERIOD_1,
 						{{usageListEntry:={freeTextDetail := {
 							textLanguage:= TD_GNSS_BILLINGDETAILS_LANG,
@@ -3919,7 +3922,7 @@ module EfcInfoExchange_TestCasesTsp {
 				v_apduForSending := m_apduNoAuthInitTester(
 					{m_aduGnssBillingDetails(
 						PX_BILLINGDETAILSNUM_NOT_EXISTING, // BillingDetailsnum invalid
-						{obeId := v_receivedObeId }, // UserId
+						{obeID := v_receivedObeId }, // UserId
 						TD_PERIOD_1,
 						{{usageListEntry:={freeTextDetail := {
 							textLanguage:= TD_GNSS_BILLINGDETAILS_LANG,
@@ -3984,7 +3987,7 @@ module EfcInfoExchange_TestCasesTsp {
                  // Step 1: Send one valid APDU containing one valid BillingDetailsADU with action code = send
 				v_apduForSending := m_apduNoAuthInitTester({m_aduGnssBillingDetails(
 						1, // BillingDetailsnum
-						{obeId := v_receivedObeId }, // UserId
+						{obeID := v_receivedObeId }, // UserId
 						TD_PERIOD_1,
 						{{usageListEntry:={freeTextDetail := {
 							textLanguage:= TD_GNSS_BILLINGDETAILS_LANG,
@@ -3998,7 +4001,7 @@ module EfcInfoExchange_TestCasesTsp {
                  // Step 1: Send another valid APDU containing one valid BillingDetailsADU with action code = send before TIME0_MIN
 				v_apduForSending := m_apduNoAuthInitTester({m_aduGnssBillingDetails(
 						2, // BillingDetailsnum
-						{obeId := v_receivedObeId }, // UserId
+						{obeID := v_receivedObeId }, // UserId
 						TD_PERIOD_1,
 						{{usageListEntry:={freeTextDetail := {
 							textLanguage:= TD_GNSS_BILLINGDETAILS_LANG,

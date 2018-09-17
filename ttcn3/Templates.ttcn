@@ -1420,25 +1420,6 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 					associatedEventData := omit, // shall not be used in IAP
 					externalCosts := *
 				}
-				
-//// GO HERE				
-//				template BillingDetailsADU m_aduGnssBillingDetails :={
-//	    			billingDetailsId :={
-//	    				issuerId := ?,
-//	    				billingDetailsNum := (0..9223372036854775807), // range 0..2^63-1
-//	    				dateOfService := omit
-//	    			},
-//	    			tollContext := ?,
-//	    			userId :=({?, *, *, *}, {*, ?, *, *}, {*, *, ?, *}, {*, *, *, ?}),
-//	    			relatedBillingDetails := omit,
-//	    			period := ?,
-//	    			billingDetailsAmount := ?, 
-//	    			usageDetails := mw_usageBillingDetails,
-//	    			refTollDeclaration := ?,
-//	    			associatedEventData := omit,
-//	    			actionCode := (ActionCode_send_, ActionCode_revoke_ ,ActionCode_adjust_ ),
-//	    			paymentReference := *
-//	  			}
 
 				type record of UsageList RoUsageList;
 				type record of TollDeclarationId RoTollDeclarationId;
