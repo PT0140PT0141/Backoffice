@@ -134,14 +134,14 @@ module EfcInfoExchange_TesterData{
 			};
             // [SEMANTIC DEFINITION] The obe ids applied by the tester in test cases        
 
-		modulepar EfcDsrcApplication.ContractSerialNumber TD_CSN_1 := 1234567890, // id of the contract = 1234567890
-			TD_CSN_2 := 2345678901, // id of the contract = 2345678901
-			TD_CSN_3 := 3456789012, // id of the contract = 3456789012
-			TD_CSN_4 := 4567890123, // id of the contract = 4567890123
-			TD_CSN_5 := 5678901234, // id of the contract = 5678901234
-			TD_CSN_6 := 6789012345, // id of the contract = 6789012345
-			TD_CSN_7 := 7890123456, // id of the contract = 7890123456
-			TD_CSN_8 := 8901234567, // id of the contract = 8901234567
+		modulepar EfcDsrcApplication.ContractSerialNumber TD_CSN_1 := 1, // id of the contract = 1
+			TD_CSN_2 := 2, // id of the contract = 2
+			TD_CSN_3 := 3, // id of the contract = 3
+			TD_CSN_4 := 4, // id of the contract = 4
+			TD_CSN_5 := 5, // id of the contract = 5
+			TD_CSN_6 := 6, // id of the contract = 6
+			TD_CSN_7 := 7, // id of the contract = 7
+			TD_CSN_8 := 8; // id of the contract = 8
             // [SEMANTIC DEFINITION] The contract serial number applied by the tester in test cases 		
 		
 		modulepar VehicleParameters TD_VEHICLE_PARAMETERS := {
@@ -292,11 +292,17 @@ module EfcInfoExchange_TesterData{
 
 		modulepar UTF8String TD_DSRC_BILLINGDETAILS_USERCLASS:="TheUserClass";
 			// [SEMANTIC DEFINITION] According to ISO 17575-3
+		modulepar UTF8String TD_DSRC_BILLINGDETAILS_USERCLASS_NON_EXISTING:="TheNonExistingUserClass";
+			// [SEMANTIC DEFINITION] According to ISO 17575-3
 
 		modulepar UTF8String TD_DSRC_BILLINGDETAILS_DECLAREDVEHCLASS:="TheVehicleClass";
 			// [SEMANTIC DEFINITION] According to ISO 17575-3
+		modulepar UTF8String TD_DSRC_BILLINGDETAILS_VEHCLASS_NON_EXISTING:="TheNonExistingVehicleClass";
+			// [SEMANTIC DEFINITION] According to ISO 17575-3
 
 		modulepar UTF8String TD_DSRC_BILLINGDETAILS_TIMECLASS:="TheTimeClass";
+			// [SEMANTIC DEFINITION] According to ISO 17575-3
+		modulepar UTF8String TD_DSRC_BILLINGDETAILS_TIMECLASS_NON_EXISTING:="TheNonExistingTimeClass";
 			// [SEMANTIC DEFINITION] According to ISO 17575-3
 
 		modulepar LanguageID TD_DSRC_BILLINGDETAILS_LANG:="it"; // Default value set to Italy, 
@@ -482,7 +488,9 @@ module EfcInfoExchange_TesterData{
 
 	group TOLLDECLARATION{
 		modulepar EfcDsrcApplication.PaymentMeans TD_PAYMENT_MEANS_1;//:= {PAN1,{2030,12,31}, "1234"};
-		modulepar Provider TD_TOLL_CONTEXT;	//value of the InfoExchange.infoExchangeContent.apci.informationSenderID	
+		modulepar Provider TD_TOLL_CONTEXT;		
+		modulepar Provider TD_TOLL_CONTEXT_NON_EXISTING;	
+		modulepar UTF8String TD_TOLL_CONTEXT_NAME_NON_EXISTING;
 		modulepar UsageStatement TD_USAGE_STATEMENT_VALID_1, TD_USAGE_STATEMENT_VALID_2, TD_USAGE_STATEMENT_VALID_3,
 		TD_USAGE_STATEMENT_VALID_4, TD_USAGE_STATEMENT_VALID_5, TD_USAGE_STATEMENT_VALID_6, TD_USAGE_STATEMENT_VALID_7, 
 		TD_USAGE_STATEMENT_VALID_8, TD_USAGE_STATEMENT_VALID_9, TD_USAGE_STATEMENT_VALID_10, TD_USAGE_STATEMENT_VALID_11, 
@@ -506,6 +514,7 @@ module EfcInfoExchange_TesterData{
 		modulepar UTF8String TD_APPLIED_TIME_CLASS; // applied time class
 		modulepar UTF8String TD_COST_CENTER; // cost center
 		modulepar EfcAutonomousCharging.ChargeObjectId TD_CHARGE_OBJECT_ID; // charge object id
+		modulepar EfcAutonomousCharging.ChargeObjectId TD_CHARGE_OBJECT_ID_NON_EXISTING; // charge object id
 		modulepar TollEventId TD_TOLL_EVENT_ID;
 		modulepar GeneralizedTime TD_TOLL_EVENT_TIME;
 		modulepar ExtendedPaymentAmount TD_DISCOUNT_AMOUNT;

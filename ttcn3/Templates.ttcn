@@ -908,10 +908,10 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		}
 
 		group DSRC_CONTRACTISSUERLIST {		
-			template ContractIssuerListADU mw_aduContractIssuerList := {
+			template ContractIssuerListADU mw_aduContractIssuerList(in EfcDsrcApplication.Int2 p_manufacturerID) := {
 				efcContextMark := ?,
 				equipmentClass := ?,
-				manufacturerID := ?,
+				manufacturerID := p_manufacturerID,
 				uniquePartOfPAN := ?,
 				typeOfEFCApplication := ?,
 				securityLevel := ?,
