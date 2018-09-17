@@ -2461,7 +2461,7 @@ module EfcInfoExchange_TestCasesTsp {
                  //  Send one valid APDU containing one BillingDetailsADU numbered 3 with actionCode = SEND and only mandatory fields
 				v_apduForSending := m_apduNoAuthInitTester({billingDetailsADUs:={
 					modifies m_aduDsrcBillingDetails:= {
-					  	billingDetailsAmount:={paymentFeeAmount := 50} //TODO FAusto extract magic number
+					  	billingDetailsAmount:=TD_BILLINGDETAILS_VALIDAMOUNT
 					}
 				}});                 
 				f_sendAndLogApdu(v_apduForSending);                 
