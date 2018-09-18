@@ -2039,7 +2039,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				in template octetstring p_attachment		
 			) := {
 				paymentAnnouncementID := p_paymentAnnouncemmentID,
-				dueDate := TD_PAYMENTANNOUNCEMENT_DUE_DATE,
+				dueDate := fx_getUtc(1000000), // offset 1000000 seconds => 14 days 
 				totalamount := p_totalAmount,
 				paymentStatus := PaymentStatus_paid_,
 				numberOfItems := 1,	// this ADU contains reference to one BillingDetail

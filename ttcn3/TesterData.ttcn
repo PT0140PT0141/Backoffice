@@ -27,7 +27,10 @@ module EfcInfoExchange_TesterData{
             // [SEMANTIC DEFINITION] The provider identifier of the tester
             // acccording to ISO 14906 consisting of countryCode and issuerIdentifier
  		
- 		//TODO the provider values cannot be identical
+ 		// TODO the provider values cannot be identical
+ 		// ANSWER for the TODO: Yes, they can be identical. The same identifier (of data type provider) is used
+ 		// in different data elements: APDU_ORIGINATOR, INFORMATION_SENDER, ... This is in reality
+ 		// in most cases one and the same entity
         modulepar EfcDsrcApplication.Provider TD_APDU_ORIGINATOR_FOR_TESTER:={'1010010000'B, 99};
             // [SEMANTIC DEFINITION] The originator id of the tester
             // that is used in the APCI field apdu originator. Same syntax as the provider identifier. 
@@ -177,7 +180,6 @@ module EfcInfoExchange_TesterData{
 	 
 	group ContractIssuerData {
 
-		//TODO set sensible default values of the tester data parameters
 		modulepar EfcDsrcApplication.EFC_ContextMark TD_EFC_CONTEXT_MARK := {TD_INFORMATION_SENDER_TESTER, '1111'O ,99}; //'A40053000503'H;
 			// [SEMANTIC DEFINITION] The EFCContextMark used by the tester
 			// in contract issuer data. Used according to ISO 14906.
@@ -210,8 +212,9 @@ module EfcInfoExchange_TesterData{
 		modulepar EfcInfoExchange.Int2 TD_AC_CR_KEY_REFERENCE_INVALID := 0;
 			// [SEMANTIC DEFINITION] An invalid value used by the tester the access key reference (refer to also ISO 14906)
 
-		modulepar integer TD_AUTH_KEY_REFERENCE_INVALID;
-			// [SEMANTIC DEFINITION] An invalid value used by the tester for the authentication key reference (refer to also ISO 14906)
+		modulepar integer TD_AUTH_KEY_REFERENCE_INVALID := 168;
+			// [SEMANTIC DEFINITION] An invalid value used by the tester
+			// for the authentication key reference (refer to also ISO 14906)
 				
 
 		template ContractIssuerListADU m_contractIssuerListADU_Tester(in EfcInfoExchange.Int4 p_manufacturerID):={
@@ -300,16 +303,19 @@ module EfcInfoExchange_TesterData{
 
 		modulepar UTF8String TD_DSRC_BILLINGDETAILS_USERCLASS:="TheUserClass";
 			// [SEMANTIC DEFINITION] According to ISO 17575-3
+
 		modulepar UTF8String TD_DSRC_BILLINGDETAILS_USERCLASS_NON_EXISTING:="TheNonExistingUserClass";
 			// [SEMANTIC DEFINITION] According to ISO 17575-3
 
 		modulepar UTF8String TD_DSRC_BILLINGDETAILS_DECLAREDVEHCLASS:="TheVehicleClass";
 			// [SEMANTIC DEFINITION] According to ISO 17575-3
+
 		modulepar UTF8String TD_DSRC_BILLINGDETAILS_VEHCLASS_NON_EXISTING:="TheNonExistingVehicleClass";
 			// [SEMANTIC DEFINITION] According to ISO 17575-3
 
 		modulepar UTF8String TD_DSRC_BILLINGDETAILS_TIMECLASS:="TheTimeClass";
 			// [SEMANTIC DEFINITION] According to ISO 17575-3
+
 		modulepar UTF8String TD_DSRC_BILLINGDETAILS_TIMECLASS_NON_EXISTING:="TheNonExistingTimeClass";
 			// [SEMANTIC DEFINITION] According to ISO 17575-3
 
@@ -514,33 +520,112 @@ module EfcInfoExchange_TesterData{
 
 	}
 
-
 	group GNSS_BILLINGDETAILS {	
 		modulepar EfcAutonomousCharging.Period TD_PERIOD_1; // period in billing details
-		modulepar UTF8String TD_USER_CLASS; // applied user class
-		modulepar UTF8String TD_DECLARED_VEHICLE_CLASS; // declared vehicle class
-		modulepar UTF8String TD_APPLIED_TIME_CLASS; // applied time class
-		modulepar UTF8String TD_COST_CENTER; // cost center
+		modulepar UTF8String TD_USER_CLASS:= "Frequent user";
+			// [SEMANTIC DEFINITION] The user class value applied by the tester in test cases
+			// for billing details 		
+				
+		modulepar UTF8String TD_DECLARED_VEHICLE_CLASS:="20";
+			// [SEMANTIC DEFINITION] The vehicle class value applied by the tester in test cases
+			// for billing details 		
+
+		modulepar UTF8String TD_APPLIED_TIME_CLASS:="99";
+			// [SEMANTIC DEFINITION] The time class value applied by the tester in test cases
+			// for billing details 		
+
+		modulepar UTF8String TD_COST_CENTER:="The cost center";
+			// [SEMANTIC DEFINITION] The cost center value applied by the tester in test cases
+			// for billing details		
+		
 		modulepar EfcAutonomousCharging.ChargeObjectId TD_CHARGE_OBJECT_ID; // charge object id
 		modulepar EfcAutonomousCharging.ChargeObjectId TD_CHARGE_OBJECT_ID_NON_EXISTING; // charge object id
 		modulepar TollEventId TD_TOLL_EVENT_ID;
 		modulepar GeneralizedTime TD_TOLL_EVENT_TIME;
-		modulepar ExtendedPaymentAmount TD_DISCOUNT_AMOUNT;
+		modulepar ExtendedPaymentAmount TD_DISCOUNT_AMOUNT:={
+		 		paymentFeeAmount:= 200, // 200 units epressed in 
+ 				paymentFeeUnit:='2978'O, // ('2' = minor units of '978' = EUR), i.e. 2,00 EUR
+ 				vatRate:=omit // no VAT applied in this case
+ 			};
+			// [SEMANTIC DEFINITION] The values of discounte amount applied by the tester
+			// for BillingDetails in test cases 		
+
 		modulepar DiscountQualifier TD_DISCOUNT_QUALIFIER;
 		const ExtendedPaymentAmount c_extPayAmountNothing:={0,TD_BILLINGDETAILS_PAYUNIT,0};
- 		modulepar ExtendedPaymentAmount TD_BILLINGDETAILS_AMOUNT_1, TD_BILLINGDETAILS_AMOUNT_2,
- 			TD_BILLINGDETAILS_AMOUNT_3, TD_BILLINGDETAILS_AMOUNT_4, TD_BILLINGDETAILS_AMOUNT_5;		 
+ 		modulepar ExtendedPaymentAmount
+ 			TD_BILLINGDETAILS_AMOUNT_1:={
+ 				paymentFeeAmount:= 1470, // 1470 units epressed in 
+ 				paymentFeeUnit:='2978'O, // ('2' = minor units of '978' = EUR), i.e. 14,70 EUR
+ 				vatRate:=1780 // expressed in units of 0,01%, i.e. 17,80%
+ 			},
+ 			TD_BILLINGDETAILS_AMOUNT_2:={
+ 				paymentFeeAmount:= 311, // 311 units epressed in 
+ 				paymentFeeUnit:='2978'O, // ('2' = minor units of '978' = EUR), i.e. 3,11 EUR
+ 				vatRate:=omit // no VAT applied in this case 				
+			}, 			
+ 			TD_BILLINGDETAILS_AMOUNT_3:={
+ 				paymentFeeAmount:= 953, // 953 units epressed in 
+ 				paymentFeeUnit:='2978'O, // ('2' = minor units of '978' = EUR), i.e. 9,53 EUR
+ 				vatRate:=1990 // expressed in units of 0,01%, i.e. 19,90%
+ 			},
+ 			TD_BILLINGDETAILS_AMOUNT_4:={
+				paymentFeeAmount:= 2367, // 2367 units epressed in 
+ 				paymentFeeUnit:='2978'O, // ('2' = minor units of '978' = EUR), i.e. 23,67 EUR
+ 				vatRate:=2175 // expressed in units of 0,01%, i.e. 21,75%
+			},	 		
+ 			TD_BILLINGDETAILS_AMOUNT_5:={
+				paymentFeeAmount:= 89, // 89 units epressed in 
+ 				paymentFeeUnit:='2978'O, // ('2' = minor units of '978' = EUR), i.e. 0,89 EUR
+ 				vatRate:=omit // no VAT applied in this case
+			};		 
+			// [SEMANTIC DEFINITION] The values of billing details amount applied by the tester
+			// for BillingDetails in various test cases 		
+
  	}
  	
  	group PAYMENTANNOUNCEMENT {
-		modulepar integer TD_PAYMENTANNOUNCEMENT_ID_1, TD_PAYMENTANNOUNCEMENT_ID_2, TD_PAYMENTANNOUNCEMENT_ID_3;
- 		modulepar integer TD_PAYMENTANNOUNCEMENT_ID_NON_EXISTING;
- 		modulepar GeneralizedTime TD_PAYMENTANNOUNCEMENT_DUE_DATE;
- 		modulepar ExtendedPaymentAmount TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_1, TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_2,
- 			TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_3, TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_WITHOUTVAT; //NOTE THESE ARE ALSO USED FOR PAYMENTCLAIM transactions
+ 	
+		modulepar integer TD_PAYMENTANNOUNCEMENT_ID_1:=1, TD_PAYMENTANNOUNCEMENT_ID_2:=2,
+			TD_PAYMENTANNOUNCEMENT_ID_3:=3;
+			// [SEMANTIC DEFINITION] The ids of the paymentAnnouncements which are sent be the tester
+			// in test cases of the trasnaction type PaymentAnnouncement
+			
+ 		modulepar integer TD_PAYMENTANNOUNCEMENT_ID_NON_EXISTING:=9999;
+			// [SEMANTIC DEFINITION] The id of the payment accouncement which previously
+			// was not send by the tester but shall be revoled in a test case to test invalid scenarios 		
+ 		
+ 		modulepar ExtendedPaymentAmount
+ 			TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_1:={
+ 				paymentFeeAmount:= 45776, // 45776 units epressed in 
+ 				paymentFeeUnit:='2978'O, // ('2' = minor units of '978' = EUR), i.e. 457,76 EUR
+ 				vatRate:=1900 // expressed in units of 0,01%, i.e. 19,00%
+ 		},
+ 			TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_2:={
+ 				paymentFeeAmount:= 1396, // 1396 units epressed in 
+ 				paymentFeeUnit:='2978'O, // ('2' = minor units of '978' = EUR), i.e. 13,96 EUR
+ 				vatRate:=2120 // expressed in units of 0,01%, i.e. 21,20% 				
+ 		},
+ 			TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_3:={
+ 				paymentFeeAmount:= 17489, // 17489 units epressed in 
+ 				paymentFeeUnit:='2978'O, // ('2' = minor units of '978' = EUR), i.e. 174,89 EUR
+		 		vatRate:=2090 // expressed in units of 0,01%, i.e. 20,90%  	
+ 		},
+			TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_WITHOUTVAT:={
+ 				paymentFeeAmount:= 17489, // 17489 units epressed in 
+ 				paymentFeeUnit:='2978'O, // ('2' = minor units of '978' = EUR), i.e. 174,89 EUR
+		 		vatRate:=omit // no VAT applied in this tested data 
+		};
+			// [SEMANTIC DEFINITION] The values of payment amount applied by the tester
+			// for PaymentAnnouncements and PaymentClaims in various test cases 		
 	}
 	
-	const integer TD_ABNORMAL_OBE_REASON_CODE_INVALID:=100; // 5-100 reserved for future CEN and ISO use, thus the value 100 is invalid 	
+	group REPORTABNORMALOBE {
+	
+		modulepar integer TD_ABNORMAL_OBE_REASON_CODE_INVALID:=100; // 5-100 reserved for future CEN and ISO use, thus the value 100 is invalid 	
+			// [SEMANTIC DEFINITION] The obeReason code applied by the tester in ReportAbnormalOBE test cases
+			// to indicate and invalid reason code
+	}
+
 	
 } // end module 
   
