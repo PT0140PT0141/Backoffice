@@ -625,7 +625,6 @@ module EfcInfoExchange_TesterData{
 			// [SEMANTIC DEFINITION] The obeReason code applied by the tester in ReportAbnormalOBE test cases
 			// to indicate and invalid reason code
 	}
-
 	
 } // end module 
   
