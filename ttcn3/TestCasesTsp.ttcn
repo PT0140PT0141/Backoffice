@@ -3341,7 +3341,7 @@ module EfcInfoExchange_TestCasesTsp {
                  	// includedDiscounts in usageList with textDetail field being set according to values specified in Table A.54 of CEN/TS 16986:2016
 				v_apduForSending := m_apduNoAuthInitTester({billingDetailsADUs:={
 					m_aduGnssBillingDetails(
-						1, // TODO Fausto BillingDetailsnum, break out into Tester data. Define as const perhaps
+						TD_BILLING_DETAILS_NUM_1,
 						{obeID := v_receivedObeId }, // UserId
 						TD_PERIOD_1,
 						{{
