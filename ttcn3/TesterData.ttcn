@@ -26,7 +26,8 @@ module EfcInfoExchange_TesterData{
         modulepar EfcDsrcApplication.Provider TD_IDENTIFIER:= {'1010010000'B, 99}; // Default is Sweden.99 = 'A40053'H
             // [SEMANTIC DEFINITION] The provider identifier of the tester
             // acccording to ISO 14906 consisting of countryCode and issuerIdentifier
- 
+ 		
+ 		//TODO the provider values cannot be identical
         modulepar EfcDsrcApplication.Provider TD_APDU_ORIGINATOR_FOR_TESTER:={'1010010000'B, 99};
             // [SEMANTIC DEFINITION] The originator id of the tester
             // that is used in the APCI field apdu originator. Same syntax as the provider identifier. 
@@ -289,6 +290,12 @@ module EfcInfoExchange_TesterData{
 			// [SEMATIC DEFINITION] Identifer that together with the issuerId forms a unique BillingDetailsId 		
 
 		modulepar UTF8String TD_DSRC_BILLINGDETAILS_CONTEXTNAME:="TheContextName";
+			// [SEMANTIC DEFINITION] According to ISO 17575-3		
+
+		modulepar EfcAutonomousContextData.Int4 TD_CHARGE_OBJECT_DESIGNATION_NON_EXISTING:=9999;
+			// [SEMATIC DEFINITION] A non existing charge object designation for provoking errors in BILLINGDETAILS transaction when reporting sectioned roads	
+		
+		modulepar UTF8String TD_TOLL_AREA_NAME:="The toll area name";
 			// [SEMANTIC DEFINITION] According to ISO 17575-3		
 
 		modulepar UTF8String TD_DSRC_BILLINGDETAILS_USERCLASS:="TheUserClass";
