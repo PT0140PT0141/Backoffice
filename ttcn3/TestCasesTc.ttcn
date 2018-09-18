@@ -5490,7 +5490,7 @@ module EfcInfoExchange_TestCasesTc {
 			} // End testcase TP_TC_GNSS_BILLINGDETAILS_TC_BV_03			
 		} // End Valid_Behaviour
 
-		group Invalid_Bahaviour {
+		group Invalid_Behaviour {
 
                /**
                  * @remark  No TPs have been defined
@@ -6532,7 +6532,7 @@ module EfcInfoExchange_TestCasesTc {
  
  				var octetstring v_attachment;//length 2^31
  				
- 				for (var integer v_i:=0; v_i == ((2147483648)/8); v_i := v_i + 1) {
+ 				for (var integer v_i:=0; v_i <= 268435456; v_i := v_i + 1) {
  					v_attachment := v_attachment & '0123456789ABCDEF'O;
  				}
 

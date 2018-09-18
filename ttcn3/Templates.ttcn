@@ -59,8 +59,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
     		apduDate :=  ?
     	}
 
-		//TODO Getting java.lang.NullPointerException when introducing @fuzzy, temporary removal
-		template (value) ApciFields m_apciInitTester modifies mw_apci :={
+		template (value) @fuzzy ApciFields m_apciInitTester modifies mw_apci :={
     		apduOriginator := TD_APDU_ORIGINATOR_FOR_TESTER,  
     		informationSenderID := TD_INFORMATION_SENDER_TESTER, 
     		informationrecipientID := PX_INFORMATION_SENDER_ID_FOR_IUT,
@@ -70,8 +69,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
     		apduDate:=fx_getUtc()			
 		}
 		
-		//TODO Getting java.lang.NullPointerException when introducing @fuzzy, temporary removal
-		template (value) ApciFields m_apciRespTester(in InfoExchange p_apduBeingRespondedTo) modifies m_apciInitTester :={
+		template (value) @fuzzy ApciFields m_apciRespTester(in InfoExchange p_apduBeingRespondedTo) modifies m_apciInitTester :={
 			apduOriginator := TD_APDU_ORIGINATOR_FOR_TESTER,  
 			informationSenderID := TD_INFORMATION_SENDER_TESTER, 
 			informationrecipientID := PX_INFORMATION_SENDER_ID_FOR_IUT,
@@ -134,8 +132,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		  infoExchangeAuthenticator := ?
 		}
 
-		//TODO Getting java.lang.NullPointerException when introducing @fuzzy, temporary removal
-    	template InfoExchange m_apduAuth(in ApciFields p_apci, in Adus p_adus):={
+    	template  (value) @fuzzy InfoExchange m_apduAuth(in ApciFields p_apci, in Adus p_adus):={
     	  infoExchangeContent:={
     	  	apci:=p_apci,
     	  	adus:=p_adus
@@ -453,8 +450,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
         		}
         	}
  
-			//TODO Getting java.lang.NullPointerException when introducing @fuzzy, temporary removal
-        	template (value) Adus m_adusRequestUserDetailsRandomParams:={
+        	template (value) @fuzzy Adus m_adusRequestUserDetailsRandomParams:={
 				requestAdus:={m_aduRequestProvideUserDetails(f_userDetailsParameters())}
         	} 
          	       			
@@ -516,8 +512,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			template InfoExchange mw_apduRequestListOfUsersOneAdu := mw_apduNoAuthInitIut({requestAdus:={mw_aduRequestListOfUsers}});
 			
 			  	
-			//TODO Getting java.lang.NullPointerException when introducing @fuzzy, temporary removal
-		  	template (value) RequestADU m_aduRequestListOfUsers(in UserId p_userId:=PX_USER_ID) := {
+		  	template (value) @fuzzy RequestADU m_aduRequestListOfUsers(in UserId p_userId:=PX_USER_ID) := {
 	  			userListRequest :={
 	  				requestedADUType	:= AduType_provideUserIdListADU_,
   					userIdRequestType	:= 0,
@@ -619,8 +614,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 //			
 //
 
-			//TODO Getting java.lang.NullPointerException when introducing @fuzzy, temporary removal
-			template (value) ExceptionListADU m_aduExceptionList(
+			template (value) @fuzzy ExceptionListADU m_aduExceptionList(
 				in ExceptionListType p_exceptionListType,
 				in UserId p_userId,
 				in ExceptionListStatusType p_exceptionListStatusType,
@@ -667,8 +661,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				}
 			);
 			
-			//TODO Getting java.lang.NullPointerException when introducing @fuzzy, temporary removal
-			template TrustObjectADU mw_aduTrustObject(
+			template @fuzzy TrustObjectADU mw_aduTrustObject(
 				template RecOfTrustObjectPurposes p_recOfTrustObjectPurposes,
 				template TrustObjectCode p_trustObjectCode
 			):={
@@ -685,8 +678,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				TrustObjectCode p_trustObjectCode
 			):=mw_aduTrustObject(p_recOfTrustObjectPurposes,p_trustObjectCode);
 			
-			//TODO Getting java.lang.NullPointerException when introducing @fuzzy, temporary removal
-			template TrustObjectADU m_aduTrustObjectInvalidStatus:= {
+			template @fuzzy TrustObjectADU m_aduTrustObjectInvalidStatus:= {
 				trustObjectID := float2int(rnd()),
 				purposesOfTrustObject := {TrustObjectPurposes_dSRCCharging_,TrustObjectPurposes_dSRCAC_,TrustObjectPurposes_oBEInterrogation_,TrustObjectPurposes_oBEInterrogationAC_},
 				startValidity := fx_getUtc(),
@@ -1120,8 +1112,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			}
 			
 			
-			//TODO Getting java.lang.NullPointerException when introducing @fuzzy, temporary removal
-			template (value) VersionAndValidity m_basicVersionValidFromNow :={
+			template (value) @fuzzy VersionAndValidity m_basicVersionValidFromNow :={
 				version:={
 					basicVersionId:=basicVersionIdTESTER_VALUE
 				},
@@ -1280,8 +1271,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				abnormalOBEReasonCode := ? length(1..999) 
 			}
 			
-			//TODO Getting java.lang.NullPointerException when introducing @fuzzy, temporary removal
-			template (value) ReportAbnormalOBEADU m_aduReportAbnormalObe:= {
+			template (value) @fuzzy ReportAbnormalOBEADU m_aduReportAbnormalObe:= {
 				userId := PX_USER_ID,
 				dateAndTime := fx_getUtc(),
 				efcContextMark := TD_EFC_CONTEXT_MARK,

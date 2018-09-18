@@ -3702,9 +3702,9 @@ module EfcInfoExchange_TestCasesTsp {
 				v_adus.billingDetailsADUs[2]:=m_aduGnssBillingDetailsSpecialised(3,	{}, v_receivedTollDeclarationId); //billingDetailsUserIdRejected 							
 
 				v_adus.billingDetailsADUs[3]:=m_aduGnssBillingDetailsSpecialised(4,	v_userId, v_receivedTollDeclarationId);
-				//TODO this must be updated, it sets a signed data element to a negative number which will just crash the test code
-				v_adus.billingDetailsADUs[3].billingDetailsAmount.paymentFeeAmount:=-TD_PAYMENT_FEE_AMOUNT; //billingDetailsAmountRejected
-							
+				v_adus.billingDetailsADUs[3].billingDetailsAmount:=PX_MAX_ACCEPTED_BILLINGDETAILS_AMOUNT; //billingDetailsAmountRejected
+				v_adus.billingDetailsADUs[3].billingDetailsAmount.paymentFeeAmount:=v_adus.billingDetailsADUs[3].billingDetailsAmount.paymentFeeAmount+1;
+						
 				v_adus.billingDetailsADUs[4]:=m_aduGnssBillingDetailsSpecialised(5,	v_userId, v_receivedTollDeclarationId);
 				v_adus.billingDetailsADUs[4].usageDetails.contextName:="AREA 51, NEVADA"; //billingDetailsContextNameRejected
 							
