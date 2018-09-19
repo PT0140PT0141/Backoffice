@@ -1542,7 +1542,8 @@ module EfcInfoExchange_TestCasesTsp {
 				v_apduForSending.infoExchangeContent.adus.paymentClaimADUs[0].paymentClaimAmount.paymentFeeAmount:=0;
 				v_apduForSending.infoExchangeContent.adus.paymentClaimADUs[0].actionCode:=ActionCode_revoke_;
 				v_apduForSending.infoExchangeContent.adus.paymentClaimADUs[0].paymentClaimStatus:=PaymentClaimStatus_amendedVersion_;
-                 
+                // Wait for the proper time before issuing a second PaymentClaim
+                f_wait(IS_PAYMENTCLAIM_TIMEA_MIN_TSP); 
 				f_sendAndLogApdu(v_apduForSending);                 
 				// Set timer
                  t_step.start(IS_PAYMENTCLAIM_TIME1_MAX_TSP);                 
@@ -1595,7 +1596,8 @@ module EfcInfoExchange_TestCasesTsp {
 
 				v_apduForSending := m_apduPaymentClaim; // needs to be done again, m_apduPaymentClaim is a dynamic template
 				v_apduForSending.infoExchangeContent.adus.paymentClaimADUs[0].actionCode:=ActionCode_adjust_;
-
+                // Wait for the proper time before issuing a second PaymentClaim
+                f_wait(IS_PAYMENTCLAIM_TIMEA_MIN_TSP); 
 				f_sendAndLogApdu(v_apduForSending);                 
 				// Set timer
                  t_step.start(IS_PAYMENTCLAIM_TIME1_MAX_TSP);                 
@@ -1721,6 +1723,9 @@ module EfcInfoExchange_TestCasesTsp {
 						}
 					} // End of Alt statement
 
+                // Wait for the proper time before issuing a  PaymentClaim
+                f_wait(IS_PAYMENTCLAIM_TIMEA_MIN_TSP); 
+
                 // Send PAYMENTCLAIM with ActionCode=SEND and referencing the  performed BillingDetails transaction, and containing userId unknown to the IUT
 
 				v_apduForSending := m_apduPaymentClaim;
@@ -1739,6 +1744,9 @@ module EfcInfoExchange_TestCasesTsp {
 						setverdict(pass);
 						}
 					} // End of Alt statement
+
+                // Wait for the proper time before issuing a second PaymentClaim
+                f_wait(IS_PAYMENTCLAIM_TIMEA_MIN_TSP); 
 
                 // Send PAYMENTCLAIM with ActionCode=SEND and referencing the performed BillingDetails transaction, and containing paymentClaimAmount exceeding maximum permitted
 
@@ -1761,6 +1769,9 @@ module EfcInfoExchange_TestCasesTsp {
 						}
 					} // End of Alt statement
 
+                // Wait for the proper time before issuing a second PaymentClaim
+                f_wait(IS_PAYMENTCLAIM_TIMEA_MIN_TSP); 
+
                 // Send PAYMENTCLAIM with ActionCode=SEND and referencing the  performed BillingDetails transaction, and containing paymentClaimStatus = 2
 				v_apduForSending := m_apduPaymentClaim;
 				v_apduForSending.infoExchangeContent.adus.paymentClaimADUs[0].paymentClaimStatus:=2;//undefnied and not allowed value;
@@ -1780,6 +1791,9 @@ module EfcInfoExchange_TestCasesTsp {
 					} // End of Alt statement
 
                 // Send PAYMENTCLAIM with ActionCode=SEND and referencing the  performed BillingDetails transaction, and containing typeOfFee omitted
+
+                // Wait for the proper time before issuing a second PaymentClaim
+                f_wait(IS_PAYMENTCLAIM_TIMEA_MIN_TSP); 
 
 				v_apduForSending := m_apduPaymentClaim;
 				v_apduForSending.infoExchangeContent.adus.paymentClaimADUs[0].typeOfFee := 42; //this type of fee is not defined, reserved for future CEN and ISO use and shall be rejected
