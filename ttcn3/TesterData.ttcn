@@ -47,11 +47,6 @@ module EfcInfoExchange_TesterData{
             // [SEMANTIC DEFINITION] The sender id of the tester used 
             // in an invalid base test case. Shall be different from the correct sender id of the tester
  
-        modulepar EfcDsrcApplication.Provider TD_INVALID_INFORMATION_RECEPIENT_ID_FOR_IUT:={'1010010000'B, 99};
-            // [SEMANTIC DEFINITION] The information recipient id of the IUT
-            // used an invalid base test case. Shall be different from the correct recipient id of the IUT
-            // TODO check if this is really used. SHould not be a tester data
-
         modulepar EfcDsrcApplication.PersonalAccountNumber TD_PAN_1:= '11223344556677889900'O,
         	TD_PAN_2:= '22334455667788990011'O, TD_PAN_3:= '33445566778899001122'O, TD_PAN_4:= '44556677889900112233'O,
         	TD_PAN_5:= '55667788990011223344'O, TD_PAN_6:= '66778899001122334455'O, TD_PAN_7:= '77889900112233445566'O,
