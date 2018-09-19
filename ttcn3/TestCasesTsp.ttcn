@@ -3606,6 +3606,9 @@ module EfcInfoExchange_TestCasesTsp {
                  	// action code = adjust
                  	// value of the fee being in an acceptable range
 
+                // Wait for the proper time before starting the next transaction
+                f_wait(IS_GNSS_BILLINGDETAILS_TC_TIMEA_MIN_TSP); 
+
 				v_apduForSending := m_apduNoAuthInitTester({billingDetailsADUs:={
 					m_aduGnssBillingDetails(
 						1, // BillingDetailsnum same as previously sent BillingDetailsADU
@@ -3637,8 +3640,8 @@ module EfcInfoExchange_TestCasesTsp {
 
            testcase TP_TSP_GNSS_BILLINGDETAILS_TC_BV_08() runs on MainTestComponent system TestAdapter {
                   /**
-                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BV_07: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TC 
-                  * @desc    transaction with a single BillingDetailsADU with actionCode = adjust and no optional fields
+                  * @desc    TP_TSP_GNSS_BILLINGDETAILS_TC_BV_08: Verify that the TSP correctly performs a GNSS.BILLINGDETAILS.TC 
+                  * @desc    transaction with a single BillingDetailsADU with actionCode = revoke and no optional fields
                   * @remark  [16986:2016], Clause 8.2.3 AND 8.2.4 and Table A.1/2 AND Table A.2/2 AND Table A.52/2 AND Table A.56/6
                   */
                  // Initialisation
@@ -3680,6 +3683,10 @@ module EfcInfoExchange_TestCasesTsp {
 				v_aduBillingDetails.actionCode:=ActionCode_revoke_;
 				//Need to create new APDU in order to have new (random) APDU-ids
 				v_apduForSending := m_apduNoAuthInitTester({billingDetailsADUs:={v_aduBillingDetails}});                 
+
+                // Wait for the proper time before starting the next transaction
+                f_wait(IS_GNSS_BILLINGDETAILS_TC_TIMEA_MIN_TSP); 
+
 				f_sendAndLogApdu(v_apduForSending);
 
                  // Step 2: Wait for positive Ack within IS_GNSS_BILLINGDETAILS_TC_TIME1_MAX_TSP
@@ -3901,7 +3908,7 @@ module EfcInfoExchange_TestCasesTsp {
                  // Step 1: Send one valid APDU containing BillingDetailsADU as the only ADU, where:
                  	// the values of all fields in BillingDetailsADU being valid and within the range specified by the IUT
                  	// no optional fields are specified
-                 	// billingDetailsNum referencing the previously sent BillingDetailsADU
+                 	// billingDetailsNum not referencing any previously sent BillingDetailsADU
                  	// action code = revoke
 
 				v_apduForSending := m_apduNoAuthInitTester({billingDetailsADUs:={
