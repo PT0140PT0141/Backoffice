@@ -232,8 +232,14 @@ module EfcInfoExchange_TestCasesCommon {
 								v_apduToSend := m_apduTrustObjectResponse(
 									v_apduReceived, 
 									v_requestedTrustObjectPurposesRecords,
-									//TODO Fausto, what is this supposed to be? TD_DSRCKEY_OBJECT is not defined
-									TD_DSRC_MASTER_KEY
+									{publicKey:=TD_SYMMETRIC_KEY}
+								);                 												
+							}
+							case (TrustObjectTypes_encryptedSymmetricKey_){
+								v_apduToSend := m_apduTrustObjectResponse(
+									v_apduReceived, 
+									v_requestedTrustObjectPurposesRecords,
+									{publicKey:=TD_SYMMETRIC_KEY_ENCRYPTED}
 								);                 												
 							}
 							case else {
