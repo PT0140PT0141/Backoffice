@@ -1093,18 +1093,18 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 					dsrcContext:= {
 						regimeContextData := {
 							iso175753ADU := {	
-								tollContextOverview := TD_TOLL_CONTEXT_OVERVIEW,
+								tollContextOverview := TD_SIGNED_TOLL_CONTEXT_OVERVIEW,
 								tollContextPartitionOverview := TD_TOLL_CONTEXT_PARTITION_OVERVIEW,
 								tariffTable := TD_TARIFF_TABLE,
-								currencyConversionTable := currencyConversionTableTESTER_VALUE,
-								tariffClassDefinition := optSignedTariffClassDefinitionTESTER_VALUE,
-								localVehicleClassDefinition := optSignedLocalVehicleClassDefinitionTESTER_VALUE,
-								timeClassDefinition := optSignedTimeClassDefinitionTESTER_VALUE,
-								userClassDefinition := optSignedUserClassDefinitionTESTER_VALUE,
-								tollContextLayout := tollContextLayoutTESTER_VALUE,
-								chargeReportingEvents := chargeReportingEventsTESTER_VALUE,
-								chargeReportConfiguration := chargeReportConfigurationTESTER_VALUE,
-								tollContextVersion := tollContextVersionTESTER_VALUE
+								currencyConversionTable := TD_CURRENCY_CONVERSION_TABLE,
+								tariffClassDefinition := TD_SIGNED_TARIFF_CLASS_DEF,
+								localVehicleClassDefinition := TD_SIGNED_LOCAL_VEHICLE_CLASS_DEF,
+								timeClassDefinition := TD_SIGNED_TIME_CLASS_DEF,
+								userClassDefinition := TD_SIGNED_USER_CLASS_DEF,
+								tollContextLayout := TD_TOLL_CONTEXT_LAYOUT,
+								chargeReportingEvents := TD_CHARGE_REPORTING_EVENTS,
+								chargeReportConfiguration := TD_SIGNED_CHARGE_REPORT_CONFIG,
+								tollContextVersion := TD_TOLL_CONTEXT_VERSION
 							}
 						}
 					}
@@ -1120,7 +1120,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			}			
 			
 			template (value) EfcContextDataADU m_aduEfcContextDataDsrcClosedContextTollContextOverview := 
-				m_aduEfcContextDataDsrcClosedContext(TD_TOLL_CONTEXT_OVERVIEW,{},omit,omit,omit,omit,omit,omit);
+				m_aduEfcContextDataDsrcClosedContext(TD_SIGNED_TOLL_CONTEXT_OVERVIEW,{},omit,omit,omit,omit,omit,omit);
 
 			template (value) EfcContextDataADU m_aduEfcContextDataDsrcClosedContextTollContextOverviewInvalidCCT 
 			modifies m_aduEfcContextDataDsrcClosedContextTollContextOverview := {

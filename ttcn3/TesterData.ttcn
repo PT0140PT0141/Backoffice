@@ -4,7 +4,7 @@
  * @version   $id$
  */
 
-module EfcInfoExchange_TesterData{
+module EfcInfoExchange_TesterData language "TTCN-3:2010 Advanced Parameterization"{
 	//TODO Prefix every modulepar with "TD" and add tags for semantic definitions in comments
 
 	//importing other modules
@@ -455,25 +455,19 @@ module EfcInfoExchange_TesterData{
 	}
 	
 	group EFCCONTEXTDATA {
-//TODO Currently not used - needed?
-//	 	modulepar  TariffClassDefinition tariffClassDefinitionTESTER_VALUE;
-//	 	modulepar  LocalVehicleClassDefinition localVehicleClassDefinitionTESTER_VALUE;
-//	 	modulepar  TimeClassDefinition timeClassDefinitionTESTER_VALUE;
-//	 	modulepar  UserClassDefinition userClassDefinitionTESTER_VALUE;
-//	 	modulepar  FeeDefinition TD_FEE_DEFINITION;
-	 	modulepar  Optionally_Signed<TollContextOverview> TD_TOLL_CONTEXT_OVERVIEW;
+	 	modulepar  Optionally_Signed<TollContextOverview> TD_SIGNED_TOLL_CONTEXT_OVERVIEW;
 	 	modulepar  Optionally_Signed<TollContextPartitionOverviews> TD_TOLL_CONTEXT_PARTITION_OVERVIEW;
 	 	modulepar  Optionally_Signed<TariffTables> TD_TARIFF_TABLE;
-	 	modulepar  Optionally_Signed<CurrencyConversionTable> currencyConversionTableTESTER_VALUE;
-	 	modulepar  Optionally_Signed<TariffClassDefinition> optSignedTariffClassDefinitionTESTER_VALUE;
-	 	modulepar  Optionally_Signed<LocalVehicleClassDefinition> optSignedLocalVehicleClassDefinitionTESTER_VALUE;
-	 	modulepar  Optionally_Signed<TimeClassDefinition> optSignedTimeClassDefinitionTESTER_VALUE;
-	 	modulepar  Optionally_Signed<UserClassDefinition> optSignedUserClassDefinitionTESTER_VALUE;
-	 	modulepar  Optionally_Signed<TollContextPartitionLayouts> tollContextLayoutTESTER_VALUE;
-	 	modulepar  Optionally_Signed<ChargeReportingEventss>  chargeReportingEventsTESTER_VALUE;
-	 	modulepar  Optionally_Signed<ChargeReportConfigurations> chargeReportConfigurationTESTER_VALUE;
-	 	modulepar  EfcDsrcApplication.Int1 tollContextVersionTESTER_VALUE;
-	 	modulepar  ClosedContextType closedContextTypeTESTER_VALUE := ClosedContextType_interconnectedClosedSysytem_;
+	 	modulepar  Optionally_Signed<CurrencyConversionTable> TD_CURRENCY_CONVERSION_TABLE;
+	 	modulepar  Optionally_Signed<TariffClassDefinition> TD_SIGNED_TARIFF_CLASS_DEF;
+	 	modulepar  Optionally_Signed<LocalVehicleClassDefinition> TD_SIGNED_LOCAL_VEHICLE_CLASS_DEF;
+	 	modulepar  Optionally_Signed<TimeClassDefinition> TD_SIGNED_TIME_CLASS_DEF;
+	 	modulepar  Optionally_Signed<UserClassDefinition> TD_SIGNED_USER_CLASS_DEF;
+	 	modulepar  Optionally_Signed<TollContextPartitionLayouts> TD_TOLL_CONTEXT_LAYOUT;
+	 	modulepar  Optionally_Signed<ChargeReportingEventss>  TD_CHARGE_REPORTING_EVENTS;
+	 	modulepar  Optionally_Signed<ChargeReportConfigurations> TD_SIGNED_CHARGE_REPORT_CONFIG;
+	 	modulepar  EfcDsrcApplication.Int1 TD_TOLL_CONTEXT_VERSION;
+	 	modulepar  ClosedContextType TD_CLOSED_CONTEXT_TYPE := ClosedContextType_interconnectedClosedSysytem_;
 
 		modulepar  octetstring basicVersionIdTESTER_VALUE:='00'O;
 		modulepar  UTF8String versionNameTESTER_VALUE:="TollContextOverviewVersion - one value";
