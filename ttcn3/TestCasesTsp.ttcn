@@ -1136,7 +1136,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Prepare and send the record of ADUs with 1 ADU
 				// Save the apdu to be sent to check later in the received NAck
 				v_aduRequestInvalid:=m_aduRequestListOfUsers;
-				v_aduRequestInvalid.userListRequest.userId := {}; // Set time to the future, ie invalid
+				v_aduRequestInvalid.userListRequest.userId := {}; // Set userid to null, ie invalid
 				
 				v_apduForSending := m_apduNoAuthInitTester({requestAdus:={v_aduRequestInvalid}});	
 					
@@ -1179,7 +1179,7 @@ module EfcInfoExchange_TestCasesTsp {
 				// Prepare and send the record of ADUs with 1 ADU
 				// Save the apdu to be sent to check later in the received NAck			
 				v_aduRequestInvalid:=m_aduRequestListOfUsers;
-				v_aduRequestInvalid.userListRequest.userIdRequestTime:=omit; // Set time to the future, ie invalid
+				v_aduRequestInvalid.userListRequest.userIdRequestTime:=omit; // Set time to null, ie invalid
 				
 				v_apduForSending := m_apduNoAuthInitTester({requestAdus:={v_aduRequestInvalid}});
 									
