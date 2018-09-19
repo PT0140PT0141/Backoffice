@@ -811,7 +811,7 @@ module EfcInfoExchange_TestCasesTsp {
 				};
 
 				// If IUT implements all possible details, the test cannot be run				
-				if (sizeof(PX_USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS) == 27) {
+				if (sizeof(PX_USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS) == 28) {
 					setverdict(inconc);
 					f_addLogEntry("All user details supported by IUT. Test cannot be executed");
 					stop;
