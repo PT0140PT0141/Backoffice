@@ -6,13 +6,13 @@
 module EfcInfoExchange_Interfaces language "TTCN-3:2010 Advanced Parameterization" {
 
 	//importing other modules
-	//import from EfcInfoExchange_LibUpperTester {type Iso16986Trigger, Iso16986TriggerRsp;};
-	//import from EfcInfoExchange_Pixits all;
+	import from EfcInfoExchange_LibUpperTester {type Iso16986Trigger, Iso16986TriggerRsp;};
+	import from EfcInfoExchange_Pixits all;
 	 	
 	//importing ASN.1 data automatically translated into TTCN-3	
 
 	//importing ASN.1 data manually translated into TTCN-3
-	//import from EfcInfoExchange_ParameterisedAsn1Data all;
+	import from EfcInfoExchange_ParameterisedAsn1Data all;
 
 	
     /**

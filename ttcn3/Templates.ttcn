@@ -39,7 +39,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 	import from EfcInfoExchange_ParameterisedAsn1Data all;  
     import from LibEfc_Common_Parameterised_Asn1_Data all;
 	import from EfcInfoExchange_Profile all;
-    //TODO Ulrik templates that are marked as fuzzy that are themselves called b other templates, there the fuzzy-mark must be propagated to the higher level template
+
     group ApduTemplates {
     	
     	/* Underlaying definitions for APCI and security*/
@@ -97,7 +97,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		} 
 		
 		// APCI for an Initiating APDU in which inResponseToApdu field is present
-		template (value) ApciFields m_apciInvalidWithInResponseToApduIdInitTester := {
+		template (value) @fuzzy ApciFields m_apciInvalidWithInResponseToApduIdInitTester := {
 			aidIdentifier := 1, // 12855 Protocol Version number 
 			apduOriginator := TD_APDU_ORIGINATOR_FOR_TESTER, 
 			informationSenderID := TD_INFORMATION_SENDER_TESTER, // Sender of this content 
@@ -146,12 +146,12 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		 * @desc Definition: "An APDU with the APCI-fields set to informationRecipientId = Tester identifier and apduDate = valid date, 
 		 * @desc optional fields on all levels not present" 
 		 */ 
-		template (value) InfoExchange m_apduNoAuthInitTester(in Adus p_adus) := m_apduNoAuth(
+		template (value) @fuzzy InfoExchange m_apduNoAuthInitTester(in Adus p_adus) := m_apduNoAuth(
 			m_apciInitTester, 
 			p_adus
 		);
 
-		template (value) InfoExchange m_apduAuthInitTester(in Adus p_adus) := m_apduAuth(
+		template (value) @fuzzy InfoExchange m_apduAuthInitTester(in Adus p_adus) := m_apduAuth(
 			m_apciInitTester, 
 			p_adus
 		);
@@ -163,12 +163,12 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 		 * @desc inResponseToApduId = the apduId of the APDU carrying the ADU that is being responded to and 
 		 * @desc apduDate = valid date, other optional fields on all levels not present" 
     	 */ 
-		template (value) InfoExchange m_apduNoAuthRespTester(in InfoExchange p_apduBeingRespondedTo, in Adus p_adus) := m_apduNoAuth(
+		template (value) @fuzzy InfoExchange m_apduNoAuthRespTester(in InfoExchange p_apduBeingRespondedTo, in Adus p_adus) := m_apduNoAuth(
 			m_apciRespTester(p_apduBeingRespondedTo), 
 			p_adus
 		);
 
-		template (value) InfoExchange m_apduAuthRespTester(in InfoExchange p_apduBeingRespondedTo, in Adus p_adus) := m_apduAuth(
+		template (value) @fuzzy InfoExchange m_apduAuthRespTester(in InfoExchange p_apduBeingRespondedTo, in Adus p_adus) := m_apduAuth(
 			m_apciRespTester(p_apduBeingRespondedTo), 
 			p_adus
 		);
@@ -208,11 +208,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			mw_apciRespIut(p_apduBeingRespondedTo), 
 			p_adus
 		);
-
-		template InfoExchange mw_apduRequest := mw_apduNoAuthInitIut(Adus:{requestAdus:=?});
-			
-		template InfoExchange mw_apduAuthRequest := mw_apduAuthInitIut(Adus:{requestAdus:=?});
-
+		
 		template (value) Adus mw_oneAckInAdusStruct(in template AckADU p_ackADU):={ackAdus:={p_ackADU}};
 		template (value) Adus m_oneAckInAdusStruct(in AckADU p_ackADU):=mw_oneAckInAdusStruct(p_ackADU);
 		
@@ -645,7 +641,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			type record of TrustObjectPurposes RecOfTrustObjectPurposes; 	
 
 			//note that an APDU containing TrustObjects is only allowed to carry ONE TrustObjectADU
-			template (value) InfoExchange m_apduTrustObjectResponse(
+			template (value) @fuzzy InfoExchange m_apduTrustObjectResponse(
 				in InfoExchange p_apduBeingRespondedTo, 
 				in RecOfTrustObjectPurposes p_recOfTrustObjectPurposes,
 				in TrustObjectCode p_trustObjectCode			
@@ -673,7 +669,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				trustObject := p_trustObjectCode
 			}
 
-			template (value) TrustObjectADU m_aduTrustObject(
+			template (value) @fuzzy TrustObjectADU m_aduTrustObject(
 				RecOfTrustObjectPurposes p_recOfTrustObjectPurposes,
 				TrustObjectCode p_trustObjectCode
 			):=mw_aduTrustObject(p_recOfTrustObjectPurposes,p_trustObjectCode);
@@ -857,7 +853,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 
 		group PAYMENTCLAIM {
 			
-			template InfoExchange m_apduPaymentClaim:=m_apduNoAuthInitTester(
+			template @fuzzy InfoExchange m_apduPaymentClaim:=m_apduNoAuthInitTester(
 				{paymentClaimADUs:={{
 					paymentClaimId := 1,
 					startDateTime := fx_getUtc(-31536000), //set the start date to one year ago
@@ -1208,11 +1204,6 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				chargeObjectValidityEnd:=omit					 						 	
 			} 
 			
-
-   			template InfoExchange mw_apduEfcContextData := m_apduNoAuth(mw_apci, Adus:{efcContextDataADUs:=?});
-			
-			template InfoExchange mw_apduAuthEfcContextData := mw_apduAuth(mw_apci, Adus:{efcContextDataADUs:=?});
-
 			template (value) LocalVehicleClassDefinition m_localVehicleClassDefinition:={
 				localVehicleClasses := {
 					{
@@ -1942,7 +1933,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			//		-- except with 1990 ï¿½ see below.
 			//	}	
 			type integer Int1 (0..255);	
-			template InfoExchange m_apduTollDeclarationsTen(in Int1 p_actionCode:=ActionCode_send_):=m_apduNoAuthInitTester({
+			template @fuzzy InfoExchange m_apduTollDeclarationsTen(in Int1 p_actionCode:=ActionCode_send_):=m_apduNoAuthInitTester({
 				tollDeclarationADUs:={
 					m_aduTollDeclarationToSendOneObe(
 						{TD_IDENTIFIER, 1},
