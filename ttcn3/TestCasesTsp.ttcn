@@ -3693,7 +3693,7 @@ module EfcInfoExchange_TestCasesTsp {
 				
 				//TODO extract magic numbers into Tester Data (possibly as constants)
 				v_adus.billingDetailsADUs[0]:= m_aduGnssBillingDetailsSpecialised(1,v_userId, v_receivedTollDeclarationId);
-				v_adus.billingDetailsADUs[0].billingDetailsId.issuerId:=TD_INVALID_INFORMATION_RECEPIENT_ID_FOR_IUT; //billingDetailsIssuerIdRejected
+				v_adus.billingDetailsADUs[0].billingDetailsId.issuerId:=PX_INVALID_INFORMATION_RECIPIENT_ID_FOR_IUT; //billingDetailsIssuerIdRejected
 
 				v_adus.billingDetailsADUs[1]:=m_aduGnssBillingDetailsSpecialised(2,	v_userId, v_receivedTollDeclarationId);
 				v_adus.billingDetailsADUs[1].tollContext:= TD_INVALID_INFORMATION_SENDER_TESTER; ///billingDetailsContextIdRejected

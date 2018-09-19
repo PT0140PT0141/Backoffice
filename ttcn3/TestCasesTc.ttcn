@@ -205,7 +205,7 @@ module EfcInfoExchange_TestCasesTc {
 				// Step 1:
 				// Prepare APCI with invalid or unknown informationRecipientID (= not Id of the Iut)
 				template (value) ApciFields m_apciInvalidRecipientIdInitTester
-					modifies m_apciInitTester:= {informationrecipientID:= TD_INVALID_INFORMATION_RECEPIENT_ID_FOR_IUT};
+					modifies m_apciInitTester:= {informationrecipientID:= PX_INVALID_INFORMATION_RECIPIENT_ID_FOR_IUT};
 							
                 // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for white list
                 // Including the invalid APCI 
