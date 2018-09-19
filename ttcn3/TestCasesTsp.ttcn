@@ -510,7 +510,6 @@ module EfcInfoExchange_TestCasesTsp {
 				}	
 					 							
 				//Prepare a faulty inResponseTo-field. The originator is set to the Tester value which CANNOT be correct.
-				//TODO Ulrik is it, or is it not allowed to put back a field that has previously been excluded?
 				template (value) ApciFields m_apciInvalidInRespTo modifies m_apciInitTester:= {
 					inResponseToApduId := {
 						TD_IDENTIFIER,
@@ -2139,7 +2138,9 @@ module EfcInfoExchange_TestCasesTsp {
            testcase TP_TSP_DSRC_EFCCONTEXTDATA_BI_01() runs on MainTestComponent system TestAdapter {
              
                   /**
-                  * @desc    TP_TSP_DSRC_EFCCONTEXTDATA_BI_01: Verify that the TSP correctly responds to an EFCContextDataADU containing only mandatory context data for a domain type = dsrcContext with a wrong data field 
+                  * @desc    TP_TSP_DSRC_EFCCONTEXTDATA_BI_01: Verify that the TSP correctly responds to an 
+                  * @desc    EFCContextDataADU containing only mandatory context data for a domain 
+                  * @desc    type = dsrcContext with a wrong data field 
                   * @remark  [16986:2016], Clause 7.2 and Table A.1/2 AND Table A.2/1 AND Table A.26/2
                   */
                   
@@ -2154,6 +2155,9 @@ module EfcInfoExchange_TestCasesTsp {
                  	// set tester tolling domain characteristics
                  	// PT140 TODO: which field to be set to a wrong value? Is this test doable?
 				var Iso17575_3AduBody v_contextData;
+				var EfcContextDataADU  v_adu:=m_aduDsrcEfcContextDataTestValues;
+				//TODO Ulrik find a solution for this
+				v_adu.domainType.dsrcContext.regimeContextData.iso175753ADU.tollContextOverview.unsigned_data.tollSchemeName:="This name shall be omitted"; //Provokes an error in the receiving party
 				v_apduForSending := m_apduNoAuthInitTester({efcContextDataADUs:={m_aduDsrcEfcContextDataTestValues}});                 
 				f_sendAndLogApdu(v_apduForSending);                 
                  // Step 2: Wait for negative Ack within DSRC.EFCCONTEXTDATA.TIME1

@@ -4,7 +4,6 @@
  * @version   $id$
  */
 module EfcInfoExchange_InteroperabilityStatement {
-	//TODO Prefix every modulepar with "IS" and add tags for semantic definitions in comments
      //Time value expressed in seconds
 	modulepar float IS_TIMEOUT_FOR_SETUP_OF_TRANSACTION := 10.0;
  

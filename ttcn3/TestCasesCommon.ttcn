@@ -35,7 +35,7 @@ module EfcInfoExchange_TestCasesCommon {
 	           
 		 	testcase TP_TRUSTOBJECTS_BV_01(in TransactionType p_transType, in Role p_role) runs on MainTestComponent system TestAdapter {
               /**
-              * @desc    TP_TSP_TRUSTOBJECTS_BV_01: Verify that the IUT correctly provides a TrustObjectADU without Tester request
+              * @desc    TP_TRUSTOBJECTS_BV_01: Verify that the IUT correctly provides a TrustObjectADU without Tester request
               * @remark  [16986:2016], Clause 6.6 and Table A.1/2
               */
 				//Declaration
@@ -92,12 +92,12 @@ module EfcInfoExchange_TestCasesCommon {
 					setverdict(pass);
 				}			 				
 				f_closeDownMtc();              
-           } // End of TP_TSP_TRUSTOBJECTS_BV_01
+           } // End of TP_TRUSTOBJECTS_BV_01
 
            testcase TP_TRUSTOBJECTS_BV_02(in TransactionType p_transType, in Role p_role) runs on MainTestComponent system TestAdapter {
              
               /**
-              * @desc    TP_TSP_TRUSTOBJECTS_BV_02: Verify that the IUT correctly responds to 
+              * @desc    TP_TRUSTOBJECTS_BV_02: Verify that the IUT correctly responds to 
               * @desc	 a TrustObjectADU received from a Tester without having issued a request 
               * @remark  [16986:2016], Clause 6.6 and Table A.1/2 
               */
@@ -131,12 +131,12 @@ module EfcInfoExchange_TestCasesCommon {
 					} // End of Alt statement 
 				f_closeDownMtc();                  
              
-           } // End of TP_TSP_TRUSTOBJECTS_BV_02
+           } // End of TP_TRUSTOBJECTS_BV_02
 
            testcase TP_TRUSTOBJECTS_BV_03(in TransactionType p_transType, in Role p_role) runs on MainTestComponent system TestAdapter {
              
               /**
-              * @desc    TP_TSP_TRUSTOBJECTS_BV_03: Verify that the IUT correctly provides a TrustObjectADU following a Tester request 
+              * @desc    TP_TRUSTOBJECTS_BV_03: Verify that the IUT correctly provides a TrustObjectADU following a Tester request 
               * @remark  [16986:2016], Clause 6.6 and Table A.1/2 
               */
 				// Initialisation
@@ -176,12 +176,12 @@ module EfcInfoExchange_TestCasesCommon {
 				setverdict(pass);
 				f_closeDownMtc(); 
 				 
-           } // End of TP_TSP_TRUSTOBJECTS_BV_03
+           } // End of TP_TRUSTOBJECTS_BV_03
 
            testcase TP_TRUSTOBJECTS_BV_04(in TransactionType p_transType, in Role p_role) runs on MainTestComponent system TestAdapter {
              
               /**
-              * @desc    TP_TSP_TRUSTOBJECTS_BV_04: Verify that the IUT correctly requests and responds to a TrustObjectADU
+              * @desc    TP_TRUSTOBJECTS_BV_04: Verify that the IUT correctly requests and responds to a TrustObjectADU
               * @remark  [16986:2016], Clause 6.6 and Table A.1/2 
               */
 				// Initialisation
@@ -232,14 +232,14 @@ module EfcInfoExchange_TestCasesCommon {
 								v_apduToSend := m_apduTrustObjectResponse(
 									v_apduReceived, 
 									v_requestedTrustObjectPurposesRecords,
-									{publicKey:=TD_SYMMETRIC_KEY}
+									{dsrcMasterKeys:=TD_SYMMETRIC_KEY}
 								);                 												
 							}
 							case (TrustObjectTypes_encryptedSymmetricKey_){
 								v_apduToSend := m_apduTrustObjectResponse(
 									v_apduReceived, 
 									v_requestedTrustObjectPurposesRecords,
-									{publicKey:=TD_SYMMETRIC_KEY_ENCRYPTED}
+									{dsrcMasterKeys:=TD_SYMMETRIC_KEY_ENCRYPTED}
 								);                 												
 							}
 							case else {
@@ -273,7 +273,7 @@ module EfcInfoExchange_TestCasesCommon {
 				f_closeDownMtc();                  
 
 
-           } // End of TP_TSP_TRUSTOBJECTS_BV_04
+           } // End of TP_TRUSTOBJECTS_BV_04
            
  		} // End of group Valid_Behaviour
          
@@ -282,7 +282,7 @@ module EfcInfoExchange_TestCasesCommon {
            testcase TP_TRUSTOBJECTS_BI_01(in TransactionType p_transType, in Role p_role) runs on MainTestComponent system TestAdapter {
              
               /**
-              * @desc    TP_TSP_TRUSTOBJECTS_BI_01: Verify that the IUT correctly responds to a TrustObjectADU received without having issued a request and containing incorrect ADU parameters
+              * @desc    TP_TRUSTOBJECTS_BI_01: Verify that the IUT correctly responds to a TrustObjectADU received without having issued a request and containing incorrect ADU parameters
               * @remark  [16986:2016], Clause 6.6 and Table A.1/2 
               */
 				// Initialisation
@@ -309,12 +309,12 @@ module EfcInfoExchange_TestCasesCommon {
 					} // End of Alt statement
 				f_closeDownMtc();                   
              
-           } // End of TP_TSP_TRUSTOBJECTS_BI_01
+           } // End of TP_TRUSTOBJECTS_BI_01
 
            testcase TP_TRUSTOBJECTS_BI_02(in TransactionType p_transType, in Role p_role) runs on MainTestComponent system TestAdapter {
              
               /**
-              * @desc    TP_TSP_TRUSTOBJECTS_BI_02: Verify that the IUT correctly responds to more 
+              * @desc    TP_TRUSTOBJECTS_BI_02: Verify that the IUT correctly responds to more 
               * @desc    than one correct Trust Object ADUs in the same APDU without having issued 
               * @desc    a request
               * @remark  [16986:2016], Clause 6.6 and Table A.1/2 
@@ -354,11 +354,11 @@ module EfcInfoExchange_TestCasesCommon {
 					} // End of Alt statement
 				f_closeDownMtc();                   
                           
-           } // End of TP_TSP_TRUSTOBJECTS_BI_02
+           } // End of TP_TRUSTOBJECTS_BI_02
 
            testcase TP_TRUSTOBJECTS_BI_03(in TransactionType p_transType, in Role p_role) runs on MainTestComponent system TestAdapter {
               /**
-              * @desc    TP_TSP_TRUSTOBJECTS_BI_03: Verify that the IUT correctly responds to a not supported Trust Object
+              * @desc    TP_TRUSTOBJECTS_BI_03: Verify that the IUT correctly responds to a not supported Trust Object
               * @remark  [16986:2016], Clause 6.6 and Table A.1/2 
               */
 				// Initialisation
@@ -389,11 +389,11 @@ module EfcInfoExchange_TestCasesCommon {
 					} // End of Alt statement
 				f_closeDownMtc();                   
                           
-           } // End of TP_TSP_TRUSTOBJECTS_BI_03
+           } // End of TP_TRUSTOBJECTS_BI_03
 
            testcase TP_TRUSTOBJECTS_BI_04(in TransactionType p_transType, in Role p_role) runs on MainTestComponent system TestAdapter {             
               /**
-              * @desc    TP_TSP_TRUSTOBJECTS_BI_04: Verify that the IUT correctly responds to a RequestADU sent earlier than allowed
+              * @desc    TP_TRUSTOBJECTS_BI_04: Verify that the IUT correctly responds to a RequestADU sent earlier than allowed
               * @remark  [16986:2016], Clause 6.6 and Table A.1/2 
               */
              
@@ -433,12 +433,12 @@ module EfcInfoExchange_TestCasesCommon {
 						}
 					} // End of Alt statement 
 				f_closeDownMtc();              
-           } // End of TP_TSP_TRUSTOBJECTS_BI_04
+           } // End of TP_TRUSTOBJECTS_BI_04
 
            testcase TP_TRUSTOBJECTS_BI_05(in TransactionType p_transType, in Role p_role) runs on MainTestComponent system TestAdapter {
 
               /**
-              * @desc    TP_TSP_TRUSTOBJECTS_BI_05: Verify that the IUT correctly responds to a TrustObjectADU sent earlier than allowed
+              * @desc    TP_TRUSTOBJECTS_BI_05: Verify that the IUT correctly responds to a TrustObjectADU sent earlier than allowed
               * @remark  [16986:2016], Clause 6.6 and Table A.1/2 
               */
 				// Initialisation
@@ -474,7 +474,7 @@ module EfcInfoExchange_TestCasesCommon {
 						}
 					} 
 				f_closeDownMtc();            
-           } // End of TP_TSP_TRUSTOBJECTS_BI_05
+           } // End of TP_TRUSTOBJECTS_BI_05
            		
         } // End of group Invalid_Behaviour
 	

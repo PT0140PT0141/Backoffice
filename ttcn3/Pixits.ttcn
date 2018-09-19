@@ -4,7 +4,7 @@
  * @version    $id$
  */
 module EfcInfoExchange_Pixits {
-	//TODO add tags for semantic definitions in comments
+	//TODO make semantic def ordering consistent with Tester Data
 
 	//importing other modules
 	import from EfcInfoExchange language "ASN.1:1997" all;

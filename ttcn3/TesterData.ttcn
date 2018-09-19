@@ -27,6 +27,7 @@ module EfcInfoExchange_TesterData language "TTCN-3:2010 Advanced Parameterizatio
  		
  		// TODO the provider values cannot be identical
  		// ANSWER for the TODO: Yes, they can be identical. The same identifier (of data type provider) is used
+ 		//ANSWER TO THE ANSWER, WE CANNOT HAVE VALIDS AND INVALIDS THE SAME
  		// in different data elements: APDU_ORIGINATOR, INFORMATION_SENDER, ... This is in reality
  		// in most cases one and the same entity
         modulepar EfcDsrcApplication.Provider TD_APDU_ORIGINATOR_FOR_TESTER:={'1010010000'B, 99};
