@@ -1542,7 +1542,7 @@ module EfcInfoExchange_TestCasesTsp {
 				v_apduForSending.infoExchangeContent.adus.paymentClaimADUs[0].paymentClaimAmount.paymentFeeAmount:=0;
 				v_apduForSending.infoExchangeContent.adus.paymentClaimADUs[0].actionCode:=ActionCode_revoke_;
 				v_apduForSending.infoExchangeContent.adus.paymentClaimADUs[0].paymentClaimStatus:=PaymentClaimStatus_amendedVersion_;
-                // Wait for the proper time before issuing a second PaymentClaim
+                // Wait for the proper time before starting the next transaction
                 f_wait(IS_PAYMENTCLAIM_TIMEA_MIN_TSP); 
 				f_sendAndLogApdu(v_apduForSending);                 
 				// Set timer
@@ -1596,7 +1596,7 @@ module EfcInfoExchange_TestCasesTsp {
 
 				v_apduForSending := m_apduPaymentClaim; // needs to be done again, m_apduPaymentClaim is a dynamic template
 				v_apduForSending.infoExchangeContent.adus.paymentClaimADUs[0].actionCode:=ActionCode_adjust_;
-                // Wait for the proper time before issuing a second PaymentClaim
+                // Wait for the proper time before starting the next transaction
                 f_wait(IS_PAYMENTCLAIM_TIMEA_MIN_TSP); 
 				f_sendAndLogApdu(v_apduForSending);                 
 				// Set timer
@@ -1745,7 +1745,7 @@ module EfcInfoExchange_TestCasesTsp {
 						}
 					} // End of Alt statement
 
-                // Wait for the proper time before issuing a second PaymentClaim
+                // Wait for the proper time before starting the next transaction
                 f_wait(IS_PAYMENTCLAIM_TIMEA_MIN_TSP); 
 
                 // Send PAYMENTCLAIM with ActionCode=SEND and referencing the performed BillingDetails transaction, and containing paymentClaimAmount exceeding maximum permitted
@@ -1769,7 +1769,7 @@ module EfcInfoExchange_TestCasesTsp {
 						}
 					} // End of Alt statement
 
-                // Wait for the proper time before issuing a second PaymentClaim
+                // Wait for the proper time before starting the next transaction
                 f_wait(IS_PAYMENTCLAIM_TIMEA_MIN_TSP); 
 
                 // Send PAYMENTCLAIM with ActionCode=SEND and referencing the  performed BillingDetails transaction, and containing paymentClaimStatus = 2
@@ -1792,7 +1792,7 @@ module EfcInfoExchange_TestCasesTsp {
 
                 // Send PAYMENTCLAIM with ActionCode=SEND and referencing the  performed BillingDetails transaction, and containing typeOfFee omitted
 
-                // Wait for the proper time before issuing a second PaymentClaim
+                // Wait for the proper time before starting the next transaction
                 f_wait(IS_PAYMENTCLAIM_TIMEA_MIN_TSP); 
 
 				v_apduForSending := m_apduPaymentClaim;
@@ -2391,6 +2391,9 @@ module EfcInfoExchange_TestCasesTsp {
                  	// billingDetailsNum = 1
                  	// paymentFeeAmount = Max acceptable amount in BillingDetailsADU
 
+                // Wait for the proper time before starting the next transaction
+                f_wait(IS_DSRC_BILLINGDETAILS_TIMEA_MIN_TSP); 
+
 				v_apduToSend :=m_apduNoAuthInitTester({billingDetailsADUs:={
 						modifies m_aduDsrcBillingDetails:= {
 							actionCode:=ActionCode_adjust_,
@@ -2440,6 +2443,10 @@ module EfcInfoExchange_TestCasesTsp {
                  // Step 1: Send one valid APDU containing one valid BillingDetailsADU with only mandatory fields and with
                  	// actionCode = revoke
                  	// billingDetailsNum = 1
+
+                // Wait for the proper time before starting the next transaction
+                f_wait(IS_DSRC_BILLINGDETAILS_TIMEA_MIN_TSP); 
+
 				v_apduForSending := m_apduNoAuthInitTester({billingDetailsADUs:={
 					modifies m_aduDsrcBillingDetails:= {
 					  	actionCode := ActionCode_revoke_
@@ -2478,7 +2485,7 @@ module EfcInfoExchange_TestCasesTsp {
 
                  //  Send one valid APDU containing one BillingDetailsADU numbered 3 with actionCode = SEND and only mandatory fields
 				v_apduForSending := m_apduNoAuthInitTester({billingDetailsADUs:={
-					modifies m_aduDsrcBillingDetails:= {
+					modifies m_aduDsrcBillingDetails(3):= {
 					  	billingDetailsAmount:=TD_BILLINGDETAILS_VALIDAMOUNT
 					}
 				}});                 
@@ -2554,6 +2561,9 @@ module EfcInfoExchange_TestCasesTsp {
 					}
 				}});
                  
+                // Wait for the proper time before starting the next transaction
+                f_wait(IS_DSRC_BILLINGDETAILS_TIMEA_MIN_TSP); 
+
 				f_sendAndLogApdu(v_apduForSending);
                  	
                  // Step 2: Wait for negative Ack within DSRC.BILLINGDETAILS.TIME1 with issue list present and the following issue codes:
@@ -2614,6 +2624,9 @@ module EfcInfoExchange_TestCasesTsp {
                  // Step 1: Send one valid APDU containing one valid BillingDetailsADU numbered 14 with only mandatory fields with the following values:
                  	// actionCode = adjust
 
+                // Wait for the proper time before starting the next transaction
+                f_wait(IS_DSRC_BILLINGDETAILS_TIMEA_MIN_TSP); 
+
 				// paymentFeeAmount = TD_PAYMENT_FEE_AMOUNT - 1
 				v_adu:=m_aduDsrcBillingDetails(14);
 
@@ -2668,6 +2681,9 @@ module EfcInfoExchange_TestCasesTsp {
 						f_logReceivedThenCheckAndStopTime(IS_DSRC_BILLINGDETAILS_TIME1_MIN_TSP); 
 						}
 					} // End of Alt statement
+
+                // Wait for the proper time before starting the next transaction
+                f_wait(IS_DSRC_BILLINGDETAILS_TIMEA_MIN_TSP); 
 
                  // Step 1: Send one valid APDU containing one valid BillingDetailsADU numbered 14 with only mandatory fields with the following values:
                  	// actionCode = revoke
