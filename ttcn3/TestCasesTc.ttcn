@@ -12,7 +12,6 @@ module EfcInfoExchange_TestCasesTc {
     * @see     Annex A (normative)  data type specifications
     */
     import from EfcAutonomousCharging language "ASN.1:1997" all;
-    import from EfcDsrcApplication language "ASN.1:1997" all;
     import from EfcInfoExchange language "ASN.1:1997" all;
     
     /**
@@ -3763,7 +3762,7 @@ module EfcInfoExchange_TestCasesTc {
                 *			one or more fields in the toll declarations and/or underlying data elements are invalid
                 * @remark  [16986:2016], Clause 8.1 and Table A.1/1 AND Table A.2/2 AND Table A.52/3
                 */
- 
+				 
   				// Initialisation
                  
 				// Start by setting test success
@@ -3781,6 +3780,11 @@ module EfcInfoExchange_TestCasesTc {
                 // within GNSS.TOLLDECLARARTION.TIME1             
                 // use template for NAck_Apdus
                 // if not received or received outside specification or time constraints set test fail
+
+
+				//TODO Jan replace this dummy-code with real test
+				setverdict(pass); 
+
 
 			} // End testcase TP_TC_GNSS_TOLLDECLARATION_BI_09
 			

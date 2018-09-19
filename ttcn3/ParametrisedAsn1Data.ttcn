@@ -1,12 +1,9 @@
 module EfcInfoExchange_ParameterisedAsn1Data language "TTCN-3:2010 Advanced Parameterization" {
 
 	import from EfcInfoExchange language "ASN.1:1997" all;
-	import from EfcDsrcGeneric language "ASN.1:1997" all;
 	import from EfcDsrcApplication language "ASN.1:1997" all;
 	import from EfcAutonomousCharging language "ASN.1:1997" all;
 	import from EfcAutonomousContextData language "ASN.1:1997" all;
-	import from EfcLac language "ASN.1:1997" all;
-	import from EfcCcc language "ASN.1:1997" all;
 	import from LibEfc_Common_Parameterised_Asn1_Data all;
 
 //	EfcContextDataADU::= 	SEQUENCE { 

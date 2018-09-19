@@ -1411,7 +1411,7 @@ module EfcInfoExchange_TestCasesTsp {
 					}
 				} // End of Alt statement
 				
-				//TODO PT140 checl in whole project that whenever we send multiple APDUs we actually wait the required time (usually TIMEA)
+				//TODO PT140 check in whole project that whenever we use more than one transaction in a test case we actually wait the required time (usually TIMEA)
 				f_wait(IS_PAYMENTCLAIM_TIMEA_MIN_TSP);				
                 // Step 1: Second interaction
                 // Note: no Billing Details sent to be referred by the following Payment Claim

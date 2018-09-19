@@ -4,15 +4,12 @@
  */
 module EfcInfoExchange_TestExecution { 
 	
-	//TODO PT140 check that all test cases are invoked
-
 	//TODO PT140 peer review that the trust objects test cases are parametrised correctly
 	
     import from EfcInfoExchange_TestCasesTsp all;
 	import from EfcInfoExchange_TestCasesTc all;
     import from EfcInfoExchange_TestCasesCommon all;
-    import from EfcInfoExchange_Ics all;
-    import from EfcInfoExchange_Functions all;
+
     control {
         /**
          * @desc    Group of the TCs based on TPs described in clause A_2_1 BV test purposes: Verify the usage of communication services

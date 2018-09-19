@@ -16,10 +16,8 @@ module EfcInfoExchange_TesterData language "TTCN-3:2010 Advanced Parameterizatio
 	import from EfcDsrcApplication language "ASN.1:1997" all;
 	import from EfcAutonomousCharging language "ASN.1:1997" all;
 	import from EfcAutonomousContextData language "ASN.1:1997" all;
-	import from AVIAEINumberingAndDataStructures language "ASN.1:1997" all;
 	
 	//importing ASN.1 data manually translated into TTCN-3
-	import from EfcInfoExchange_ParameterisedAsn1Data all;
 	import from LibEfc_Common_Parameterised_Asn1_Data all;
 	
 	group CommonTesterData {

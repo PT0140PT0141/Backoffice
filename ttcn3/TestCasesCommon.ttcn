@@ -3,15 +3,12 @@ module EfcInfoExchange_TestCasesCommon {
      * @desc    [12855:2015]: 
      * @see     Annex A (normative)  data type specifications
      */
-    import from EfcAutonomousCharging language "ASN.1:1997" all;
-    import from EfcDsrcApplication language "ASN.1:1997" all;
     import from EfcInfoExchange language "ASN.1:1997" all;
     
     /**
      * @desc    TTCN-3 does not support ASN.1 parameterization (ETSI ES 201 873-7 V4.5.1 Clause 10)
      *          Common_Parameterised_Asn1_Data TTCN-3 module is a workaround
      */
-    import from LibEfc_Common_Parameterised_Asn1_Data all;
 	import from EfcInfoExchange_ParameterisedAsn1Data all;
     import from EfcInfoExchange_Interfaces all;
 	import from EfcInfoExchange_InteroperabilityStatement all;
