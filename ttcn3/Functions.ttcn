@@ -49,7 +49,7 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
             } 
             
 			[] t_transaction.timeout {
-                f_addLogEntry("Running the entire transaction took longer than timeout set in module parameter PX_INITIALISE_TRANSACTION_TIMEOUT");
+                f_addLogEntry("Running the entire transaction took longer than timeout set in module parameter PX_TRANSACTION_TIMEOUT");
                 setverdict(inconc);
                 stop;
             } 
@@ -76,8 +76,9 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
             // Activate UpperTester altstep
             activate(a_upperTester());
             
-            //Start transaction timer for cheking timeouts
-            t_transaction.start;
+            //Start transaction timer for checking timeouts for entire transaction 
+            //NOTE: the timer t_step is used for timing between messages in the transaction
+            t_transaction.start(PX_TRANSACTION_TIMEOUT);
             
             f_addLogEntry("Initialisations performed. Test case starting.");
 			
@@ -193,6 +194,16 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
     		while (t_waitTime.running) {
     			// empty loop = do nothing, just wait
     		}
+    	}
+    	
+    	function f_waitTimeA(in float p_minTimeSinceBeginPrevTransaction) runs on MainTestComponent{
+    		var float v_elapsedTime:=t_transaction.read;
+    		t_transaction.stop;
+    		if (v_elapsedTime<p_minTimeSinceBeginPrevTransaction){
+    			f_wait(p_minTimeSinceBeginPrevTransaction-v_elapsedTime);
+    		}
+    		
+    		t_transaction.start(PX_TRANSACTION_TIMEOUT);
     	}
     	
     	// Function which returns the corresponding userDetailsParameter with tester data value in response to the

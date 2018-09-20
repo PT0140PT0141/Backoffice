@@ -27,9 +27,9 @@ module EfcInfoExchange_Pixits {
 	     // [SEMANTIC DEFINITION] Name of a valid Toll Context managed by the Toll Charger 
 	modulepar UTF8String PX_TOLL_CONTEXT_NAME_IUT;
 	
- 	     // [SEMANTIC DEFINITION] Maximum time a transaction should take to run
+ 	     // [SEMANTIC DEFINITION] Maximum time a transaction should take to run (in seconds)
  	     // If exceeded, test result set to inconclusive
-    modulepar float PX_INITIALISE_TRANSACTION_TIMEOUT := 10.0;
+    modulepar float PX_TRANSACTION_TIMEOUT := 10.0;
     
  	     // [SEMANTIC DEFINITION] Maximum allowed fee in a BillingDetails ADU
     modulepar ExtendedPaymentAmount PX_MAX_ACCEPTED_BILLINGDETAILS_AMOUNT;

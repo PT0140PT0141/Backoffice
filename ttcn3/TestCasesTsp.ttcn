@@ -1410,8 +1410,7 @@ module EfcInfoExchange_TestCasesTsp {
 					}
 				} // End of Alt statement
 				
-				//TODO PT140 check in whole project that whenever we use more than one transaction in a test case we actually wait the required time (usually TIMEA)
-				f_wait(IS_PAYMENTCLAIM_TIMEA_MIN_TSP);				
+				f_waitTimeA(IS_PAYMENTCLAIM_TIMEA_MIN_TSP);				
                 // Step 1: Second interaction
                 // Note: no Billing Details sent to be referred by the following Payment Claim
                 // Send PAYMENTCLAIM with ActionCode=SEND and changing:
@@ -1543,7 +1542,7 @@ module EfcInfoExchange_TestCasesTsp {
 				v_apduForSending.infoExchangeContent.adus.paymentClaimADUs[0].actionCode:=ActionCode_revoke_;
 				v_apduForSending.infoExchangeContent.adus.paymentClaimADUs[0].paymentClaimStatus:=PaymentClaimStatus_amendedVersion_;
                 // Wait for the proper time before starting the next transaction
-                f_wait(IS_PAYMENTCLAIM_TIMEA_MIN_TSP); 
+				f_waitTimeA(IS_PAYMENTCLAIM_TIMEA_MIN_TSP); 
 				f_sendAndLogApdu(v_apduForSending);                 
 				// Set timer
                  t_step.start(IS_PAYMENTCLAIM_TIME1_MAX_TSP);                 
@@ -1597,7 +1596,7 @@ module EfcInfoExchange_TestCasesTsp {
 				v_apduForSending := m_apduPaymentClaim; // needs to be done again, m_apduPaymentClaim is a dynamic template
 				v_apduForSending.infoExchangeContent.adus.paymentClaimADUs[0].actionCode:=ActionCode_adjust_;
                 // Wait for the proper time before starting the next transaction
-                f_wait(IS_PAYMENTCLAIM_TIMEA_MIN_TSP); 
+				f_waitTimeA(IS_PAYMENTCLAIM_TIMEA_MIN_TSP); 
 				f_sendAndLogApdu(v_apduForSending);                 
 				// Set timer
                  t_step.start(IS_PAYMENTCLAIM_TIME1_MAX_TSP);                 
@@ -1724,7 +1723,7 @@ module EfcInfoExchange_TestCasesTsp {
 					} // End of Alt statement
 
                 // Wait for the proper time before issuing a  PaymentClaim
-                f_wait(IS_PAYMENTCLAIM_TIMEA_MIN_TSP); 
+				f_waitTimeA(IS_PAYMENTCLAIM_TIMEA_MIN_TSP); 
 
                 // Send PAYMENTCLAIM with ActionCode=SEND and referencing the  performed BillingDetails transaction, and containing userId unknown to the IUT
 
@@ -1746,7 +1745,7 @@ module EfcInfoExchange_TestCasesTsp {
 					} // End of Alt statement
 
                 // Wait for the proper time before starting the next transaction
-                f_wait(IS_PAYMENTCLAIM_TIMEA_MIN_TSP); 
+				f_waitTimeA(IS_PAYMENTCLAIM_TIMEA_MIN_TSP); 
 
                 // Send PAYMENTCLAIM with ActionCode=SEND and referencing the performed BillingDetails transaction, and containing paymentClaimAmount exceeding maximum permitted
 
@@ -1770,7 +1769,7 @@ module EfcInfoExchange_TestCasesTsp {
 					} // End of Alt statement
 
                 // Wait for the proper time before starting the next transaction
-                f_wait(IS_PAYMENTCLAIM_TIMEA_MIN_TSP); 
+				f_waitTimeA(IS_PAYMENTCLAIM_TIMEA_MIN_TSP); 
 
                 // Send PAYMENTCLAIM with ActionCode=SEND and referencing the  performed BillingDetails transaction, and containing paymentClaimStatus = 2
 				v_apduForSending := m_apduPaymentClaim;
@@ -1793,7 +1792,7 @@ module EfcInfoExchange_TestCasesTsp {
                 // Send PAYMENTCLAIM with ActionCode=SEND and referencing the  performed BillingDetails transaction, and containing typeOfFee omitted
 
                 // Wait for the proper time before starting the next transaction
-                f_wait(IS_PAYMENTCLAIM_TIMEA_MIN_TSP); 
+				f_waitTimeA(IS_PAYMENTCLAIM_TIMEA_MIN_TSP); 
 
 				v_apduForSending := m_apduPaymentClaim;
 				v_apduForSending.infoExchangeContent.adus.paymentClaimADUs[0].typeOfFee := 42; //this type of fee is not defined, reserved for future CEN and ISO use and shall be rejected
@@ -2392,7 +2391,7 @@ module EfcInfoExchange_TestCasesTsp {
                  	// paymentFeeAmount = Max acceptable amount in BillingDetailsADU
 
                 // Wait for the proper time before starting the next transaction
-                f_wait(IS_DSRC_BILLINGDETAILS_TIMEA_MIN_TSP); 
+				f_waitTimeA(IS_DSRC_BILLINGDETAILS_TIMEA_MIN_TSP); 
 
 				v_apduToSend :=m_apduNoAuthInitTester({billingDetailsADUs:={
 						modifies m_aduDsrcBillingDetails:= {
@@ -2445,7 +2444,7 @@ module EfcInfoExchange_TestCasesTsp {
                  	// billingDetailsNum = 1
 
                 // Wait for the proper time before starting the next transaction
-                f_wait(IS_DSRC_BILLINGDETAILS_TIMEA_MIN_TSP); 
+				f_waitTimeA(IS_DSRC_BILLINGDETAILS_TIMEA_MIN_TSP); 
 
 				v_apduForSending := m_apduNoAuthInitTester({billingDetailsADUs:={
 					modifies m_aduDsrcBillingDetails:= {
@@ -2562,7 +2561,7 @@ module EfcInfoExchange_TestCasesTsp {
 				}});
                  
                 // Wait for the proper time before starting the next transaction
-                f_wait(IS_DSRC_BILLINGDETAILS_TIMEA_MIN_TSP); 
+				f_waitTimeA(IS_DSRC_BILLINGDETAILS_TIMEA_MIN_TSP); 
 
 				f_sendAndLogApdu(v_apduForSending);
                  	
@@ -2625,7 +2624,7 @@ module EfcInfoExchange_TestCasesTsp {
                  	// actionCode = adjust
 
                 // Wait for the proper time before starting the next transaction
-                f_wait(IS_DSRC_BILLINGDETAILS_TIMEA_MIN_TSP); 
+				f_waitTimeA(IS_DSRC_BILLINGDETAILS_TIMEA_MIN_TSP); 
 
 				// paymentFeeAmount = TD_PAYMENT_FEE_AMOUNT - 1
 				v_adu:=m_aduDsrcBillingDetails(14);
@@ -2683,7 +2682,7 @@ module EfcInfoExchange_TestCasesTsp {
 					} // End of Alt statement
 
                 // Wait for the proper time before starting the next transaction
-                f_wait(IS_DSRC_BILLINGDETAILS_TIMEA_MIN_TSP); 
+				f_waitTimeA(IS_DSRC_BILLINGDETAILS_TIMEA_MIN_TSP); 
 
                  // Step 1: Send one valid APDU containing one valid BillingDetailsADU numbered 14 with only mandatory fields with the following values:
                  	// actionCode = revoke
@@ -2998,7 +2997,7 @@ module EfcInfoExchange_TestCasesTsp {
                   /**
                   * @desc    TP_TSP_DSRC_REPORTABNORMALOBE_BI_07: Verify that the TSP correctly responds to 
                   * @desc    an APDU containing ReportAbnormalOBEADU with the abnormalOBEReason field being an 
-                  * @dec     empty list
+                  * @desc    empty list
                   * @remark  [16986:2016], Clause 7.4 and Table A.1/2 AND Table A.2/1 AND Table A.26/4
                   */
                  // Initialisation 
@@ -3146,7 +3145,7 @@ module EfcInfoExchange_TestCasesTsp {
 				alt {
 					[] mtcPort.receive(mw_apduToBeReceived) -> value v_apduReceived {
 						// Log what we received
-						f_logReceivedThenCheckAndStopTime(IS_GNSS_TOLLDECLARATIONS_TIMEA_MIN_TSP); 
+						f_logReceivedThenCheckAndStopTime(c_veryLongTime); 
 					
 						var TollDeclarationId v_idReceived1 := v_apduReceived.infoExchangeContent.adus.tollDeclarationADUs[1].tollDeclarationId;
 						var TollDeclarationId v_idReceived2 := v_apduReceived.infoExchangeContent.adus.tollDeclarationADUs[2].tollDeclarationId;
@@ -3607,7 +3606,9 @@ module EfcInfoExchange_TestCasesTsp {
                  	// value of the fee being in an acceptable range
 
                 // Wait for the proper time before starting the next transaction
-                f_wait(IS_GNSS_BILLINGDETAILS_TC_TIMEA_MIN_TSP); 
+                t_transaction.stop;
+                f_wait(IS_GNSS_BILLINGDETAILS_TC_TIME0_MIN_TSP);
+                t_transaction.start(PX_TRANSACTION_TIMEOUT);
 
 				v_apduForSending := m_apduNoAuthInitTester({billingDetailsADUs:={
 					m_aduGnssBillingDetails(
@@ -3685,7 +3686,9 @@ module EfcInfoExchange_TestCasesTsp {
 				v_apduForSending := m_apduNoAuthInitTester({billingDetailsADUs:={v_aduBillingDetails}});                 
 
                 // Wait for the proper time before starting the next transaction
-                f_wait(IS_GNSS_BILLINGDETAILS_TC_TIMEA_MIN_TSP); 
+                t_transaction.stop;
+                f_wait(IS_GNSS_BILLINGDETAILS_TC_TIME0_MIN_TSP);
+                t_transaction.start(PX_TRANSACTION_TIMEOUT);
 
 				f_sendAndLogApdu(v_apduForSending);
 
