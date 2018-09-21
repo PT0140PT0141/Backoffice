@@ -5,7 +5,7 @@
  */
 
 module EfcInfoExchange_TesterData language "TTCN-3:2010 Advanced Parameterization"{
-	//TODO Prefix every modulepar with "TD" and add tags for semantic definitions in comments
+	//TODO Add default values and tags for semantic definitions in comments
 
 	//importing other modules
 	import from EfcInfoExchange_Functions all;
@@ -92,10 +92,10 @@ module EfcInfoExchange_TesterData language "TTCN-3:2010 Advanced Parameterizatio
         		alphabetIndicator:=latinAlphabetNo1, // alphabeth indicator = latin(1)
         		licencePlateNumber:= '4f4344353638'O // plate number = "OCD568"
         	};
-            // [SEMANTIC DEFINITION] The license plate numbers applied by the tester in test cases        
+            //[SEMANTIC DEFINITION] The license plate numbers applied by the tester in test cases        
 
 		modulepar EfcInfoExchange.Int4 TD_MANUFACTURER_ID_1 := 97, TD_MANUFACTURER_ID_2 := 98, TD_MANUFACTURER_ID_3 := 99;
-			// [SEMANTIC DEFINITION] Manufacturer ids used by the tester e.g. in contract issuer data 
+			//[SEMANTIC DEFINITION] Manufacturer ids used by the tester e.g. in contract issuer data 
 
 
 		modulepar EfcAutonomousCharging.ObeId TD_OBE_ID_1 := {
