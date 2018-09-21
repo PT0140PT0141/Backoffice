@@ -24,6 +24,9 @@ module EfcInfoExchange_Pixits {
 	     // [SEMANTIC DEFINITION] Identifier of a valid Toll Context managed by the Toll Charger 
 	modulepar Provider PX_TOLL_CONTEXT_ID_IUT;
 
+	     // [SEMANTIC DEFINITION] Identifier of Toll Context that is not managed by the Toll Charger 
+	modulepar Provider PX_TOLL_CONTEXT_ID_NOT_EXISTING
+
 	     // [SEMANTIC DEFINITION] Name of a valid Toll Context managed by the Toll Charger 
 	modulepar UTF8String PX_TOLL_CONTEXT_NAME_IUT;
 	
