@@ -3775,7 +3775,7 @@ module EfcInfoExchange_TestCasesTc {
                 				
                 // Prepare the above defined Apdu
                 
-                const TollDeclarationADU v_tollDeclarationAduNotIutDeclared;
+                var TollDeclarationADU v_tollDeclarationAduNotIutDeclared;
 
 				v_tollDeclarationAduNotIutDeclared:={
 					 tollDeclarationId:={TD_IDENTIFIER, 2},
@@ -3806,7 +3806,7 @@ module EfcInfoExchange_TestCasesTc {
 					 				// and therefore deemed not declared and supported by the IuT
 					 				dist:=2374, // distance = 2374 units
 					 				disUnit:= DisUnit_metres_ // units are defined as meters
-					 				}
+					 			},
 					 			listOfCccAttributes:=omit  // shall not be used according to IAP
 					 		}
 					 	}
