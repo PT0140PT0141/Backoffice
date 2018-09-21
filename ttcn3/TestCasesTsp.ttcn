@@ -694,7 +694,7 @@ module EfcInfoExchange_TestCasesTsp {
 
 				// Check if there are parameters that are privacy bound
 				// If not, exit test
-				if (sizeof (TD_PRIVACYBOUND_USER_PARAM_REQS) == 0) {
+				if (sizeof (PX_PRIVACYBOUND_USER_PARAM_REQS) == 0) {
 					setverdict(inconc);
 					f_addLogEntry("Privacy bound parameters missing. Test cannot be executed");
 					stop;
@@ -702,7 +702,7 @@ module EfcInfoExchange_TestCasesTsp {
                 
 				// Step1: send RequestADU
 				
-				v_apduForSending := m_apduNoAuthInitTester({requestAdus:={m_aduRequestProvideUserDetails(TD_PRIVACYBOUND_USER_PARAM_REQS)}});
+				v_apduForSending := m_apduNoAuthInitTester({requestAdus:={m_aduRequestProvideUserDetails(PX_PRIVACYBOUND_USER_PARAM_REQS)}});
 				f_sendAndLogApdu(v_apduForSending);   	  
                                 
 				//Set timer

@@ -1811,6 +1811,18 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				additionalUsageInformation := *
 			};
 
+			template (value) UsageStatement m_usageStatement(
+				in EfcDsrcApplication.Int2 p_usageStatementId,
+				in AggregatedSingleTariffClassSession p_aggregatedSingleTariffClassSession,
+			) modifies mw_usageStatement:={
+				usageStatementId := p_usageStatementId,
+				tollContext := PX_TOLL_CONTEXT_ID_IUT,
+				aggregatedSingleTariffClassSession := p_aggregatedSingleTariffClassSession,
+				listOfChargeObjects := PX_LIST_OF_CHARGE_OBJECTS,
+				listOfRawUsageData := PX_LIST_OF_RAW_USAGE_DATA,
+				additionalUsageInformation := omit
+			}; 
+
 			// Relevant data types below, for easy reference		
 			//
 			//		type record TollDeclarationId {
@@ -1937,52 +1949,52 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				tollDeclarationADUs:={
 					m_aduTollDeclarationToSendOneObe(
 						{TD_IDENTIFIER, 1},
-						TD_USAGE_STATEMENT_VALID_1,
+						c_usageStatement_1,
 						1,
 						p_actionCode),
 					m_aduTollDeclarationToSendOneObe(
 						{TD_IDENTIFIER, 2},
-						TD_USAGE_STATEMENT_VALID_2,
+						c_usageStatement_2,
 						2,
 						p_actionCode),
 					m_aduTollDeclarationToSendOneObe(
 						{TD_IDENTIFIER, 3},
-						TD_USAGE_STATEMENT_VALID_3,
+						c_usageStatement_3,
 						3,
 						p_actionCode),
 					m_aduTollDeclarationToSendOneObe(
 						{TD_IDENTIFIER, 4},
-						TD_USAGE_STATEMENT_VALID_4,
+						c_usageStatement_4,
 						4,
 						p_actionCode),
 					m_aduTollDeclarationToSendOneObe(
 						{TD_IDENTIFIER, 5},
-						TD_USAGE_STATEMENT_VALID_5,
+						c_usageStatement_5,
 						5,
 						p_actionCode),
 					m_aduTollDeclarationToSendOneObe(
 						{TD_IDENTIFIER, 6},
-						TD_USAGE_STATEMENT_VALID_6,
+						c_usageStatement_6,
 						6,
 						p_actionCode),
 					m_aduTollDeclarationToSendOneObe(
 						{TD_IDENTIFIER, 7},
-						TD_USAGE_STATEMENT_VALID_7,
+						c_usageStatement_7,
 						7,
 						p_actionCode),
 					m_aduTollDeclarationToSendOneObe(
 						{TD_IDENTIFIER, 8},
-						TD_USAGE_STATEMENT_VALID_8,
+						c_usageStatement_8,
 						8,
 						p_actionCode),
 					m_aduTollDeclarationToSendOneObe(
 						{TD_IDENTIFIER, 9},
-						TD_USAGE_STATEMENT_VALID_9,
+						c_usageStatement_9,
 						9,
 						p_actionCode),
 					m_aduTollDeclarationToSendOneObe(
 						{TD_IDENTIFIER, 10},
-						TD_USAGE_STATEMENT_VALID_10,
+						c_usageStatement_10,
 						10,
 						p_actionCode)
 				}

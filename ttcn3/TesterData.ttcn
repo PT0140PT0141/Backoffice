@@ -30,6 +30,8 @@ module EfcInfoExchange_TesterData language "TTCN-3:2010 Advanced Parameterizatio
  		//ANSWER TO THE ANSWER of the TODO, WE CANNOT HAVE VALIDS AND INVALIDS THE SAME
  		// in different data elements: APDU_ORIGINATOR, INFORMATION_SENDER, ... This is in reality
  		// in most cases one and the same entity
+ 		// FINAL ANSWER: O.k. But then the TODO was not located at the correct location. Should have been further down.
+ 		// Changed the values for in invalid cases now.
         modulepar EfcDsrcApplication.Provider TD_APDU_ORIGINATOR_FOR_TESTER:={'1010010000'B, 99};
             // [SEMANTIC DEFINITION] The originator id of the tester
             // that is used in the APCI field apdu originator. Same syntax as the provider identifier. 
@@ -38,11 +40,11 @@ module EfcInfoExchange_TesterData language "TTCN-3:2010 Advanced Parameterizatio
             // [SEMANTIC DEFINITION] The sender id of tester
             // that is used in the APCI field sender id. Same syntax as the provider identifier.
  
-        modulepar EfcDsrcApplication.Provider TD_INVALID_APDU_ORIGINATOR_TESTER:={'1010010000'B, 99};
+        modulepar EfcDsrcApplication.Provider TD_INVALID_APDU_ORIGINATOR_TESTER:={'1010010000'B, 88};
             // [SEMANTIC DEFINITION] The originator id of the tester used
             // in an invalid base test case. Shall be different from the correct originator id of the tester 
  
-        modulepar EfcDsrcApplication.Provider TD_INVALID_INFORMATION_SENDER_TESTER:={'1010010000'B, 99};
+        modulepar EfcDsrcApplication.Provider TD_INVALID_INFORMATION_SENDER_TESTER:={'1010010000'B, 88};
             // [SEMANTIC DEFINITION] The sender id of the tester used 
             // in an invalid base test case. Shall be different from the correct sender id of the tester
  
@@ -96,7 +98,6 @@ module EfcInfoExchange_TesterData language "TTCN-3:2010 Advanced Parameterizatio
 
 		modulepar EfcInfoExchange.Int4 TD_MANUFACTURER_ID_1 := 97, TD_MANUFACTURER_ID_2 := 98, TD_MANUFACTURER_ID_3 := 99;
 			//[SEMANTIC DEFINITION] Manufacturer ids used by the tester e.g. in contract issuer data 
-
 
 		modulepar EfcAutonomousCharging.ObeId TD_OBE_ID_1 := {
 				manufacturerId := TD_MANUFACTURER_ID_1,
@@ -285,8 +286,10 @@ module EfcInfoExchange_TesterData language "TTCN-3:2010 Advanced Parameterizatio
 
 	    modulepar IntMax10000 TD_BILLINGDETAILS_VAT:=0; 
 			// [SEMANTIC DEFINITION]The VAT rate expressed in 0.01%
+			
 		modulepar ExtendedPaymentAmount TD_BILLINGDETAILS_VALIDAMOUNT := {TD_PAYMENT_FEE_AMOUNT,TD_BILLINGDETAILS_PAYUNIT,TD_BILLINGDETAILS_VAT};
 			// [SEMANTIC DEFINITION] A complete valid payment amount for Billing Details
+			
 		modulepar integer TD_BILLING_DETAILS_NUM_1:=1, TD_BILLING_DETAILS_NUM_2:=2;
 			// [SEMATIC DEFINITION] Identifer that together with the issuerId forms a unique BillingDetailsId 		
 
@@ -295,6 +298,18 @@ module EfcInfoExchange_TesterData language "TTCN-3:2010 Advanced Parameterizatio
 
 		modulepar EfcAutonomousContextData.Int4 TD_CHARGE_OBJECT_DESIGNATION_NON_EXISTING:=9999;
 			// [SEMATIC DEFINITION] A non existing charge object designation for provoking errors in BILLINGDETAILS transaction when reporting sectioned roads	
+
+		modulepar Provider TD_TOLL_CONTEXT:={'1010010000'B, 99}; // Default is Sweden.99 = 'A40053'H
+            // [SEMANTIC DEFINITION] The identifier of the toll context which is used in dsrcBillingDetails
+            // in case the tester is the toll charger             
+		
+		modulepar Provider TD_TOLL_CONTEXT_NON_EXISTING:={'1010010000'B, 88}; // Default is Sweden.88
+            // [SEMANTIC DEFINITION] The identifier of the non existing toll context which is used in dsrcBillingDetails
+            // in case the tester is the toll charger in invalid test cases            
+	
+		modulepar UTF8String TD_TOLL_CONTEXT_NAME_NON_EXISTING:="The non-existing toll context name";
+            // [SEMANTIC DEFINITION] The non-existing name of a toll context which is used in dsrcBillingDetails
+            // in case the tester is the toll charger in invalid test cases            
 		
 		modulepar UTF8String TD_TOLL_AREA_NAME:="The toll area name";
 			// [SEMANTIC DEFINITION] According to ISO 17575-3		
@@ -464,48 +479,115 @@ module EfcInfoExchange_TesterData language "TTCN-3:2010 Advanced Parameterizatio
 	 	modulepar  Optionally_Signed<TollContextPartitionLayouts> TD_TOLL_CONTEXT_LAYOUT;
 	 	modulepar  Optionally_Signed<ChargeReportingEventss>  TD_CHARGE_REPORTING_EVENTS;
 	 	modulepar  Optionally_Signed<ChargeReportConfigurations> TD_SIGNED_CHARGE_REPORT_CONFIG;
-	 	modulepar  EfcDsrcApplication.Int1 TD_TOLL_CONTEXT_VERSION;
-	 	modulepar  ClosedContextType TD_CLOSED_CONTEXT_TYPE := ClosedContextType_interconnectedClosedSysytem_;
 
-		modulepar  octetstring TD_BASIC_VERSION_ID:='00'O;
-//TODO This is not used. Delete?
-//	 	modulepar  EfcAutonomousContextData.TollContextOverview closedTollContextOverviewTESTER_VALUE := {
-//	 	  tollContext := TD_IDENTIFIER,
-//	 	  tollContextPartitions := {1}, // One partition
-//	 	  tollSchemeName := omit,
-//	 	  tollContextBoundingBoxes := omit,
-//	 	  tollContextOverviewVersion:={
-//	 	  	version:={
-//	 	  		basicVersionId:=TD_BASIC_VERSION_ID
-//	 	  	},
-//	 	  	validFrom:=fx_getUtc()
-//	 	  }
-//	 	};
+	 	modulepar  EfcDsrcApplication.Int1 TD_TOLL_CONTEXT_VERSION:=2; // version 2
+			// [SEMANTIC DEFINITION] The toll context version the tester applies as toll charger
+			// when providing toll context data to the IuT
+	 	
+		modulepar octetstring TD_BASIC_VERSION_ID:='0001'O;
+			// [SEMANTIC DEFINITION] The version id used by the tester in tariff tables and
+			// closed toll context layout data
 
 	}		
 
 	group TOLLDECLARATION{
-		modulepar EfcDsrcApplication.PaymentMeans TD_PAYMENT_MEANS_1;//:= {PAN1,{2030,12,31}, "1234"};
-		modulepar Provider TD_TOLL_CONTEXT;		
-		modulepar Provider TD_TOLL_CONTEXT_NON_EXISTING;	
-		modulepar UTF8String TD_TOLL_CONTEXT_NAME_NON_EXISTING;
-		modulepar UsageStatement TD_USAGE_STATEMENT_VALID_1, TD_USAGE_STATEMENT_VALID_2, TD_USAGE_STATEMENT_VALID_3,
-		TD_USAGE_STATEMENT_VALID_4, TD_USAGE_STATEMENT_VALID_5, TD_USAGE_STATEMENT_VALID_6, TD_USAGE_STATEMENT_VALID_7, 
-		TD_USAGE_STATEMENT_VALID_8, TD_USAGE_STATEMENT_VALID_9, TD_USAGE_STATEMENT_VALID_10, TD_USAGE_STATEMENT_VALID_11, 
-		TD_USAGE_STATEMENT_VALID_12, TD_USAGE_STATEMENT_VALID_13, TD_USAGE_STATEMENT_VALID_14, TD_USAGE_STATEMENT_VALID_15, 
-		TD_USAGE_STATEMENT_VALID_16, TD_USAGE_STATEMENT_VALID_17, TD_USAGE_STATEMENT_VALID_18, TD_USAGE_STATEMENT_VALID_19, 
-		TD_USAGE_STATEMENT_VALID_20; 
+		modulepar EfcDsrcApplication.PaymentMeans TD_PAYMENT_MEANS_1:={
+			personalAccountNumber:=PAN1,
+			paymentMeansExpiryDate:={2030,12,31},
+			pamentMeansUsageControl:='0000'O
+		};
+            // [SEMANTIC DEFINITION] The value of the data structure paymentMeans applied by the tester
 
-		modulepar AuthenticatedChargeReport TD_AUTHENTICATED_CHARGE_REPORT;
-		modulepar AggregatedSingleTariffClassSession TD_SINGLE_TARIFF_CLASS_SESSION;
-		type set of DetectedChargeObject SoDetectedChargeObject;
-		modulepar SoDetectedChargeObject TD_LIST_OF_CHARGE_OBJECTS;
-		modulepar ListOfRawUsageData TD_LIST_OF_RAW_USAGE_DATA;
+		modulepar bitstring TD_CHARGE_REPORT_PER_BITSTING;
+			// [SEMANTIC DEFINITION] The bitsring containing the per-encoded value charge report
+			// sent by the tester
+				
+		modulepar MessageAuthenticator TD_MESSAGE_AUTHENTICATOR;
+			// [SEMANTIC DEFINITION] The content of message authenticator of the
+			// charger report sent by the tester
 
-	}
+		modulepar AuthenticatedChargeReport TD_AUTHENTICATED_CHARGE_REPORT:={
+			chargeReportPer:=TD_CHARGE_REPORT_PER_BITSTING,
+			messageAuthenticator:=TD_MESSAGE_AUTHENTICATOR
+		};		
+            // [SEMANTIC DEFINITION] The content of the AuthenticatedChargeReport applied by the tester
+            // in a test case 
+				
+		const UsageStatement c_usageStatement_1 := m_usageStatement(1,TD_SINGLE_TARIFF_CLASS_SESSION_1);
+		const UsageStatement c_usageStatement_2 := m_usageStatement(2,TD_SINGLE_TARIFF_CLASS_SESSION_2);
+		const UsageStatement c_usageStatement_3 := m_usageStatement(3,TD_SINGLE_TARIFF_CLASS_SESSION_1);
+		const UsageStatement c_usageStatement_4 := m_usageStatement(4,TD_SINGLE_TARIFF_CLASS_SESSION_2);
+		const UsageStatement c_usageStatement_5 := m_usageStatement(5,TD_SINGLE_TARIFF_CLASS_SESSION_1);
+		const UsageStatement c_usageStatement_6 := m_usageStatement(6,TD_SINGLE_TARIFF_CLASS_SESSION_2);
+		const UsageStatement c_usageStatement_7 := m_usageStatement(7,TD_SINGLE_TARIFF_CLASS_SESSION_1);
+		const UsageStatement c_usageStatement_8 := m_usageStatement(8,TD_SINGLE_TARIFF_CLASS_SESSION_2);
+		const UsageStatement c_usageStatement_9 := m_usageStatement(9,TD_SINGLE_TARIFF_CLASS_SESSION_1);
+		const UsageStatement c_usageStatement_10 := m_usageStatement(10,TD_SINGLE_TARIFF_CLASS_SESSION_2);
+		const UsageStatement c_usageStatement_11 := m_usageStatement(11,TD_SINGLE_TARIFF_CLASS_SESSION_1);
+		const UsageStatement c_usageStatement_12 := m_usageStatement(12,TD_SINGLE_TARIFF_CLASS_SESSION_2);
+		const UsageStatement c_usageStatement_13 := m_usageStatement(13,TD_SINGLE_TARIFF_CLASS_SESSION_1);
+		const UsageStatement c_usageStatement_14 := m_usageStatement(14,TD_SINGLE_TARIFF_CLASS_SESSION_2);
+		const UsageStatement c_usageStatement_15 := m_usageStatement(15,TD_SINGLE_TARIFF_CLASS_SESSION_1);
+		const UsageStatement c_usageStatement_16 := m_usageStatement(16,TD_SINGLE_TARIFF_CLASS_SESSION_2);
+		const UsageStatement c_usageStatement_17 := m_usageStatement(17,TD_SINGLE_TARIFF_CLASS_SESSION_1);
+		const UsageStatement c_usageStatement_18 := m_usageStatement(18,TD_SINGLE_TARIFF_CLASS_SESSION_2);
+		const UsageStatement c_usageStatement_19 := m_usageStatement(19,TD_SINGLE_TARIFF_CLASS_SESSION_1);
+		const UsageStatement c_usageStatement_20 := m_usageStatement(20,TD_SINGLE_TARIFF_CLASS_SESSION_2);
+				
+		modulepar AggregatedSingleTariffClassSession TD_SINGLE_TARIFF_CLASS_SESSION_1:={
+    		timePeriodCovered:= TD_PERIOD_1, // mandatory according to IAP
+    		currentTariffClass := omit, 
+    		vehicleDescription := true,	// mandatory according to IAP
+    		totalDistanceCovered := omit,  // shall not be used according to IAP
+    		numberOfDetectedEvents := omit, // shall not be used according to IAP
+    		obeStatus := omit, // shall not be used according to IAP
+    		feeExclVat := { // mandatory according to IAP
+    			paymentFeeAmount:= 300, // 300 units
+ 				paymentFeeUnit:='2978'O, // ('2' = minor units of '978' = EUR), i.e. 3,00 EUR
+ 				vatRate:=omit // no VAT applied in this case
+ 			},				   		
+    		sumVat := { // mandatory according to IAP
+      			paymentFeeAmount:= 60, // 60 units
+ 				paymentFeeUnit:='2978'O, // ('2' = minor units of '978' = EUR), i.e. 0,60 EUR
+ 				vatRate:=2000 // expressed in units of 0,01%, i.e. 20,00%
+    		}
+    	},
+    	TD_SINGLE_TARIFF_CLASS_SESSION_2:={
+    		timePeriodCovered:= TD_PERIOD_2, // mandatory according to IAP
+    		currentTariffClass := omit, 
+    		vehicleDescription := true,	// mandatory according to IAP
+    		totalDistanceCovered := omit,  // shall not be used according to IAP
+    		numberOfDetectedEvents := omit, // shall not be used according to IAP
+    		obeStatus := omit, // shall not be used according to IAP
+    		feeExclVat := { // mandatory according to IAP
+    			paymentFeeAmount:= 3786, // 3786 units 
+ 				paymentFeeUnit:='2978'O, // ('2' = minor units of '978' = EUR), i.e. 37,86 EUR
+ 				vatRate:=omit // no VAT applied in this case
+ 			},				   		
+    		sumVat:={ // mandatory according to IAP
+      			paymentFeeAmount:= 697, // 697 units
+ 				paymentFeeUnit:='2978'O, // ('2' = minor units of '978' = EUR), i.e. 6,97 EUR
+ 				vatRate:=1850 // expressed in units of 0,01%, i.e. 18,50%
+    		}
+    	};
+			// [SEMANTIC DEFINITION] The content of the data structure aggregatedSingleTariffClassSession
+			// applied by the tester in usage statements of toll declarations
+    }
+
 
 	group GNSS_BILLINGDETAILS {	
-		modulepar EfcAutonomousCharging.Period TD_PERIOD_1; // period in billing details
+		modulepar EfcAutonomousCharging.Period TD_PERIOD_1:={
+			beginOfPeriod:=fx_getUtc(-2200000),
+    		endOfPeriod:=fx_getUtc(-2196000)
+    	},
+    	TD_PERIOD_2:={
+ 			beginOfPeriod:=fx_getUtc(-1800000),
+    		endOfPeriod:=fx_getUtc(-17900000)
+    	};
+			// [SEMANTIC DEFINITION] The content of the data structure period applied by the tester
+			// in aggregated single tariff class sessions (in usage statements of toll declarations)
+			// and billing details 		
+    				
 		modulepar UTF8String TD_USER_CLASS:= "Frequent user";
 			// [SEMANTIC DEFINITION] The user class value applied by the tester in test cases
 			// for billing details 		
@@ -532,7 +614,7 @@ module EfcInfoExchange_TesterData language "TTCN-3:2010 Advanced Parameterizatio
 			// m_sectionedRoadGnssUsageList 		
 		 	
 		modulepar ExtendedPaymentAmount TD_DISCOUNT_AMOUNT:={
-		 		paymentFeeAmount:= 200, // 200 units epressed in 
+		 		paymentFeeAmount:= 200, // 200 units
  				paymentFeeUnit:='2978'O, // ('2' = minor units of '978' = EUR), i.e. 2,00 EUR
  				vatRate:=omit // no VAT applied in this case
  			};
@@ -546,27 +628,27 @@ module EfcInfoExchange_TesterData language "TTCN-3:2010 Advanced Parameterizatio
 		const ExtendedPaymentAmount c_extPayAmountNothing:={0,TD_BILLINGDETAILS_PAYUNIT,0};
  		modulepar ExtendedPaymentAmount
  			TD_BILLINGDETAILS_AMOUNT_1:={
- 				paymentFeeAmount:= 1470, // 1470 units epressed in 
+ 				paymentFeeAmount:= 1470, // 1470 units
  				paymentFeeUnit:='2978'O, // ('2' = minor units of '978' = EUR), i.e. 14,70 EUR
  				vatRate:=1780 // expressed in units of 0,01%, i.e. 17,80%
  			},
  			TD_BILLINGDETAILS_AMOUNT_2:={
- 				paymentFeeAmount:= 311, // 311 units epressed in 
+ 				paymentFeeAmount:= 311, // 311 units
  				paymentFeeUnit:='2978'O, // ('2' = minor units of '978' = EUR), i.e. 3,11 EUR
  				vatRate:=omit // no VAT applied in this case 				
 			}, 			
  			TD_BILLINGDETAILS_AMOUNT_3:={
- 				paymentFeeAmount:= 953, // 953 units epressed in 
+ 				paymentFeeAmount:= 953, // 953 units
  				paymentFeeUnit:='2978'O, // ('2' = minor units of '978' = EUR), i.e. 9,53 EUR
  				vatRate:=1990 // expressed in units of 0,01%, i.e. 19,90%
  			},
  			TD_BILLINGDETAILS_AMOUNT_4:={
-				paymentFeeAmount:= 2367, // 2367 units epressed in 
+				paymentFeeAmount:= 2367, // 2367 units 
  				paymentFeeUnit:='2978'O, // ('2' = minor units of '978' = EUR), i.e. 23,67 EUR
  				vatRate:=2175 // expressed in units of 0,01%, i.e. 21,75%
 			},	 		
  			TD_BILLINGDETAILS_AMOUNT_5:={
-				paymentFeeAmount:= 89, // 89 units epressed in 
+				paymentFeeAmount:= 89, // 89
  				paymentFeeUnit:='2978'O, // ('2' = minor units of '978' = EUR), i.e. 0,89 EUR
  				vatRate:=omit // no VAT applied in this case
 			};		 
@@ -588,22 +670,22 @@ module EfcInfoExchange_TesterData language "TTCN-3:2010 Advanced Parameterizatio
  		
  		modulepar ExtendedPaymentAmount
  			TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_1:={
- 				paymentFeeAmount:= 45776, // 45776 units epressed in 
+ 				paymentFeeAmount:= 45776, // 45776
  				paymentFeeUnit:='2978'O, // ('2' = minor units of '978' = EUR), i.e. 457,76 EUR
  				vatRate:=1900 // expressed in units of 0,01%, i.e. 19,00%
  		},
  			TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_2:={
- 				paymentFeeAmount:= 1396, // 1396 units epressed in 
+ 				paymentFeeAmount:= 1396, // 1396
  				paymentFeeUnit:='2978'O, // ('2' = minor units of '978' = EUR), i.e. 13,96 EUR
  				vatRate:=2120 // expressed in units of 0,01%, i.e. 21,20% 				
  		},
  			TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_3:={
- 				paymentFeeAmount:= 17489, // 17489 units epressed in 
+ 				paymentFeeAmount:= 17489, // 17489
  				paymentFeeUnit:='2978'O, // ('2' = minor units of '978' = EUR), i.e. 174,89 EUR
 		 		vatRate:=2090 // expressed in units of 0,01%, i.e. 20,90%  	
  		},
 			TD_PAYMENTANNOUNCEMENT_TOTAL_AMOUNT_WITHOUTVAT:={
- 				paymentFeeAmount:= 17489, // 17489 units epressed in 
+ 				paymentFeeAmount:= 17489, // 17489
  				paymentFeeUnit:='2978'O, // ('2' = minor units of '978' = EUR), i.e. 174,89 EUR
 		 		vatRate:=omit // no VAT applied in this tested data 
 		};

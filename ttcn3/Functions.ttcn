@@ -345,13 +345,13 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
             v_apduForSending := m_apduNoAuthInitTester({tollDeclarationADUs:={
                 m_aduTollDeclarationToSendOneObe(
                     {TD_IDENTIFIER, 1}, //tollDeclarationId
-                    TD_USAGE_STATEMENT_VALID_1, // usageStatement
+                    c_usageStatement_1, // usageStatement
                     1, // chargeReportCounter
                     ActionCode_send_ // actionCode
                 ),
                 m_aduTollDeclarationToSendOneObe(
                     {TD_IDENTIFIER, 2}, //tollDeclarationId
-                    TD_USAGE_STATEMENT_VALID_2, // usageStatement
+                    c_usageStatement_2, // usageStatement
                     2, // chargeReportCounter
                     ActionCode_send_ // actionCode
                 )

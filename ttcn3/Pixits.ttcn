@@ -70,7 +70,6 @@ module EfcInfoExchange_Pixits {
     modulepar EfcDsrcApplication.Int2 PX_MANUFACTURERID2;
   	     // [SEMANTIC DEFINITION] Third valid ManufacturerID
     modulepar EfcDsrcApplication.Int2 PX_MANUFACTURERID3;
-  
     
     type record of UserParameterRequest RecordOfUserParameterRequest;
     
@@ -116,6 +115,19 @@ module EfcInfoExchange_Pixits {
 			chargeReportFinalRecipient:=omit,
 			chargeObjectDesignation:= PX_CHARGE_OBJECT_DESIGNATION_NON_EXISTING
 		};						
+
+	type set of DetectedChargeObject SoDetectedChargeObject;
+		
+		// [SEMANTIC DEFINITION] List of charge objects that are present in the toll domain
+		// managed by the toll charger and shall be used by the tester
+		// (acting as toll service provider) inside Usage Statements
+	modulepar SoDetectedChargeObject PX_LIST_OF_CHARGE_OBJECTS;
+	
+		// [SEMANTIC DEFINITION] Raw usage data applicable for the toll domain
+		// managed by the toll charger which shall be used by the tester
+		// (acting as toll service provider) inside Usage Statements
+	modulepar ListOfRawUsageData PX_LIST_OF_RAW_USAGE_DATA;
+
 	
 	
 }
