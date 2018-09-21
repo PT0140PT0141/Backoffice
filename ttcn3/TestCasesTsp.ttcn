@@ -2166,11 +2166,24 @@ module EfcInfoExchange_TestCasesTsp {
                  	// iso17573ADU containing only mandatory field with one invalid value
                  	// feeModifiers set to null
                  	// set tester tolling domain characteristics
-                 	// PT140 TODO: which field to be set to a wrong value? Is this test doable?
-				var Iso17575_3AduBody v_contextData;
+ 
+ 				var Iso17575_3AduBody v_contextData;
 				var EfcContextDataADU  v_adu:=m_aduDsrcEfcContextDataTestValues;
-				//TODO Ulrik find a solution for this
-				v_adu.domainType.dsrcContext.regimeContextData.iso175753ADU.tollContextOverview.unsigned_data.tollSchemeName:="This name shall be omitted"; //Provokes an error in the receiving party
+
+				v_adu.domainType.dsrcContext.regimeContextData.iso175753ADU:={
+					tollContextOverview:={
+						unsigned_data:={
+							tollContext:=TD_TOLL_CONTEXT,
+							tollContextPartitions:={1},//shall be a SEQUENCE OF TollContextPartitionId,
+							tollSchemeName:="This name shall be omitted", //Provokes an error in the receiving party,
+							tollContextBoundingBoxes:=omit,
+							tollContextOverviewVersion:=m_basicVersionValidFromNow
+						}
+					},
+					tollContextVersion:=1
+				}
+				
+				//.tollContextOverview.unsigned_data.tollSchemeName:="This name shall be omitted"; //Provokes an error in the receiving party
 				v_apduForSending := m_apduNoAuthInitTester({efcContextDataADUs:={m_aduDsrcEfcContextDataTestValues}});                 
 				f_sendAndLogApdu(v_apduForSending);                 
                  // Step 2: Wait for negative Ack within DSRC.EFCCONTEXTDATA.TIME1

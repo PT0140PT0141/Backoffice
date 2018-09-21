@@ -27,7 +27,7 @@ module EfcInfoExchange_TesterData language "TTCN-3:2010 Advanced Parameterizatio
  		
  		// TODO the provider values cannot be identical
  		// ANSWER for the TODO: Yes, they can be identical. The same identifier (of data type provider) is used
- 		//ANSWER TO THE ANSWER, WE CANNOT HAVE VALIDS AND INVALIDS THE SAME
+ 		//ANSWER TO THE ANSWER of the TODO, WE CANNOT HAVE VALIDS AND INVALIDS THE SAME
  		// in different data elements: APDU_ORIGINATOR, INFORMATION_SENDER, ... This is in reality
  		// in most cases one and the same entity
         modulepar EfcDsrcApplication.Provider TD_APDU_ORIGINATOR_FOR_TESTER:={'1010010000'B, 99};
@@ -211,6 +211,7 @@ module EfcInfoExchange_TesterData language "TTCN-3:2010 Advanced Parameterizatio
 			// for the authentication key reference (refer to also ISO 14906)
 				
 
+		//TODO I (Ulrik) propose that we rename this to m_aduContractIssuerList and move it to templates
 		template ContractIssuerListADU m_contractIssuerListADU_Tester(in EfcInfoExchange.Int4 p_manufacturerID):={
 			efcContextMark := TD_EFC_CONTEXT_MARK,
 			equipmentClass := TD_EQUIPMENT_CLASS,
@@ -222,6 +223,9 @@ module EfcInfoExchange_TesterData language "TTCN-3:2010 Advanced Parameterizatio
 			authKeyReference := TD_AUTH_KEY_REFERENCE,
 			validFrom := fx_getUtc(-3600*24) 
 	   	}
+
+		//TODO do we really need the flexibility and complexity of having these as modulepars, I propose that we replace 
+		//TD_CONTRACT_ISSUER_DATA_VALID_1 with m_contractIssuerListADU_Tester(TD_MANUFACTURER_ID_1) and so on for 2,3 in valids and invalids
 
 		modulepar ContractIssuerListADU TD_CONTRACT_ISSUER_DATA_VALID_1 := m_contractIssuerListADU_Tester(TD_MANUFACTURER_ID_1);        
 			// [SEMANTIC DEFINITION] A ContractIssuerAdu containing data elements set with valid tester data as defined in this module
@@ -463,28 +467,20 @@ module EfcInfoExchange_TesterData language "TTCN-3:2010 Advanced Parameterizatio
 	 	modulepar  EfcDsrcApplication.Int1 TD_TOLL_CONTEXT_VERSION;
 	 	modulepar  ClosedContextType TD_CLOSED_CONTEXT_TYPE := ClosedContextType_interconnectedClosedSysytem_;
 
-		modulepar  octetstring basicVersionIdTESTER_VALUE:='00'O;
-		modulepar  UTF8String versionNameTESTER_VALUE:="TollContextOverviewVersion - one value";
-		modulepar  UTF8String valueOfVersionNameTESTER_VALUE:="the version";
-	 	modulepar  EfcAutonomousContextData.TollContextOverview closedTollContextOverviewTESTER_VALUE := {
-	 	  tollContext := TD_IDENTIFIER,
-	 	  tollContextPartitions := {1}, // One partition
-	 	  tollSchemeName := omit,
-	 	  tollContextBoundingBoxes := omit,
-	 	  tollContextOverviewVersion:={
-	 	  	version:={
-	 	  		basicVersionId:=basicVersionIdTESTER_VALUE
-//	 	  		extendedVersionId:={
-//	 	  			{
-//	 	  				versionName:=versionNameTESTER_VALUE,
-//	 	  				value_:=valueOfVersionNameTESTER_VALUE
-//	 	  			}
-//	 	  		}
-	 	  	},
-	 	  	validFrom:=fx_getUtc()
-	 	  }
-	 	};
-	 	modulepar ClosedContextLayout closedContextLayoutTESTER_VALUE;
+		modulepar  octetstring TD_BASIC_VERSION_ID:='00'O;
+//TODO This is not used. Delete?
+//	 	modulepar  EfcAutonomousContextData.TollContextOverview closedTollContextOverviewTESTER_VALUE := {
+//	 	  tollContext := TD_IDENTIFIER,
+//	 	  tollContextPartitions := {1}, // One partition
+//	 	  tollSchemeName := omit,
+//	 	  tollContextBoundingBoxes := omit,
+//	 	  tollContextOverviewVersion:={
+//	 	  	version:={
+//	 	  		basicVersionId:=TD_BASIC_VERSION_ID
+//	 	  	},
+//	 	  	validFrom:=fx_getUtc()
+//	 	  }
+//	 	};
 
 	}		
 

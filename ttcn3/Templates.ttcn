@@ -1110,7 +1110,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 			
 			template (value) @fuzzy VersionAndValidity m_basicVersionValidFromNow :={
 				version:={
-					basicVersionId:=basicVersionIdTESTER_VALUE
+					basicVersionId:=TD_BASIC_VERSION_ID
 				},
 				validFrom:=fx_getUtc()
 			}			

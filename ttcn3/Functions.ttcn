@@ -64,8 +64,6 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
      		}
      		
      		// Initialize communication stack
-            //PT140 TODO is this needed?
-            //f_initializeCommunication();
             
             // Map TTCN-3 ports to TestAdapter ports
             map(mtc:mtcPort, system:taPort);
