@@ -3479,7 +3479,7 @@ module EfcInfoExchange_TestCasesTc {
 				//		- gnssTollDeclarations with valid and IUT declared values, and
 				//		- actionCode = send
 				
-                // Prepare and send one Initiating_Apdu containing exactly one TollDeclarationADUs with actionCode = send
+                // Prepare and send one Initiating_Apdu containing exactly two TollDeclarationADUs with actionCode = send
 
 				v_apduForSending := m_apduNoAuthInitTester({tollDeclarationADUs:={
 					m_aduTollDeclarationToSendOneObe(
@@ -3762,30 +3762,89 @@ module EfcInfoExchange_TestCasesTc {
                 *			one or more fields in the toll declarations and/or underlying data elements are invalid
                 * @remark  [16986:2016], Clause 8.1 and Table A.1/1 AND Table A.2/2 AND Table A.52/3
                 */
-				 
+				 								
   				// Initialisation
-                 
-				// Start by setting test success
-								
+ 				var boolean v_runOrNot := ICS_A1_1_isTc and ICS_A2_2_isGnss and ICS_A52_3_implementedGNSSTOLLDECLARATION;
+				f_intialiseMtc(v_runOrNot);  //check if the testcase shall run, activate altsteps on ports, etc 
+				
                 // Step 1:
                 // Send Initiating_Apdu containing
                 //		- one TollDeclarationADU with valid and IUT declared values; and
                 //		- one TollDeclarationADU with values not declared as IUT implemented
                 //		- actionCode = send
+                				
+                // Prepare the above defined Apdu
                 
+                const TollDeclarationADU v_tollDeclarationAduNotIutDeclared;
+
+				v_tollDeclarationAduNotIutDeclared:={
+					 tollDeclarationId:={TD_IDENTIFIER, 2},
+					 gnssTollDeclaration:={
+					 	{
+					 		chargeReport:={
+					 			protocolVersion:=7, // version not supported by the IuT
+					 			obeId:=TD_OBE_ID_5,
+					 			vehicleLPNr:=TD_LPN_7,
+					 			paymentMeans:=TD_PAYMENT_MEANS_1,
+					 			serviceProviderContract:=TD_EFC_CONTEXT_MARK,
+					 			tollContext:=PX_TOLL_CONTEXT_ID_NOT_EXISTING, // Toll Context not managed by the IuT
+					 			chargeReportFinalRecipient:=omit, // shall not be used according to IAP
+					 			timeOfReport:=fx_getUtc(0), // shall not be used according to IAP
+					 				// and therefore deemed not declared and supported by the IuT
+					 			reportPeriod:=omit, // optional
+					 			versionInfo:=omit, // optional
+					 			usageStatementList:={
+					 				{
+					 					usageStatement:=TD_USAGE_STATEMENT_VALID_5 
+					 				}
+					 			},
+					 			sumVatForThisSession:=omit, // shall not be used according to IAP
+					 			accountStatus:=AccountStatus_low_, // shall not be used according to IAP
+					 				// and therefore deemed not declared and supported by the IuT
+					 			chargeReportCounter:=2,
+					 			mileage:={  // shall not be used according to IAP
+					 				// and therefore deemed not declared and supported by the IuT
+					 				dist:=2374, // distance = 2374 units
+					 				disUnit:= DisUnit_metres_ // units are defined as meters
+					 				}
+					 			listOfCccAttributes:=omit  // shall not be used according to IAP
+					 		}
+					 	}
+					 },
+					 actionCode:= ActionCode_send_
+				};
+
+				v_apduForSending := m_apduNoAuthInitTester({tollDeclarationADUs:={
+					m_aduTollDeclarationToSendOneObe(
+						{TD_IDENTIFIER, 1},
+						TD_USAGE_STATEMENT_VALID_1,
+						1,
+						ActionCode_send_),
+					v_tollDeclarationAduNotIutDeclared
+					}});
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
+                
+                // Start timer
+                t_step.start(IS_GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
+				
                 // Step 2:
                 // Wait for Ack_Apdu with
-                //		- issueADUStruct =2, and
-                //		- issueCode = semanticError(3000)
+                //		- ({2,semanticError(3000)})
                 // within GNSS.TOLLDECLARARTION.TIME1             
                 // use template for NAck_Apdus
                 // if not received or received outside specification or time constraints set test fail
 
+                // Prepare parameters to be expected in the NAck-APDU
+				var RoNackParams v_nAckParams_1 := m_roNackParamsSingle(2, AduReasonCode_semanticError_);
 
-				//TODO Jan replace this dummy-code with real test
-				setverdict(pass); 
-
-
+                // Prepare parameters to be expected in the NAck-APDU
+				alt {
+					[] mtcPort.receive(m_apduNAckIndividualIssuesTester(v_apduForSending, v_nAckParams_1)) -> value v_apduReceived {
+						f_logReceivedThenCheckAndStopTime(IS_GNSS_TOLLDECLARATIONS_TIME1_MIN_TC); // check for minimum wait time in response
+						setverdict(pass);
+					}
+				}
+				f_closeDownMtc();				            	          				                
 			} // End testcase TP_TC_GNSS_TOLLDECLARATION_BI_09
 			
 		} // End Invalid_Behaviour
