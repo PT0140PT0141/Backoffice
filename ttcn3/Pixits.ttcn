@@ -99,8 +99,23 @@ module EfcInfoExchange_Pixits {
 	modulepar RecordOfTrustObjectTypePurposePair PX_TRUST_OBJECTS_TYPE_PURPOSE_SUPPORTED_SEND;
 	 	
   	     // [SEMANTIC DEFINITION] Billing Details number (BillingDetailsId.billingDetailsNum) not known for invalid test cases
-    modulepar integer PX_BILLINGDETAILSNUM_NOT_EXISTING:=14;    
+    modulepar integer PX_BILLINGDETAILSNUM_NOT_EXISTING:=14;
+    
+  	     // [SEMANTIC DEFINITION] Charge object id of one charge object in the domain managed by the toll charger
+    modulepar EfcAutonomousCharging.ChargeObjectId PX_CHARGE_OBJECT_ID:={
+			chargeReportFinalRecipient:=omit,
+			chargeObjectDesignation:= 333333
+		};						
 	
   	     // [SEMANTIC DEFINITION] Not existing Charge object designation (part of ChargeObjectId) for invalid test cases
 	modulepar EfcDsrcApplication.Int4 PX_CHARGE_OBJECT_DESIGNATION_NON_EXISTING:=999999;
+	
+  	     // [SEMANTIC DEFINITION] Not existing Charge object identifier in the domain managed by the toll charger
+  	     // for invalid test cases
+	modulepar EfcAutonomousCharging.ChargeObjectId PX_CHARGE_OBJECT_ID_NON_EXISTING:={
+			chargeReportFinalRecipient:=omit,
+			chargeObjectDesignation:= PX_CHARGE_OBJECT_DESIGNATION_NON_EXISTING
+		};						
+	
+	
 }

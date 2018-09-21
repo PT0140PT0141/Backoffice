@@ -2521,7 +2521,7 @@ module EfcInfoExchange_TestCasesTsp {
 				v_dsrcUsageDetailsWrongEntranceTime.perDeclaredVehicleClasses[0].perUsedTimeClasses[0].usageList[0]:=v_usageListStayInArea;
 				
 				var UsageList v_usageListSections:=m_sectionedRoadGnssUsageList;
-				v_usageListSections.usageListEntry.forSectionedRoads.listOfSections[0].chargeObjectId:=TD_CHARGE_OBJECT_ID_NON_EXISTING;
+				v_usageListSections.usageListEntry.forSectionedRoads.listOfSections[0].chargeObjectId:=PX_CHARGE_OBJECT_ID_NON_EXISTING;
 				var UsageDetails v_dsrcUsageDetailsWrongChargeObjectId:=m_dsrcUsageDetails;
 				v_dsrcUsageDetailsWrongChargeObjectId.perDeclaredVehicleClasses[0].perUsedTimeClasses[0].usageList[0]:=v_usageListSections;
 				

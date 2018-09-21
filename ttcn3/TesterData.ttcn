@@ -521,20 +521,28 @@ module EfcInfoExchange_TesterData language "TTCN-3:2010 Advanced Parameterizatio
 		modulepar UTF8String TD_COST_CENTER:="The cost center";
 			// [SEMANTIC DEFINITION] The cost center value applied by the tester in test cases
 			// for billing details		
-		
-		modulepar EfcAutonomousCharging.ChargeObjectId TD_CHARGE_OBJECT_ID; // charge object id
-		modulepar EfcAutonomousCharging.ChargeObjectId TD_CHARGE_OBJECT_ID_NON_EXISTING; // charge object id
-		modulepar TollEventId TD_TOLL_EVENT_ID;
-		modulepar GeneralizedTime TD_TOLL_EVENT_TIME;
+						
+		modulepar TollEventId TD_TOLL_EVENT_ID :={
+			counterType:={
+		 		chargeReportCounter:=99
+		 	},
+		 	usageStatementID:=999
+		 };
+			// [SEMANTIC DEFINITION] The identifier of the toll event applied by the tester in the template
+			// m_sectionedRoadGnssUsageList 		
+		 	
 		modulepar ExtendedPaymentAmount TD_DISCOUNT_AMOUNT:={
 		 		paymentFeeAmount:= 200, // 200 units epressed in 
  				paymentFeeUnit:='2978'O, // ('2' = minor units of '978' = EUR), i.e. 2,00 EUR
  				vatRate:=omit // no VAT applied in this case
  			};
-			// [SEMANTIC DEFINITION] The values of discounte amount applied by the tester
+			// [SEMANTIC DEFINITION] The values of discount amount applied by the tester
 			// for BillingDetails in test cases 		
 
-		modulepar DiscountQualifier TD_DISCOUNT_QUALIFIER;
+		modulepar DiscountQualifier TD_DISCOUNT_QUALIFIER := DiscountQualifier_vehicleDiscount_;
+			// [SEMANTIC DEFINITION] The type of the discount as applied by the tester in the template
+			// m_sectionedRoadGnssUsageList 		
+		
 		const ExtendedPaymentAmount c_extPayAmountNothing:={0,TD_BILLINGDETAILS_PAYUNIT,0};
  		modulepar ExtendedPaymentAmount
  			TD_BILLINGDETAILS_AMOUNT_1:={

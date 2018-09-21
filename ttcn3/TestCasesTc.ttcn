@@ -3990,22 +3990,6 @@ module EfcInfoExchange_TestCasesTc {
 				//		- chioce for SectionedRoads; and
 				//		- actionCode=send
 		
-				//var UsageList v_sectionsUsed;
-				//template (value) UsageList m_sectionedRoadGnssUsageList modifies mw_sectionedRoadGnssUsageList := {
-				//	usageListEntry {
-				//		forSectionedRoads {		
-				//			howManyTimes := 1,
-				//			listOfSections := {mw_section := {
-				//				chargeObjectId := TD_CHARGE_OBJECT_ID,
-				//				tollEventId := TD_TOLL_EVENT_ID, // mandatory in IAP
-				//				tollEventTime := TD_TOLL_EVENT_TIME // mandatory in IAP
-				//			}} 
-				//		}
-				//	},
-				//	includedDiscounts := omit,
-				//	externalCosts := omit
-				//};
-
 				// prepare this adu below
 				var UsageList v_usageListSectionedRoads := m_sectionedRoadGnssUsageList; 
 				v_usageListSectionedRoads.includedDiscounts:=omit;
