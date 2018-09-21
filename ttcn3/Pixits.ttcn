@@ -72,6 +72,10 @@ module EfcInfoExchange_Pixits {
     modulepar EfcDsrcApplication.Int2 PX_MANUFACTURERID3;
     
     type record of UserParameterRequest RecordOfUserParameterRequest;
+     
+    	 // [SEMANTIC DEFINITION] List of user details parameters the IuT - acting
+    	 // as a toll service provider - declares as private data
+    modulepar RecOfUserParameterRequest PX_PRIVACYBOUND_USER_PARAM_REQS:={}; 
     
  	type record of integer RecordOfInteger;
 

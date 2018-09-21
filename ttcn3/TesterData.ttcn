@@ -464,9 +464,8 @@ module EfcInfoExchange_TesterData language "TTCN-3:2010 Advanced Parameterizatio
             // [SEMANTIC DEFINITION] The data structure UserParameterResponseDetails applied by the tester
             // in test cases in which the user details are requested 
 				
-		modulepar RecOfUserParameterRequest TD_PRIVACYBOUND_USER_PARAM_REQS:={}; 
 	}
-	
+ 	 
 	group EFCCONTEXTDATA {
 	 	modulepar  Optionally_Signed<TollContextOverview> TD_SIGNED_TOLL_CONTEXT_OVERVIEW;
 	 	modulepar  Optionally_Signed<TollContextPartitionOverviews> TD_TOLL_CONTEXT_PARTITION_OVERVIEW;
