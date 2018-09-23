@@ -2975,8 +2975,9 @@ module EfcInfoExchange_TestCasesTc {
 				//		- actionCode = revoke
                              
                 // Send second Initiating_Apdu containing ten valid TollDeclarationADUs with actionCode = revoke
-                // after IS_GNSS_TOLLDECLARATIONS_TIMEA_MIN_TSP has passed
-				f_wait(IS_GNSS_TOLLDECLARATIONS_TIMEA_MIN_TSP);
+                // after IS_GNSS_TOLLDECLARATIONS_TIMEA_MIN_TC has passed
+                // i.e. the tester respects time limits declared by the IuT 
+				f_wait(IS_GNSS_TOLLDECLARATIONS_TIMEA_MIN_TC);
 
                 // Prepare and send one Initiating_Apdu containing exactly ten TollDeclarationADUs with actionCode = revoke
                 // Note that it is required to send again with same TollDeclarationId,
@@ -3128,9 +3129,10 @@ module EfcInfoExchange_TestCasesTc {
 				//		- valid usageStatement fields, and
 				//		- actionCode = adjust
 
-                // Send second Initiating_Apdu containing ten valid TollDeclarationADUs with actionCode = adjust
-                // before IS_GNSS_TOLLDECLARATIONS_TIMEA_MIN_TSP has passed
-				f_wait(0.0);
+                // Send second Initiating_Apdu containing ten valid TollDeclarationADUs with actionCode = revoke
+                // after IS_GNSS_TOLLDECLARATIONS_TIMEA_MIN_TC has passed
+                // i.e. the tester respects time limits declared by the IuT 
+				f_wait(IS_GNSS_TOLLDECLARATIONS_TIMEA_MIN_TC);
 				
                 // Prepare and send one Initiating_Apdu containing exactly ten TollDeclarationADUs with actionCode = adjust
                 // Note that it is required to send again with same TollDeclarationId,
@@ -3223,8 +3225,7 @@ module EfcInfoExchange_TestCasesTc {
                 // Send Initiating_Apdu containing TollDeclarationADUs
                 // with valid and IUT declared values but exceeding GNSS.TOLLDECLARATION.PARAM1_MAX
 
-               // Prepare and send an Initiating_Apdu with PARAM1_MAX + 1 TollDeclarationADUs with actionCode = send
-
+				// Prepare and send an Initiating_Apdu with PARAM1_MAX + 1 TollDeclarationADUs with actionCode = send
 				 
 				var Adus v_adusToBeSent; //List of ADUs to be sent 
 				var UsageStatement v_usageStatementToBeSent;
@@ -3331,8 +3332,9 @@ module EfcInfoExchange_TestCasesTc {
 				//		- actionCode = revoke
 
                 // Send second Initiating_Apdu containing one valid TollDeclarationADUs with actionCode = revoke
-                // before IS_GNSS_TOLLDECLARATIONS_TIMEA_MIN_TSP has passed
-				f_wait(0.0);
+                // after IS_GNSS_TOLLDECLARATIONS_TIMEA_MIN_TC has passed
+                // i.e. the tester respects time limits declared by the IuT 
+				f_wait(IS_GNSS_TOLLDECLARATIONS_TIMEA_MIN_TC);
 
                 // Prepare and send one Initiating_Apdu containing exactly one TollDeclarationADUs with actionCode = revoke
                 // same TollDeclarations and same Charge Report Id
@@ -3424,8 +3426,9 @@ module EfcInfoExchange_TestCasesTc {
 				//		- actionCode = adjust
 
                 // Send second Initiating_Apdu containing one valid TollDeclarationADUs with actionCode = revoke
-                // before IS_GNSS_TOLLDECLARATIONS_TIMEA_MIN_TSP has passed
-				f_wait(0.0);
+                // after IS_GNSS_TOLLDECLARATIONS_TIMEA_MIN_TC has passed
+                // i.e. the tester respects time limits declared by the IuT 
+				f_wait(IS_GNSS_TOLLDECLARATIONS_TIMEA_MIN_TC);
 
                 // Prepare and send one Initiating_Apdu containing exactly one TollDeclarationADUs with actionCode = revoke
                 // same TollDeclarations and same Charge Report Id
@@ -3921,6 +3924,8 @@ module EfcInfoExchange_TestCasesTc {
 																
 				v_apduForSending := m_apduNoAuthInitTester({billingDetailsADUs:={c_aduGnssBillingDetailsWithDiscounts}});	
 
+                // No wait time for sending the Initiating_Apdu containing one valid BillingDetailsADU
+
 				// Note: No wait, as there is no minimum time beteween TollDeclaration and corresponding BillingDetails defined				
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
@@ -4007,7 +4012,8 @@ module EfcInfoExchange_TestCasesTc {
 
 				v_apduForSending := m_apduNoAuthInitTester({billingDetailsADUs:={v_aduGnssBillingDetailsSectionedRoads}});	
 
-				// Note: No wait, as there is no minimum time beteween TollDeclaration and corresponding BillingDetails defined				
+                // No wait time for sending the Initiating_Apdu containing one valid BillingDetailsADU
+
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
@@ -4090,7 +4096,8 @@ module EfcInfoExchange_TestCasesTc {
 
 				v_apduForSending := m_apduNoAuthInitTester({billingDetailsADUs:={c_aduGnssBillingDetailsTravellingInArea}});	
 
-				// Note: No wait, as there is no minimum time beteween TollDeclaration and corresponding BillingDetails defined				
+                // No wait time for sending the Initiating_Apdu containing one valid BillingDetailsADU
+
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
@@ -4172,7 +4179,8 @@ module EfcInfoExchange_TestCasesTc {
 
 				v_apduForSending := m_apduNoAuthInitTester({billingDetailsADUs:={c_aduGnssBillingDetailsStayingInArea}});	
 
-				// Note: No wait, as there is no minimum time beteween TollDeclaration and corresponding BillingDetails defined								
+                // No wait time for sending the Initiating_Apdu containing one valid BillingDetailsADU
+
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
@@ -4252,7 +4260,8 @@ module EfcInfoExchange_TestCasesTc {
 
 				v_apduForSending := m_apduNoAuthInitTester({billingDetailsADUs:={c_aduGnssBillingDetailsCordonCrossing}});	
 
-				// Note: No wait, as there is no minimum time beteween TollDeclaration and corresponding BillingDetails defined								
+                // No wait time for sending the Initiating_Apdu containing one valid BillingDetailsADU
+
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
@@ -4346,7 +4355,8 @@ module EfcInfoExchange_TestCasesTc {
 				}
 				v_apduForSending := m_apduNoAuthInitTester(v_adusToBeSent);	
 
-				// Note: No wait, as there is no minimum time beteween TollDeclaration and corresponding BillingDetails defined								
+                // No wait time for sending the Initiating_Apdu containing one valid BillingDetailsADU
+
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
@@ -4429,7 +4439,8 @@ module EfcInfoExchange_TestCasesTc {
 
 				v_apduForSending := m_apduNoAuthInitTester({billingDetailsADUs:={v_aduGnssBillingDetailsSectionedRoads}});	
 
-				// Note: No wait, as there is no minimum time beteween TollDeclaration and corresponding BillingDetails defined				
+                // No wait time for sending the Initiating_Apdu containing one valid BillingDetailsADU
+
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
@@ -4473,7 +4484,11 @@ module EfcInfoExchange_TestCasesTc {
 
 				v_apduForSending := m_apduNoAuthInitTester({billingDetailsADUs:={v_aduGnssBillingDetailsCordonCrossing}});	
 
-				// Note: No wait, as there is no minimum time beteween TollDeclaration and corresponding BillingDetails defined				
+                // Send Initiating_Apdu containing one valid BillingDetailsADU
+                // after IS_GNSS_BILLINGDETAILS_TIMEA_MIN_TC has passed
+                // i.e. the tester respects time limits declared by the IuT 
+				f_wait(IS_GNSS_BILLINGDETAILS_TIMEA_MIN_TC);
+
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
@@ -4559,7 +4574,8 @@ module EfcInfoExchange_TestCasesTc {
 
 				v_apduForSending := m_apduNoAuthInitTester({billingDetailsADUs:={v_aduGnssBillingDetailsSectionedRoads}});	
 
-				// Note: No wait, as there is no minimum time beteween TollDeclaration and corresponding BillingDetails defined				
+                // No wait time for sending the Initiating_Apdu containing one valid BillingDetailsADU
+
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
@@ -4595,7 +4611,11 @@ module EfcInfoExchange_TestCasesTc {
 
 				v_apduForSending := m_apduNoAuthInitTester({billingDetailsADUs:={v_aduGnssBillingDetailsSectionedRoads}});	
 
-				// Note: No wait, as there is no minimum time beteween TollDeclaration and corresponding BillingDetails defined				
+                // Send Initiating_Apdu containing one valid BillingDetailsADU
+                // after IS_GNSS_BILLINGDETAILS_TIMEA_MIN_TC has passed
+                // i.e. the tester respects time limits declared by the IuT 
+				f_wait(IS_GNSS_BILLINGDETAILS_TIMEA_MIN_TC);
+
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
@@ -4740,6 +4760,9 @@ module EfcInfoExchange_TestCasesTc {
 				);			
 
 				v_apduForSending := m_apduNoAuthInitTester(v_adus);                 
+
+                // No wait time for sending the Initiating_Apdu
+
 				f_sendAndLogApdu(v_apduForSending);						
                	
                  // Step 2: Wait for negative Ack within IS_GNSS_BILLINGDETAILS_TC_TIME1_MAX_TSP with issue list present and the following issue codes:
@@ -4837,10 +4860,12 @@ module EfcInfoExchange_TestCasesTc {
 																
 				v_apduForSending := m_apduNoAuthInitTester({billingDetailsADUs:={v_aduGnssBillingDetailsSectionedRoads}});	
 
+                // No wait time for sending the Initiating_Apdu
+
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
 								
                 // Step 2:
-                // Before TIMEA_MIN has passed, send valid Initiating_Apdu containing exactly one BillingDetailsADUs with
+                // Send valid Initiating_Apdu containing exactly one BillingDetailsADUs with
                 //		- all mandatory fields, and
                 //		- no optional fields,
                 //		- one tollDeclaration reference to first toll declaration in previouse TollDeclarationADU
@@ -4914,7 +4939,7 @@ module EfcInfoExchange_TestCasesTc {
                 }
                 
                 v_apduForSending:=m_apduNoAuthInitTester(v_adusTollDeclaration);
-                                                                                                                                                                            
+
                 f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(IS_GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               
@@ -5031,7 +5056,8 @@ module EfcInfoExchange_TestCasesTc {
 
 				v_apduForSending := m_apduNoAuthInitTester({billingDetailsADUs:={v_aduGnssBillingDetailsSectionedRoads}});	
 
-				// Note: No wait, as there is no minimum time beteween TollDeclaration and corresponding BillingDetails defined				
+                // No wait time for sending the Initiating_Apdu
+
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
@@ -5075,7 +5101,11 @@ module EfcInfoExchange_TestCasesTc {
 
 				v_apduForSending := m_apduNoAuthInitTester({billingDetailsADUs:={v_aduGnssBillingDetailsCordonCrossing}});	
 
-				// Note: No wait, as there is no minimum time beteween TollDeclaration and corresponding BillingDetails defined				
+                // Send Initiating_Apdu containing one valid BillingDetailsADU
+                // after IS_GNSS_BILLINGDETAILS_TIMEA_MIN_TC has passed
+                // i.e. the tester respects time limits declared by the IuT 
+				f_wait(IS_GNSS_BILLINGDETAILS_TIMEA_MIN_TC);
+
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
@@ -5165,7 +5195,8 @@ module EfcInfoExchange_TestCasesTc {
 
 				v_apduForSending := m_apduNoAuthInitTester({billingDetailsADUs:={v_aduGnssBillingDetailsSectionedRoads}});	
 
-				// Note: No wait, as there is no minimum time beteween TollDeclaration and corresponding BillingDetails defined				
+                // No wait time for sending the Initiating_Apdu
+
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
@@ -5201,7 +5232,11 @@ module EfcInfoExchange_TestCasesTc {
 
 				v_apduForSending := m_apduNoAuthInitTester({billingDetailsADUs:={v_aduGnssBillingDetailsSectionedRoads}});	
 
-				// Note: No wait, as there is no minimum time beteween TollDeclaration and corresponding BillingDetails defined				
+                // Send Initiating_Apdu containing one valid BillingDetailsADU
+                // after IS_GNSS_BILLINGDETAILS_TIMEA_MIN_TC has passed
+                // i.e. the tester respects time limits declared by the IuT 
+				f_wait(IS_GNSS_BILLINGDETAILS_TIMEA_MIN_TC);
+
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
