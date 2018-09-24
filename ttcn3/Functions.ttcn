@@ -437,7 +437,7 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
 					ActionCode_send_
 				)
 			}});
-			
+ 			
 			// respect time restriction TIMEA_MIN set by the IuT
 			f_waitTimeA(IS_GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
 			f_sendAndLogApdu(v_apduForSending);                	 	 	

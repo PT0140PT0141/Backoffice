@@ -6771,7 +6771,7 @@ module EfcInfoExchange_TestCasesTc {
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(IS_GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC);   				
-				
+ 				
                 // Step 6: Wait for NAck_Apdu with APDU ReasonCode apduNotOK(3),
                 // within GNSS.PAYMENTANNOUNCEMENT.TIME1             
                 // if not received or received outside specification or time constraints set test fail (in altstep)
