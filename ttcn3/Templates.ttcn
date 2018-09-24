@@ -1015,7 +1015,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				FeeModifiers feeModifiers optional
 			}
 			
-			//TODO Fausto: is this template really complete, please check
+			//TODO Fausto: is this template really complete, please check - Ulrik: I checked this, it seems correct to me
 			template DsrcClosedContext mw_dsrcClosedContext :={
 				closedContext := {
 					closedContextType:=(ClosedContextType_standAloneClosedSysytem_,ClosedContextType_interconnectedClosedSysytem_), 
