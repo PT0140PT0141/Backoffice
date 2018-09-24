@@ -9,6 +9,7 @@ module EfcInfoExchange_Pixits {
 	//importing other modules
 	import from EfcInfoExchange language "ASN.1:1997" all;
 	import from EfcDsrcApplication language "ASN.1:1997" all;
+	import from EfcAutonomousCharging language "ASN.1:1997" all;
 
  	     // [SEMANTIC DEFINITION] Three not existing separate users for invalid test cases
 	modulepar UserId PX_USER_NOT_EXISTING_1,PX_USER_NOT_EXISTING_2,PX_USER_NOT_EXISTING_3;
@@ -71,11 +72,11 @@ module EfcInfoExchange_Pixits {
   	     // [SEMANTIC DEFINITION] Third valid ManufacturerID
     modulepar EfcDsrcApplication.Int2 PX_MANUFACTURERID3;
     
-    type record of UserParameterRequest RecordOfUserParameterRequest;
+    type record of UserParameterRequest RoUserParameterRequest;
      
     	 // [SEMANTIC DEFINITION] List of user details parameters the IuT - acting
     	 // as a toll service provider - declares as private data
-    modulepar RecOfUserParameterRequest PX_PRIVACYBOUND_USER_PARAM_REQS:={}; 
+    modulepar RoUserParameterRequest PX_PRIVACYBOUND_USER_PARAM_REQS:={}; 
     
  	type record of integer RecordOfInteger;
 
