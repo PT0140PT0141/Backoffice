@@ -25,13 +25,6 @@ module EfcInfoExchange_TesterData language "TTCN-3:2010 Advanced Parameterizatio
             // [SEMANTIC DEFINITION] The provider identifier of the tester
             // acccording to ISO 14906 consisting of countryCode and issuerIdentifier
  		
- 		// TODO the provider values cannot be identical
- 		// ANSWER for the TODO: Yes, they can be identical. The same identifier (of data type provider) is used
- 		//ANSWER TO THE ANSWER of the TODO, WE CANNOT HAVE VALIDS AND INVALIDS THE SAME
- 		// in different data elements: APDU_ORIGINATOR, INFORMATION_SENDER, ... This is in reality
- 		// in most cases one and the same entity
- 		// FINAL ANSWER: O.k. But then the TODO was not located at the correct location. Should have been further down.
- 		// Changed the values for in invalid cases now.
         modulepar EfcDsrcApplication.Provider TD_APDU_ORIGINATOR_FOR_TESTER:={'1010010000'B, 99};
             // [SEMANTIC DEFINITION] The originator id of the tester
             // that is used in the APCI field apdu originator. Same syntax as the provider identifier. 
