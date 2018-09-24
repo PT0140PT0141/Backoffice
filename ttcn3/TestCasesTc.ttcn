@@ -578,7 +578,7 @@ module EfcInfoExchange_TestCasesTc {
 				//Build v_adus by looping through it
 				for (var integer v_loop1 :=0; v_loop1<v_noReqAdusReceived;v_loop1:=v_loop1+1) {
 					var ProvideUserDetailsADU v_theAdu;
-					var RecordOfUserParameterRequest v_listOfParametersRequested;
+					var RoUserParameterRequest v_listOfParametersRequested;
 					// capture the requested user parameters for this individual adu
 					v_listOfParametersRequested := v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1].userDetailsRequest.listOfParametersRequested;
 					// prepare adu elements
@@ -663,7 +663,7 @@ module EfcInfoExchange_TestCasesTc {
 				//Build v_adus by looping through it
 				for (var integer v_loop1 :=0; v_loop1<v_noReqAdusReceived;v_loop1:=v_loop1+1) {
 					var ProvideUserDetailsADU v_theAdu;
-					var RecordOfUserParameterRequest v_listOfParametersRequested;
+					var RoUserParameterRequest v_listOfParametersRequested;
 					// capture the requested user parameters for this individual adu
 					v_listOfParametersRequested := v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1].userDetailsRequest.listOfParametersRequested;
 					// prepare adu elements
@@ -771,7 +771,7 @@ module EfcInfoExchange_TestCasesTc {
 				// Build v_adus by looping through it
 				for (var integer v_loop1 :=0; v_loop1<v_noReqAdusReceived;v_loop1:=v_loop1+1) {
 					var ProvideUserDetailsADU v_theAdu;
-					var RecordOfUserParameterRequest v_listOfParametersRequested;
+					var RoUserParameterRequest v_listOfParametersRequested;
 					// capture the requested user parameters for this individual adu
 					v_listOfParametersRequested := v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1].userDetailsRequest.listOfParametersRequested;
 					// prepare adu elements
@@ -878,7 +878,7 @@ module EfcInfoExchange_TestCasesTc {
 				// Build v_adus by looping through it
 				for (var integer v_loop1 :=0; v_loop1<v_noReqAdusReceived;v_loop1:=v_loop1+1) {
 					var ProvideUserDetailsADU v_theAdu;
-					var RecordOfUserParameterRequest v_listOfParametersRequested;
+					var RoUserParameterRequest v_listOfParametersRequested;
 					// capture the requested user parameters for this individual adu
 					v_listOfParametersRequested := v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1].userDetailsRequest.listOfParametersRequested;
 					// prepare adu elements
@@ -980,7 +980,7 @@ module EfcInfoExchange_TestCasesTc {
 				// Build v_adus by looping through it
 				for (var integer v_loop1 :=0; v_loop1<v_noReqAdusReceived;v_loop1:=v_loop1+1) {
 					var ProvideUserDetailsADU v_theAdu;
-					var RecordOfUserParameterRequest v_listOfParametersRequested;
+					var RoUserParameterRequest v_listOfParametersRequested;
 					// capture the requested user parameters for this individual adu
 					v_listOfParametersRequested := v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1].userDetailsRequest.listOfParametersRequested;
 					// prepare adu elements
@@ -1088,7 +1088,7 @@ module EfcInfoExchange_TestCasesTc {
 				//Build v_adus by looping through it
 				for (var integer v_loop1 :=0; v_loop1<v_noReqAdusReceived;v_loop1:=v_loop1+1) {
 					var ProvideUserDetailsADU v_theAdu;
-					var RecordOfUserParameterRequest v_listOfParametersRequested;
+					var RoUserParameterRequest v_listOfParametersRequested;
 					// capture the requested user parameters for this individual adu
 					v_listOfParametersRequested := v_apduReceived.infoExchangeContent.adus.requestAdus[v_loop1].userDetailsRequest.listOfParametersRequested;
 					// prepare adu elements
@@ -3234,9 +3234,9 @@ module EfcInfoExchange_TestCasesTc {
  					v_usageStatementToBeSent := {
 						usageStatementId := v_loop,
 						tollContext := PX_TOLL_CONTEXT_ID_IUT,
-						aggregatedSingleTariffClassSession := TD_SINGLE_TARIFF_CLASS_SESSION,
-						listOfChargeObjects:=TD_LIST_OF_CHARGE_OBJECTS,
-						listOfRawUsageData := TD_LIST_OF_RAW_USAGE_DATA,
+						aggregatedSingleTariffClassSession := TD_SINGLE_TARIFF_CLASS_SESSION_1, //TODO Jan, this used to be TD_SINGLE_TARIFF_CLASS_SESSION without the "_1". I assumed that the first of the two values was OK to use. Btw, should it not be a PX? Corrected a few below 
+						listOfChargeObjects:=PX_LIST_OF_CHARGE_OBJECTS,
+						listOfRawUsageData := PX_LIST_OF_RAW_USAGE_DATA,
 						additionalUsageInformation := omit
 					};
  					v_adusToBeSent.tollDeclarationADUs[v_loop] := m_aduTollDeclarationToSendOneObe(
@@ -3599,9 +3599,9 @@ module EfcInfoExchange_TestCasesTc {
  					v_usageStatementToBeSent := {
 						usageStatementId := v_loop,
 						tollContext := PX_TOLL_CONTEXT_ID_IUT,
-						aggregatedSingleTariffClassSession := TD_SINGLE_TARIFF_CLASS_SESSION,
-						listOfChargeObjects := TD_LIST_OF_CHARGE_OBJECTS,
-						listOfRawUsageData := TD_LIST_OF_RAW_USAGE_DATA,
+						aggregatedSingleTariffClassSession := TD_SINGLE_TARIFF_CLASS_SESSION_1, //TODO Jan, see comment above
+						listOfChargeObjects := PX_LIST_OF_CHARGE_OBJECTS,
+						listOfRawUsageData := PX_LIST_OF_RAW_USAGE_DATA,
 						additionalUsageInformation := omit
 					};
 
@@ -4316,9 +4316,9 @@ module EfcInfoExchange_TestCasesTc {
  					v_usageStatementToBeSent := {
 						usageStatementId := v_loop,
 						tollContext := PX_TOLL_CONTEXT_ID_IUT,
-						aggregatedSingleTariffClassSession := TD_SINGLE_TARIFF_CLASS_SESSION,
-						listOfChargeObjects:=TD_LIST_OF_CHARGE_OBJECTS,
-						listOfRawUsageData := TD_LIST_OF_RAW_USAGE_DATA,
+						aggregatedSingleTariffClassSession := TD_SINGLE_TARIFF_CLASS_SESSION_1, //TODO Jan see comment above
+						listOfChargeObjects:=PX_LIST_OF_CHARGE_OBJECTS,
+						listOfRawUsageData := PX_LIST_OF_RAW_USAGE_DATA,
 						additionalUsageInformation := omit
 					};
  					v_listOfTollDeclarationIds[v_loop] := {TD_IDENTIFIER, v_loop}; 
@@ -4495,7 +4495,7 @@ module EfcInfoExchange_TestCasesTc {
                 // Send Initiating_Apdu containing BillingDetailsADU
                 // after IS_GNSS_BILLINGDETAILS_TIMEA_MIN_TC has passed
                 // i.e. the tester respects time limits declared by the IuT 
-				f_waitTimeA(IS_GNSS_BILLINGDETAILS_TIMEA_MIN_TC);
+				f_waitTimeA(IS_GNSS_BILLINGDETAILS_TSP_TIMEA_MIN_TC);
 
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
@@ -4622,7 +4622,7 @@ module EfcInfoExchange_TestCasesTc {
                 // Send Initiating_Apdu containing BillingDetailsADU
                 // after IS_GNSS_BILLINGDETAILS_TIMEA_MIN_TC has passed
                 // i.e. the tester respects time limits declared by the IuT 
-				f_waitTimeA(IS_GNSS_BILLINGDETAILS_TIMEA_MIN_TC);
+				f_waitTimeA(IS_GNSS_BILLINGDETAILS_TSP_TIMEA_MIN_TC);
 
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
@@ -5112,7 +5112,7 @@ module EfcInfoExchange_TestCasesTc {
                 // Send Initiating_Apdu containing BillingDetailsADU
                 // after IS_GNSS_BILLINGDETAILS_TIMEA_MIN_TC has passed
                 // i.e. the tester respects time limits declared by the IuT 
-				f_waitTimeA(IS_GNSS_BILLINGDETAILS_TIMEA_MIN_TC);
+				f_waitTimeA(IS_GNSS_BILLINGDETAILS_TSP_TIMEA_MIN_TC);
 
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
@@ -5243,7 +5243,7 @@ module EfcInfoExchange_TestCasesTc {
                 // Send Initiating_Apdu containing BillingDetailsADU
                 // after IS_GNSS_BILLINGDETAILS_TIMEA_MIN_TC has passed
                 // i.e. the tester respects time limits declared by the IuT 
-				f_waitTimeA(IS_GNSS_BILLINGDETAILS_TIMEA_MIN_TC);
+				f_waitTimeA(IS_GNSS_BILLINGDETAILS_TSP_TIMEA_MIN_TC);
 
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer

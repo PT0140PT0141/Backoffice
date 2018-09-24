@@ -25,13 +25,6 @@ module EfcInfoExchange_TesterData language "TTCN-3:2010 Advanced Parameterizatio
             // [SEMANTIC DEFINITION] The provider identifier of the tester
             // acccording to ISO 14906 consisting of countryCode and issuerIdentifier
  		
- 		// TODO the provider values cannot be identical
- 		// ANSWER for the TODO: Yes, they can be identical. The same identifier (of data type provider) is used
- 		//ANSWER TO THE ANSWER of the TODO, WE CANNOT HAVE VALIDS AND INVALIDS THE SAME
- 		// in different data elements: APDU_ORIGINATOR, INFORMATION_SENDER, ... This is in reality
- 		// in most cases one and the same entity
- 		// FINAL ANSWER: O.k. But then the TODO was not located at the correct location. Should have been further down.
- 		// Changed the values for in invalid cases now.
         modulepar EfcDsrcApplication.Provider TD_APDU_ORIGINATOR_FOR_TESTER:={'1010010000'B, 99};
             // [SEMANTIC DEFINITION] The originator id of the tester
             // that is used in the APCI field apdu originator. Same syntax as the provider identifier. 
@@ -528,7 +521,7 @@ module EfcInfoExchange_TesterData language "TTCN-3:2010 Advanced Parameterizatio
 
 	group TOLLDECLARATION{
 		modulepar EfcDsrcApplication.PaymentMeans TD_PAYMENT_MEANS_1:={
-			personalAccountNumber:=PAN1,
+			personalAccountNumber:=TD_PAN_1,
 			paymentMeansExpiryDate:={2030,12,31},
 			pamentMeansUsageControl:='0000'O
 		};
@@ -579,13 +572,14 @@ module EfcInfoExchange_TesterData language "TTCN-3:2010 Advanced Parameterizatio
     		obeStatus := omit, // shall not be used according to IAP
     		feeExclVat := { // mandatory according to IAP
     			paymentFeeAmount:= 300, // 300 units
- 				paymentFeeUnit:='2978'O, // ('2' = minor units of '978' = EUR), i.e. 3,00 EUR
- 				vatRate:=omit // no VAT applied in this case
+ 				paymentFeeUnit:='2978'O // ('2' = minor units of '978' = EUR), i.e. 3,00 EUR
+ 				//TODO Jan there is no "vatRate" in the construct PaymentFee. Can we just delete? See also three other cases
+ 				//vatRate:=omit // no VAT applied in this case
  			},				   		
     		sumVat := { // mandatory according to IAP
       			paymentFeeAmount:= 60, // 60 units
- 				paymentFeeUnit:='2978'O, // ('2' = minor units of '978' = EUR), i.e. 0,60 EUR
- 				vatRate:=2000 // expressed in units of 0,01%, i.e. 20,00%
+ 				paymentFeeUnit:='2978'O // ('2' = minor units of '978' = EUR), i.e. 0,60 EUR
+ 				//vatRate:=2000 // expressed in units of 0,01%, i.e. 20,00%
     		}
     	},
     	TD_SINGLE_TARIFF_CLASS_SESSION_2:={
@@ -597,13 +591,13 @@ module EfcInfoExchange_TesterData language "TTCN-3:2010 Advanced Parameterizatio
     		obeStatus := omit, // shall not be used according to IAP
     		feeExclVat := { // mandatory according to IAP
     			paymentFeeAmount:= 3786, // 3786 units 
- 				paymentFeeUnit:='2978'O, // ('2' = minor units of '978' = EUR), i.e. 37,86 EUR
- 				vatRate:=omit // no VAT applied in this case
+ 				paymentFeeUnit:='2978'O // ('2' = minor units of '978' = EUR), i.e. 37,86 EUR
+ 				//vatRate:=omit // no VAT applied in this case
  			},				   		
     		sumVat:={ // mandatory according to IAP
       			paymentFeeAmount:= 697, // 697 units
- 				paymentFeeUnit:='2978'O, // ('2' = minor units of '978' = EUR), i.e. 6,97 EUR
- 				vatRate:=1850 // expressed in units of 0,01%, i.e. 18,50%
+ 				paymentFeeUnit:='2978'O // ('2' = minor units of '978' = EUR), i.e. 6,97 EUR
+ 				//vatRate:=1850 // expressed in units of 0,01%, i.e. 18,50%
     		}
     	};
 			// [SEMANTIC DEFINITION] The content of the data structure aggregatedSingleTariffClassSession

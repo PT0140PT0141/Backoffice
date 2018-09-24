@@ -1808,7 +1808,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 
 			template (value) UsageStatement m_usageStatement(
 				in EfcDsrcApplication.Int2 p_usageStatementId,
-				in AggregatedSingleTariffClassSession p_aggregatedSingleTariffClassSession,
+				in AggregatedSingleTariffClassSession p_aggregatedSingleTariffClassSession
 			) modifies mw_usageStatement:={
 				usageStatementId := p_usageStatementId,
 				tollContext := PX_TOLL_CONTEXT_ID_IUT,
