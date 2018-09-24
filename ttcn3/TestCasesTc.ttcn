@@ -1497,7 +1497,7 @@ module EfcInfoExchange_TestCasesTc {
                 // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for white list
                 v_apduForSending := m_apduNoAuthInitTester({exceptionListADUs:={c_exceptionListAduWhiteValid}});
 				
-				// respect time restriction TIME0 set by the IuT before sending the adjust
+				// respect time restriction TIME0 set by the IuT before sending the whitelist
 				t_transaction.stop;
 				f_wait(IS_EXCEPTIONLIST_WHITE_TIME0_MIN_TC);
 				t_transaction.start(PX_TRANSACTION_TIMEOUT);				
@@ -1939,7 +1939,7 @@ module EfcInfoExchange_TestCasesTc {
 								
 				// Transaction 2
             	// Step 1: Send second Initiating_Apdu containing one valid ExceptionListADU of list type BLACK
-            	// before TIME0 MIN has passed = immediately after the Ack in Transaction 1 
+            	// before TIME0 MIN has passed = immediately after the Ack in transaction 1 
             	
                 // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for black list
                 v_apduForSending := m_apduNoAuthInitTester({exceptionListADUs:={c_exceptionListAduBlackValid1}});
