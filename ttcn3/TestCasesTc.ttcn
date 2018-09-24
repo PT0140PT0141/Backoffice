@@ -2629,8 +2629,8 @@ module EfcInfoExchange_TestCasesTc {
                 // Prepare and send Initiating_Apdu containing three ContractIssuerListADUs with differing manufacturerID values
 				v_apduForSending := m_apduNoAuthInitTester({contractIssuerListADUs:={
 						m_aduContractIssuerList(TD_MANUFACTURER_ID_1),
-					  	TD_CONTRACT_ISSUER_DATA_VALID_2,
-					  	TD_CONTRACT_ISSUER_DATA_VALID_3
+					  	m_aduContractIssuerList(TD_MANUFACTURER_ID_2),
+					  	m_aduContractIssuerList(TD_MANUFACTURER_ID_3)
 					  	}});                 
 				f_sendAndLogApdu(v_apduForSending);                     
                 
@@ -3028,52 +3028,52 @@ module EfcInfoExchange_TestCasesTc {
 				// Prepare and send one Initiating_Apdu containing exactly ten TollDeclarationADUs with actionCode = send
 				
 				v_apduForSending := m_apduNoAuthInitTester({tollDeclarationADUs := {
-						m_aduTollDeclarationToSendOneObe(
+						m_aduTollDeclarationOneObe(
 						{TD_IDENTIFIER, 1},
 						c_usageStatement_1,
 						1,
 						ActionCode_send_),
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						{TD_IDENTIFIER, 1},
 						c_usageStatement_2,
 						1,
 						ActionCode_send_),
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						{TD_IDENTIFIER, 1},
 						c_usageStatement_3,
 						1,
 						ActionCode_send_),
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						{TD_IDENTIFIER, 1},
 						c_usageStatement_4,
 						1,
 						ActionCode_send_),
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						{TD_IDENTIFIER, 1},
 						c_usageStatement_5,
 						1,
 						ActionCode_send_),
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						{TD_IDENTIFIER, 1},
 						c_usageStatement_6,
 						1,
 						ActionCode_send_),
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						{TD_IDENTIFIER, 1},
 						c_usageStatement_7,
 						1,
 						ActionCode_send_),
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						{TD_IDENTIFIER, 1},
 						c_usageStatement_8,
 						1,
 						ActionCode_send_),
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						{TD_IDENTIFIER, 1},
 						c_usageStatement_9,
 						1,
 						ActionCode_send_),
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						{TD_IDENTIFIER, 1},
 						c_usageStatement_10,
 						1,
@@ -3142,52 +3142,52 @@ module EfcInfoExchange_TestCasesTc {
                 // Note that it is required to send again with same TollDeclarationId,
                                 // but "corrected" TollDeclarations and a new Charge Report Id
 				v_apduForSending := m_apduNoAuthInitTester({tollDeclarationADUs:={
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						{TD_IDENTIFIER, 1},
 						c_usageStatement_11,
 						11,
 						ActionCode_adjust_),
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						{TD_IDENTIFIER, 2},
 						c_usageStatement_12,
 						12,
 						ActionCode_adjust_),
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						{TD_IDENTIFIER, 3},
 						c_usageStatement_13,
 						13,
 						ActionCode_adjust_),							
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						{TD_IDENTIFIER, 4},
 						c_usageStatement_14,
 						14,
 						ActionCode_adjust_),
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						{TD_IDENTIFIER, 5},
 						c_usageStatement_15,
 						15,
 						ActionCode_adjust_),
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						{TD_IDENTIFIER, 6},
 						c_usageStatement_16,
 						16,
 						ActionCode_adjust_),
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						{TD_IDENTIFIER, 7},
 						c_usageStatement_17,
 						17,
 						ActionCode_adjust_),
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						{TD_IDENTIFIER, 8},
 						c_usageStatement_18,
 						18,
 						ActionCode_adjust_),
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						{TD_IDENTIFIER, 9},
 						c_usageStatement_19,
 						19,
 						ActionCode_adjust_),
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						{TD_IDENTIFIER, 10},
 						c_usageStatement_20,
 						20,
@@ -3243,7 +3243,7 @@ module EfcInfoExchange_TestCasesTc {
 						listOfRawUsageData := PX_LIST_OF_RAW_USAGE_DATA,
 						additionalUsageInformation := omit
 					};
- 					v_adusToBeSent.tollDeclarationADUs[v_loop] := m_aduTollDeclarationToSendOneObe(
+ 					v_adusToBeSent.tollDeclarationADUs[v_loop] := m_aduTollDeclarationOneObe(
 							{TD_IDENTIFIER, v_loop},
 							v_usageStatementToBeSent,
 							v_loop,
@@ -3305,7 +3305,7 @@ module EfcInfoExchange_TestCasesTc {
                 // Prepare and send one Initiating_Apdu containing exactly one TollDeclarationADUs with actionCode = send
 
 				v_apduForSending := m_apduNoAuthInitTester({tollDeclarationADUs:={
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						{TD_IDENTIFIER, 1},
 						c_usageStatement_1,
 						1,
@@ -3338,7 +3338,7 @@ module EfcInfoExchange_TestCasesTc {
                 // Prepare and send one Initiating_Apdu containing exactly one TollDeclarationADUs with actionCode = revoke
                 // same TollDeclarations and same Charge Report Id
 				v_apduForSending := m_apduNoAuthInitTester({tollDeclarationADUs:={
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						{TD_IDENTIFIER, 2},
 						c_usageStatement_2,
 						2,
@@ -3403,7 +3403,7 @@ module EfcInfoExchange_TestCasesTc {
                 // Prepare and send one Initiating_Apdu containing exactly one TollDeclarationADUs with actionCode = send
 
 				v_apduForSending := m_apduNoAuthInitTester({tollDeclarationADUs:={
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						{TD_IDENTIFIER, 1},
 						c_usageStatement_1,
 						1,
@@ -3436,7 +3436,7 @@ module EfcInfoExchange_TestCasesTc {
                 // Prepare and send one Initiating_Apdu containing exactly one TollDeclarationADUs with actionCode = revoke
                 // same TollDeclarations and same Charge Report Id
 				v_apduForSending := m_apduNoAuthInitTester({tollDeclarationADUs:={
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						{TD_IDENTIFIER, 2},
 						c_usageStatement_2,
 						2,
@@ -3498,12 +3498,12 @@ module EfcInfoExchange_TestCasesTc {
                 // Prepare and send one Initiating_Apdu containing exactly two TollDeclarationADUs with actionCode = send
 
 				v_apduForSending := m_apduNoAuthInitTester({tollDeclarationADUs:={
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						{TD_IDENTIFIER, 1},
 						c_usageStatement_1,
 						1,
 						ActionCode_send_),
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						{TD_IDENTIFIER, 1},
 						c_usageStatement_1,
 						2,
@@ -3671,7 +3671,7 @@ module EfcInfoExchange_TestCasesTc {
                 // Prepare and send one Initiating_Apdu containing exactly one TollDeclaration
                 // with actionCode = NULL
 
-				var TollDeclarationADU v_aduTollDeclarationToSendOneObeOtherActionCodes:=m_aduTollDeclarationToSendOneObe(
+				var TollDeclarationADU v_aduTollDeclarationToSendOneObeOtherActionCodes:=m_aduTollDeclarationOneObe(
 					{TD_IDENTIFIER, 1},
 					c_usageStatement_1,
 					1,
@@ -3732,7 +3732,7 @@ module EfcInfoExchange_TestCasesTc {
                 // Prepare and send one Initiating_Apdu containing exactly one TollDeclaration
                 // with actionCode = 4
 
-				var TollDeclarationADU v_adu:=m_aduTollDeclarationToSendOneObe(
+				var TollDeclarationADU v_adu:=m_aduTollDeclarationOneObe(
 					{TD_IDENTIFIER, 1},
 					c_usageStatement_1,
 					1,
@@ -3831,7 +3831,7 @@ module EfcInfoExchange_TestCasesTc {
 				};
 
 				v_apduForSending := m_apduNoAuthInitTester({tollDeclarationADUs:={
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						{TD_IDENTIFIER, 1},
 						c_usageStatement_1,
 						1,
@@ -3895,7 +3895,7 @@ module EfcInfoExchange_TestCasesTc {
 				var TollDeclarationId c_refTollDeclaration1 := {TD_IDENTIFIER, 1};
 				 	
 				v_apduForSending := m_apduNoAuthInitTester({tollDeclarationADUs:={
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						c_refTollDeclaration1,
 						c_usageStatement_1,
 						1,
@@ -3981,7 +3981,7 @@ module EfcInfoExchange_TestCasesTc {
 				var TollDeclarationId c_refTollDeclaration1 := {TD_IDENTIFIER, 1};
 
 				v_apduForSending := m_apduNoAuthInitTester({tollDeclarationADUs:={
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						c_refTollDeclaration1,
 						c_usageStatement_1,
 						1,
@@ -4068,7 +4068,7 @@ module EfcInfoExchange_TestCasesTc {
 				var TollDeclarationId c_refTollDeclaration1 := {TD_IDENTIFIER, 1};
 
 				v_apduForSending := m_apduNoAuthInitTester({tollDeclarationADUs:={
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						c_refTollDeclaration1,
 						c_usageStatement_1,
 						1,
@@ -4152,7 +4152,7 @@ module EfcInfoExchange_TestCasesTc {
 				var TollDeclarationId c_refTollDeclaration1 := {TD_IDENTIFIER, 1};
 
 				v_apduForSending := m_apduNoAuthInitTester({tollDeclarationADUs:={
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						c_refTollDeclaration1,
 						c_usageStatement_1,
 						1,
@@ -4233,7 +4233,7 @@ module EfcInfoExchange_TestCasesTc {
 				var TollDeclarationId c_refTollDeclaration1 := {TD_IDENTIFIER, 1};
 
 				v_apduForSending := m_apduNoAuthInitTester({tollDeclarationADUs:={
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						c_refTollDeclaration1,
 						c_usageStatement_1,
 						1,
@@ -4326,7 +4326,7 @@ module EfcInfoExchange_TestCasesTc {
 						additionalUsageInformation := omit
 					};
  					v_listOfTollDeclarationIds[v_loop] := {TD_IDENTIFIER, v_loop}; 
- 					v_adusToBeSent.tollDeclarationADUs[v_loop] := m_aduTollDeclarationToSendOneObe(
+ 					v_adusToBeSent.tollDeclarationADUs[v_loop] := m_aduTollDeclarationOneObe(
 							v_listOfTollDeclarationIds[v_loop],
 							v_usageStatementToBeSent,
 							v_loop,
@@ -4407,7 +4407,7 @@ module EfcInfoExchange_TestCasesTc {
 				var TollDeclarationId c_refTollDeclaration1 := {TD_IDENTIFIER, 1};
 
 				v_apduForSending := m_apduNoAuthInitTester({tollDeclarationADUs:={
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						c_refTollDeclaration1,
 						c_usageStatement_1,
 						1,
@@ -4543,7 +4543,7 @@ module EfcInfoExchange_TestCasesTc {
 				var TollDeclarationId c_refTollDeclaration1 := {TD_IDENTIFIER, 1};
 
 				v_apduForSending := m_apduNoAuthInitTester({tollDeclarationADUs:={
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						c_refTollDeclaration1,
 						c_usageStatement_1,
 						1,
@@ -4674,7 +4674,7 @@ module EfcInfoExchange_TestCasesTc {
 				var TollDeclarationId c_refTollDeclaration1 := {TD_IDENTIFIER, 1};
 
 				v_apduForSending := m_apduNoAuthInitTester({tollDeclarationADUs:={
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						c_refTollDeclaration1,
 						c_usageStatement_1,
 						1,
@@ -4824,12 +4824,12 @@ module EfcInfoExchange_TestCasesTc {
 				var TollDeclarationId c_refTollDeclaration2 := {TD_IDENTIFIER, 2};
 				 	
 				v_apduForSending := m_apduNoAuthInitTester({tollDeclarationADUs:={
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						c_refTollDeclaration1,
 						c_usageStatement_1,
 						1,
 						ActionCode_send_),
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						c_refTollDeclaration2,
 						c_usageStatement_2,
 						2,
@@ -4942,7 +4942,7 @@ module EfcInfoExchange_TestCasesTc {
                 // Prepare APDU with 1+IS_GNSS_BILLINGDETAILS_TSP_PARAM1_MAX_TC TollDeclaration ADUs                
                  
                 for (var integer v_i := 1; v_i == 1+IS_GNSS_BILLINGDETAILS_TSP_PARAM1_MAX_TC; v_i := v_i + 1) {
-					v_adusTollDeclaration.tollDeclarationADUs[v_i]:=m_aduTollDeclarationToSendOneObe(
+					v_adusTollDeclaration.tollDeclarationADUs[v_i]:=m_aduTollDeclarationOneObe(
                     	{TD_IDENTIFIER, v_i}, //tollDeclarationId
                     	c_usageStatement_1, // usageStatement (always the same)
                     	v_i, // chargeReportCounter
@@ -5024,7 +5024,7 @@ module EfcInfoExchange_TestCasesTc {
 				var TollDeclarationId c_refTollDeclaration1 := {TD_IDENTIFIER, 1};
 
 				v_apduForSending := m_apduNoAuthInitTester({tollDeclarationADUs:={
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						c_refTollDeclaration1,
 						c_usageStatement_1,
 						1,
@@ -5164,7 +5164,7 @@ module EfcInfoExchange_TestCasesTc {
 				var TollDeclarationId c_refTollDeclaration1 := {TD_IDENTIFIER, 1};
 
 				v_apduForSending := m_apduNoAuthInitTester({tollDeclarationADUs:={
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						c_refTollDeclaration1,
 						c_usageStatement_1,
 						1,
@@ -5305,27 +5305,27 @@ module EfcInfoExchange_TestCasesTc {
 				// receive positive Ack
 				// wait respective time constraints until next transaction 	
 				v_apduForSending := m_apduNoAuthInitTester({tollDeclarationADUs:={
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						{TD_IDENTIFIER, 1},
 						c_usageStatement_1,
 						1,
 						ActionCode_send_),
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						{TD_IDENTIFIER, 2},
 						c_usageStatement_2,
 						2,
 						ActionCode_send_),
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						{TD_IDENTIFIER, 3},
 						c_usageStatement_3,
 						3,
 						ActionCode_send_),							
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						{TD_IDENTIFIER, 4},
 						c_usageStatement_4,
 						4,
 						ActionCode_send_),
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						{TD_IDENTIFIER, 5},
 						c_usageStatement_5,
 						5,
@@ -5404,7 +5404,7 @@ module EfcInfoExchange_TestCasesTc {
 				// receive positive Ack
 				// wait respective time constraints until next transaction 	
 				v_apduForSending := m_apduNoAuthInitTester({tollDeclarationADUs:={
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						{TD_IDENTIFIER, 1},
 						c_usageStatement_1,
 						1,
@@ -5505,7 +5505,7 @@ module EfcInfoExchange_TestCasesTc {
 				// receive positive Ack
 				// wait respective time constraints until next transaction 	
 				v_apduForSending := m_apduNoAuthInitTester({tollDeclarationADUs:={
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						{TD_IDENTIFIER, 1},
 						c_usageStatement_1,
 						1,
@@ -5618,31 +5618,31 @@ module EfcInfoExchange_TestCasesTc {
 				// Prepare APDU with five(5) TollDeclaration ADUs 
 				
 				v_apduForSending := m_apduNoAuthInitTester({tollDeclarationADUs:={
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						{TD_IDENTIFIER, 1}, //tollDeclarationId
 						c_usageStatement_1, // usageStatement
 						1, // chargeReportCounter
 						ActionCode_send_ // actionCode
 					),
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						{TD_IDENTIFIER, 2}, //tollDeclarationId
 						c_usageStatement_2, // usageStatement
 						2, // chargeReportCounter
 						ActionCode_send_ // actionCode
 					),
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						{TD_IDENTIFIER, 3}, //tollDeclarationId
 						c_usageStatement_3, // usageStatement
 						3, // chargeReportCounter
 						ActionCode_send_ // actionCode
 					),
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						{TD_IDENTIFIER, 4}, //tollDeclarationId
 						c_usageStatement_4, // usageStatement
 						4, // chargeReportCounter
 						ActionCode_send_ // actionCode
 					),
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						{TD_IDENTIFIER, 5}, //tollDeclarationId
 						c_usageStatement_5, // usageStatement
 						5, // chargeReportCounter
@@ -5801,31 +5801,31 @@ module EfcInfoExchange_TestCasesTc {
 				// Prepare APDU with five(5) TollDeclaration ADUs 
 				
 				v_apduForSending := m_apduNoAuthInitTester({tollDeclarationADUs:={
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						{TD_IDENTIFIER, 1}, //tollDeclarationId
 						c_usageStatement_1, // usageStatement
 						1, // chargeReportCounter
 						ActionCode_send_ // actionCode
 					),
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						{TD_IDENTIFIER, 2}, //tollDeclarationId
 						c_usageStatement_2, // usageStatement
 						2, // chargeReportCounter
 						ActionCode_send_ // actionCode
 					),
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						{TD_IDENTIFIER, 3}, //tollDeclarationId
 						c_usageStatement_3, // usageStatement
 						3, // chargeReportCounter
 						ActionCode_send_ // actionCode
 					),
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						{TD_IDENTIFIER, 4}, //tollDeclarationId
 						c_usageStatement_4, // usageStatement
 						4, // chargeReportCounter
 						ActionCode_send_ // actionCode
 					),
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						{TD_IDENTIFIER, 5}, //tollDeclarationId
 						c_usageStatement_5, // usageStatement
 						5, // chargeReportCounter
@@ -6036,31 +6036,31 @@ module EfcInfoExchange_TestCasesTc {
 				// Prepare APDU with five(5) TollDeclaration ADUs 
 				
 				v_apduForSending := m_apduNoAuthInitTester({tollDeclarationADUs:={
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						{TD_IDENTIFIER, 1}, //tollDeclarationId
 						c_usageStatement_1, // usageStatement
 						1, // chargeReportCounter
 						ActionCode_send_ // actionCode
 					),
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						{TD_IDENTIFIER, 2}, //tollDeclarationId
 						c_usageStatement_2, // usageStatement
 						2, // chargeReportCounter
 						ActionCode_send_ // actionCode
 					),
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						{TD_IDENTIFIER, 3}, //tollDeclarationId
 						c_usageStatement_3, // usageStatement
 						3, // chargeReportCounter
 						ActionCode_send_ // actionCode
 					),
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						{TD_IDENTIFIER, 4}, //tollDeclarationId
 						c_usageStatement_4, // usageStatement
 						4, // chargeReportCounter
 						ActionCode_send_ // actionCode
 					),
-					m_aduTollDeclarationToSendOneObe(
+					m_aduTollDeclarationOneObe(
 						{TD_IDENTIFIER, 5}, //tollDeclarationId
 						c_usageStatement_5, // usageStatement
 						5, // chargeReportCounter
@@ -6476,7 +6476,7 @@ module EfcInfoExchange_TestCasesTc {
                 // Prepare APDU with 2+GNSS.PAYMENTANNOUNCEMENT.PARAM2_MAX TollDeclaration ADUs                
                  
                 for (var integer v_i := 1; v_i == 2+IS_GNSS_PAYMENTANNOUNCEMENT_PARAM2_MAX_TC; v_i := v_i + 1) {
-					v_adusTollDeclaration.tollDeclarationADUs[v_i]:=m_aduTollDeclarationToSendOneObe(
+					v_adusTollDeclaration.tollDeclarationADUs[v_i]:=m_aduTollDeclarationOneObe(
                     	{TD_IDENTIFIER, v_i}, //tollDeclarationId
                     	c_usageStatement_1, // usageStatement (always the same)
                     	v_i, // chargeReportCounter
@@ -6696,7 +6696,7 @@ module EfcInfoExchange_TestCasesTc {
                 
                 for (var integer v_i := 1; v_i == 1+IS_GNSS_PAYMENTANNOUNCEMENT_PARAM1_MAX_TC; v_i := v_i + 1) {
                 	v_apduForSending := m_apduNoAuthInitTester({tollDeclarationADUs:={
-                    	m_aduTollDeclarationToSendOneObe(
+                    	m_aduTollDeclarationOneObe(
                         	{TD_IDENTIFIER, v_i}, //tollDeclarationId
                         	c_usageStatement_1, // usageStatement (always the same)
                         	v_i, // chargeReportCounter

@@ -203,20 +203,6 @@ module EfcInfoExchange_TesterData language "TTCN-3:2010 Advanced Parameterizatio
 			// [SEMANTIC DEFINITION] An invalid value used by the tester
 			// for the authentication key reference (refer to also ISO 14906)
 				
-		//TODO Ulrik replace also TD_CONTRACT_ISSUER_DATA_VALID_2 and 3 		//m_aduContractIssuerList with m_aduContractIssuerList(TD_MANUFACTURER_ID_1) and so on for 2,3 in valids and invalids
-
-//		modulepar ContractIssuerListADU TD_CONTRACT_ISSUER_DATA_VALID_1 := m_aduContractIssuerList(TD_MANUFACTURER_ID_1);        
-			// [SEMANTIC DEFINITION] A ContractIssuerAdu containing data elements set with valid tester data as defined in this module
-			// and applying the value TD_MANUFACTURER_ID_1 as defined in this module for manufacturerId  	
-
-        modulepar ContractIssuerListADU TD_CONTRACT_ISSUER_DATA_VALID_2 := m_aduContractIssuerList(TD_MANUFACTURER_ID_2);
-        	// [SEMANTIC DEFINITION] A ContractIssuerAdu containing data elements set with valid tester data as defined in this module
-			// and applying the value TD_MANUFACTURER_ID_2 as defied in this module for manufacturerId  	
-
-        modulepar ContractIssuerListADU TD_CONTRACT_ISSUER_DATA_VALID_3 := m_aduContractIssuerList(TD_MANUFACTURER_ID_3);
-        	// [SEMANTIC DEFINITION] A ContractIssuerAdu containing data elements set with valid tester data as defined in this module
-			// and applying the value TD_MANUFACTURER_ID_3 as defined in this module for manufacturerId  	
-
 		template ContractIssuerListADU m_contractIssuerListADU_Invalid_1(in EfcInfoExchange.Int4 p_manufacturerID) modifies m_aduContractIssuerList:=
 		{
 			uniquePartOfPAN := TD_UNIQUE_PART_OF_PAN_INVALID

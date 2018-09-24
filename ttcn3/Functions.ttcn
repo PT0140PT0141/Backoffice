@@ -343,13 +343,13 @@ module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization
             // Prepare APDU with two(2) TollDeclaration ADUs 
                 
             v_apduForSending := m_apduNoAuthInitTester({tollDeclarationADUs:={
-                m_aduTollDeclarationToSendOneObe(
+                m_aduTollDeclarationOneObe(
                     {TD_IDENTIFIER, 1}, //tollDeclarationId
                     c_usageStatement_1, // usageStatement
                     1, // chargeReportCounter
                     ActionCode_send_ // actionCode
                 ),
-                m_aduTollDeclarationToSendOneObe(
+                m_aduTollDeclarationOneObe(
                     {TD_IDENTIFIER, 2}, //tollDeclarationId
                     c_usageStatement_2, // usageStatement
                     2, // chargeReportCounter
