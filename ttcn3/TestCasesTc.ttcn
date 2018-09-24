@@ -2977,7 +2977,7 @@ module EfcInfoExchange_TestCasesTc {
                 // Send second Initiating_Apdu containing ten valid TollDeclarationADUs with actionCode = revoke
                 // after IS_GNSS_TOLLDECLARATIONS_TIMEA_MIN_TC has passed
                 // i.e. the tester respects time limits declared by the IuT 
-				f_wait(IS_GNSS_TOLLDECLARATIONS_TIMEA_MIN_TC);
+				f_waitTimeA(IS_GNSS_TOLLDECLARATIONS_TIMEA_MIN_TC);
 
                 // Prepare and send one Initiating_Apdu containing exactly ten TollDeclarationADUs with actionCode = revoke
                 // Note that it is required to send again with same TollDeclarationId,
@@ -3132,7 +3132,7 @@ module EfcInfoExchange_TestCasesTc {
                 // Send second Initiating_Apdu containing ten valid TollDeclarationADUs with actionCode = revoke
                 // after IS_GNSS_TOLLDECLARATIONS_TIMEA_MIN_TC has passed
                 // i.e. the tester respects time limits declared by the IuT 
-				f_wait(IS_GNSS_TOLLDECLARATIONS_TIMEA_MIN_TC);
+				f_waitTimeA(IS_GNSS_TOLLDECLARATIONS_TIMEA_MIN_TC);
 				
                 // Prepare and send one Initiating_Apdu containing exactly ten TollDeclarationADUs with actionCode = adjust
                 // Note that it is required to send again with same TollDeclarationId,
@@ -3331,11 +3331,6 @@ module EfcInfoExchange_TestCasesTc {
 				//		- usageStatement; and
 				//		- actionCode = revoke
 
-                // Send second Initiating_Apdu containing one valid TollDeclarationADUs with actionCode = revoke
-                // after IS_GNSS_TOLLDECLARATIONS_TIMEA_MIN_TC has passed
-                // i.e. the tester respects time limits declared by the IuT 
-				f_wait(IS_GNSS_TOLLDECLARATIONS_TIMEA_MIN_TC);
-
                 // Prepare and send one Initiating_Apdu containing exactly one TollDeclarationADUs with actionCode = revoke
                 // same TollDeclarations and same Charge Report Id
 				v_apduForSending := m_apduNoAuthInitTester({tollDeclarationADUs:={
@@ -3346,6 +3341,15 @@ module EfcInfoExchange_TestCasesTc {
 						ActionCode_revoke_)
 					}});
                 
+                // Send Initiating_Apdu containing TollDeclarationADUs with actionCode = revoke
+                // after IS_GNSS_TOLLDECLARATIONS_TIMEA_MIN_TC has passed
+                // i.e. the tester respects time limits declared by the IuT 
+				f_waitTimeA(IS_GNSS_TOLLDECLARATIONS_TIMEA_MIN_TC);
+
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
+                // Start timer
+                t_step.start(IS_GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               				
+
                 // Step 3:
                 // Wait for NAck_Apdu with
                 //		- ({0,semanticError(3000)}) OR
@@ -3425,11 +3429,6 @@ module EfcInfoExchange_TestCasesTc {
 				//		- usageStatement; and
 				//		- actionCode = adjust
 
-                // Send second Initiating_Apdu containing one valid TollDeclarationADUs with actionCode = revoke
-                // after IS_GNSS_TOLLDECLARATIONS_TIMEA_MIN_TC has passed
-                // i.e. the tester respects time limits declared by the IuT 
-				f_wait(IS_GNSS_TOLLDECLARATIONS_TIMEA_MIN_TC);
-
                 // Prepare and send one Initiating_Apdu containing exactly one TollDeclarationADUs with actionCode = revoke
                 // same TollDeclarations and same Charge Report Id
 				v_apduForSending := m_apduNoAuthInitTester({tollDeclarationADUs:={
@@ -3439,6 +3438,15 @@ module EfcInfoExchange_TestCasesTc {
 						2,
 						ActionCode_adjust_)
 					}});
+
+                // Send Initiating_Apdu containing TollDeclarationADUs with actionCode = adjust
+                // after IS_GNSS_TOLLDECLARATIONS_TIMEA_MIN_TC has passed
+                // i.e. the tester respects time limits declared by the IuT 
+				f_waitTimeA(IS_GNSS_TOLLDECLARATIONS_TIMEA_MIN_TC);
+
+				f_sendAndLogApdu(v_apduForSending);                	 	 	
+                // Start timer
+                t_step.start(IS_GNSS_TOLLDECLARATIONS_TIME1_MAX_TC);               				
                 
                 // Step 3:
                 // Wait for NAck_Apdu with
@@ -4484,10 +4492,10 @@ module EfcInfoExchange_TestCasesTc {
 
 				v_apduForSending := m_apduNoAuthInitTester({billingDetailsADUs:={v_aduGnssBillingDetailsCordonCrossing}});	
 
-                // Send Initiating_Apdu containing one valid BillingDetailsADU
+                // Send Initiating_Apdu containing BillingDetailsADU
                 // after IS_GNSS_BILLINGDETAILS_TIMEA_MIN_TC has passed
                 // i.e. the tester respects time limits declared by the IuT 
-				f_wait(IS_GNSS_BILLINGDETAILS_TIMEA_MIN_TC);
+				f_waitTimeA(IS_GNSS_BILLINGDETAILS_TIMEA_MIN_TC);
 
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
@@ -4611,10 +4619,10 @@ module EfcInfoExchange_TestCasesTc {
 
 				v_apduForSending := m_apduNoAuthInitTester({billingDetailsADUs:={v_aduGnssBillingDetailsSectionedRoads}});	
 
-                // Send Initiating_Apdu containing one valid BillingDetailsADU
+                // Send Initiating_Apdu containing BillingDetailsADU
                 // after IS_GNSS_BILLINGDETAILS_TIMEA_MIN_TC has passed
                 // i.e. the tester respects time limits declared by the IuT 
-				f_wait(IS_GNSS_BILLINGDETAILS_TIMEA_MIN_TC);
+				f_waitTimeA(IS_GNSS_BILLINGDETAILS_TIMEA_MIN_TC);
 
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
@@ -4976,7 +4984,7 @@ module EfcInfoExchange_TestCasesTc {
 				v_apduForSending := m_apduNoAuthInitTester(v_adusBillingDetails);
 				                   
                 // respect time restriction TIMEA_MIN set by the IuT
-                f_wait(IS_GNSS_BILLINGDETAILS_TSP_TIMEA_MIN_TC);
+                f_waitTimeA(IS_GNSS_BILLINGDETAILS_TSP_TIMEA_MIN_TC);
                 f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
@@ -5101,10 +5109,10 @@ module EfcInfoExchange_TestCasesTc {
 
 				v_apduForSending := m_apduNoAuthInitTester({billingDetailsADUs:={v_aduGnssBillingDetailsCordonCrossing}});	
 
-                // Send Initiating_Apdu containing one valid BillingDetailsADU
+                // Send Initiating_Apdu containing BillingDetailsADU
                 // after IS_GNSS_BILLINGDETAILS_TIMEA_MIN_TC has passed
                 // i.e. the tester respects time limits declared by the IuT 
-				f_wait(IS_GNSS_BILLINGDETAILS_TIMEA_MIN_TC);
+				f_waitTimeA(IS_GNSS_BILLINGDETAILS_TIMEA_MIN_TC);
 
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
@@ -5232,10 +5240,10 @@ module EfcInfoExchange_TestCasesTc {
 
 				v_apduForSending := m_apduNoAuthInitTester({billingDetailsADUs:={v_aduGnssBillingDetailsSectionedRoads}});	
 
-                // Send Initiating_Apdu containing one valid BillingDetailsADU
+                // Send Initiating_Apdu containing BillingDetailsADU
                 // after IS_GNSS_BILLINGDETAILS_TIMEA_MIN_TC has passed
                 // i.e. the tester respects time limits declared by the IuT 
-				f_wait(IS_GNSS_BILLINGDETAILS_TIMEA_MIN_TC);
+				f_waitTimeA(IS_GNSS_BILLINGDETAILS_TIMEA_MIN_TC);
 
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
@@ -5708,7 +5716,7 @@ module EfcInfoExchange_TestCasesTc {
 				}});
 				
 				// respect time restriction TIMEA_MIN set by the IuT
-				f_wait(IS_GNSS_BILLINGDETAILS_TSP_TIMEA_MIN_TC);
+				f_waitTimeA(IS_GNSS_BILLINGDETAILS_TSP_TIMEA_MIN_TC);
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
@@ -5751,7 +5759,7 @@ module EfcInfoExchange_TestCasesTc {
 				}});
 				
 				// respect time restriction TIMEA_MIN set by the IuT
-				f_wait(IS_GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
+				f_waitTimeA(IS_GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(IS_GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC);   				
@@ -5890,7 +5898,7 @@ module EfcInfoExchange_TestCasesTc {
 				}});
 				
 				// respect time restriction TIMEA_MIN set by the IuT
-				f_wait(IS_GNSS_BILLINGDETAILS_TSP_TIMEA_MIN_TC);
+				f_waitTimeA(IS_GNSS_BILLINGDETAILS_TSP_TIMEA_MIN_TC);
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
@@ -5935,7 +5943,7 @@ module EfcInfoExchange_TestCasesTc {
 				}});
 				
 				// respect time restriction TIMEA_MIN set by the IuT
-				f_wait(IS_GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
+				f_waitTimeA(IS_GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(IS_GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC);   				
@@ -5984,7 +5992,7 @@ module EfcInfoExchange_TestCasesTc {
 				}});
 				
 				// respect time restriction TIMEA_MIN set by the IuT
-				f_wait(IS_GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
+				f_waitTimeA(IS_GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(IS_GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC);   				
@@ -6124,7 +6132,7 @@ module EfcInfoExchange_TestCasesTc {
 				}});
 				
 				// respect time restriction TIMEA_MIN set by the IuT
-				f_wait(IS_GNSS_BILLINGDETAILS_TSP_TIMEA_MIN_TC);
+				f_waitTimeA(IS_GNSS_BILLINGDETAILS_TSP_TIMEA_MIN_TC);
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
@@ -6167,7 +6175,7 @@ module EfcInfoExchange_TestCasesTc {
 				}});
 				
 				// respect time restriction TIMEA_MIN set by the IuT
-				f_wait(IS_GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
+				f_waitTimeA(IS_GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(IS_GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC);   				
@@ -6209,7 +6217,7 @@ module EfcInfoExchange_TestCasesTc {
 				}});
 				
 				// respect time restriction TIMEA_MIN set by the IuT
-				f_wait(IS_GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
+				f_waitTimeA(IS_GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(IS_GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC);   				
@@ -6276,7 +6284,7 @@ module EfcInfoExchange_TestCasesTc {
 				}});
 				
 				// respect time restriction TIMEA_MIN set by the IuT
-				f_wait(IS_GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
+				f_waitTimeA(IS_GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(IS_GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC);   				
@@ -6346,7 +6354,7 @@ module EfcInfoExchange_TestCasesTc {
 				}});
 				
 				// respect time restriction TIMEA_MIN set by the IuT
-				f_wait(IS_GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
+				f_waitTimeA(IS_GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(IS_GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC);   				
@@ -6419,7 +6427,7 @@ module EfcInfoExchange_TestCasesTc {
 				}});
 				
 				// respect time restriction TIMEA_MIN set by the IuT
-				f_wait(IS_GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
+				f_waitTimeA(IS_GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(IS_GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC);   				
@@ -6508,7 +6516,7 @@ module EfcInfoExchange_TestCasesTc {
 				v_apduForSending := m_apduNoAuthInitTester(v_adusBillingDetails);
 				                   
                 // respect time restriction TIMEA_MIN set by the IuT
-                f_wait(IS_GNSS_BILLINGDETAILS_TSP_TIMEA_MIN_TC);
+                f_waitTimeA(IS_GNSS_BILLINGDETAILS_TSP_TIMEA_MIN_TC);
                 f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
@@ -6567,7 +6575,7 @@ module EfcInfoExchange_TestCasesTc {
 				}});
 				
 				// respect time restriction TIMEA_MIN set by the IuT
-				f_wait(IS_GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
+				f_waitTimeA(IS_GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(IS_GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC);   				
@@ -6636,7 +6644,7 @@ module EfcInfoExchange_TestCasesTc {
 				}});
 				
 				// respect time restriction TIMEA_MIN set by the IuT
-				f_wait(IS_GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
+				f_waitTimeA(IS_GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(IS_GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC);   				
@@ -6727,7 +6735,7 @@ module EfcInfoExchange_TestCasesTc {
 				v_apduForSending := m_apduNoAuthInitTester(v_adus);
                 
                 // respect time restriction TIMEA_MIN set by the IuT
-                f_wait(IS_GNSS_BILLINGDETAILS_TSP_TIMEA_MIN_TC);
+                f_waitTimeA(IS_GNSS_BILLINGDETAILS_TSP_TIMEA_MIN_TC);
                 f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(IS_GNSS_BILLINGDETAILS_TSP_TIME1_MAX_TC);   				
@@ -6759,7 +6767,7 @@ module EfcInfoExchange_TestCasesTc {
 				v_apduForSending := m_apduNoAuthInitTester(v_adus);
 				
 				// respect time restriction TIMEA_MIN set by the IuT
-				f_wait(IS_GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
+				f_waitTimeA(IS_GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(IS_GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC);   				
