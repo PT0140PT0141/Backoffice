@@ -1492,12 +1492,16 @@ module EfcInfoExchange_TestCasesTc {
 						f_logReceivedThenCheckAndStopTime(IS_EXCEPTIONLIST_BLACK_TIME1_MIN_TC);
 					}
 				}
-				
-				// Note: Step 2 may start immediately as no TIMEA is defined for EXCEPTIONLIST
-				
+								
 				// Step 2 / loop 2 for white list:
                 // Prepare and send one Initiating_Apdu containing exactly one ExceptionListADU for white list
                 v_apduForSending := m_apduNoAuthInitTester({exceptionListADUs:={c_exceptionListAduWhiteValid}});
+				
+				// respect time restriction TIME0 set by the IuT before sending the adjust
+				t_transaction.stop;
+				f_wait(IS_EXCEPTIONLIST_WHITE_TIME0_MIN_TC);
+				t_transaction.start(PX_TRANSACTION_TIMEOUT);				
+				
 				f_sendAndLogApdu(v_apduForSending);                	
   	
                 // Start timer
@@ -5991,8 +5995,11 @@ module EfcInfoExchange_TestCasesTc {
 					)
 				}});
 				
-				// respect time restriction TIMEA_MIN set by the IuT
-				f_waitTimeA(IS_GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
+				// respect time restriction TIME0 set by the IuT before sending the adjust
+				t_transaction.stop;
+				f_wait(IS_GNSS_PAYMENTANNOUNCEMENT_TIME0_MIN_TC);
+				t_transaction.start(PX_TRANSACTION_TIMEOUT);
+
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(IS_GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC);   				
@@ -6216,8 +6223,11 @@ module EfcInfoExchange_TestCasesTc {
 					)
 				}});
 				
-				// respect time restriction TIMEA_MIN set by the IuT
-				f_waitTimeA(IS_GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
+				// respect time restriction TIME0 set by the IuT before sending the revoke
+				t_transaction.stop;
+				f_wait(IS_GNSS_PAYMENTANNOUNCEMENT_TIME0_MIN_TC);
+				t_transaction.start(PX_TRANSACTION_TIMEOUT);
+
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(IS_GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC);   				
@@ -6353,8 +6363,11 @@ module EfcInfoExchange_TestCasesTc {
 					)
 				}});
 				
-				// respect time restriction TIMEA_MIN set by the IuT
-				f_waitTimeA(IS_GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
+				// respect time restriction TIME0 set by the IuT before sending the revoke
+				t_transaction.stop;
+				f_wait(IS_GNSS_PAYMENTANNOUNCEMENT_TIME0_MIN_TC);
+				t_transaction.start(PX_TRANSACTION_TIMEOUT);
+
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
                 t_step.start(IS_GNSS_PAYMENTANNOUNCEMENT_TIME1_MAX_TC);   				
