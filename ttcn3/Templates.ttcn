@@ -1466,7 +1466,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 							listOfSections := {
 								{
 									tollContext := omit, // shall not be used in IAP
-									chargeObjectId := PX_CHARGE_OBJECT_ID,
+									chargeObjectId := TD_CHARGE_OBJECT_ID,
 									chargeObjectName := omit, // shall not be used in IAP
 									tollEventId := TD_TOLL_EVENT_ID, // mandatory in IAP
 									tollEventTime := fx_getUtc(-2000000), // mandatory in IAP
@@ -1484,12 +1484,11 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 					externalCosts := omit
 				};
 				
-				//TODO break out "magic numbers" to tester data
 				template (value) UsageList m_travellingInAreaGnssUsageList := {
 					usageListEntry := {
 						forTravellingInArea :={		
 	        				areaDisplayName := "The area name",
-	        				accumulatedDistance :=10 ,
+	        				accumulatedDistance :=TD_TOLL_AREA_ACCUMULATED_DISTANCE,
 	        				beginOfAccumulation := fx_getUtc(-3600),
 	        				endOfAccumulation := fx_getUtc(-1800),
 	        				fee := omit, // shall not be used in IAP
@@ -1501,14 +1500,13 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 					externalCosts := omit
 				}
 
-				//TODO Jan break out "magic numbers" below and put in Tester Data
 				template (value) UsageList m_stayingInAreaGnssUsageList := {
 					usageListEntry :={
 						forStayingInArea :={
-							areaDisplayName := "Area 51, Nevada",
+							areaDisplayName := TD_TOLL_AREA_NAME,
 							qualifier := omit,
-							stayedDuration := 1800,
-	        				chargeUnit := {time:={dur:=100,durUnit:=DurUnit_seconds_}}, //event and distance shall not be used
+							stayedDuration := TD_AREA_STAY_DURATION,
+	        				chargeUnit := TD_STAY_AREA_CHARGE_UNIT, //event and distance shall not be used
 	        				fee := omit, // shall not be used in IAP
 	        				feeQualifier := omit // shall not be used in IAP
 						}
@@ -1523,13 +1521,13 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 						forCordonCrossings :={		
 							qualifier := omit,
 	        				entranceChargeObject := {
-								entryLocationId:=100,        //is ChargeObjectDesignation (Int4),
-								entryLocationClass:=200      //is LocationClassId (Int4)	        				
+								entryLocationId:=TD_ENTRY_LOCATION,        //is ChargeObjectDesignation (Int4),
+								entryLocationClass:=TD_LOCATION_CLASS      //is LocationClassId (Int4)	        				
 	        				},
 	        				entranceChargeObjectName := omit,
 	        				exitChargeObject := {
-								exitLocationId:=200,        //is ChargeObjectDesignation (Int4),
-								exitLocationClass:={{locationClass:=200}}      //is LocationClassId (Int4)	        				
+								exitLocationId:=TD_EXIT_LOCATION,        //is ChargeObjectDesignation (Int4),
+								exitLocationClass:={{locationClass:=TD_LOCATION_CLASS}}      //is LocationClassId (Int4)	        				
 							}, // mandatory in IAP
 	        				exitChargeObjectName := omit, //shall not be used in IAP
 	        				exitTime := fx_getUtc(-3600), // mandatory in IAP
@@ -1540,10 +1538,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 					includedDiscounts := omit,
 					associatedEventData := omit, // shall not be used in IAP
 					externalCosts := omit
-				}
-
-	
-							
+				}			
 				
 			}//end of group GNSS_BILLINGDETAILS
 													 							

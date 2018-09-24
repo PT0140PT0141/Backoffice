@@ -103,13 +103,7 @@ module EfcInfoExchange_Pixits {
 	 	
   	     // [SEMANTIC DEFINITION] Billing Details number (BillingDetailsId.billingDetailsNum) not known for invalid test cases
     modulepar integer PX_BILLINGDETAILSNUM_NOT_EXISTING:=14;
-    
-  	     // [SEMANTIC DEFINITION] Charge object id of one charge object in the domain managed by the toll charger
-    modulepar EfcAutonomousCharging.ChargeObjectId PX_CHARGE_OBJECT_ID:={
-			chargeReportFinalRecipient:=omit,
-			chargeObjectDesignation:= 333333
-		};						
-	
+    	
   	     // [SEMANTIC DEFINITION] Not existing Charge object designation (part of ChargeObjectId) for invalid test cases
 	modulepar EfcDsrcApplication.Int4 PX_CHARGE_OBJECT_DESIGNATION_NON_EXISTING:=999999;
 	
