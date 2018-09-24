@@ -1458,7 +1458,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 					{p_tollDeclarationId},
 					ActionCode_send_
 				);
-				
+ 				
 				template (value) UsageList m_sectionedRoadGnssUsageList modifies mw_sectionedRoadGnssUsageList := {
 					usageListEntry:= {
 						forSectionedRoads:= {		
