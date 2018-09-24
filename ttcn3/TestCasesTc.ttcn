@@ -2628,7 +2628,7 @@ module EfcInfoExchange_TestCasesTc {
                 // Step 1:
                 // Prepare and send Initiating_Apdu containing three ContractIssuerListADUs with differing manufacturerID values
 				v_apduForSending := m_apduNoAuthInitTester({contractIssuerListADUs:={
-					  	TD_CONTRACT_ISSUER_DATA_VALID_1,
+						m_aduContractIssuerList(TD_MANUFACTURER_ID_1),
 					  	TD_CONTRACT_ISSUER_DATA_VALID_2,
 					  	TD_CONTRACT_ISSUER_DATA_VALID_3
 					  	}});                 
@@ -2719,14 +2719,14 @@ module EfcInfoExchange_TestCasesTc {
 
                 // Step 0: Send Initiating_Apdu containing one ContractIssuerListADU
                 // Prepare and send one Initiating_Apdu containing exactly one ContractIssuerListADU
-                v_apduForSending := m_apduNoAuthInitTester({contractIssuerListADUs:={TD_CONTRACT_ISSUER_DATA_VALID_1}});
+                v_apduForSending := m_apduNoAuthInitTester({contractIssuerListADUs:={m_aduContractIssuerList(TD_MANUFACTURER_ID_1)}});
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                                                 
                 // Step 1: Send second Initiating_Apdu containing one ContractIssuerListADU
                 // before DSRC.CONTRACTISSUERLIST.TIMEA_MIN has passed
 				f_wait(0.0);
 
-				v_apduForSending := m_apduNoAuthInitTester({contractIssuerListADUs:={TD_CONTRACT_ISSUER_DATA_VALID_1}});                 
+				v_apduForSending := m_apduNoAuthInitTester({contractIssuerListADUs:={m_aduContractIssuerList(TD_MANUFACTURER_ID_1)}});                 
 				f_sendAndLogApdu(v_apduForSending); 
                 
                 // Start timer
@@ -3238,7 +3238,7 @@ module EfcInfoExchange_TestCasesTc {
  					v_usageStatementToBeSent := {
 						usageStatementId := v_loop,
 						tollContext := PX_TOLL_CONTEXT_ID_IUT,
-						aggregatedSingleTariffClassSession := TD_SINGLE_TARIFF_CLASS_SESSION_1, //TODO Jan, this used to be TD_SINGLE_TARIFF_CLASS_SESSION without the "_1". I assumed that the first of the two values was OK to use. Btw, should it not be a PX? Corrected a few below 
+						aggregatedSingleTariffClassSession := TD_SINGLE_TARIFF_CLASS_SESSION_1, 
 						listOfChargeObjects:=PX_LIST_OF_CHARGE_OBJECTS,
 						listOfRawUsageData := PX_LIST_OF_RAW_USAGE_DATA,
 						additionalUsageInformation := omit
@@ -3603,7 +3603,7 @@ module EfcInfoExchange_TestCasesTc {
  					v_usageStatementToBeSent := {
 						usageStatementId := v_loop,
 						tollContext := PX_TOLL_CONTEXT_ID_IUT,
-						aggregatedSingleTariffClassSession := TD_SINGLE_TARIFF_CLASS_SESSION_1, //TODO Jan, see comment above
+						aggregatedSingleTariffClassSession := TD_SINGLE_TARIFF_CLASS_SESSION_1,
 						listOfChargeObjects := PX_LIST_OF_CHARGE_OBJECTS,
 						listOfRawUsageData := PX_LIST_OF_RAW_USAGE_DATA,
 						additionalUsageInformation := omit
@@ -4320,7 +4320,7 @@ module EfcInfoExchange_TestCasesTc {
  					v_usageStatementToBeSent := {
 						usageStatementId := v_loop,
 						tollContext := PX_TOLL_CONTEXT_ID_IUT,
-						aggregatedSingleTariffClassSession := TD_SINGLE_TARIFF_CLASS_SESSION_1, //TODO Jan see comment above
+						aggregatedSingleTariffClassSession := TD_SINGLE_TARIFF_CLASS_SESSION_1, 
 						listOfChargeObjects:=PX_LIST_OF_CHARGE_OBJECTS,
 						listOfRawUsageData := PX_LIST_OF_RAW_USAGE_DATA,
 						additionalUsageInformation := omit
@@ -4713,17 +4713,17 @@ module EfcInfoExchange_TestCasesTc {
                  
  				var Adus v_adus;
 				
-				//TODO extract magic numbers into Tester Data (possibly as constants)
 				v_adus.billingDetailsADUs[0]:= m_aduGnssBillingDetailsSpecialised(1,TD_USERID_1, c_refTollDeclaration1);
 				v_adus.billingDetailsADUs[0].billingDetailsId.issuerId:=TD_INVALID_APDU_ORIGINATOR_TESTER; //billingDetailsIssuerIdRejected
 
 
 				v_adus.billingDetailsADUs[1]:=m_aduGnssBillingDetailsSpecialised(2,	TD_USERID_1, c_refTollDeclaration1);
 				v_adus.billingDetailsADUs[1].tollContext:= TD_INVALID_APDU_ORIGINATOR_TESTER; ///billingDetailsContextIdRejected
-				//TODO Consider renaming TD_INVALID_APDU_ORIGINATOR_TESTER to TD_PROVIDER_NON_EXISTING
+			
 
 				v_adus.billingDetailsADUs[2]:=m_aduGnssBillingDetailsSpecialised(3,	{}, c_refTollDeclaration1); //billingDetailsUserIdRejected 							
 
+				//TODO Jan extract magic numbers into Tester Data (possibly as constants)
 				v_adus.billingDetailsADUs[3]:=m_aduGnssBillingDetailsSpecialised(4,	TD_USERID_1, c_refTollDeclaration1);
 				v_adus.billingDetailsADUs[3].billingDetailsAmount.paymentFeeUnit:='0999'O; //this corresponds to ISO 4217 "No currency", shall provoke billingDetailsAmountRejected
 							
@@ -5995,10 +5995,8 @@ module EfcInfoExchange_TestCasesTc {
 					)
 				}});
 				
-				// respect time restriction TIME0 set by the IuT before sending the adjust
-				t_transaction.stop;
-				f_wait(IS_GNSS_PAYMENTANNOUNCEMENT_TIME0_MIN_TC);
-				t_transaction.start(PX_TRANSACTION_TIMEOUT);
+				// respect time restriction TIMEA set by the IuT before sending the adjust
+				f_waitTimeA(IS_GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
 
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
@@ -6223,10 +6221,8 @@ module EfcInfoExchange_TestCasesTc {
 					)
 				}});
 				
-				// respect time restriction TIME0 set by the IuT before sending the revoke
-				t_transaction.stop;
-				f_wait(IS_GNSS_PAYMENTANNOUNCEMENT_TIME0_MIN_TC);
-				t_transaction.start(PX_TRANSACTION_TIMEOUT);
+				// respect time restriction TIMEA set by the IuT before sending the adjust
+				f_waitTimeA(IS_GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
 
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
@@ -6363,10 +6359,8 @@ module EfcInfoExchange_TestCasesTc {
 					)
 				}});
 				
-				// respect time restriction TIME0 set by the IuT before sending the revoke
-				t_transaction.stop;
-				f_wait(IS_GNSS_PAYMENTANNOUNCEMENT_TIME0_MIN_TC);
-				t_transaction.start(PX_TRANSACTION_TIMEOUT);
+				// respect time restriction TIMEA set by the IuT before sending the adjust
+				f_waitTimeA(IS_GNSS_PAYMENTANNOUNCEMENT_TIMEA_MIN_TC);
 
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer

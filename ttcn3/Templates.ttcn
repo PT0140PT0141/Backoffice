@@ -895,7 +895,20 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 					 					
 		}
 
-		group DSRC_CONTRACTISSUERLIST {		
+		group DSRC_CONTRACTISSUERLIST {	
+
+			template ContractIssuerListADU m_aduContractIssuerList(in EfcInfoExchange.Int4 p_manufacturerID):={
+				efcContextMark := TD_EFC_CONTEXT_MARK,
+				equipmentClass := TD_EQUIPMENT_CLASS,
+				manufacturerID := p_manufacturerID,
+				uniquePartOfPAN := TD_UNIQUE_PART_OF_PAN,
+				typeOfEFCApplication := TD_TYPE_OF_EFCAPPLICATION,
+				securityLevel := TD_SECURITY_LEVEL,
+				acCrKeyReference := TD_AC_CR_KEY_REFERENCE,
+				authKeyReference := TD_AUTH_KEY_REFERENCE,
+				validFrom := fx_getUtc(-3600*24) 
+		   	}			
+				
 			template ContractIssuerListADU mw_aduContractIssuerList(in EfcDsrcApplication.Int2 p_manufacturerID) := {
 				efcContextMark := ?,
 				equipmentClass := ?,
@@ -1002,7 +1015,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				FeeModifiers feeModifiers optional
 			}
 			
-			//TODO is this template really complete, please check
+			//TODO Fausto: is this template really complete, please check
 			template DsrcClosedContext mw_dsrcClosedContext :={
 				closedContext := {
 					closedContextType:=(ClosedContextType_standAloneClosedSysytem_,ClosedContextType_interconnectedClosedSysytem_), 
@@ -1033,7 +1046,6 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				feeModifiers := omit
 			}
 
-			//TODO is this template really complete, please check
 			template EfcContextDataADU mw_aduDsrcClosedContextEfcContextData := {
 				entityOverview := omit,
 				domainType:={
@@ -1619,7 +1631,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 										feeQualifier:=FeeQualifier_standardCharge_
 									}
 								},
-								includedDiscounts:=omit, //TODO PT140 We need to check WHERE the includedDiscounts, asociatedEventData and externalCosts are to be set. Is it on this level? Or perhaps on the top level of the ADU
+								includedDiscounts:=omit, 
 								associatedEventData:=omit,
 								externalCosts:=omit
 							}}
@@ -1641,59 +1653,6 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
    			
    			template Adus mw_adusTollDeclaration := Adus:{tollDeclarationADUs:=?};
 			
-//			template (value) TollDeclarationADU m_aduTollDeclaration(in integer p_declarationId, in EfcAutonomousContextData.Int4 p_chargeReportCounter):={
-//				tollDeclarationId:={
-//					issuerId:=TD_IDENTIFIER,
-//					declarationId:=p_declarationId
-//				},
-//				gnssTollDeclaration:={
-//					{
-//						chargeReport:={
-//							protocolVersion:=AidIdentifier_iso17575_1_2016_,
-//							obeId:={
-//								manufacturerId:=1,		//TODO Jan Check correct values of this number, does it need to be in a modulepar?
-//								equipmentObuId:='01'O	//TODO Jan Check correct values of this number, does it need to be in a modulepar?
-//							},
-//							vehicleLPNr:={
-//								countryCode:='0000000001'B,//TODO Jan Check correct values of this number, does it need to be in a modulepar?
-//								alphabetIndicator:=latinAlphabetNo1,//TODO Jan Check correct values of this number, does it need to be in a modulepar?
-//								licencePlateNumber:='001122001122'O //TODO Jan Check correct values of this number, does it need to be in a modulepar?
-//							},
-//							paymentMeans:={
-//								personalAccountNumber:='00000000000000000001'O,//TODO Jan Check correct values of this number, does it need to be in a modulepar?
-//								paymentMeansExpiryDate:={
-//									year:=2100,
-//									month:=1,
-//									day:=1
-//								},  
-//								pamentMeansUsageControl:='0001'O //TODO Jan Check correct values of this number, does it need to be in a modulepar?
-//							},
-//							tollContext:=TD_IDENTIFIER,//TODO Jan Check correct values of this number,
-//							serviceProviderContract:={
-//								contractProvider:=TD_IDENTIFIER,//TODO Jan Check correct values of this number
-//								typeOfContract:='0001'O, //TODO Jan Check what is a valid value for typeOfContract
-//								contextVersion:=1
-//							},
-//							usageStatementList:={
-//								{
-//									usageStatement:={
-//										usageStatementId:=1,
-//										tollContext:= TD_IDENTIFIER//TODO Jan Check correct values of this number, shall be identical to attribute tollContext of Chargereport
-//										//TODO Jan need to figure which way to use charge objects to use here below. I think one needs to be chosen
-//										//TODO Jan WARNING there are several PARAMS that needs to be taken into account here GNSS.TOLLDECLARATION.PARAM1-2-3-4-5_MAX
-//										//	        AggregatedSingleTariffClassSession  aggregatedSingleTariffClassSession optional,
-//										//	        set of DetectedChargeObject         listOfChargeObjects optional,
-//										//	        ListOfRawUsageData                  listOfRawUsageData optional,
-//									}
-//								}
-//							},
-//							chargeReportCounter:=p_chargeReportCounter
-//						}
-//					}
-//				},
-//				actionCode:=omit
-//			}
-
 			template TollDeclarationADU mw_aduTollDeclaration := {
 				tollDeclarationId := ?, // shall be present 
 				gnssTollDeclaration := {
@@ -1703,13 +1662,6 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				},
 				actionCode:= (ActionCode_send_, ActionCode_revoke_ ,ActionCode_adjust_ )
 			}
-
-			// this is a template which can be used be the tester
-			// omitted fields accdoring to ISO16986 rules are not present
-			// parameters allow the tester to modify data per invividual TollDeclaration ADU
-			// can be used for valid and invalid Toll Declarations
-			// allows for one TollDeclaration / Charge Report and one UsageStatement 
-			// TODO Jan: to be revised to allow for a list for charge repprts and a list of usage statements  
 
 			template (value) TollDeclarationADU m_aduTollDeclarationToSend (
 				in TollDeclarationId p_tollDeclarationId,
@@ -1746,12 +1698,7 @@ module EfcInfoExchange_Templates language "TTCN-3:2010 Advanced Parameterization
 				actionCode:= p_actionCode // may be send, revoke or adjust
 			}
 
-			// Below you find a modified template for Toll Declaration ADUs to be sent by the Tester
-			// all for the same vehicle, same LPN, same PaymentMeans, same TSP contract, same context
-			// but different Id and usage Statement 
-			// of course all Tester data are to be defined in module TesterData
-			// TODO Jan review. I changed the definition to avoid duplication and potential inconsistencies
-			// TODO Jan check possibility for inserting a list of Charge Reports in one ADU ...  
+			// TODO Ulrik consider renaming to more descriptve name  
 			template (value) TollDeclarationADU m_aduTollDeclarationToSendOneObe(
 				in TollDeclarationId p_tollDeclarationId,
 				in UsageStatement p_usageStatement,

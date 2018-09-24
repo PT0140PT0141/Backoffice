@@ -5,7 +5,6 @@
  */
 
 module EfcInfoExchange_TesterData language "TTCN-3:2010 Advanced Parameterization"{
-	//TODO Add default values and tags for semantic definitions in comments
 
 	//importing other modules
 	import from EfcInfoExchange_Functions all;
@@ -204,61 +203,46 @@ module EfcInfoExchange_TesterData language "TTCN-3:2010 Advanced Parameterizatio
 			// [SEMANTIC DEFINITION] An invalid value used by the tester
 			// for the authentication key reference (refer to also ISO 14906)
 				
+		//TODO Ulrik replace also TD_CONTRACT_ISSUER_DATA_VALID_2 and 3 		//m_aduContractIssuerList with m_aduContractIssuerList(TD_MANUFACTURER_ID_1) and so on for 2,3 in valids and invalids
 
-		//TODO I (Ulrik) propose that we rename this to m_aduContractIssuerList and move it to templates
-		template ContractIssuerListADU m_contractIssuerListADU_Tester(in EfcInfoExchange.Int4 p_manufacturerID):={
-			efcContextMark := TD_EFC_CONTEXT_MARK,
-			equipmentClass := TD_EQUIPMENT_CLASS,
-			manufacturerID := p_manufacturerID,
-			uniquePartOfPAN := TD_UNIQUE_PART_OF_PAN,
-			typeOfEFCApplication := TD_TYPE_OF_EFCAPPLICATION,
-			securityLevel := TD_SECURITY_LEVEL,
-			acCrKeyReference := TD_AC_CR_KEY_REFERENCE,
-			authKeyReference := TD_AUTH_KEY_REFERENCE,
-			validFrom := fx_getUtc(-3600*24) 
-	   	}
-
-		//TODO do we really need the flexibility and complexity of having these as modulepars, I propose that we replace 
-		//TD_CONTRACT_ISSUER_DATA_VALID_1 with m_contractIssuerListADU_Tester(TD_MANUFACTURER_ID_1) and so on for 2,3 in valids and invalids
-
-		modulepar ContractIssuerListADU TD_CONTRACT_ISSUER_DATA_VALID_1 := m_contractIssuerListADU_Tester(TD_MANUFACTURER_ID_1);        
+//		modulepar ContractIssuerListADU TD_CONTRACT_ISSUER_DATA_VALID_1 := m_aduContractIssuerList(TD_MANUFACTURER_ID_1);        
 			// [SEMANTIC DEFINITION] A ContractIssuerAdu containing data elements set with valid tester data as defined in this module
 			// and applying the value TD_MANUFACTURER_ID_1 as defined in this module for manufacturerId  	
 
-        modulepar ContractIssuerListADU TD_CONTRACT_ISSUER_DATA_VALID_2 := m_contractIssuerListADU_Tester(TD_MANUFACTURER_ID_2);
+        modulepar ContractIssuerListADU TD_CONTRACT_ISSUER_DATA_VALID_2 := m_aduContractIssuerList(TD_MANUFACTURER_ID_2);
         	// [SEMANTIC DEFINITION] A ContractIssuerAdu containing data elements set with valid tester data as defined in this module
 			// and applying the value TD_MANUFACTURER_ID_2 as defied in this module for manufacturerId  	
 
-        modulepar ContractIssuerListADU TD_CONTRACT_ISSUER_DATA_VALID_3 := m_contractIssuerListADU_Tester(TD_MANUFACTURER_ID_3);
+        modulepar ContractIssuerListADU TD_CONTRACT_ISSUER_DATA_VALID_3 := m_aduContractIssuerList(TD_MANUFACTURER_ID_3);
         	// [SEMANTIC DEFINITION] A ContractIssuerAdu containing data elements set with valid tester data as defined in this module
 			// and applying the value TD_MANUFACTURER_ID_3 as defined in this module for manufacturerId  	
 
-		template ContractIssuerListADU m_contractIssuerListADU_Invalid_1(in EfcInfoExchange.Int4 p_manufacturerID) modifies m_contractIssuerListADU_Tester:=
+		template ContractIssuerListADU m_contractIssuerListADU_Invalid_1(in EfcInfoExchange.Int4 p_manufacturerID) modifies m_aduContractIssuerList:=
 		{
 			uniquePartOfPAN := TD_UNIQUE_PART_OF_PAN_INVALID
 		}
 
-		template ContractIssuerListADU m_contractIssuerListADU_Invalid_2(in EfcInfoExchange.Int4 p_manufacturerID) modifies m_contractIssuerListADU_Tester :=
+		template ContractIssuerListADU m_contractIssuerListADU_Invalid_2(in EfcInfoExchange.Int4 p_manufacturerID) modifies m_aduContractIssuerList :=
 		{
 			acCrKeyReference := TD_AC_CR_KEY_REFERENCE_INVALID
 		}	
 
-		template ContractIssuerListADU m_contractIssuerListADU_Invalid_3(in EfcInfoExchange.Int4 p_manufacturerID) modifies m_contractIssuerListADU_Tester :=
+		template ContractIssuerListADU m_contractIssuerListADU_Invalid_3(in EfcInfoExchange.Int4 p_manufacturerID) modifies m_aduContractIssuerList :=
 		{
 			authKeyReference := TD_AUTH_KEY_REFERENCE_INVALID
 		}	
 
-		modulepar ContractIssuerListADU TD_CONTRACT_ISSUER_DATA_INVALID_1 := m_contractIssuerListADU_Invalid_1(TD_MANUFACTURER_ID_1);
+		const ContractIssuerListADU TD_CONTRACT_ISSUER_DATA_INVALID_1 := m_contractIssuerListADU_Invalid_1(TD_MANUFACTURER_ID_1);
 			// [SEMANTIC DEFINITION] A ContractIssuerAdu containing data elements set with valid tester data as defined in this module
 			// and applying the invalid value TD_UNIQUE_PART_OF_PAN_INVALID for the unique part of the pan
 			// and the value TD_MANUFACTURER_ID_1 as defined in this module for manufacturerId  	
 
-		modulepar ContractIssuerListADU TD_CONTRACT_ISSUER_DATA_INVALID_2 := m_contractIssuerListADU_Invalid_2(TD_MANUFACTURER_ID_1);
+		const ContractIssuerListADU TD_CONTRACT_ISSUER_DATA_INVALID_2 := m_contractIssuerListADU_Invalid_2(TD_MANUFACTURER_ID_1);
 			// [SEMANTIC DEFINITION] A ContractIssuerAdu containing data elements set with valid tester data as defined in this module
 			// and applying the invalid value TD_AC_CR_KEY_REFERENCE_INVALID for the access credential key reference
 			// and the value TD_MANUFACTURER_ID_2 as defined in this module for manufacturerId  	
 
-		modulepar ContractIssuerListADU TD_CONTRACT_ISSUER_DATA_INVALID_3 := m_contractIssuerListADU_Invalid_3(TD_MANUFACTURER_ID_1);
+		const ContractIssuerListADU TD_CONTRACT_ISSUER_DATA_INVALID_3 := m_contractIssuerListADU_Invalid_3(TD_MANUFACTURER_ID_1);
 			// [SEMANTIC DEFINITION] A ContractIssuerAdu containing data elements set with valid tester data as defined in this module
 			// and applying the invalid value TD_AC_CR_KEY_REFERENCE_INVALID for the authentication key reference
 			// and the value TD_MANUFACTURER_ID_3 as defined in this module for manufacturerId  	
@@ -360,7 +344,7 @@ module EfcInfoExchange_TesterData language "TTCN-3:2010 Advanced Parameterizatio
 			// [SEMANTIC DEFINITION] Charge object id of one exit location in the domain managed by the toll charger
 			// Shall be present in toll context data used in the test 
 
-		modulepar EfcAutonomousCharging.int4 TD_LOCATION_CLASS :=200; // Default valuen set to class id 200
+		modulepar EfcAutonomousContextData.LocationClassId TD_LOCATION_CLASS :=200; // Default valuen set to class id 200
  			// [SEMANTIC DEFINITION] The location class applied by the tester in usage lists
 			// Shall be present in toll context data used in the test 
 
@@ -430,6 +414,10 @@ module EfcInfoExchange_TesterData language "TTCN-3:2010 Advanced Parameterizatio
 	} // end group EXCEPTIONLIST		
 
 	group TRUSTOBJECTS {
+		
+		//NOTE there are no default values for the tester data in the TRUSTOBJECTS group, 
+		//specific values needs to be supplied at the time of testing
+		
 		modulepar TrustObjectCode TD_DSRC_MASTER_KEY:={dsrcMasterKeys:=TD_SYMMETRIC_KEY};
 		modulepar octetstring TD_CERT_REVOKE_LIST;
 		modulepar octetstring TD_CERTIFICATE_OCT_STR;
@@ -497,6 +485,11 @@ module EfcInfoExchange_TesterData language "TTCN-3:2010 Advanced Parameterizatio
 	}
 	 
 	group EFCCONTEXTDATA {
+
+		//NOTE not all default values are supplied for the tester data in the EFCCONTEXTDATA group, 
+		//specific values needs to be supplied at the time of testing
+		
+		
 	 	modulepar  Optionally_Signed<TollContextOverview> TD_SIGNED_TOLL_CONTEXT_OVERVIEW;
 	 	modulepar  Optionally_Signed<TollContextPartitionOverviews> TD_TOLL_CONTEXT_PARTITION_OVERVIEW;
 	 	modulepar  Optionally_Signed<TariffTables> TD_TARIFF_TABLE;
@@ -573,13 +566,10 @@ module EfcInfoExchange_TesterData language "TTCN-3:2010 Advanced Parameterizatio
     		feeExclVat := { // mandatory according to IAP
     			paymentFeeAmount:= 300, // 300 units
  				paymentFeeUnit:='2978'O // ('2' = minor units of '978' = EUR), i.e. 3,00 EUR
- 				//TODO Jan there is no "vatRate" in the construct PaymentFee. Can we just delete? See also three other cases
- 				//vatRate:=omit // no VAT applied in this case
  			},				   		
     		sumVat := { // mandatory according to IAP
       			paymentFeeAmount:= 60, // 60 units
  				paymentFeeUnit:='2978'O // ('2' = minor units of '978' = EUR), i.e. 0,60 EUR
- 				//vatRate:=2000 // expressed in units of 0,01%, i.e. 20,00%
     		}
     	},
     	TD_SINGLE_TARIFF_CLASS_SESSION_2:={
@@ -592,12 +582,10 @@ module EfcInfoExchange_TesterData language "TTCN-3:2010 Advanced Parameterizatio
     		feeExclVat := { // mandatory according to IAP
     			paymentFeeAmount:= 3786, // 3786 units 
  				paymentFeeUnit:='2978'O // ('2' = minor units of '978' = EUR), i.e. 37,86 EUR
- 				//vatRate:=omit // no VAT applied in this case
  			},				   		
     		sumVat:={ // mandatory according to IAP
       			paymentFeeAmount:= 697, // 697 units
  				paymentFeeUnit:='2978'O // ('2' = minor units of '978' = EUR), i.e. 6,97 EUR
- 				//vatRate:=1850 // expressed in units of 0,01%, i.e. 18,50%
     		}
     	};
 			// [SEMANTIC DEFINITION] The content of the data structure aggregatedSingleTariffClassSession

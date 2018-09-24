@@ -3748,7 +3748,7 @@ module EfcInfoExchange_TestCasesTsp {
 				var UserId v_userId:={obeID :=v_receivedObeId};
 				var Adus v_adus;
 				
-				//TODO extract magic numbers into Tester Data (possibly as constants)
+				//TODO Jan extract magic numbers into Tester Data (possibly as constants)
 				v_adus.billingDetailsADUs[0]:= m_aduGnssBillingDetailsSpecialised(1,v_userId, v_receivedTollDeclarationId);
 				v_adus.billingDetailsADUs[0].billingDetailsId.issuerId:=PX_INVALID_INFORMATION_RECIPIENT_ID_FOR_IUT; //billingDetailsIssuerIdRejected
 

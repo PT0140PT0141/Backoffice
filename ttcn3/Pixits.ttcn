@@ -4,128 +4,123 @@
  * @version    $id$
  */
 module EfcInfoExchange_Pixits {
-	//TODO make semantic def ordering consistent with Tester Data
 
 	//importing other modules
 	import from EfcInfoExchange language "ASN.1:1997" all;
 	import from EfcDsrcApplication language "ASN.1:1997" all;
 	import from EfcAutonomousCharging language "ASN.1:1997" all;
 
- 	     // [SEMANTIC DEFINITION] Three not existing separate users for invalid test cases
 	modulepar UserId PX_USER_NOT_EXISTING_1,PX_USER_NOT_EXISTING_2,PX_USER_NOT_EXISTING_3;
+ 	     // [SEMANTIC DEFINITION] Three not existing separate users for invalid test cases
 
- 	     // [SEMANTIC DEFINITION] Record of three not existing users
 	type record of UserId UserIdList;
 	modulepar UserIdList PX_USERS_NOT_EXISTING :={
 		PX_USER_NOT_EXISTING_1,
 		PX_USER_NOT_EXISTING_2,
 		PX_USER_NOT_EXISTING_3
 	};				
+ 	     // [SEMANTIC DEFINITION] Record of three not existing users
  	
-	     // [SEMANTIC DEFINITION] Identifier of a valid Toll Context managed by the Toll Charger 
 	modulepar Provider PX_TOLL_CONTEXT_ID_IUT;
+	     // [SEMANTIC DEFINITION] Identifier of a valid Toll Context managed by the Toll Charger 
 
-	     // [SEMANTIC DEFINITION] Identifier of Toll Context that is not managed by the Toll Charger 
 	modulepar Provider PX_TOLL_CONTEXT_ID_NOT_EXISTING;
+	     // [SEMANTIC DEFINITION] Identifier of Toll Context that is not managed by the Toll Charger 
 
-	     // [SEMANTIC DEFINITION] Name of a valid Toll Context managed by the Toll Charger 
 	modulepar UTF8String PX_TOLL_CONTEXT_NAME_IUT;
+	     // [SEMANTIC DEFINITION] Name of a valid Toll Context managed by the Toll Charger 
 	
- 	     // [SEMANTIC DEFINITION] Maximum time a transaction should take to run (in seconds)
- 	     // If exceeded, test result set to inconclusive
     modulepar float PX_TRANSACTION_TIMEOUT := 10.0;
+ 	     // [SEMANTIC DEFINITION] Maximum time a transaction should take to run (in seconds). If exceeded, test result set to inconclusive
     
- 	     // [SEMANTIC DEFINITION] Maximum allowed fee in a BillingDetails ADU
     modulepar ExtendedPaymentAmount PX_MAX_ACCEPTED_BILLINGDETAILS_AMOUNT;
+ 	     // [SEMANTIC DEFINITION] Maximum allowed fee in a BillingDetails ADU
 
- 	     // [SEMANTIC DEFINITION] Maximum allowed fee in a PaymentClaim ADU
     modulepar ExtendedPaymentAmount PX_MAX_ACCEPTED_PAYMENTCLAIM_AMOUNT;
+ 	     // [SEMANTIC DEFINITION] Maximum allowed fee in a PaymentClaim ADU
     
 	//For APDUs sent from the IUT...
 
- 	     // [SEMANTIC DEFINITION] Originator of APDUs to set value of the InfoExchange.infoExchangeContent.apci.apduOriginator
     modulepar Provider PX_APDU_ORIGINATOR_FOR_IUT; 
+ 	     // [SEMANTIC DEFINITION] Originator of APDUs to set value of the InfoExchange.infoExchangeContent.apci.apduOriginator
 
- 	     // [SEMANTIC DEFINITION] Originator of APDUs to set value of the InfoExchange.infoExchangeContent.apci.informationSenderID
     modulepar Provider PX_INFORMATION_SENDER_ID_FOR_IUT;
+ 	     // [SEMANTIC DEFINITION] Originator of APDUs to set value of the InfoExchange.infoExchangeContent.apci.informationSenderID
  
- 	     // [SEMANTIC DEFINITION] Information Recipient Id of the IuT used in APDUs to test
- 	     // invalid behaviur. Shall be differnet from the real Information Recipient Id of the IuT.
     modulepar Provider PX_INVALID_INFORMATION_RECIPIENT_ID_FOR_IUT;
+ 	     // [SEMANTIC DEFINITION] Information Recipient Id of the IuT used in APDUs to test invalid behaviur. Shall be differnet from the real Information Recipient Id of the IuT.
 
- 	     // [SEMANTIC DEFINITION] Identifier of one valid user supported by the IUT
 	modulepar UserId PX_USER_ID;
+ 	     // [SEMANTIC DEFINITION] Identifier of one valid user supported by the IUT
 
- 	     // [SEMANTIC DEFINITION] Identifier of the ONLY USER one associated with PX_USER_ID for LISTOFUSERS transactions
     modulepar UserId PX_USER_ID_RELATED;
+ 	     // [SEMANTIC DEFINITION] Identifier of the ONLY USER one associated with PX_USER_ID for LISTOFUSERS transactions
      
- 	     // [SEMANTIC DEFINITION] Identifier of a valid user, with no associated other UserIds for LISTOFUSERS transactions
     modulepar UserId PX_USER_ID_NO_RELATED;
+ 	     // [SEMANTIC DEFINITION] Identifier of a valid user, with no associated other UserIds for LISTOFUSERS transactions
 
- 	     // [SEMANTIC DEFINITION] Identifier of one wrong (not supported by the IUT) user
     modulepar UserId PX_USER_ID_NON_EXISTING;
+ 	     // [SEMANTIC DEFINITION] Identifier of one wrong (not supported by the IUT) user
         
- 	     // [SEMANTIC DEFINITION] Valid ManufacturerID
     modulepar EfcDsrcApplication.Int2 PX_MANUFACTURERID1;
-  	     // [SEMANTIC DEFINITION] Second valid ManufacturerID
+ 	     // [SEMANTIC DEFINITION] Valid ManufacturerID
+
     modulepar EfcDsrcApplication.Int2 PX_MANUFACTURERID2;
-  	     // [SEMANTIC DEFINITION] Third valid ManufacturerID
+  	     // [SEMANTIC DEFINITION] Second valid ManufacturerID
+
     modulepar EfcDsrcApplication.Int2 PX_MANUFACTURERID3;
+  	     // [SEMANTIC DEFINITION] Third valid ManufacturerID
     
     type record of UserParameterRequest RoUserParameterRequest;
      
-    	 // [SEMANTIC DEFINITION] List of user details parameters the IuT - acting
-    	 // as a toll service provider - declares as private data
     modulepar RoUserParameterRequest PX_PRIVACYBOUND_USER_PARAM_REQS:={}; 
+    	 // [SEMANTIC DEFINITION] List of user details parameters the IuT - acting as a toll service provider - declares as private data
     
  	type record of integer RecordOfInteger;
 
-  	     // [SEMANTIC DEFINITION] List of parameters supported for UserDetails transactions
     modulepar RecordOfInteger PX_USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS;
+  	     // [SEMANTIC DEFINITION] List of parameters supported for UserDetails transactions
+
     template integer mw_userDetailsSupportedListOfParameters :=(all from PX_USERDETAILS_SUPPORTED_LIST_OF_PARAMETERS);
 
-  	     // [SEMANTIC DEFINITION] List of parameters supported, but that cannot be transferred in UserDetails transactions due to privacy
     modulepar RecordOfInteger PX_USERDETAILS_PRIVACYBOUND_LIST_OF_PARAMETERS;  
+  	     // [SEMANTIC DEFINITION] List of parameters supported, but that cannot be transferred in UserDetails transactions due to privacy
 
-  	     // [SEMANTIC DEFINITION] List of parameters supported, but that cannot be transferred in UserDetails transactions due to missing agreement
     modulepar RecordOfInteger PX_USERDETAILS_NOT_AGREED_LIST;
+  	     // [SEMANTIC DEFINITION] List of parameters supported, but that cannot be transferred in UserDetails transactions due to missing agreement
     
     type record TrustObjectTypePurposePair{
 		integer trustObjectType,
         integer trustObjectPurpose
     }
+
 	type record of TrustObjectTypePurposePair RecordOfTrustObjectTypePurposePair;
 
-  	     // [SEMANTIC DEFINITION] All allowed pairs {TrustObjectType,TrustObjectPurpose} accepted by the IUT for receiving
 	modulepar RecordOfTrustObjectTypePurposePair PX_TRUST_OBJECTS_TYPE_PURPOSE_SUPPORTED_RECEIVE; 
+  	     // [SEMANTIC DEFINITION] All allowed pairs {TrustObjectType,TrustObjectPurpose} accepted by the IUT for receiving
 
-  	     // [SEMANTIC DEFINITION] All allowed pairs {TrustObjectType,TrustObjectPurpose} supported by the IUT for sending
 	modulepar RecordOfTrustObjectTypePurposePair PX_TRUST_OBJECTS_TYPE_PURPOSE_SUPPORTED_SEND;
+  	     // [SEMANTIC DEFINITION] All allowed pairs {TrustObjectType,TrustObjectPurpose} supported by the IUT for sending
 	 	
-  	     // [SEMANTIC DEFINITION] Billing Details number (BillingDetailsId.billingDetailsNum) not known for invalid test cases
     modulepar integer PX_BILLINGDETAILSNUM_NOT_EXISTING:=14;
+  	     // [SEMANTIC DEFINITION] Billing Details number (BillingDetailsId.billingDetailsNum) not known for invalid test cases
     	
-  	     // [SEMANTIC DEFINITION] Not existing Charge object designation (part of ChargeObjectId) for invalid test cases
 	modulepar EfcDsrcApplication.Int4 PX_CHARGE_OBJECT_DESIGNATION_NON_EXISTING:=999999;
+  	     // [SEMANTIC DEFINITION] Not existing Charge object designation (part of ChargeObjectId) for invalid test cases
 	
-  	     // [SEMANTIC DEFINITION] Not existing Charge object identifier in the domain managed by the toll charger
-  	     // for invalid test cases
 	modulepar EfcAutonomousCharging.ChargeObjectId PX_CHARGE_OBJECT_ID_NON_EXISTING:={
 			chargeReportFinalRecipient:=omit,
 			chargeObjectDesignation:= PX_CHARGE_OBJECT_DESIGNATION_NON_EXISTING
 		};						
+  	     // [SEMANTIC DEFINITION] Not existing Charge object identifier in the domain managed by the toll charger for invalid test cases
 
 	type set of DetectedChargeObject SoDetectedChargeObject;
 		
-		// [SEMANTIC DEFINITION] List of charge objects that are present in the toll domain
-		// managed by the toll charger and shall be used by the tester
-		// (acting as toll service provider) inside Usage Statements
 	modulepar SoDetectedChargeObject PX_LIST_OF_CHARGE_OBJECTS;
+		// [SEMANTIC DEFINITION] List of charge objects that are present in the toll domain managed by the toll charger and shall be used by the tester (acting as toll service provider) inside Usage Statements
 	
-		// [SEMANTIC DEFINITION] Raw usage data applicable for the toll domain
-		// managed by the toll charger which shall be used by the tester
-		// (acting as toll service provider) inside Usage Statements
 	modulepar ListOfRawUsageData PX_LIST_OF_RAW_USAGE_DATA;
+		// [SEMANTIC DEFINITION] Raw usage data applicable for the toll domain managed by the toll charger which shall be used by the tester (acting as toll service provider) inside Usage Statements
 
 	
 	

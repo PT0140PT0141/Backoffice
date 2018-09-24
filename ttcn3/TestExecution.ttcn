@@ -3,9 +3,7 @@
  * @desc    This module provides control par for automatic test execution
  */
 module EfcInfoExchange_TestExecution { 
-	
-	//TODO PT140 peer review that the trust objects test cases are parametrised correctly
-	
+		
     import from EfcInfoExchange_TestCasesTsp all;
 	import from EfcInfoExchange_TestCasesTc all;
     import from EfcInfoExchange_TestCasesCommon all;
@@ -52,15 +50,16 @@ module EfcInfoExchange_TestExecution {
         execute(TP_TC_EXCEPTIONLIST_BI_05());
         execute(TP_TC_EXCEPTIONLIST_BI_06());
         execute(TP_TC_EXCEPTIONLIST_BI_07());
-		execute(TP_TRUSTOBJECTS_BV_01(type2,TC));
-		execute(TP_TRUSTOBJECTS_BV_02(type1,TC));
-		execute(TP_TRUSTOBJECTS_BV_03(type2,TC));
-		execute(TP_TRUSTOBJECTS_BV_04(type1,TC));
-		execute(TP_TRUSTOBJECTS_BI_01(type1,TC));
-		execute(TP_TRUSTOBJECTS_BI_02(type1,TC));
-		execute(TP_TRUSTOBJECTS_BI_03(type1,TC));
-		execute(TP_TRUSTOBJECTS_BI_04(type2,TC));
-		execute(TP_TRUSTOBJECTS_BI_05(type1,TC));
+        //TODO Jan peer-review the type1 and type2 here and in TSP test cases
+		execute(TP_TRUSTOBJECTS_BV_01(type2,TC)); //TC on the left
+		execute(TP_TRUSTOBJECTS_BV_02(type1,TC)); //TC on the right
+		execute(TP_TRUSTOBJECTS_BV_03(type2,TC)); //TC on the left
+		execute(TP_TRUSTOBJECTS_BV_04(type1,TC)); //TC on the right
+		execute(TP_TRUSTOBJECTS_BI_01(type1,TC)); //TC on the right
+		execute(TP_TRUSTOBJECTS_BI_02(type1,TC)); //TC on the right
+		execute(TP_TRUSTOBJECTS_BI_03(type1,TC)); //TC on the right
+		execute(TP_TRUSTOBJECTS_BI_04(type2,TC)); //TC on the left
+		execute(TP_TRUSTOBJECTS_BI_05(type1,TC)); //TC on the right
         execute(TP_TC_PAYMENTCLAIM_BV_01());
         execute(TP_TC_PAYMENTCLAIM_BV_02());
         execute(TP_TC_DSRC_CONTRACTISSUERLIST_BV_01());
