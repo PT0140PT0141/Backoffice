@@ -4316,7 +4316,7 @@ module EfcInfoExchange_TestCasesTc {
  					v_usageStatementToBeSent := {
 						usageStatementId := v_loop,
 						tollContext := PX_TOLL_CONTEXT_ID_IUT,
-						aggregatedSingleTariffClassSession := TD_SINGLE_TARIFF_CLASS_SESSION, //TODO Jan see comment above
+						aggregatedSingleTariffClassSession := TD_SINGLE_TARIFF_CLASS_SESSION_1, //TODO Jan see comment above
 						listOfChargeObjects:=PX_LIST_OF_CHARGE_OBJECTS,
 						listOfRawUsageData := PX_LIST_OF_RAW_USAGE_DATA,
 						additionalUsageInformation := omit
@@ -4495,7 +4495,7 @@ module EfcInfoExchange_TestCasesTc {
                 // Send Initiating_Apdu containing BillingDetailsADU
                 // after IS_GNSS_BILLINGDETAILS_TIMEA_MIN_TC has passed
                 // i.e. the tester respects time limits declared by the IuT 
-				f_waitTimeA(IS_GNSS_BILLINGDETAILS_TIMEA_MIN_TC);
+				f_waitTimeA(IS_GNSS_BILLINGDETAILS_TSP_TIMEA_MIN_TC);
 
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
@@ -4622,7 +4622,7 @@ module EfcInfoExchange_TestCasesTc {
                 // Send Initiating_Apdu containing BillingDetailsADU
                 // after IS_GNSS_BILLINGDETAILS_TIMEA_MIN_TC has passed
                 // i.e. the tester respects time limits declared by the IuT 
-				f_waitTimeA(IS_GNSS_BILLINGDETAILS_TIMEA_MIN_TC);
+				f_waitTimeA(IS_GNSS_BILLINGDETAILS_TSP_TIMEA_MIN_TC);
 
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
@@ -5112,7 +5112,7 @@ module EfcInfoExchange_TestCasesTc {
                 // Send Initiating_Apdu containing BillingDetailsADU
                 // after IS_GNSS_BILLINGDETAILS_TIMEA_MIN_TC has passed
                 // i.e. the tester respects time limits declared by the IuT 
-				f_waitTimeA(IS_GNSS_BILLINGDETAILS_TIMEA_MIN_TC);
+				f_waitTimeA(IS_GNSS_BILLINGDETAILS_TSP_TIMEA_MIN_TC);
 
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
@@ -5243,7 +5243,7 @@ module EfcInfoExchange_TestCasesTc {
                 // Send Initiating_Apdu containing BillingDetailsADU
                 // after IS_GNSS_BILLINGDETAILS_TIMEA_MIN_TC has passed
                 // i.e. the tester respects time limits declared by the IuT 
-				f_waitTimeA(IS_GNSS_BILLINGDETAILS_TIMEA_MIN_TC);
+				f_waitTimeA(IS_GNSS_BILLINGDETAILS_TSP_TIMEA_MIN_TC);
 
 				f_sendAndLogApdu(v_apduForSending);                	 	 	
                 // Start timer
