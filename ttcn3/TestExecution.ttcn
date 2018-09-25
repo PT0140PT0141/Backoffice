@@ -57,7 +57,7 @@ module EfcInfoExchange_TestExecution {
 		execute(TP_TRUSTOBJECTS_BV_04(type1,TC)); //TC on the right
 		execute(TP_TRUSTOBJECTS_BI_01(type1,TC)); //TC on the right
 		execute(TP_TRUSTOBJECTS_BI_02(type1,TC)); //TC on the right
-		execute(TP_TRUSTOBJECTS_BI_03(type1,TC)); //TC on the right
+		execute(TP_TRUSTOBJECTS_BI_03(type2,TC)); //TC on the right
 		execute(TP_TRUSTOBJECTS_BI_04(type2,TC)); //TC on the left
 		execute(TP_TRUSTOBJECTS_BI_05(type1,TC)); //TC on the right
         execute(TP_TC_PAYMENTCLAIM_BV_01());
@@ -140,7 +140,7 @@ module EfcInfoExchange_TestExecution {
 		execute(TP_TRUSTOBJECTS_BV_04(type2,TSP));
 		execute(TP_TRUSTOBJECTS_BI_01(type2,TSP));
 		execute(TP_TRUSTOBJECTS_BI_02(type2,TSP));
-		execute(TP_TRUSTOBJECTS_BI_03(type2,TSP));
+		execute(TP_TRUSTOBJECTS_BI_03(type1,TSP));
 		execute(TP_TRUSTOBJECTS_BI_04(type1,TSP));
 		execute(TP_TRUSTOBJECTS_BI_05(type2,TSP));
         execute(TP_TSP_PAYMENTCLAIM_BV_01());

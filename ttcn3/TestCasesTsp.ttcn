@@ -3759,7 +3759,7 @@ module EfcInfoExchange_TestCasesTsp {
 
 				v_adus.billingDetailsADUs[3]:=m_aduGnssBillingDetailsSpecialised(4,	v_userId, v_receivedTollDeclarationId);
 				v_adus.billingDetailsADUs[3].billingDetailsAmount:=PX_MAX_ACCEPTED_BILLINGDETAILS_AMOUNT; //billingDetailsAmountRejected
-				v_adus.billingDetailsADUs[3].billingDetailsAmount.paymentFeeAmount:=TD_BILLINGDETAILS_PAYUNIT_NON_EXISTING;
+				v_adus.billingDetailsADUs[3].billingDetailsAmount.paymentFeeUnit:=TD_BILLINGDETAILS_PAYUNIT_NON_EXISTING;
 						
 				v_adus.billingDetailsADUs[4]:=m_aduGnssBillingDetailsSpecialised(5,	v_userId, v_receivedTollDeclarationId);
 				v_adus.billingDetailsADUs[4].usageDetails.contextName:=TD_TOLL_CONTEXT_NAME_NON_EXISTING; //billingDetailsContextNameRejected
