@@ -3748,7 +3748,6 @@ module EfcInfoExchange_TestCasesTsp {
 				var UserId v_userId:={obeID :=v_receivedObeId};
 				var Adus v_adus;
 				
-				//TODO Jan extract magic numbers into Tester Data (possibly as constants)
 				v_adus.billingDetailsADUs[0]:= m_aduGnssBillingDetailsSpecialised(1,v_userId, v_receivedTollDeclarationId);
 				v_adus.billingDetailsADUs[0].billingDetailsId.issuerId:=PX_INVALID_INFORMATION_RECIPIENT_ID_FOR_IUT; //billingDetailsIssuerIdRejected
 
@@ -3760,19 +3759,19 @@ module EfcInfoExchange_TestCasesTsp {
 
 				v_adus.billingDetailsADUs[3]:=m_aduGnssBillingDetailsSpecialised(4,	v_userId, v_receivedTollDeclarationId);
 				v_adus.billingDetailsADUs[3].billingDetailsAmount:=PX_MAX_ACCEPTED_BILLINGDETAILS_AMOUNT; //billingDetailsAmountRejected
-				v_adus.billingDetailsADUs[3].billingDetailsAmount.paymentFeeAmount:=v_adus.billingDetailsADUs[3].billingDetailsAmount.paymentFeeAmount+1;
+				v_adus.billingDetailsADUs[3].billingDetailsAmount.paymentFeeAmount:=TD_BILLINGDETAILS_PAYUNIT_NON_EXISTING;
 						
 				v_adus.billingDetailsADUs[4]:=m_aduGnssBillingDetailsSpecialised(5,	v_userId, v_receivedTollDeclarationId);
-				v_adus.billingDetailsADUs[4].usageDetails.contextName:="AREA 51, NEVADA"; //billingDetailsContextNameRejected
+				v_adus.billingDetailsADUs[4].usageDetails.contextName:=TD_TOLL_CONTEXT_NAME_NON_EXISTING; //billingDetailsContextNameRejected
 							
 				v_adus.billingDetailsADUs[5]:=m_aduGnssBillingDetailsSpecialised(6,	v_userId, v_receivedTollDeclarationId);
-				v_adus.billingDetailsADUs[5].usageDetails.appliedUserClass:="NON-EXISTING USER CLASS"; //billingDetailsAppliedUserClassRejected
+				v_adus.billingDetailsADUs[5].usageDetails.appliedUserClass:=TD_GNSS_BILLINGDETAILS_USERCLASS_NON_EXISTING; //billingDetailsAppliedUserClassRejected
 				
 				v_adus.billingDetailsADUs[6]:=m_aduGnssBillingDetailsSpecialised(7,	v_userId, v_receivedTollDeclarationId);
-				v_adus.billingDetailsADUs[6].usageDetails.perDeclaredVehicleClasses[0].declaredVehicleClass:="NON-EXISTING VEHICLE CLASS"; //billingDetailsDeclaredVehicleClassRejected 
+				v_adus.billingDetailsADUs[6].usageDetails.perDeclaredVehicleClasses[0].declaredVehicleClass:=TD_GNSS_BILLINGDETAILS_DECLAREDVEHCLASS_NON_EXISTING; //billingDetailsDeclaredVehicleClassRejected 
 				
 				v_adus.billingDetailsADUs[7]:=m_aduGnssBillingDetailsSpecialised(8,	v_userId, v_receivedTollDeclarationId);
-				v_adus.billingDetailsADUs[7].usageDetails.perDeclaredVehicleClasses[0].perUsedTimeClasses[0].appliedTimeClass:="NON-EXISTING TIME CLASS";//billingDetailsAppliedTimeClassRejected 
+				v_adus.billingDetailsADUs[7].usageDetails.perDeclaredVehicleClasses[0].perUsedTimeClasses[0].appliedTimeClass:=TD_GNSS_BILLINGDETAILS_TIMECLASS_NON_EXISTING;//billingDetailsAppliedTimeClassRejected 
 				
 				v_adus.billingDetailsADUs[8]:=m_aduGnssBillingDetails(
 					9,

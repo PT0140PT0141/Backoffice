@@ -245,8 +245,11 @@ module EfcInfoExchange_TesterData language "TTCN-3:2010 Advanced Parameterizatio
 			// [SEMANTIC DEFINITION] The fee that will appear on the bill
 
 		modulepar PayUnit TD_BILLINGDETAILS_PAYUNIT:='0978'O; // currency in main units
-			// [SEMANTIC DEFINITION] The currency unit that will appear on the bill according to ISO 4217		
-
+			// [SEMANTIC DEFINITION] The currency unit that will appear on the bill according to ISO 4217
+			
+		modulepar PayUnit TD_BILLINGDETAILS_PAYUNIT_NON_EXISTING:='0999'O; //this corresponds to ISO 4217 "No currency"
+			// [SEMANTIC DEFINITION] The currency unit used by the tester in invalid test cases
+					
 	    modulepar IntMax10000 TD_BILLINGDETAILS_VAT:=0; 
 			// [SEMANTIC DEFINITION]The VAT rate expressed in 0.01%
 			
@@ -310,6 +313,15 @@ module EfcInfoExchange_TesterData language "TTCN-3:2010 Advanced Parameterizatio
 		modulepar integer TD_AREA_STAY_DURATION :=1000; // Default value set to 1000 charge units
  			// [SEMANTIC DEFINITION] The duration of a stay in an toll area expresed in charge units
  			
+		modulepar UTF8String TD_GNSS_BILLINGDETAILS_USERCLASS_NON_EXISTING:="TheNonExistingUserClass";
+			// [SEMANTIC DEFINITION] According to ISO 17575-3. Shall identify a user class not supported by toll charger and toll service provider
+
+		modulepar UTF8String TD_GNSS_BILLINGDETAILS_DECLAREDVEHCLASS_NON_EXISTING:="TheNonExistingVehicleClass";
+			// [SEMANTIC DEFINITION] According to ISO 17575-3. Shall identify a declared vehicle class not supported by toll charger and toll service provider
+
+		modulepar UTF8String TD_GNSS_BILLINGDETAILS_TIMECLASS_NON_EXISTING:="TheNonExistingTimeClass";
+			// [SEMANTIC DEFINITION] According to ISO 17575-3. . Shall identify a time class not supported by toll charger and toll service provider
+
     	modulepar EfcAutonomousCharging.ChargeObjectId TD_CHARGE_OBJECT_ID:={
 			chargeReportFinalRecipient:=omit,
 			chargeObjectDesignation:= 333333

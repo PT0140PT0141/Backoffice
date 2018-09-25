@@ -4723,21 +4723,20 @@ module EfcInfoExchange_TestCasesTc {
 
 				v_adus.billingDetailsADUs[2]:=m_aduGnssBillingDetailsSpecialised(3,	{}, c_refTollDeclaration1); //billingDetailsUserIdRejected 							
 
-				//TODO Jan extract magic numbers into Tester Data (possibly as constants)
 				v_adus.billingDetailsADUs[3]:=m_aduGnssBillingDetailsSpecialised(4,	TD_USERID_1, c_refTollDeclaration1);
-				v_adus.billingDetailsADUs[3].billingDetailsAmount.paymentFeeUnit:='0999'O; //this corresponds to ISO 4217 "No currency", shall provoke billingDetailsAmountRejected
+				v_adus.billingDetailsADUs[3].billingDetailsAmount.paymentFeeUnit:=TD_BILLINGDETAILS_PAYUNIT_NON_EXISTING; //this corresponds to ISO 4217 "No currency", shall provoke billingDetailsAmountRejected
 							
 				v_adus.billingDetailsADUs[4]:=m_aduGnssBillingDetailsSpecialised(5,	TD_USERID_1, c_refTollDeclaration1);
-				v_adus.billingDetailsADUs[4].usageDetails.contextName:="AREA 51, NEVADA"; //billingDetailsContextNameRejected
+				v_adus.billingDetailsADUs[4].usageDetails.contextName:=TD_TOLL_CONTEXT_NAME_NON_EXISTING; //billingDetailsContextNameRejected
 							
 				v_adus.billingDetailsADUs[5]:=m_aduGnssBillingDetailsSpecialised(6,	TD_USERID_1, c_refTollDeclaration1);
-				v_adus.billingDetailsADUs[5].usageDetails.appliedUserClass:="NON-EXISTING USER CLASS"; //billingDetailsAppliedUserClassRejected
+				v_adus.billingDetailsADUs[5].usageDetails.appliedUserClass:=TD_GNSS_BILLINGDETAILS_USERCLASS_NON_EXISTING; //billingDetailsAppliedUserClassRejected
 			
 				v_adus.billingDetailsADUs[6]:=m_aduGnssBillingDetailsSpecialised(7, TD_USERID_1, c_refTollDeclaration1);
-				v_adus.billingDetailsADUs[6].usageDetails.perDeclaredVehicleClasses[0].declaredVehicleClass:="NON-EXISTING VEHICLE CLASS"; //billingDetailsDeclaredVehicleClassRejected 
+				v_adus.billingDetailsADUs[6].usageDetails.perDeclaredVehicleClasses[0].declaredVehicleClass:=TD_GNSS_BILLINGDETAILS_DECLAREDVEHCLASS_NON_EXISTING; //billingDetailsDeclaredVehicleClassRejected 
 				
 				v_adus.billingDetailsADUs[7]:=m_aduGnssBillingDetailsSpecialised(8, TD_USERID_1, c_refTollDeclaration1);
-				v_adus.billingDetailsADUs[7].usageDetails.perDeclaredVehicleClasses[0].perUsedTimeClasses[0].appliedTimeClass:="NON-EXISTING TIME CLASS";//billingDetailsAppliedTimeClassRejected 
+				v_adus.billingDetailsADUs[7].usageDetails.perDeclaredVehicleClasses[0].perUsedTimeClasses[0].appliedTimeClass:=TD_GNSS_BILLINGDETAILS_TIMECLASS_NON_EXISTING;//billingDetailsAppliedTimeClassRejected 
 				
 				v_adus.billingDetailsADUs[8]:=m_aduGnssBillingDetails(
 					9,
