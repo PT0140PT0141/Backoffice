@@ -1,7 +1,7 @@
 /**
- * @desc    This module provides common templates for both Toll Charger and Toll Service Provider TCs. Most of these templates shall be used to modify the new ones.
+ * @desc    This module provides common templates for both Toll Charger and Toll Service Provider test cases. 
  * @see     [17154-1:2017]: Test suite structure and test purpose
- * @see     Electronic fee collection â€” Evaluation of implementation for conformity to CEN/TS 16986 â€” Part 1: Test suite structure and purposes
+ * @see     Electronic fee collection - Evaluation of implementation for conformity to CEN/TS 16986 - Part 1: Test suite structure and purposes
  * @remark  See Annex C - Data structures
  * @version $id$
  */

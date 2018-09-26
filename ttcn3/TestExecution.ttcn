@@ -1,6 +1,6 @@
 /**
 * @author  PT0140 
- * @desc    This module provides control par for automatic test execution
+ * @desc   This module provides the TTCN 3 control section for automatic test execution
  */
 module EfcInfoExchange_TestExecution { 
 		
@@ -50,7 +50,6 @@ module EfcInfoExchange_TestExecution {
         execute(TP_TC_EXCEPTIONLIST_BI_05());
         execute(TP_TC_EXCEPTIONLIST_BI_06());
         execute(TP_TC_EXCEPTIONLIST_BI_07());
-        //TODO Jan peer-review the type1 and type2 here and in TSP test cases
 		execute(TP_TRUSTOBJECTS_BV_01(type2,TC)); //TC on the left
 		execute(TP_TRUSTOBJECTS_BV_02(type1,TC)); //TC on the right
 		execute(TP_TRUSTOBJECTS_BV_03(type2,TC)); //TC on the left

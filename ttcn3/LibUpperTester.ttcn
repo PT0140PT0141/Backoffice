@@ -1,7 +1,7 @@
 /*
  * @author     PT140
  * @version    $Id$
- * @desc        xxx
+ * @desc       In the definition of the Upper tester is included the definition of message triggers and an altstep statement of the Access Port
  */
 module EfcInfoExchange_LibUpperTester {
 

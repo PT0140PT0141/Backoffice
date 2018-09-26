@@ -1,6 +1,6 @@
 /**
  * @author   PT0140  
- * @desc     This module describes the common parameters for TCs execution. To be provided by the IUT implementer
+ * @desc     This module declares test data which are being prepared by the IUT
  * @version    $id$
  */
 module EfcInfoExchange_Pixits {

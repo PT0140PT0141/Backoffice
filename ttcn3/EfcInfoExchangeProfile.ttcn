@@ -1,6 +1,6 @@
 /**
  * @author  PT140
- * @desc    This module definitions that are made in the text of the standard, rather than in an ASN.1 attachment
+ * @desc    This module provides definitions that are made in the text of the standard, rather than in an ASN.1 attachment
  * @see     CEN/TS 16986 Electronic Fee Collection - Interoperable application profiles for information exchange between Service Provision and Toll Charging
  * @remark  See Tables 6 and 7
  * @version $id$

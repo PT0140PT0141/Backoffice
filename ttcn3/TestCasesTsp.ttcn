@@ -1,31 +1,10 @@
 /**
- * @author  PT0140 
- * @desc    This module provides test cases based on TS 16986 TPs
- * @see     [xxxx-1:2017]: Test suite structure and test purpose
- * @see     [xxxx-1:2016], Clause 5.2.1  Naming conventions
- * @version $id$
- */
-  /**
- * work in progress Status overview
- *
- *	Transaction type			!	BV					! BI			! Comments
- * 	----------------------------!-----------------------!---------------!--------------------------------
- *	Base						! done					! done			! to be compiled
- *	Userdetails					! done					! done			! to be compiled
- *	ListOfUsers					! done					! done			! to be compiled
- *	ExceptionList				! done					! done			! to be compiled
- *	TrustObjects				! done    				! done			! to be compiled
- *	PaymentClaim				! done					! done			! to be compiled
- *	DSRC.ContractIssuerList		! done					! done			! to be compiled
- *	DSRC.EFCContextData			! done					! done			! to be compiled
- *	DSRC.BillingDetails			! done					! done			! to be compiled
- *	DSRC.ReportAbnormalOBE		! done					! done			! to be compiled
- *	GNSS.TollDeclaration		! done					! done			! to be compiled
- *	GNSS.BillingDetails.TSP		! done					! done			! to be compiled
- *	GNSS.BillingDetails.TC		! done					! done			! to be compiled
- *	GNSS.PaymentAnnouncement	! done					! done			! to be compiled
- */
- 
+* @author  PT0140 
+* @desc    This module provides test cases for test purposes specified in Annex B of CEN/TC 17154-1 (i.e. Toll Service Provider system is IUT)
+* @see     [17154-1:2018]: Test suite structure and test purpose
+* @see     [17154-1:2018], Clause 5.3.2 for test purpose namimg conventions
+* @version $id$
+*/ 
 module EfcInfoExchange_TestCasesTsp {
     /**
      * @desc    [12855:2015]: 
@@ -3446,7 +3425,6 @@ module EfcInfoExchange_TestCasesTsp {
 				  */
 				 // Initialisation 
 				var boolean v_runOrNot := ICS_A1_2_isTsp and ICS_A52_1_implementedGNSSBILLINGDETAILSTSP and ICS_A52_3_implementedGNSSTOLLDECLARATION;
-				//TOD Ulrik check the followin "short" test cases w r t the templates f_receiveTollDeclSendBillingDetReceiveAck is fed
 				f_intialiseMtc(v_runOrNot);                   				
 				//Trigger IUT with GNSS_TOLLDECLARATION_TR_TSP_1_SEND_TRAVELLINGINAREA to send one valid TollDeclarationADU with actionCode = send and CHOICE forTravellingInArea
 				f_sendAndLogTrigger(GNSS_TOLLDECLARATION_TR_TSP_1_SEND_TRAVELLINGINAREA);

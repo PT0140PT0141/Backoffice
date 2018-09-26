@@ -1,11 +1,9 @@
 /**
  * @author  PT0140 
  * @desc    This module provides the functions signature for:
- * - external functions
- * - communication support
- * - common Context Data support
- * @remark  These functions are used by preamble/postambule function to initialization/deinitialization communication stack
- * @see     Electronic fee collection (EFC) — Application interface definition for autonomous systems — Part 2: Communication and connections to the lower layers
+ * - external functions (to be implemented by the tester)
+ * - altsteps on the main test component
+ * - common functions for TC and TSP test cases
  * @version $id$
  */
 module EfcInfoExchange_Functions language "TTCN-3:2010 Advanced Parameterization" { 

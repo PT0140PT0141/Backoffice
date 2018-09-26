@@ -1,6 +1,7 @@
 /**
  * @author    PT0140  
- * @desc      This module describes the common functionalities for TCs execution (Charging and ContextData)
+ * @desc      This module defines the Implementation Conformance Statement parameters. Its modulepars should be set 
+ * @desc      in accordance with the corresponding parameters of the CEN/TS 16986 ICS (Annex A) of the IuT
  * @version   $id$
  */
 module EfcInfoExchange_Ics {
